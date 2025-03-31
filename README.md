@@ -10,6 +10,14 @@ Extension Chrome pour la découverte de consultants spécialisés.
 - `connect-api/` : API backend en .NET Core
 - `connect-extension-dist/` : Répertoire de build pour l'extension Chrome (généré automatiquement, non suivi par git)
 
+## Statut du projet
+
+✅ Application Angular fonctionnelle avec composants autonomes (standalone)
+✅ API .NET Core opérationnelle
+✅ Scripts de génération d'extension pour le développement et la production
+🚧 En cours : Développement des fonctionnalités de filtrage avancées
+🚧 En cours : Optimisation de l'affichage sur mobile
+
 ## Prérequis
 
 - Node.js v20.18.1 ou supérieur
@@ -164,8 +172,16 @@ Le projet utilise une architecture modulaire avec trois composants principaux :
 ### 2. Application Angular pour l'extension (`connect-extension-app/`)
 - Version navigateur de l'extension 
 - Contient les composants consultant-list et consultant-card
+- Utilise l'architecture de composants autonomes (standalone)
 - Fonctionne en mode standalone sans nécessiter l'extension Chrome
 - Peut être testée directement dans un navigateur
+
+#### Architecture des composants Angular
+L'application utilise des composants Angular autonomes (standalone), une fonctionnalité introduite depuis Angular 14 :
+- Les composants sont déclarés avec `standalone: true` dans leur décorateur `@Component`
+- Ils importent directement leurs dépendances (CommonModule, FormsModule, etc.)
+- Dans le module principal (AppModule), ces composants sont ajoutés à la section `imports` et non à `declarations`
+- Cette architecture permet une meilleure modularité et facilite le lazy-loading
 
 ### 3. Extension Chrome (`connect-extension-chrome/` et `connect-extension-dist/`)
 - Fichiers spécifiques à l'extension Chrome (manifest.json, background.js, etc.)
@@ -184,6 +200,28 @@ Le workflow de développement typique consiste à :
 1. Développer et tester les fonctionnalités dans l'application Angular (`connect-extension-app/`)
 2. Générer l'extension avec la commande simple `./generate-extension`
 3. Tester l'extension dans Chrome
+
+## Problèmes courants et solutions
+
+### Problème : Composants Angular standalone non affichés
+**Symptôme** : L'application Angular ne montre rien ou génère des erreurs du type "Component is standalone, and cannot be declared in an NgModule"  
+**Solution** : 
+- Vérifier que les composants standalone sont correctement importés (et non déclarés) dans app.module.ts
+- Les composants standalone doivent être dans le tableau "imports" et non dans "declarations"
+
+### Problème : Extension non visible dans Chrome
+**Symptôme** : Après l'installation, l'extension n'apparaît pas ou ne fonctionne pas correctement  
+**Solution** :
+- Vérifier que le manifest.json est correctement configuré avec les bonnes permissions
+- Vérifier la console du développeur dans Chrome pour identifier les erreurs potentielles
+- Régénérer l'extension avec `./generate-extension-prod` pour obtenir une version optimisée
+
+### Problème : API backend non accessible
+**Symptôme** : Erreurs CORS ou erreurs de connexion à l'API  
+**Solution** :
+- Vérifier que l'API backend .NET est en cours d'exécution sur le port 8000
+- Vérifier que l'URL de l'API est correctement configurée dans environment.ts
+- Configurer CORS correctement dans le backend pour autoriser les requêtes depuis l'extension
 
 ## Licence
 
