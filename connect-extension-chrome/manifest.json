@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Connect Extension",
+  "description": "Extension pour la découverte de consultants",
+  "version": "1.0",
+  "action": {
+    "default_title": "Connect Extension",
+    "default_icon": "icon.png"
+  },
+  "permissions": [
+    "sidePanel",
+    "tabs"
+  ],
+  "side_panel": {
+    "default_path": "sidebar.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}

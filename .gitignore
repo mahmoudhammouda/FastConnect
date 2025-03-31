@@ -1,0 +1,56 @@
+# Répertoires de build
+/connect-extension-dist/
+/connect-extension-app/dist/
+/connect-api/bin/
+/connect-api/obj/
+/connect-web-app/dist/
+
+# Dépendances
+/node_modules/
+/connect-extension-app/node_modules/
+/connect-web-app/node_modules/
+/.pnp
+.pnp.js
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Fichiers d'environnement
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Fichiers de cache
+.npm
+.eslintcache
+.angular/cache
+/connect-extension-app/.angular/cache
+/connect-web-app/.angular/cache
+.sass-cache/
+connect-api/.vs/
+.vs/
+.idea/
+.settings/
+.vscode/
+*.swp
+*.swo
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Autres
+/coverage/
+/.nyc_output
+/dist/
+/tmp/
+/out-tsc/
+/bazel-out/

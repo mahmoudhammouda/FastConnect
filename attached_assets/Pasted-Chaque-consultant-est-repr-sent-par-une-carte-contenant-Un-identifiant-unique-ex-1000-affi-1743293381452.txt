@@ -1,0 +1,91 @@
+Chaque consultant est représenté par une carte contenant :
+- Un identifiant unique (ex: #1000) affiché sous l'icône de cadenas
+- Un indicateur de disponibilité (cadenas vert pour disponible, rouge pour indisponible)
+- Le rôle/poste du consultant (ex: Chef de Projet IT)
+- Les compétences principales sous forme de badges colorés (ex: TDD, .NET, Docker)
+- La localisation géographique (ex: Lille, Paris)
+- Un indicateur de séniorité (1 à 3 barres maximum)
+- Un message personnalisé du consultant décrivant son profil et ses disponibilités
+- Des hashtags extraits automatiquement du message (ex: #aws, #cloud, #devops)
+
+#### Organisation visuelle de la carte
+
+La carte d'un consultant suit une structure précise :
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  ┌─────────┐  ○ Rôle du consultant (Chef de Projet IT)      │
+│  │ 🔒      │  ■■■ Compétences (TDD, .NET, Docker)           │  ┌───┐
+│  │ #1000   │  📍 Localisation (Lille, Paris)                │  │ ⋮ │
+│  └─────────┘                                                │  └───┘
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+  ┌─────────────────────────────────────────────────────────┐
+  │ Message personnalisé du consultant                      │
+  │ #hashtag1 #hashtag2 #hashtag3                           │
+  │                                               Voir plus │
+  └─────────────────────────────────────────────────────────┘
+```
+
+**Colonne de gauche** :
+- L'icône de cadenas (🔒) en haut indique la disponibilité :
+  * Vert : consultant disponible
+  * Rouge : consultant non disponible
+- L'identifiant unique (#1000) est placé juste en dessous du cadenas 
+
+**Partie centrale** :
+- Le rôle du consultant apparaît en premier, en gras
+- Les compétences sont affichées sous forme de badges bleus rectangulaires
+- La localisation est indiquée avec une icône de localisation (📍) suivie des villes
+
+**Côté droit** :
+- Sur les écrans larges (desktop) : trois boutons d'action (LinkedIn, téléphone, email)
+- Sur les écrans étroits (mobile) : un bouton à trois points (⋮) qui ouvre le menu déroulant
+
+**En dessous de la carte** :
+- Le message personnalisé du consultant
+- Les hashtags extraits automatiquement, affichés en bleu
+- Un bouton "Voir plus" si le message est trop long (s'affiche uniquement pour les messages longs)
+
+**Menu déroulant** (mobile) :
+- S'ouvre en cliquant sur le bouton à trois points
+- Contient trois options avec icônes dans des cercles colorés :
+  * LinkedIn : cercle bleu avec icône LinkedIn
+  * Téléphone : cercle vert avec icône téléphone
+  * Email : cercle orange avec icône email
+
+### 3. Affichage des messages
+
+Les messages des consultants sont automatiquement affichés sous leur carte, sans nécessiter de clic. Cette fonctionnalité permet aux recruteurs de voir immédiatement les informations importantes sur chaque consultant.
+
+Caractéristiques de l'affichage des messages :
+- Présentation compacte (pas d'espace entre la carte et le message)
+- Cohérence visuelle avec la carte du consultant
+- Extraction et mise en évidence des hashtags en bleu
+- Style léger avec ombres réduites
+
+### 4. Menu d'actions responsive
+
+L'interface s'adapte à différentes tailles d'écran :
+
+**Sur écrans larges (desktop)** :
+- Boutons d'action affichés directement à droite de la carte
+- Trois actions disponibles : "Voir le profil LinkedIn", "Appeler", "Envoyer un email"
+
+**Sur écrans étroits (mobile)** :
+- Un unique bouton à trois points (⋮) remplace les boutons d'action
+- Cliquer sur ce bouton ouvre un menu déroulant avec les mêmes actions
+- Les actions dans le menu déroulant sont présentées avec des icônes dans des cercles colorés :
+  * LinkedIn : cercle bleu avec icône LinkedIn
+  * Téléphone : cercle vert avec icône téléphone
+  * Email : cercle orange avec icône email
+- Le menu se ferme automatiquement en cliquant à l'extérieur
+
+### 5. Filtrage et recherche
+
+L'extension permet de filtrer les consultants selon différents critères :
+- Par compétences
+- Par disponibilité
+- Par niveau d'expérience
+- Par mots-clés dans le message ou le rôle

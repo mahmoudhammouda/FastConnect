@@ -1,0 +1,18 @@
+#!/bin/bash
+# Script universel pour générer l'extension Chrome
+# Ce script détecte automatiquement l'environnement et exécute le script approprié
+
+echo "Extension Connect - Outil de génération d'extension"
+echo "=================================================="
+
+# Détection de l'environnement
+if [ -n "$WINDIR" ] || [ -n "$windir" ]; then
+    # Environnement Windows
+    echo "Environnement Windows détecté"
+    powershell -ExecutionPolicy Bypass -File ./generate-extension.ps1
+else
+    # Environnement Linux/Mac
+    echo "Environnement Linux/Mac détecté"
+    chmod +x ./generate-extension.sh
+    ./generate-extension.sh
+fi

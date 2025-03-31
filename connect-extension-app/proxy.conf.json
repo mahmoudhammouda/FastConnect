@@ -1,0 +1,15 @@
+{
+  "/api": {
+    "target": "http://0.0.0.0:8000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
+    },
+    "headers": {
+      "Connection": "keep-alive"
+    },
+    "timeout": 60000
+  }
+}

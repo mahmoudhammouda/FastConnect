@@ -1,0 +1,182 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global styles */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9fafb;
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c5c5c5;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Chrome extension specific styles */
+html, body {
+  min-width: 300px;
+}
+
+/* Make the sidepanel fill the available height */
+app-root {
+  display: block;
+  min-height: 100vh;
+}
+
+/* Custom components with Tailwind */
+@layer components {
+  .consultant-card {
+    @apply bg-white rounded-lg shadow-sm overflow-hidden mb-4 border border-gray-100;
+  }
+  
+  .consultant-header {
+    @apply flex justify-between items-center p-3 border-b border-gray-100;
+  }
+  
+  .consultant-id {
+    @apply text-xs font-medium text-gray-500;
+  }
+  
+  .consultant-menu {
+    @apply text-gray-400 hover:text-gray-600 transition-colors;
+  }
+  
+  .consultant-body {
+    @apply p-4;
+  }
+  
+  .consultant-role {
+    @apply text-lg font-semibold text-gray-800 mb-2 flex items-center gap-2;
+  }
+  
+  .status-indicator {
+    @apply h-2.5 w-2.5 rounded-full;
+  }
+  
+  .status-available {
+    @apply bg-green-500;
+  }
+  
+  .status-soon {
+    @apply bg-yellow-500;
+  }
+  
+  .status-unavailable {
+    @apply bg-red-500;
+  }
+  
+  .skill-badge {
+    @apply inline-block bg-gray-100 text-gray-800 text-xs font-medium px-2 py-0 rounded-full mr-1 mb-1;
+  }
+  
+  .location-badge {
+    @apply text-gray-600 whitespace-nowrap font-medium;
+  }
+  
+  .consultant-message {
+    @apply text-sm text-gray-600 mt-3;
+  }
+  
+  .contact-buttons {
+    @apply flex mt-4 gap-2;
+  }
+  
+  .contact-button {
+    @apply text-sm flex items-center gap-1 px-3 py-1 rounded bg-gray-100 hover:bg-gray-200 transition-colors;
+  }
+  
+  /* Action buttons for consultant cards */
+  .action-button {
+    @apply p-2 rounded-full focus:outline-none;
+  }
+  
+  .linkedin-button {
+    @apply bg-blue-100 text-blue-700 hover:bg-blue-200;
+  }
+  
+  .phone-button {
+    @apply bg-green-100 text-green-700 hover:bg-green-200;
+  }
+  
+  .email-button {
+    @apply bg-orange-100 text-orange-700 hover:bg-orange-200;
+  }
+  
+  /* Message panel with gradient overlay */
+  .message-panel {
+    position: relative;
+    width: 100%;
+  }
+  
+  .truncated {
+    max-height: 100px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .bg-gradient-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+    pointer-events: none;
+    z-index: 10;
+  }
+  
+  /* Loading spinner for infinite scroll */
+  .loader {
+    border: 3px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 3px solid #3498db;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* Filter pills */
+  .filter-pill {
+    @apply inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded-full mr-2 mb-1;
+  }
+  
+  .close-icon {
+    @apply text-blue-800 hover:text-blue-900;
+  }
+  
+  /* Sector & Expertise badges */
+  .sector-badge {
+    @apply inline-flex items-center bg-purple-100 text-purple-800 text-xs font-medium px-2 py-0.5 rounded-full mr-2 mb-1;
+  }
+  
+  .expertise-badge {
+    @apply inline-flex items-center bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded-full mr-2 mb-1;
+  }
+  
+  .dropdown-top {
+    transform-origin: bottom right;
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "debuggers": {},
+  "demoted": false,
+  "description": ".NET 7 development tools. Includes .NET and OmniSharp.\n",
+  "displayVersion": "7.0",
+  "env": {
+    "PATH": "/nix/store/4k08ckhym1bcwnsk52j201a80l2xrkhp-dotnet-sdk-7.0.410/bin"
+  },
+  "formatters": {},
+  "id": "dotnet-7.0",
+  "initializers": {},
+  "internal": false,
+  "languageServers": {
+    "omni-sharp": {
+      "configuration": null,
+      "displayVersion": "",
+      "extensions": [
+        ".cs",
+        ".csproj",
+        ".fs",
+        ".fsproj"
+      ],
+      "filePattern": "",
+      "files": [],
+      "initializationOptions": null,
+      "language": "dotnet",
+      "name": "OmniSharp",
+      "start": "/nix/store/nhf3grsb5dlxcgaikqr3bxjr5qfgkskm-omnisharp-roslyn-1.39.12/bin/OmniSharp --languageserver"
+    }
+  },
+  "name": ".NET 7 Tools",
+  "packagers": {
+    "dotnet": {
+      "afterInstall": null,
+      "displayVersion": "",
+      "env": {},
+      "features": {
+        "enabledForHosting": false,
+        "guessImports": false,
+        "packageSearch": true
+      },
+      "ignoredPackages": [],
+      "ignoredPaths": [],
+      "language": "dotnet",
+      "name": ".NET packager"
+    }
+  },
+  "runners": {
+    "dotnet": {
+      "compile": null,
+      "defaultEntrypoints": [],
+      "displayVersion": "",
+      "extensions": [
+        ".cs",
+        ".csproj",
+        ".fs",
+        ".fsproj"
+      ],
+      "fileParam": false,
+      "filePattern": "",
+      "files": [],
+      "interpreter": false,
+      "language": "dotnet",
+      "name": ".NET",
+      "productionOverride": null,
+      "prompt": "",
+      "start": "/nix/store/4k08ckhym1bcwnsk52j201a80l2xrkhp-dotnet-sdk-7.0.410/bin/dotnet run"
+    }
+  }
+}

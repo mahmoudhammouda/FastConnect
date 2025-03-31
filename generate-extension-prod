@@ -1,0 +1,51 @@
+#!/usr/bin/env node
+
+/**
+ * Script universel de génération de l'extension Chrome Connect en mode production
+ * Détecte automatiquement le système d'exploitation et exécute le script approprié
+ */
+
+const { platform } = require('os');
+const { execSync } = require('child_process');
+const { existsSync } = require('fs');
+const path = require('path');
+
+// Détecter le système d'exploitation
+const os = platform();
+
+console.log('Extension Connect - Outil de génération d\'extension (Mode Production)');
+console.log('==================================================================');
+console.log(`Système d'exploitation détecté: ${os}`);
+
+try {
+    if (os === 'win32') {
+        console.log('Exécution du script pour Windows...');
+        execSync('generate-extension-prod.bat', { stdio: 'inherit' });
+    } else if (os === 'darwin' || os === 'linux') {
+        console.log('Exécution du script pour Linux/macOS...');
+        
+        // Vérifier si le script shell existe et a les permissions d'exécution
+        const shellScript = path.join(__dirname, 'generate-extension-prod.sh');
+        if (existsSync(shellScript)) {
+            try {
+                // Tenter d'exécuter le script shell
+                execSync(`chmod +x "${shellScript}" && "${shellScript}"`, { stdio: 'inherit' });
+            } catch (shellError) {
+                console.log('Impossible d\'exécuter le script shell. Exécution directe du script JavaScript...');
+                execSync('node generate-extension-prod.js', { stdio: 'inherit' });
+            }
+        } else {
+            console.log('Script shell non trouvé. Exécution directe du script JavaScript...');
+            execSync('node generate-extension-prod.js', { stdio: 'inherit' });
+        }
+    } else {
+        console.log(`Système d'exploitation non reconnu: ${os}`);
+        console.log('Exécution directe du script JavaScript...');
+        execSync('node generate-extension-prod.js', { stdio: 'inherit' });
+    }
+    
+    console.log('Génération de l\'extension terminée avec succès.');
+} catch (error) {
+    console.error(`Erreur lors de la génération de l'extension: ${error.message}`);
+    process.exit(1);
+}

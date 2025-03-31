@@ -1,0 +1,69 @@
+modules = ["dotnet", "dotnet-7.0", "nodejs-20"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Angular Frontend"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Connect API"
+
+[[workflows.workflow]]
+name = "Angular Frontend"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd connect-extension-app && npm run start"
+waitForPort = 5000
+
+[[workflows.workflow]]
+name = "Connect API"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd connect-api && dotnet run --urls=http://0.0.0.0:8000"
+waitForPort = 8000
+
+[deployment]
+run = ["sh", "-c", "cd connect-api && dotnet run"]
+
+[[ports]]
+localPort = 3000
+externalPort = 3000
+
+[[ports]]
+localPort = 4200
+externalPort = 4200
+
+[[ports]]
+localPort = 5000
+externalPort = 5000
+
+[[ports]]
+localPort = 8000
+externalPort = 80
