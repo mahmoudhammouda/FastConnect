@@ -10,11 +10,12 @@
   <!-- Incorporation directe des styles Tailwind pour l'extension -->
   <style>
     /* Styles de base pour l'extension */
-    body {
+    html, body {
       width: 100%;
-      height: 100vh;
-      overflow-y: auto;
+      height: 100%;
       margin: 0;
+      padding: 0;
+      overflow: hidden;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
     
@@ -28,13 +29,18 @@
     }
     
     .extension-content {
-      padding: 12px;
+      padding: 5px;
+      height: calc(100vh - 60px);
+      /* overflow-y: auto; */
+      /* overflow-x: hidden; */
     }
     
     /* Styles supplémentaires pour l'affichage de l'extension */
     .extension-container {
       width: 100%;
-      border-radius: 8px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
   </style>
