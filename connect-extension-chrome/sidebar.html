@@ -26,11 +26,12 @@
       padding: 12px;
       border-bottom: 1px solid #e5e7eb;
       z-index: 10;
+      display: none; /* Cache l'en-tête */
     }
     
     .extension-content {
       padding: 5px;
-      height: calc(100vh - 60px);
+      height: 100vh; /* Utilise toute la hauteur disponible maintenant que l'en-tête est caché */
       /* overflow-y: auto; */
       /* overflow-x: hidden; */
     }
@@ -48,7 +49,7 @@
 <body>
   <div class="extension-container">
     <div class="extension-header">
-      <h1 class="text-xl font-bold text-blue-600">Connect Extension</h1>
+      <!-- En-tête supprimé -->
     </div>
     <div class="extension-content">
       <!-- L'application Angular sera montée ici -->
