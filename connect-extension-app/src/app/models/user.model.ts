@@ -1,29 +1,38 @@
 /**
- * Modèle pour les utilisateurs de l'application FastConnect
+ * Enumération des rôles d'utilisateur possibles
  */
-export type UserRole = 'admin' | 'consultant' | 'recruiter';
+export enum UserRole {
+  Consultant = 'Consultant',
+  Recruiter = 'Recruiter',
+  Admin = 'Admin'
+}
 
-export type AuthMethod = 'linkedin' | 'email';
-
+/**
+ * Modèle représentant un utilisateur dans l'application
+ */
 export interface User {
   id: string;
   username: string;
   email: string;
+  linkedInProfile?: string;
+  profileImageUrl?: string;
   role: UserRole;
+  createdAt: string;
+  lastLogin?: string;
+  onboardingCompleted: boolean;
+  skills: string[];
+  location?: string;
+  phoneNumber?: string;
+  title?: string;
+  isVerified: boolean;
+  isLinkedInAuthenticated: boolean;
   firstName?: string;
   lastName?: string;
-  profilePicture?: string;
-  lastLogin?: Date;
-  isActive: boolean;
-  profession?: string;       // Ajout du champ métier/profession
-  linkedinId?: string;       // ID LinkedIn si authentifié par LinkedIn
-  authMethod: AuthMethod;    // Méthode d'authentification utilisée
-  hasCompletedOnboarding?: boolean; // Si l'utilisateur a complété le processus d'inscription initial
-  // Les informations sensibles comme le mot de passe ne sont pas incluses dans ce modèle
+  isActive?: boolean;
 }
 
 /**
- * Informations d'authentification par email
+ * Informations d'authentification par email/mot de passe
  */
 export interface EmailAuthCredentials {
   email: string;
@@ -32,62 +41,72 @@ export interface EmailAuthCredentials {
 }
 
 /**
- * Informations d'authentification par LinkedIn
- */
-export interface LinkedInAuthCredentials {
-  accessToken: string;
-  rememberMe?: boolean;
-}
-
-/**
- * Informations d'authentification combinées
- */
-export type AuthCredentials = EmailAuthCredentials | LinkedInAuthCredentials;
-
-/**
- * Profil utilisateur LinkedIn
+ * Informations de connexion LinkedIn
  */
 export interface LinkedInProfile {
-  id: string;
   email: string;
-  firstName: string;
-  lastName: string;
-  profilePicture?: string;
-  headline?: string; // Titre professionnel sur LinkedIn
+  linkedInToken: string;
+  firstName?: string;
+  lastName?: string;
+  profileUrl?: string;
+  pictureUrl?: string;
 }
 
 /**
- * Informations d'inscription utilisateur
+ * Informations d'inscription d'un utilisateur
  */
 export interface UserRegistration {
+  username: string;
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
-  profession: string;
-  role: UserRole;
-  linkedinId?: string;
-  profilePicture?: string;
+  confirmPassword: string;
+  linkedInProfile?: string;
+  profileImageUrl?: string;
+  role?: UserRole;
+  location?: string;
+  title?: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 /**
- * Réponse d'authentification
+ * Informations pour l'onboarding d'un utilisateur
+ */
+export interface UserOnboarding {
+  userRole: UserRole;
+  title: string;
+  firstName?: string;
+  lastName?: string;
+  skills?: string[];
+  location?: string;
+}
+
+/**
+ * Réponse du serveur après authentification
  */
 export interface AuthResponse {
-  user: User;
+  success: boolean;
+  message: string;
   token: string;
-  refreshToken?: string;
-  expiresIn?: number;
-  isNewUser?: boolean; // Indique si c'est un nouvel utilisateur qui doit compléter son profil
+  refreshToken: string;
+  expiration: string;
+  user: User;
 }
 
 /**
- * État de l'authentification stocké
+ * État d'authentification actuel
  */
 export interface AuthState {
+  isAuthenticated: boolean;
   user: User | null;
   token: string | null;
-  refreshToken?: string | null;
-  expiresAt?: Date | null;
-  isAuthenticated: boolean;
+  refreshToken: string | null;
+  tokenExpiration: Date | null;
+}
+
+/**
+ * Requête de rafraîchissement de token
+ */
+export interface RefreshTokenRequest {
+  refreshToken: string;
 }

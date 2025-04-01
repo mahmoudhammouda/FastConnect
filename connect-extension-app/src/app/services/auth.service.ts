@@ -1,585 +1,400 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
-import { SocialAuthService } from '@abacritt/angularx-social-login';
-import { 
-  User, 
-  AuthCredentials,
-  EmailAuthCredentials,
-  LinkedInAuthCredentials,
-  LinkedInProfile,
-  UserRegistration,
-  AuthResponse, 
-  AuthState,
-  AuthMethod 
-} from '../models/user.model';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { 
+  AuthState, 
+  User, 
+  EmailAuthCredentials, 
+  LinkedInProfile,
+  UserRegistration, 
+  UserOnboarding,
+  AuthResponse,
+  RefreshTokenRequest,
+  UserRole
+} from '../models/user.model';
 
-/**
- * Service d'authentification pour gérer la connexion, l'inscription et la déconnexion des utilisateurs
- * dans l'application FastConnect
- */
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = environment.apiUrl;
-  
-  // Utilisateur et état d'authentification actuels
-  private authStateSubject = new BehaviorSubject<AuthState>({
-    user: null,
-    token: null,
-    refreshToken: null,
-    expiresAt: null,
-    isAuthenticated: false
-  });
-  
-  // Observable public pour l'état d'authentification
-  public authState$ = this.authStateSubject.asObservable();
-  
-  // Pour le développement, utilisation temporaire de données simulées
-  private useMockData = true;
+  private readonly API_URL = environment.apiUrl;
+  private authStateSubject: BehaviorSubject<AuthState>;
+  private tokenCheckInterval: any;
+  private tokenRefreshTimeout: any;
 
-  constructor(
-    private http: HttpClient,
-    private socialAuthService: SocialAuthService
-  ) {
-    // Charger l'état d'authentification du localStorage au démarrage
-    this.loadAuthState();
-    
-    // S'abonner aux événements d'authentification sociale
-    this.socialAuthService.authState.subscribe(user => {
-      if (user && user.provider === 'LINKEDIN') {
-        // Conversion du profil social en profil LinkedIn
-        const linkedInProfile: LinkedInProfile = {
-          id: user.id,
-          email: user.email,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          profilePicture: user.photoUrl,
-          headline: user.response?.headline || ''
-        };
-        
-        // Authentifier avec le profil LinkedIn
-        this.loginWithLinkedIn(linkedInProfile).subscribe();
+  constructor(private http: HttpClient, private router: Router) {
+    // Initialiser l'état d'authentification
+    this.authStateSubject = new BehaviorSubject<AuthState>(this.loadAuthState());
+
+    // Configurer la vérification périodique du token si l'utilisateur est authentifié
+    if (this.isAuthenticated) {
+      this.setupTokenCheck();
+      if (this.currentAuthState.tokenExpiration) {
+        this.setupTokenRefresh(this.currentAuthState.tokenExpiration);
       }
-    });
-  }
-
-  /**
-   * Obtenir l'état d'authentification actuel
-   */
-  public get currentAuthState(): AuthState {
-    return this.authStateSubject.value;
-  }
-
-  /**
-   * Vérifier si l'utilisateur est authentifié
-   */
-  public get isAuthenticated(): boolean {
-    const state = this.currentAuthState;
-    
-    // Vérifier si l'authentification est valide et non expirée
-    if (state.isAuthenticated && state.token) {
-      if (state.expiresAt) {
-        return new Date() < state.expiresAt;
-      }
-      return true;
     }
-    return false;
-  }
-
-  /**
-   * Obtenir l'utilisateur actuel
-   */
-  public get currentUser(): User | null {
-    return this.currentAuthState.user;
-  }
-
-  /**
-   * Obtenir le token JWT actuel
-   */
-  public get token(): string | null {
-    return this.currentAuthState.token;
-  }
-
-  /**
-   * Démarrer le processus d'authentification LinkedIn
-   */
-  initiateLinkedInLogin(): void {
-    this.socialAuthService.signIn('LINKEDIN');
-  }
-
-  /**
-   * Authentifier avec LinkedIn
-   */
-  loginWithLinkedIn(profile: LinkedInProfile, rememberMe: boolean = false): Observable<AuthResponse> {
-    if (this.useMockData) {
-      return this.mockLinkedInLogin(profile, rememberMe);
-    }
-    
-    // Dans une implémentation réelle, envoyer ces données au backend
-    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/linkedin`, { profile })
-      .pipe(
-        tap(response => this.handleAuthResponse(response, rememberMe)),
-        catchError(error => {
-          console.error('Erreur lors de la connexion LinkedIn:', error);
-          return throwError(() => new Error(error.error?.message || 'Erreur de connexion LinkedIn. Veuillez réessayer.'));
-        })
-      );
-  }
-
-  /**
-   * Authentifier un utilisateur avec email/mot de passe
-   */
-  loginWithEmail(credentials: EmailAuthCredentials): Observable<AuthResponse> {
-    if (this.useMockData) {
-      return this.mockEmailLogin(credentials);
-    }
-    
-    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, credentials)
-      .pipe(
-        tap(response => this.handleAuthResponse(response, credentials.rememberMe)),
-        catchError(error => {
-          console.error('Erreur lors de la connexion email:', error);
-          return throwError(() => new Error(error.error?.message || 'Identifiants incorrects. Veuillez réessayer.'));
-        })
-      );
-  }
-
-  /**
-   * Inscrire un nouvel utilisateur
-   */
-  register(userData: UserRegistration): Observable<AuthResponse> {
-    if (this.useMockData) {
-      return this.mockRegister(userData);
-    }
-    
-    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/register`, userData)
-      .pipe(
-        tap(response => this.handleAuthResponse(response, true)),
-        catchError(error => {
-          console.error('Erreur lors de l\'inscription:', error);
-          return throwError(() => new Error(error.error?.message || 'Erreur lors de l\'inscription. Veuillez réessayer.'));
-        })
-      );
-  }
-
-  /**
-   * Mettre à jour le profil utilisateur
-   */
-  updateUserProfile(userId: string, profileData: Partial<User>): Observable<User> {
-    if (this.useMockData) {
-      return this.mockUpdateProfile(userId, profileData);
-    }
-    
-    return this.http.put<User>(`${this.apiUrl}/users/${userId}`, profileData)
-      .pipe(
-        tap(updatedUser => {
-          // Mettre à jour l'état d'authentification avec le nouvel utilisateur
-          const currentState = this.currentAuthState;
-          if (currentState.user) {
-            const newState = {
-              ...currentState,
-              user: { ...updatedUser }
-            };
-            this.authStateSubject.next(newState);
-            
-            // Mettre à jour le localStorage si l'utilisateur est "remember me"
-            if (localStorage.getItem('auth_state')) {
-              localStorage.setItem('auth_state', JSON.stringify(newState));
-            }
-          }
-        }),
-        catchError(error => {
-          console.error('Erreur lors de la mise à jour du profil:', error);
-          return throwError(() => new Error(error.error?.message || 'Erreur lors de la mise à jour du profil. Veuillez réessayer.'));
-        })
-      );
-  }
-
-  /**
-   * Déconnecter l'utilisateur actuel
-   */
-  logout(): Observable<boolean> {
-    // Déconnexion du fournisseur social si nécessaire
-    this.socialAuthService.signOut();
-    
-    // Si nous utilisons une API réelle, il faudrait invalider le token côté serveur
-    if (!this.useMockData && this.isAuthenticated) {
-      return this.http.post<{success: boolean}>(`${this.apiUrl}/auth/logout`, {})
-        .pipe(
-          tap(() => this.clearAuthState()),
-          map(response => response.success),
-          catchError(error => {
-            console.error('Erreur lors de la déconnexion:', error);
-            // Même en cas d'erreur, nous déconnectons l'utilisateur localement
-            this.clearAuthState();
-            return of(true);
-          })
-        );
-    }
-    
-    // Avec les données simulées, effectuer simplement la déconnexion locale
-    this.clearAuthState();
-    return of(true);
-  }
-
-  /**
-   * Vérifier si le token est toujours valide
-   */
-  verifyToken(): Observable<boolean> {
-    if (!this.isAuthenticated) {
-      return of(false);
-    }
-    
-    if (this.useMockData) {
-      // Avec les données simulées, le token est toujours considéré comme valide
-      return of(true);
-    }
-    
-    return this.http.get<{valid: boolean}>(`${this.apiUrl}/auth/verify`)
-      .pipe(
-        map(response => response.valid),
-        catchError(() => {
-          this.clearAuthState();
-          return of(false);
-        })
-      );
-  }
-
-  /**
-   * Rafraîchir le token JWT
-   */
-  refreshToken(): Observable<AuthResponse> {
-    const refreshToken = this.currentAuthState.refreshToken;
-    
-    if (!refreshToken) {
-      return throwError(() => new Error('Aucun token de rafraîchissement disponible.'));
-    }
-    
-    if (this.useMockData) {
-      // Simuler un rafraîchissement de token
-      const mockResponse: AuthResponse = {
-        user: this.currentAuthState.user!,
-        token: 'new-mock-jwt-token-' + Date.now(),
-        refreshToken: 'new-mock-refresh-token-' + Date.now(),
-        expiresIn: 3600 // 1 heure
-      };
-      
-      this.handleAuthResponse(mockResponse, true);
-      return of(mockResponse);
-    }
-    
-    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/refresh`, { refreshToken })
-      .pipe(
-        tap(response => this.handleAuthResponse(response, true)),
-        catchError(error => {
-          console.error('Erreur lors du rafraîchissement du token:', error);
-          this.clearAuthState();
-          return throwError(() => new Error('Session expirée. Veuillez vous reconnecter.'));
-        })
-      );
-  }
-
-  /**
-   * Vérifier si c'est la première connexion de l'utilisateur
-   */
-  isFirstLogin(user: User): boolean {
-    return !user.hasCompletedOnboarding;
   }
 
   /**
    * Charger l'état d'authentification depuis le localStorage
    */
-  private loadAuthState(): void {
+  private loadAuthState(): AuthState {
     try {
-      const savedState = localStorage.getItem('auth_state');
-      
-      if (savedState) {
-        const parsedState = JSON.parse(savedState) as AuthState;
-        
+      const authData = localStorage.getItem('authState');
+      if (authData) {
+        const authState: AuthState = JSON.parse(authData);
         // Convertir la date d'expiration en objet Date
-        if (parsedState.expiresAt) {
-          parsedState.expiresAt = new Date(parsedState.expiresAt);
-          
-          // Vérifier si le token n'est pas expiré
-          if (parsedState.expiresAt < new Date()) {
-            // Token expiré, effacer l'état
-            this.clearAuthState();
-            return;
-          }
+        if (authState.tokenExpiration) {
+          authState.tokenExpiration = new Date(authState.tokenExpiration);
         }
-        
-        // Mettre à jour l'état d'authentification
-        this.authStateSubject.next(parsedState);
+        return authState;
       }
     } catch (error) {
       console.error('Erreur lors du chargement de l\'état d\'authentification:', error);
-      this.clearAuthState();
-    }
-  }
-
-  /**
-   * Traiter la réponse d'authentification et mettre à jour l'état
-   */
-  private handleAuthResponse(response: AuthResponse, rememberMe: boolean = false): void {
-    // Calculer la date d'expiration du token
-    let expiresAt: Date | null = null;
-    
-    if (response.expiresIn) {
-      expiresAt = new Date();
-      expiresAt.setSeconds(expiresAt.getSeconds() + response.expiresIn);
     }
     
-    // Créer le nouvel état d'authentification
-    const newAuthState: AuthState = {
-      user: response.user,
-      token: response.token,
-      refreshToken: response.refreshToken || null,
-      expiresAt: expiresAt,
-      isAuthenticated: true
-    };
-    
-    // Mettre à jour l'état
-    this.authStateSubject.next(newAuthState);
-    
-    // Stocker l'état dans le localStorage si rememberMe est activé
-    if (rememberMe) {
-      localStorage.setItem('auth_state', JSON.stringify(newAuthState));
-    }
-  }
-
-  /**
-   * Effacer l'état d'authentification
-   */
-  private clearAuthState(): void {
-    // Réinitialiser l'état d'authentification
-    this.authStateSubject.next({
+    // État par défaut (non authentifié)
+    return {
+      isAuthenticated: false,
       user: null,
       token: null,
       refreshToken: null,
-      expiresAt: null,
-      isAuthenticated: false
-    });
-    
-    // Supprimer les données du localStorage
-    localStorage.removeItem('auth_state');
+      tokenExpiration: null
+    };
   }
 
   /**
-   * Méthode mock pour simuler une connexion avec LinkedIn
-   * À utiliser uniquement pendant le développement
+   * Sauvegarder l'état d'authentification dans le localStorage
    */
-  private mockLinkedInLogin(profile: LinkedInProfile, rememberMe: boolean): Observable<AuthResponse> {
-    // Vérifier si l'utilisateur existe déjà dans notre "base de données"
-    const isNewUser = !localStorage.getItem(`linkedin_user_${profile.id}`);
+  private saveAuthState(authState: AuthState): void {
+    localStorage.setItem('authState', JSON.stringify(authState));
+    this.authStateSubject.next(authState);
+  }
+
+  /**
+   * Vérifier si le token est valide
+   */
+  private checkTokenValidity(): void {
+    const currentState = this.currentAuthState;
     
-    // Simuler un délai réseau
-    return of(null).pipe(
-      delay(800),
-      switchMap(() => {
-        // Créer un utilisateur basé sur le profil LinkedIn
-        const mockUser: User = {
-          id: `li_${profile.id}`,
-          username: `${profile.firstName.toLowerCase()}.${profile.lastName.toLowerCase()}`,
-          email: profile.email,
-          firstName: profile.firstName,
-          lastName: profile.lastName,
-          profilePicture: profile.profilePicture,
-          profession: profile.headline || 'Professionnel LinkedIn',
-          role: 'consultant', // Rôle par défaut
-          isActive: true,
-          linkedinId: profile.id,
-          authMethod: 'linkedin',
-          hasCompletedOnboarding: !isNewUser
-        };
-        
-        // Simuler un enregistrement en "base de données"
-        if (isNewUser) {
-          localStorage.setItem(`linkedin_user_${profile.id}`, JSON.stringify(mockUser));
+    if (currentState.isAuthenticated && currentState.tokenExpiration) {
+      const now = new Date();
+      const expirationDate = new Date(currentState.tokenExpiration);
+      
+      // Si le token est expiré, essayer de le rafraîchir ou déconnecter l'utilisateur
+      if (now >= expirationDate) {
+        if (currentState.refreshToken) {
+          this.refreshToken(currentState.refreshToken).subscribe({
+            error: () => {
+              // En cas d'échec du rafraîchissement, déconnecter l'utilisateur
+              this.logout().subscribe();
+            }
+          });
+        } else {
+          // Pas de token de rafraîchissement, déconnecter l'utilisateur
+          this.logout().subscribe();
         }
-        
-        const response: AuthResponse = {
-          user: mockUser,
-          token: `mock-linkedin-jwt-token-${Date.now()}`,
-          refreshToken: `mock-linkedin-refresh-token-${Date.now()}`,
-          expiresIn: 3600, // 1 heure
-          isNewUser: isNewUser
-        };
-        
-        return of(response).pipe(
-          tap(res => this.handleAuthResponse(res, rememberMe))
-        );
+      }
+    }
+  }
+
+  /**
+   * Configurer une vérification périodique du token
+   */
+  private setupTokenCheck(): void {
+    // Arrêter l'intervalle existant s'il y en a un
+    if (this.tokenCheckInterval) {
+      clearInterval(this.tokenCheckInterval);
+    }
+    
+    // Vérifier le token toutes les 5 minutes
+    this.tokenCheckInterval = setInterval(() => this.checkTokenValidity(), 5 * 60 * 1000);
+  }
+
+  /**
+   * Configurer le rafraîchissement automatique du token
+   */
+  private setupTokenRefresh(expiration: Date): void {
+    // Arrêter le timeout existant s'il y en a un
+    if (this.tokenRefreshTimeout) {
+      clearTimeout(this.tokenRefreshTimeout);
+    }
+    
+    const now = new Date();
+    const expirationTime = expiration.getTime();
+    const timeUntilExpiry = expirationTime - now.getTime();
+    
+    // Rafraîchir le token 1 minute avant son expiration
+    const refreshTime = Math.max(0, timeUntilExpiry - 60000);
+    
+    this.tokenRefreshTimeout = setTimeout(() => {
+      const currentToken = this.currentAuthState.refreshToken;
+      if (currentToken) {
+        this.refreshToken(currentToken).subscribe();
+      }
+    }, refreshTime);
+  }
+
+  /**
+   * Obtenir l'état d'authentification actuel
+   */
+  get currentAuthState(): AuthState {
+    return this.authStateSubject.value;
+  }
+
+  /**
+   * Obtenir l'état d'authentification comme Observable
+   */
+  get authState$(): Observable<AuthState> {
+    return this.authStateSubject.asObservable();
+  }
+
+  /**
+   * Obtenir l'utilisateur actuel
+   */
+  get currentUser(): User | null {
+    return this.currentAuthState.user;
+  }
+
+  /**
+   * Vérifier si l'utilisateur est authentifié
+   */
+  get isAuthenticated(): boolean {
+    return this.currentAuthState.isAuthenticated;
+  }
+
+  /**
+   * Obtenir le token JWT
+   */
+  get token(): string | null {
+    return this.currentAuthState.token;
+  }
+
+  /**
+   * S'authentifier avec email et mot de passe
+   */
+  loginWithEmail(credentials: EmailAuthCredentials): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.API_URL}/auth/login`, credentials).pipe(
+      tap((response: AuthResponse) => this.handleAuthSuccess(response))
+    );
+  }
+
+  /**
+   * S'authentifier avec LinkedIn
+   */
+  loginWithLinkedIn(profile: LinkedInProfile): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.API_URL}/auth/login-linkedin`, profile).pipe(
+      tap((response: AuthResponse) => this.handleAuthSuccess(response))
+    );
+  }
+
+  /**
+   * Rafraîchir le token JWT
+   */
+  refreshToken(refreshToken: string): Observable<AuthResponse> {
+    const refreshRequest: RefreshTokenRequest = { refreshToken };
+    
+    return this.http.post<AuthResponse>(`${this.API_URL}/auth/refresh-token`, refreshRequest).pipe(
+      tap((response: AuthResponse) => this.handleAuthSuccess(response))
+    );
+  }
+
+  /**
+   * Traiter la réponse d'authentification réussie
+   */
+  private handleAuthSuccess(response: AuthResponse): void {
+    // Vérifier si la réponse contient les informations nécessaires
+    if (!response || !response.token || !response.user) {
+      console.error('Réponse d\'authentification invalide');
+      return;
+    }
+
+    // Calculer la date d'expiration du token
+    let expDate: Date;
+    if (response.expiration) {
+      expDate = new Date(response.expiration);
+    } else {
+      // Par défaut, le token expire dans 1 heure
+      expDate = new Date();
+      expDate.setTime(expDate.getTime() + 60 * 60 * 1000);
+    }
+
+    // Mettre à jour l'état d'authentification
+    const authState: AuthState = {
+      isAuthenticated: true,
+      user: response.user,
+      token: response.token,
+      refreshToken: response.refreshToken,
+      tokenExpiration: expDate
+    };
+
+    // Sauvegarder l'état d'authentification
+    this.saveAuthState(authState);
+
+    // Configurer la vérification du token et le rafraîchissement automatique
+    this.setupTokenCheck();
+    this.setupTokenRefresh(expDate);
+  }
+
+  /**
+   * Se déconnecter
+   */
+  logout(): Observable<void> {
+    // Nettoyer les intervalles et les timeouts
+    if (this.tokenCheckInterval) {
+      clearInterval(this.tokenCheckInterval);
+      this.tokenCheckInterval = null;
+    }
+    
+    if (this.tokenRefreshTimeout) {
+      clearTimeout(this.tokenRefreshTimeout);
+      this.tokenRefreshTimeout = null;
+    }
+
+    // Appeler l'API de déconnexion si l'utilisateur est authentifié
+    if (this.isAuthenticated) {
+      return this.http.post<void>(`${this.API_URL}/auth/logout`, {}).pipe(
+        tap(() => {
+          // Réinitialiser l'état d'authentification
+          const authState: AuthState = {
+            isAuthenticated: false,
+            user: null,
+            token: null,
+            refreshToken: null,
+            tokenExpiration: null
+          };
+          
+          // Sauvegarder l'état d'authentification
+          this.saveAuthState(authState);
+          
+          // Naviguer vers la page de connexion
+          this.router.navigate(['/login']);
+        }),
+        catchError((error) => {
+          console.error('Erreur lors de la déconnexion:', error);
+          
+          // Réinitialiser l'état d'authentification même en cas d'erreur
+          const authState: AuthState = {
+            isAuthenticated: false,
+            user: null,
+            token: null,
+            refreshToken: null,
+            tokenExpiration: null
+          };
+          
+          // Sauvegarder l'état d'authentification
+          this.saveAuthState(authState);
+          
+          // Naviguer vers la page de connexion
+          this.router.navigate(['/login']);
+          
+          return of(undefined);
+        })
+      );
+    } else {
+      // Si l'utilisateur n'est pas authentifié, simplement retourner un Observable vide
+      return of(undefined);
+    }
+  }
+
+  /**
+   * Enregistrer un nouvel utilisateur
+   */
+  register(userData: UserRegistration): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.API_URL}/auth/register`, userData).pipe(
+      tap((response: AuthResponse) => this.handleAuthSuccess(response))
+    );
+  }
+
+  /**
+   * Terminer l'onboarding de l'utilisateur
+   */
+  completeOnboarding(onboardingData: UserOnboarding): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.API_URL}/auth/complete-onboarding`, onboardingData).pipe(
+      tap((response: AuthResponse) => {
+        this.handleAuthSuccess(response);
+        // Rediriger vers la page d'accueil après l'onboarding
+        this.router.navigate(['/']);
       })
     );
   }
 
   /**
-   * Méthode mock pour simuler une connexion avec email/mot de passe
-   * À utiliser uniquement pendant le développement
+   * Vérifier si l'utilisateur a besoin de compléter l'onboarding
    */
-  private mockEmailLogin(credentials: EmailAuthCredentials): Observable<AuthResponse> {
-    // Simuler une vérification des identifiants
-    if (credentials.email === 'admin@fastconnect.com' && credentials.password === 'admin123') {
-      const mockUser: User = {
-        id: '1',
-        username: 'admin',
-        email: 'admin@fastconnect.com',
-        role: 'admin',
-        firstName: 'Admin',
-        lastName: 'User',
-        isActive: true,
-        authMethod: 'email',
-        hasCompletedOnboarding: true
-      };
-      
-      const expiresIn = 3600; // 1 heure
-      
-      const response: AuthResponse = {
-        user: mockUser,
-        token: 'mock-jwt-token-' + Date.now(),
-        refreshToken: 'mock-refresh-token-' + Date.now(),
-        expiresIn: expiresIn
-      };
-      
-      return of(response).pipe(
-        delay(800),
-        tap(res => this.handleAuthResponse(res, credentials.rememberMe))
-      );
-    } else if (credentials.email === 'consultant@fastconnect.com' && credentials.password === 'consultant123') {
-      const mockUser: User = {
-        id: '2',
-        username: 'consultant',
-        email: 'consultant@fastconnect.com',
-        role: 'consultant',
-        firstName: 'John',
-        lastName: 'Doe',
-        profession: 'Développeur Full Stack',
-        isActive: true,
-        authMethod: 'email',
-        hasCompletedOnboarding: true
-      };
-      
-      const expiresIn = 3600; // 1 heure
-      
-      const response: AuthResponse = {
-        user: mockUser,
-        token: 'mock-jwt-token-' + Date.now(),
-        refreshToken: 'mock-refresh-token-' + Date.now(),
-        expiresIn: expiresIn
-      };
-      
-      return of(response).pipe(
-        delay(800),
-        tap(res => this.handleAuthResponse(res, credentials.rememberMe))
-      );
-    } else if (credentials.email === 'recruiter@fastconnect.com' && credentials.password === 'recruiter123') {
-      const mockUser: User = {
-        id: '3',
-        username: 'recruiter',
-        email: 'recruiter@fastconnect.com',
-        role: 'recruiter',
-        firstName: 'Jane',
-        lastName: 'Smith',
-        profession: 'Talent Acquisition Manager',
-        isActive: true,
-        authMethod: 'email',
-        hasCompletedOnboarding: true
-      };
-      
-      const expiresIn = 3600; // 1 heure
-      
-      const response: AuthResponse = {
-        user: mockUser,
-        token: 'mock-jwt-token-' + Date.now(),
-        refreshToken: 'mock-refresh-token-' + Date.now(),
-        expiresIn: expiresIn
-      };
-      
-      return of(response).pipe(
-        delay(800),
-        tap(res => this.handleAuthResponse(res, credentials.rememberMe))
-      );
-    }
-    
-    // Simuler une erreur d'authentification
-    return of(null).pipe(
-      delay(800),
-      switchMap(() => throwError(() => new Error('Identifiants incorrects. Veuillez réessayer.')))
-    );
+  needsOnboarding(): boolean {
+    const user = this.currentUser;
+    return user !== null && !user.onboardingCompleted;
   }
 
   /**
-   * Méthode mock pour simuler une inscription
-   * À utiliser uniquement pendant le développement
+   * Obtenir le rôle de l'utilisateur actuel
    */
-  private mockRegister(userData: UserRegistration): Observable<AuthResponse> {
-    // Vérifier si l'email est déjà utilisé
-    const userExists = ['admin@fastconnect.com', 'consultant@fastconnect.com', 'recruiter@fastconnect.com']
-      .includes(userData.email);
-    
-    if (userExists) {
-      return of(null).pipe(
-        delay(800),
-        switchMap(() => throwError(() => new Error('Cet email est déjà utilisé. Veuillez en choisir un autre.')))
-      );
-    }
-    
-    // Créer un nouvel utilisateur
-    const newUser: User = {
-      id: `user_${Date.now()}`,
-      username: userData.email.split('@')[0],
-      email: userData.email,
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      profession: userData.profession,
-      role: userData.role,
-      isActive: true,
-      authMethod: 'email',
-      linkedinId: userData.linkedinId,
-      profilePicture: userData.profilePicture,
-      hasCompletedOnboarding: true
-    };
-    
-    const response: AuthResponse = {
-      user: newUser,
-      token: `mock-register-jwt-token-${Date.now()}`,
-      refreshToken: `mock-register-refresh-token-${Date.now()}`,
-      expiresIn: 3600 // 1 heure
-    };
-    
-    return of(response).pipe(
-      delay(1000),
-      tap(res => this.handleAuthResponse(res, true))
-    );
+  getUserRole(): UserRole | null {
+    const user = this.currentUser;
+    return user ? user.role : null;
   }
 
   /**
-   * Méthode mock pour simuler une mise à jour de profil
-   * À utiliser uniquement pendant le développement
+   * Vérifier si l'utilisateur a un rôle spécifique
    */
-  private mockUpdateProfile(userId: string, profileData: Partial<User>): Observable<User> {
-    const currentUser = this.currentUser;
-    
-    if (!currentUser || currentUser.id !== userId) {
-      return throwError(() => new Error('Utilisateur non autorisé.'));
-    }
-    
-    // Mettre à jour l'utilisateur
-    const updatedUser: User = {
-      ...currentUser,
-      ...profileData,
-      // S'assurer que ces champs ne sont pas écrasés
-      id: currentUser.id,
-      email: profileData.email || currentUser.email,
-      authMethod: currentUser.authMethod
-    };
-    
-    return of(updatedUser).pipe(delay(800));
+  hasRole(role: UserRole): boolean {
+    const userRole = this.getUserRole();
+    return userRole === role;
+  }
+
+  /**
+   * Vérifier si l'utilisateur est un consultant
+   */
+  isConsultant(): boolean {
+    return this.hasRole(UserRole.Consultant);
+  }
+
+  /**
+   * Vérifier si l'utilisateur est un recruteur
+   */
+  isRecruiter(): boolean {
+    return this.hasRole(UserRole.Recruiter);
+  }
+
+  /**
+   * Vérifier si l'utilisateur est un administrateur
+   */
+  isAdmin(): boolean {
+    return this.hasRole(UserRole.Admin);
+  }
+
+  /**
+   * Vérifier si l'utilisateur est authentifié avec LinkedIn
+   */
+  isLinkedInAuthenticated(): boolean {
+    const user = this.currentUser;
+    return user !== null && user.isLinkedInAuthenticated;
+  }
+
+  /**
+   * Mise à jour du profil utilisateur
+   */
+  updateUserProfile(userData: Partial<User>): Observable<User> {
+    return this.http.put<User>(`${this.API_URL}/auth/update-profile`, userData).pipe(
+      tap((updatedUser: User) => {
+        if (updatedUser && this.currentUser) {
+          // Mettre à jour l'utilisateur dans l'état d'authentification
+          const updatedState: AuthState = {
+            ...this.currentAuthState,
+            user: {
+              ...this.currentUser,
+              ...updatedUser
+            }
+          };
+          
+          // Sauvegarder l'état d'authentification mis à jour
+          this.saveAuthState(updatedState);
+        }
+      })
+    );
   }
 }
-
-// N'oubliez pas d'ajouter ces imports en haut du fichier
-import { delay, switchMap } from 'rxjs/operators';
