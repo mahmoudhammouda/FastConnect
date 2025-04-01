@@ -4,8 +4,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { ModalService } from '../../../services/modal.service';
-import { EmailAuthCredentials, LinkedInProfile } from '../../../models/user.model';
-import { SocialAuthService, GoogleLoginProvider } from '@abacritt/angularx-social-login';
+import { EmailAuthCredentials } from '../../../models/user.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -20,14 +19,13 @@ export class LoginComponent implements OnInit {
   isLoading = false;
   loginError: string | null = null;
   rememberMe = false;
-  loginMode: 'email' | 'social' = 'email'; // Mode de connexion par défaut
+  loginMode: 'email' = 'email';
 
   constructor(
     private authService: AuthService, 
     private router: Router,
     private fb: FormBuilder,
-    public modalService: ModalService, // Changé de private à public pour l'accès depuis le template
-    private socialAuthService: SocialAuthService
+    public modalService: ModalService // Changé de private à public pour l'accès depuis le template
   ) { }
 
   ngOnInit(): void {
@@ -36,38 +34,6 @@ export class LoginComponent implements OnInit {
       username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       rememberMe: [false]
-    });
-
-    // S'abonner aux événements d'authentification social
-    this.socialAuthService.authState.subscribe(user => {
-      if (user) {
-        // Convertir les données de l'utilisateur Google au format attendu par votre API
-        const profile: LinkedInProfile = {
-          email: user.email,
-          linkedInToken: user.idToken || '', // Pour le moment on utilise le token Google
-          firstName: user.firstName,
-          lastName: user.lastName,
-          profileUrl: user.response?.profile_url || '',
-          pictureUrl: user.photoUrl
-        };
-
-        this.isLoading = true;
-        // Comme loginWithSocialMedia n'existe pas, utilisons loginWithEmail à la place pour le moment
-        // À remplacer une fois que vous aurez implémenté loginWithSocialMedia dans AuthService
-        this.authService.loginWithEmail({
-          email: profile.email,
-          password: 'defaultPassword', // À modifier selon votre besoin
-          rememberMe: true
-        }).subscribe({
-          next: () => {
-            this.isLoading = false;
-            this.closeModal();
-          },
-          error: (error: HttpErrorResponse) => {
-            this.handleLoginError(error);
-          }
-        });
-      }
     });
   }
 
@@ -96,10 +62,6 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  signInWithGoogle(): void {
-    this.socialAuthService.signIn(GoogleLoginProvider.PROVIDER_ID);
-  }
-
   closeModal(): void {
     this.modalService.closeLoginModal();
     this.resetForm();
@@ -113,11 +75,6 @@ export class LoginComponent implements OnInit {
     });
     this.loginError = null;
     this.isLoading = false;
-  }
-
-  switchLoginMode(mode: 'email' | 'social'): void {
-    this.loginMode = mode;
-    this.loginError = null;
   }
 
   private handleLoginError(error: HttpErrorResponse): void {
