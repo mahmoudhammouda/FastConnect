@@ -1,0 +1,191 @@
+<div class="flex flex-col h-full w-full overflow-y-auto p-6">
+  <div *ngIf="!currentUser" class="flex justify-center items-center h-full">
+    <div class="text-center">
+      <div class="text-gray-500 mb-4">
+        <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+        </svg>
+      </div>
+      <h3 class="text-lg font-medium text-gray-900">Connectez-vous pour accéder à votre profil</h3>
+      <p class="mt-1 text-sm text-gray-500">Vous devez être connecté pour voir votre profil.</p>
+      <div class="mt-6">
+        <a routerLink="/login" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Connexion
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="currentUser" class="max-w-3xl mx-auto w-full">
+    <!-- En-tête -->
+    <div class="pb-5 border-b border-gray-200 sm:flex sm:items-center sm:justify-between">
+      <h3 class="text-lg leading-6 font-medium text-gray-900 flex items-center">
+        <span class="mr-2">Mon Profil</span>
+        <span *ngIf="successMessage" class="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+          <svg class="-ml-0.5 mr-1.5 h-2 w-2 text-green-400" fill="currentColor" viewBox="0 0 8 8">
+            <circle cx="4" cy="4" r="3" />
+          </svg>
+          Mis à jour
+        </span>
+      </h3>
+      <div class="mt-3 sm:mt-0 sm:ml-4">
+        <button *ngIf="!isEditing" (click)="enableEditMode()" type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+          </svg>
+          Modifier
+        </button>
+      </div>
+    </div>
+
+    <!-- Messages de notification -->
+    <div *ngIf="successMessage" class="mt-4 p-4 rounded-md bg-green-50">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm font-medium text-green-800">{{ successMessage }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="errorMessage" class="mt-4 p-4 rounded-md bg-red-50">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm font-medium text-red-800">{{ errorMessage }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informations du profil -->
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg mt-5">
+      <div class="px-4 py-5 sm:px-6 bg-gray-50">
+        <h3 class="text-base font-semibold text-gray-900">Informations personnelles</h3>
+        <p class="mt-1 max-w-2xl text-sm text-gray-500">Vos informations de profil utilisateur.</p>
+      </div>
+      <div class="border-t border-gray-200">
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+          <dl>
+            <!-- Nom d'utilisateur -->
+            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt class="text-sm font-medium text-gray-500">Nom d'utilisateur</dt>
+              <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{{ currentUser.username }}</dd>
+            </div>
+
+            <!-- Prénom -->
+            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt class="text-sm font-medium text-gray-500">
+                <label for="firstName">Prénom</label>
+              </dt>
+              <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                <input 
+                  *ngIf="isEditing" 
+                  id="firstName" 
+                  type="text" 
+                  formControlName="firstName"
+                  class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                >
+                <span *ngIf="!isEditing">{{ currentUser.firstName || 'Non renseigné' }}</span>
+                <div *ngIf="isEditing && profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched" class="mt-1 text-sm text-red-600">
+                  Le prénom est requis
+                </div>
+              </dd>
+            </div>
+
+            <!-- Nom -->
+            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt class="text-sm font-medium text-gray-500">
+                <label for="lastName">Nom</label>
+              </dt>
+              <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                <input 
+                  *ngIf="isEditing" 
+                  id="lastName" 
+                  type="text" 
+                  formControlName="lastName"
+                  class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                >
+                <span *ngIf="!isEditing">{{ currentUser.lastName || 'Non renseigné' }}</span>
+                <div *ngIf="isEditing && profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched" class="mt-1 text-sm text-red-600">
+                  Le nom est requis
+                </div>
+              </dd>
+            </div>
+
+            <!-- Email -->
+            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt class="text-sm font-medium text-gray-500">
+                <label for="email">Email</label>
+              </dt>
+              <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                <input 
+                  *ngIf="isEditing" 
+                  id="email" 
+                  type="email" 
+                  formControlName="email"
+                  class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                >
+                <span *ngIf="!isEditing">{{ currentUser.email }}</span>
+                <div *ngIf="isEditing && profileForm.get('email')?.invalid && profileForm.get('email')?.touched" class="mt-1 text-sm text-red-600">
+                  <span *ngIf="profileForm.get('email')?.errors?.['required']">L'email est requis</span>
+                  <span *ngIf="profileForm.get('email')?.errors?.['email']">Format d'email invalide</span>
+                </div>
+              </dd>
+            </div>
+
+            <!-- Rôle -->
+            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt class="text-sm font-medium text-gray-500">Rôle</dt>
+              <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {{ currentUser.role === 'admin' ? 'Administrateur' : 
+                   currentUser.role === 'consultant' ? 'Consultant' :
+                   currentUser.role === 'recruiter' ? 'Recruteur' : currentUser.role }}
+              </dd>
+            </div>
+
+            <!-- État du compte -->
+            <div class="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt class="text-sm font-medium text-gray-500">État du compte</dt>
+              <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                <span *ngIf="currentUser.isActive" class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">Actif</span>
+                <span *ngIf="!currentUser.isActive" class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">Inactif</span>
+              </dd>
+            </div>
+
+            <!-- Dernière connexion -->
+            <div class="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt class="text-sm font-medium text-gray-500">Dernière connexion</dt>
+              <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {{ currentUser.lastLogin ? (currentUser.lastLogin | date:'dd/MM/yyyy HH:mm') : 'Jamais' }}
+              </dd>
+            </div>
+          </dl>
+
+          <!-- Boutons d'action (en mode édition) -->
+          <div *ngIf="isEditing" class="px-4 py-3 bg-gray-50 text-right sm:px-6 border-t border-gray-200">
+            <button type="button" (click)="cancelEdit()" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-3">
+              Annuler
+            </button>
+            <button type="submit" [disabled]="profileForm.invalid || isLoading" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              <span *ngIf="isLoading" class="mr-2">
+                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+              </span>
+              Enregistrer
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,12 +1,15 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ConsultantCardComponent } from './components/consultant-card/consultant-card.component';
 import { ConsultantListComponent } from './components/consultant-list/consultant-list.component';
+import { LoginComponent } from './components/auth/login/login.component';
+import { UserProfileComponent } from './components/user/profile/user-profile.component';
+import { AuthInterceptor } from './services/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -16,11 +19,18 @@ import { ConsultantListComponent } from './components/consultant-list/consultant
     BrowserModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     AppRoutingModule,
+    // Composants standalone
     ConsultantCardComponent,
-    ConsultantListComponent
+    ConsultantListComponent,
+    LoginComponent,
+    UserProfileComponent
   ],
-  providers: [],
+  providers: [
+    // Intercepteur HTTP pour ajouter le token à toutes les requêtes
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
