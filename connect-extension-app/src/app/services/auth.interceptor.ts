@@ -4,10 +4,11 @@ import {
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
-  HttpErrorResponse
+  HttpErrorResponse,
+  HttpResponse
 } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { catchError, filter, switchMap, take, finalize } from 'rxjs/operators';
+import { catchError, filter, switchMap, take, finalize, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
 /**
@@ -27,9 +28,44 @@ export class AuthInterceptor implements HttpInterceptor {
    * @returns Observable de l'événement HTTP
    */
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    // Log la requête HTTP
+    console.log(`API Request:`, {
+      method: request.method,
+      url: request.url,
+      headers: request.headers.keys().map(key => `${key}: ${request.headers.get(key)}`),
+      body: request.body
+    });
+    
+    // Calcul du temps d'envoi de la requête
+    const startTime = Date.now();
+    
     // Vérifier si la requête doit éviter l'ajout du token
     if (this.shouldSkipAuthHeader(request)) {
-      return next.handle(request);
+      return next.handle(request).pipe(
+        tap(event => {
+          if (event instanceof HttpResponse) {
+            // Log la réponse HTTP
+            const endTime = Date.now();
+            console.log(`API Response (${endTime - startTime}ms):`, {
+              url: request.url,
+              status: event.status,
+              statusText: event.statusText,
+              body: event.body
+            });
+          }
+        }),
+        catchError(error => {
+          // Log l'erreur HTTP
+          const endTime = Date.now();
+          console.error(`API Error (${endTime - startTime}ms):`, {
+            url: request.url,
+            error: error.message,
+            status: error.status,
+            statusText: error.statusText
+          });
+          return throwError(() => error);
+        })
+      );
     }
 
     // Récupérer le token JWT actuel
@@ -42,7 +78,28 @@ export class AuthInterceptor implements HttpInterceptor {
 
     // Traiter la requête
     return next.handle(request).pipe(
+      tap(event => {
+        if (event instanceof HttpResponse) {
+          // Log la réponse HTTP
+          const endTime = Date.now();
+          console.log(`API Response (${endTime - startTime}ms):`, {
+            url: request.url,
+            status: event.status,
+            statusText: event.statusText,
+            body: event.body
+          });
+        }
+      }),
       catchError(error => {
+        // Log l'erreur HTTP
+        const endTime = Date.now();
+        console.error(`API Error (${endTime - startTime}ms):`, {
+          url: request.url,
+          error: error.message,
+          status: error.status,
+          statusText: error.statusText
+        });
+        
         // Gérer les erreurs 401 (Non autorisé)
         if (error instanceof HttpErrorResponse && error.status === 401) {
           return this.handle401Error(request, next);
