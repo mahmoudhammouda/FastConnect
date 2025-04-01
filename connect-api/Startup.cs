@@ -1,4 +1,5 @@
 using ConnectExtension.Backend.Services;
+using ConnectExtension.Backend.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -119,6 +120,9 @@ namespace ConnectExtension.Backend
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FastConnect API v1"));
             }
 
+            // Middleware de logging des requêtes/réponses
+            app.UseRequestResponseLogging();
+            
             app.UseRouting();
             
             // Use CORS policy
