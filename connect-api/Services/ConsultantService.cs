@@ -53,252 +53,193 @@ namespace ConnectExtension.Backend.Services
 
         private List<Consultant> InitializeConsultants()
         {
-            var consultants = new List<Consultant>();
-            
-            // Add our existing sample consultants
-            consultants.AddRange(new List<Consultant>
-            {
-                new Consultant
-                {
-                    Id = "1001",
-                    Role = "Chef de Projet IT",
-                    LinkedinUrl = "https://www.linkedin.com/in/sample-consultant-1",
-                    Phone = "+33 6 12 34 56 78",
-                    Email = "consultant1@example.com",
-                    Locked = false,
-                    Type = "IT",
-                    Skills = new List<string> { "Agile", "Scrum", "JIRA" },
-                    Location = "Paris",
-                    Experience = ExperienceLevel.Between3And10,
-                    PhoneValidated = true,
-                    EmailValidated = true,
-                    LinkedinValidated = true,
-                    Availability = AvailabilityStatus.Available,
-                    Message = "Chef de projet IT avec 5 ans d'expérience en gestion de projets agiles. Disponible immédiatement pour missions à Paris. #agile #scrum #gestiondeprojet"
-                },
-                new Consultant
-                {
-                    Id = "1002",
-                    Role = "Développeur Full Stack",
-                    LinkedinUrl = "https://www.linkedin.com/in/sample-consultant-2",
-                    Phone = "+33 6 23 45 67 89",
-                    Email = "consultant2@example.com",
-                    Locked = false,
-                    Type = "Développement",
-                    Skills = new List<string> { "React", "Node.js", "MongoDB", "Docker" },
-                    Location = "Lyon",
-                    Experience = ExperienceLevel.MoreThan10,
-                    PhoneValidated = true,
-                    EmailValidated = true,
-                    LinkedinValidated = true,
-                    Availability = AvailabilityStatus.Soon,
-                    Message = "Développeur Full Stack avec expertise en architecture cloud et DevOps. Disponible à partir de juin pour missions en télétravail ou à Lyon. #react #nodejs #docker #aws #cloud"
-                },
-                new Consultant
-                {
-                    Id = "1003",
-                    Role = "Ingénieur DevOps",
-                    LinkedinUrl = "https://www.linkedin.com/in/sample-consultant-3",
-                    Phone = null,
-                    Email = "consultant3@example.com",
-                    Locked = true,
-                    Type = "Opérations",
-                    Skills = new List<string> { "Kubernetes", "AWS", "Terraform", "CI/CD" },
-                    Location = "Lille",
-                    Experience = ExperienceLevel.Between3And10,
-                    PhoneValidated = false,
-                    EmailValidated = true,
-                    LinkedinValidated = true,
-                    Availability = AvailabilityStatus.Unavailable,
-                    Message = "Ingénieur DevOps spécialisé en Kubernetes et infrastructures cloud. Actuellement en mission jusqu'à septembre. #kubernetes #aws #devops #cloud"
-                },
-                new Consultant
-                {
-                    Id = "1004",
-                    Role = "Développeur .NET",
-                    LinkedinUrl = "https://www.linkedin.com/in/sample-consultant-4",
-                    Phone = "+33 6 34 56 78 90",
-                    Email = "consultant4@example.com",
-                    Locked = false,
-                    Type = "Développement",
-                    Skills = new List<string> { ".NET", "C#", "Azure", "TDD" },
-                    Location = "Bordeaux",
-                    Experience = ExperienceLevel.LessThan3,
-                    PhoneValidated = true,
-                    EmailValidated = true,
-                    LinkedinValidated = true,
-                    Availability = AvailabilityStatus.Available,
-                    Message = "Développeur .NET junior passionné par les bonnes pratiques (TDD, Clean Code). Disponible immédiatement pour missions sur Bordeaux ou télétravail. #dotnet #csharp #tdd #azure"
-                },
-                new Consultant
-                {
-                    Id = "1005",
-                    Role = "Data Scientist",
-                    LinkedinUrl = "https://www.linkedin.com/in/sample-consultant-5",
-                    Phone = "+33 6 45 67 89 01",
-                    Email = "consultant5@example.com",
-                    Locked = false,
-                    Type = "Data",
-                    Skills = new List<string> { "Python", "Machine Learning", "TensorFlow", "SQL" },
-                    Location = "Toulouse",
-                    Experience = ExperienceLevel.MoreThan10,
-                    PhoneValidated = true,
-                    EmailValidated = true,
-                    LinkedinValidated = true,
-                    Availability = AvailabilityStatus.Available,
-                    Message = "Data Scientist expérimenté avec focus sur NLP et Computer Vision. Cherche missions ambitieuses sur Toulouse. #machinelearning #python #deeplearning #nlp"
-                },
-                new Consultant
-                {
-                    Id = "1006",
-                    Role = "UX/UI Designer",
-                    LinkedinUrl = "https://www.linkedin.com/in/sample-consultant-6",
-                    Phone = "+33 6 56 78 90 12",
-                    Email = null,
-                    Locked = false,
-                    Type = "Design",
-                    Skills = new List<string> { "Figma", "Adobe XD", "Sketch", "Prototyping" },
-                    Location = "Paris",
-                    Experience = ExperienceLevel.Between3And10,
-                    PhoneValidated = true,
-                    EmailValidated = false,
-                    LinkedinValidated = true,
-                    Availability = AvailabilityStatus.Soon,
-                    Message = "Designer UX/UI passionné par l'accessibilité et l'expérience utilisateur. Disponible en mai pour nouveaux projets. #ux #ui #figma #design #prototype"
-                }
-            });
-            
-            // Generate additional consultants to reach 50 total
+            // Données pour la génération de consultants
             var roles = new string[] { 
-                "Développeur Frontend", "Développeur Backend", "DevOps Engineer", "Product Owner", 
-                "Scrum Master", "UI Designer", "UX Researcher", "Data Engineer", "QA Engineer", 
-                "Mobile Developer", "Architect Logiciel", "Consultant ERP", "Administrateur Système",
+                "Développeur Full Stack", "Data Scientist", "DevOps Engineer", "UX/UI Designer", 
+                "Product Manager", "Architecte Logiciel", "Mobile Developer", "Frontend Developer", 
+                "Backend Developer", "SRE/Cloud Engineer", "Développeur Frontend", "Développeur Backend",
+                "Product Owner", "Scrum Master", "UI Designer", "UX Researcher", "Data Engineer", 
+                "QA Engineer", "Architect Logiciel", "Consultant ERP", "Administrateur Système",
                 "Architecte Cloud", "Data Analyst", "Expert Sécurité", "Network Engineer"
             };
             
-            var skills = new Dictionary<string, string[]> {
-                { "Développeur Frontend", new string[] { "JavaScript", "React", "Vue.js", "Angular", "CSS", "Responsive Design", "Tailwind", "TypeScript", "Webpack" } },
-                { "Développeur Backend", new string[] { "Java", "C#", "Python", "Node.js", "PHP", "Ruby", "Go", "SQL", "NoSQL", "Microservices", "REST API" } },
-                { "DevOps Engineer", new string[] { "Docker", "Kubernetes", "CI/CD", "Jenkins", "Terraform", "AWS", "Azure", "GCP", "Monitoring", "Ansible" } },
-                { "Product Owner", new string[] { "Agile", "Scrum", "User Stories", "Backlog Management", "JIRA", "Confluence", "Stakeholder Management" } },
-                { "Scrum Master", new string[] { "Agile", "Scrum", "Kanban", "Facilitation", "JIRA", "Conflict Resolution", "Coaching" } },
-                { "UI Designer", new string[] { "Figma", "Adobe XD", "Sketch", "Design Systems", "Typography", "Color Theory", "Prototyping" } },
-                { "UX Researcher", new string[] { "User Testing", "Interviews", "Surveys", "Personas", "Journey Mapping", "Analytics", "Wireframing" } },
-                { "Data Engineer", new string[] { "Python", "SQL", "ETL", "Spark", "Hadoop", "Data Warehousing", "Kafka", "Airflow" } },
-                { "QA Engineer", new string[] { "Test Automation", "Selenium", "Cypress", "Manual Testing", "Test Plans", "JIRA", "QA Processes" } },
-                { "Mobile Developer", new string[] { "iOS", "Android", "Swift", "Kotlin", "React Native", "Flutter", "Mobile UI/UX", "Firebase" } },
-                { "Architect Logiciel", new string[] { "System Design", "Microservices", "Design Patterns", "SOA", "Distributed Systems", "Cloud Architecture" } },
-                { "Consultant ERP", new string[] { "SAP", "Oracle", "Microsoft Dynamics", "Business Process", "Requirements Analysis" } },
-                { "Administrateur Système", new string[] { "Linux", "Windows Server", "Bash Scripting", "PowerShell", "Monitoring", "Security", "Backup" } },
-                { "Architecte Cloud", new string[] { "AWS", "Azure", "GCP", "Cloud Security", "IaC", "Serverless", "Containers", "Cost Optimization" } },
-                { "Data Analyst", new string[] { "SQL", "Python", "R", "PowerBI", "Tableau", "Excel", "Data Visualization", "Statistics" } },
-                { "Expert Sécurité", new string[] { "Pentesting", "SIEM", "Threat Analysis", "ISO 27001", "OWASP", "Security Audits", "Network Security" } },
-                { "Network Engineer", new string[] { "Routing", "Switching", "Firewalls", "VPN", "SD-WAN", "Network Monitoring", "TCP/IP", "Cisco" } }
+            var types = new string[] { "Freelance", "Salarié", "Consultant" };
+            
+            var locations = new string[] { 
+                "Paris", "Lyon", "Marseille", "Toulouse", "Bordeaux", "Lille", "Nantes", 
+                "Strasbourg", "Remote", "Hybride", "Full-Remote", "Luxembourg", "Bruxelles" 
             };
             
-            var locations = new string[] { "Paris", "Lyon", "Marseille", "Bordeaux", "Lille", "Toulouse", "Nantes", "Strasbourg", "Nice", "Rennes" };
-            var types = new string[] { "Développement", "IT", "Opérations", "Produit", "Design", "Data", "Qualité", "Sécurité", "Infrastructure" };
-            var experiences = new ExperienceLevel[] { ExperienceLevel.LessThan3, ExperienceLevel.Between3And10, ExperienceLevel.MoreThan10 };
-            var availabilities = new AvailabilityStatus[] { AvailabilityStatus.Available, AvailabilityStatus.Soon, AvailabilityStatus.Unavailable };
+            var experiences = new ExperienceLevel[] { 
+                ExperienceLevel.LessThan3, 
+                ExperienceLevel.Between3And10, 
+                ExperienceLevel.MoreThan10 
+            };
+            
+            var availabilities = new AvailabilityStatus[] { 
+                AvailabilityStatus.Available, 
+                AvailabilityStatus.Soon, 
+                AvailabilityStatus.Unavailable 
+            };
+            
+            // Entreprises pour les expériences professionnelles
+            var companies = new string[] {
+                "Accenture", "Capgemini", "Sopra Steria", "SNCF", "Orange", "Total", "BNP Paribas", 
+                "Société Générale", "Crédit Agricole", "AXA", "Engie", "EDF", "L'Oréal", "Carrefour", 
+                "Google", "Microsoft", "Amazon", "Apple", "Facebook", "Twitter", "Airbnb", "Uber", 
+                "Doctolib", "Deezer", "Blablacar", "OVH", "Thales", "Atos", "IBM", "HP", "Dell", 
+                "Allianz", "Axa", "MAIF", "La Poste", "Air France", "RATP", "SNCF"
+            };
+            
+            var skillsPool = new string[] {
+                "JavaScript", "TypeScript", "Angular", "React", "Vue.js", "Node.js", "Python", "Java", "C#", ".NET",
+                "AWS", "Azure", "GCP", "Docker", "Kubernetes", "CI/CD", "Jenkins", "Git", "GitHub Actions",
+                "SQL", "NoSQL", "MongoDB", "PostgreSQL", "MySQL", "Oracle", "Redis",
+                "HTML", "CSS", "SASS", "LESS", "Tailwind CSS", "Bootstrap", "Material Design",
+                "REST API", "GraphQL", "gRPC", "WebSockets", "Microservices", "Serverless",
+                "Agile", "Scrum", "Kanban", "Jira", "Confluence", "TDD", "BDD", "DDD",
+                "Machine Learning", "AI", "Deep Learning", "NLP", "Computer Vision", "Data Analysis",
+                "Mobile", "iOS", "Android", "Kotlin", "Swift", "React Native", "Flutter"
+            };
+            
+            // Domaines d'expertise spécifiques 
+            var expertiseDomains = new string[] {
+                "Architecture logicielle", "Cybersécurité", "Cloud computing", "DevOps", "FinTech", 
+                "E-commerce", "Santé", "Transport", "Énergie", "Télécommunications", "Médias", 
+                "Éducation", "Retail", "Industrie 4.0", "Smart City", "IoT", "Blockchain", 
+                "Intelligence artificielle", "Big Data", "Réalité virtuelle", "Réalité augmentée", 
+                "User experience", "Accessibilité", "Sécurité des données", "Protection de la vie privée",
+                "Transformation digitale", "Innovation", "Conduite du changement", "Agilité à l'échelle", 
+                "Performance web", "Mobile first", "Progressive Web Apps", "Microservices"
+            };
+            
+            // Secteurs d'activité
+            var activitySectors = new string[] {
+                "Banque & Finance", "Assurance", "Santé", "Pharmaceutique", "Luxe", 
+                "Commerce de détail", "Transport & Logistique", "Aéronautique", "Automobile", 
+                "Télécommunications", "Média & Divertissement", "Énergie", "Industrie manufacturière", 
+                "Services publics", "Défense", "Éducation", "Agroalimentaire", "Hôtellerie & Restauration", 
+                "Immobilier", "Construction", "High-Tech", "Environnement & Développement durable", 
+                "Tourisme", "Sport", "Mode & Textile", "Conseil", "E-commerce"
+            };
+
+            var messages = new string[] {
+                "Bonjour,\n\nJe suis disponible pour des missions de conseil en architecture de systèmes distribués et infrastructures cloud.\n\nMon expertise :\n- Expérience approfondie avec AWS, GCP et Azure\n- Spécialiste en migration vers le cloud\n- Optimisation des coûts d'infrastructure\n\nJ'ai aidé plus de 15 entreprises à réduire leurs coûts cloud de 30% en moyenne tout en améliorant la performance et la fiabilité de leurs systèmes.\n\nÀ l'écoute de nouvelles opportunités dès maintenant.",
+                
+                "Bonjour,\n\nExpert en solutions #cloud et #cybersécurité, je suis passionné par les technologies émergentes et la sécurisation des infrastructures critiques.\n\nProfil :\n- +10 ans d'expérience en sécurité des SI\n- Certifications CISSP et AWS Security Specialist\n- Spécialiste des normes ISO27001 et RGPD\n\nRécemment, j'ai dirigé des audits de sécurité pour des entreprises du CAC 40 et implémenté des stratégies de défense qui ont réduit les incidents de 70% en 6 mois.",
+                
+                "Bonjour à tous,\n\nDéveloppeur full-stack avec 8 ans d'expérience en #javascript #react #nodejs, je recherche de nouveaux défis techniques.\n\nMes compétences :\n- Architecture microservices\n- Optimisation de performance\n- Certifié AWS Solutions Architect et MongoDB Developer\n\nMa dernière réalisation : refonte complète d'une plateforme e-commerce (10M+ visiteurs) avec mise en place d'une architecture JAMstack qui a amélioré les temps de chargement de 300%.",
+                
+                "Bonjour,\n\nData Scientist spécialisé #MachineLearning et #DeepLearning, je suis actuellement disponible pour des missions en remote.\n\nMon parcours :\n- PhD en Intelligence Artificielle (École Polytechnique)\n- Expert TensorFlow, PyTorch et scikit-learn\n- Spécialiste en modèles prédictifs et détection de fraudes\n\nMon projet récent : système de détection de fraude financière avec réduction des faux positifs de 60% tout en maintenant un taux de détection >95%.",
+                
+                "Bonjour,\n\nConsultant UX/UI à la recherche d'une nouvelle opportunité dans le secteur de la santé ou de l'éducation.\n\nMon expertise :\n- Portfolio de +30 projets (startups et grandes entreprises)\n- Recherche utilisateur, prototypage, tests d'utilisabilité\n- Maîtrise de Figma, Adobe XD et Sketch\n\nRécemment, j'ai dirigé la refonte UX d'une application de santé mentale (500K+ utilisateurs), améliorant la rétention de 40%.\n\nJe privilégie les projets à impact social positif.",
+                
+                "Bonjour,\n\nArchitecte logiciel expérimenté dans les environnements critiques à haute disponibilité.\n\nMes domaines d'expertise :\n- Conception de systèmes distribués\n- Traitement de données en temps réel\n- Architectures événementielles (Kafka, RabbitMQ, Apache Flink)\n\nJ'ai conçu des architectures critiques pour les secteurs bancaire et télécoms garantissant une disponibilité de 99,999%.\n\nMa spécialité : transformer des systèmes monolithiques en architectures scalables et résilientes.",
+                
+                "Bonjour,\n\nDéveloppeur mobile avec +5 ans d'expérience en développement natif et cross-platform.\n\nMes technologies :\n- React Native, Flutter\n- Kotlin, Swift\n- AR, ML on-device\n\nJ'ai publié plus de 15 applications (App Store/Google Play) totalisant des millions d'utilisateurs.\n\nProjet récent : application de fitness ayant atteint le Top 10 de sa catégorie sur l'App Store avec une note de 4,8/5 (50K+ avis).\n\nJe suis particulièrement intéressé par les projets innovants utilisant les dernières technologies mobiles.",
+                
+                "Expert en solutions DevOps et CI/CD avec une solide expérience en automatisation d'infrastructures et déploiements. Maîtrise de Kubernetes, Terraform, Ansible, Jenkins, GitHub Actions et GitLab CI. J'ai mis en place des pipelines CI/CD robustes pour des équipes de développement de toutes tailles, réduisant les temps de déploiement de plusieurs heures à quelques minutes. #docker #kubernetes #automation #gitops #terraform #IaC",
+                
+                "Ingénieur backend passionné par les API performantes et les architectures scalables. Expertise en Java, Spring Boot, Quarkus et microservices. J'ai conçu et implémenté des systèmes capables de traiter des milliers de transactions par seconde avec une latence minimale. Expérience en optimisation de bases de données relationnelles et NoSQL. #java #spring #microservices #performance #scalability #databases",
+                
+                "Product Manager orienté données avec background technique en développement et analyse de données. J'ai dirigé le développement de produits SaaS B2B dans les secteurs de la finance et du marketing, en mettant l'accent sur l'expérience utilisateur et l'exploitation des données pour la prise de décision. Certifié Scrum Product Owner et Google Analytics. #produit #analytics #agile #saas #b2b #finance",
+                
+                "Spécialiste en cybersécurité pour applications cloud avec expertise en sécurisation d'environnements AWS, Azure et GCP. Expérience en tests d'intrusion, analyse de vulnérabilités et réponse aux incidents. J'ai aidé plusieurs entreprises à obtenir des certifications de sécurité (ISO27001, SOC2) et à mettre en place des pratiques de DevSecOps. Certifié CEH, OSCP et AWS Security Specialist. #security #pentesting #devsecops #cloud #compliance #certification",
+                
+                "Consultant en transformation digitale pour le secteur financier avec plus de 12 ans d'expérience. J'accompagne les banques et assurances dans leur modernisation technologique et organisationnelle. Expertise en optimisation de processus, adoption de méthodologies agiles et mise en place de plateformes API. Ancien directeur technique dans une grande banque européenne. #fintech #agile #transformation #banking #insurance #api",
+                
+                "Développeur .NET avec forte expertise Azure et plus de 7 ans d'expérience en développement d'applications d'entreprise. Spécialiste ASP.NET Core, Entity Framework, Azure Functions et Azure DevOps. J'ai conçu et implémenté des systèmes critiques pour des clients dans les secteurs de la santé, de la finance et de l'industrie. Microsoft Certified Azure Developer Associate. #csharp #dotnet #azure #cloud #microsoft #enterprise",
+                
+                "Expert en solutions BigData et DataLakes avec expérience approfondie en conception et implémentation d'architectures de traitement de données à grande échelle. Maîtrise de Hadoop, Spark, Databricks, Snowflake et les services AWS/Azure pour le Big Data. J'ai dirigé des projets de migration vers le cloud et d'implémentation de solutions data pour de grandes entreprises internationales. #hadoop #spark #databricks #bigdata #datalake #cloud",
+                
+                "Consultant en accessibilité web et mobile avec 6 ans d'expérience dans la conception et l'audit d'interfaces inclusives. Je travaille avec les équipes produit et développement pour garantir la conformité aux normes WCAG et l'inclusion de tous les utilisateurs. J'ai réalisé plus de 50 audits d'accessibilité et formé des équipes aux bonnes pratiques. Défenseur de l'inclusion numérique et intervenant régulier dans des conférences sur l'accessibilité. #a11y #inclusion #wcag #ux"
+            };
             
             var random = new Random(42); // Fixed seed for reproducible results
+            var consultants = new List<Consultant>();
             
-            for (int i = 0; i < 44; i++) // Generate 44 more consultants to reach 50 total
+            for (int i = 0; i < 50; i++)
             {
+                // Sélection des données de base
                 var role = roles[random.Next(roles.Length)];
-                var location = locations[random.Next(locations.Length)];
                 var type = types[random.Next(types.Length)];
+                var location = locations[random.Next(locations.Length)];
                 var experience = experiences[random.Next(experiences.Length)];
                 var availability = availabilities[random.Next(availabilities.Length)];
-                var locked = random.Next(10) < 1; // 10% chance of being locked
+                var message = messages[random.Next(messages.Length)];
                 
-                // Select 2-5 random skills from the corresponding role
-                var roleSkills = skills[role];
+                // Sélection de compétences aléatoires (4-8)
+                var skillCount = random.Next(4, 9);
                 var selectedSkills = new List<string>();
-                var skillCount = random.Next(2, Math.Min(6, roleSkills.Length));
-                
-                var shuffledIndices = Enumerable.Range(0, roleSkills.Length).OrderBy(x => random.Next()).Take(skillCount).ToList();
-                foreach (var index in shuffledIndices)
+                var shuffledSkillIndices = Enumerable.Range(0, skillsPool.Length).OrderBy(x => random.Next()).Take(skillCount).ToList();
+                foreach (var index in shuffledSkillIndices)
                 {
-                    selectedSkills.Add(roleSkills[index]);
+                    selectedSkills.Add(skillsPool[index]);
                 }
                 
-                // Generate a message with hashtags
-                var message = GenerateConsultantMessage(role, location, availability, selectedSkills, random);
+                // Sélection d'expertises aléatoires (2-4)
+                var expertiseCount = random.Next(2, 5);
+                var selectedExpertises = new List<string>();
+                var shuffledExpertiseIndices = Enumerable.Range(0, expertiseDomains.Length).OrderBy(x => random.Next()).Take(expertiseCount).ToList();
+                foreach (var index in shuffledExpertiseIndices)
+                {
+                    selectedExpertises.Add(expertiseDomains[index]);
+                }
+                
+                // Sélection de secteurs aléatoires (1-3)
+                var sectorCount = random.Next(1, 4);
+                var selectedSectors = new List<string>();
+                var shuffledSectorIndices = Enumerable.Range(0, activitySectors.Length).OrderBy(x => random.Next()).Take(sectorCount).ToList();
+                foreach (var index in shuffledSectorIndices)
+                {
+                    selectedSectors.Add(activitySectors[index]);
+                }
+                
+                // Génération d'expériences professionnelles (1-3)
+                var experienceCount = random.Next(1, 4);
+                var selectedExperiences = new List<Experience>();
+                for (int j = 0; j < experienceCount; j++)
+                {
+                    var company = companies[random.Next(companies.Length)];
+                    var experienceRole = j == 0 ? role : roles[random.Next(roles.Length)];
+                    var isCurrent = j == 0 && random.Next(2) == 0; // 50% chance for the first experience to be current
+                    
+                    selectedExperiences.Add(new Experience
+                    {
+                        Role = experienceRole,
+                        Company = company,
+                        IsCurrent = isCurrent
+                    });
+                }
                 
                 var hasPhone = random.Next(10) < 8; // 80% chance of having a phone
                 var hasEmail = random.Next(10) < 9; // 90% chance of having an email
+                var locked = random.Next(10) < 2; // 20% chance of being locked
                 
                 consultants.Add(new Consultant
                 {
-                    Id = (1007 + i).ToString(),
+                    Id = (1000 + i).ToString(),
                     Role = role,
-                    LinkedinUrl = $"https://www.linkedin.com/in/sample-consultant-{1007 + i}",
+                    LinkedinUrl = $"https://www.linkedin.com/in/consultant-{1000 + i}",
                     Phone = hasPhone ? $"+33 {random.Next(6, 8)} {random.Next(10, 100)} {random.Next(10, 100)} {random.Next(10, 100)}" : null,
-                    Email = hasEmail ? $"consultant{1007 + i}@example.com" : null,
+                    Email = hasEmail ? $"consultant{1000 + i}@example.com" : null,
                     Locked = locked,
                     Type = type,
                     Skills = selectedSkills,
                     Location = location,
                     Experience = experience,
-                    PhoneValidated = hasPhone && random.Next(10) < 9, // 90% of phones are validated if present
-                    EmailValidated = hasEmail && random.Next(10) < 9, // 90% of emails are validated if present
-                    LinkedinValidated = random.Next(10) < 9, // 90% of LinkedIn profiles are validated
+                    PhoneValidated = hasPhone && random.Next(10) < 8, // 80% of phones are validated if present
+                    EmailValidated = hasEmail && random.Next(10) < 8, // 80% of emails are validated if present
+                    LinkedinValidated = random.Next(10) < 8, // 80% of LinkedIn profiles are validated
                     Availability = availability,
-                    Message = message
+                    Message = message,
+                    Experiences = selectedExperiences,
+                    Expertises = selectedExpertises,
+                    Sectors = selectedSectors
                 });
             }
             
             return consultants;
-        }
-        
-        private string GenerateConsultantMessage(string role, string location, AvailabilityStatus availability, List<string> skills, Random random)
-        {
-            var experienceYears = random.Next(1, 16);
-            var availabilityText = availability == AvailabilityStatus.Available 
-                ? "Disponible immédiatement" 
-                : availability == AvailabilityStatus.Soon 
-                    ? $"Disponible à partir de {GetRandomMonth()}" 
-                    : "Actuellement en mission";
-                    
-            var missionType = random.Next(3) switch
-            {
-                0 => $"missions sur {location}",
-                1 => "missions en télétravail",
-                _ => $"missions sur {location} ou en télétravail"
-            };
-            
-            var specialization = random.Next(3) switch
-            {
-                0 => $"spécialisé en {skills[0]}",
-                1 => skills.Count > 1 ? $"avec expertise en {skills[0]} et {skills[1]}" : $"spécialisé en {skills[0]}",
-                _ => ""
-            };
-            
-            var message = $"{role} {specialization} avec {experienceYears} ans d'expérience. {availabilityText} pour {missionType}.";
-            
-            // Add hashtags
-            var hashtags = new List<string>();
-            foreach (var skill in skills)
-            {
-                var hashtag = "#" + skill.ToLower().Replace(".", "").Replace("/", "").Replace(" ", "").Replace("-", "");
-                hashtags.Add(hashtag);
-            }
-            
-            if (random.Next(2) == 0) // 50% chance to add location hashtag
-            {
-                hashtags.Add("#" + location.ToLower());
-            }
-            
-            message += " " + string.Join(" ", hashtags);
-            
-            return message;
-        }
-        
-        private string GetRandomMonth()
-        {
-            var months = new string[] { "janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre" };
-            return months[new Random().Next(months.Length)];
         }
     }
 }

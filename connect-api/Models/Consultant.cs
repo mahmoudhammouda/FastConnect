@@ -16,6 +16,13 @@ namespace ConnectExtension.Backend.Models
         Unavailable
     }
 
+    public class Experience
+    {
+        public string Role { get; set; }
+        public string Company { get; set; }
+        public bool IsCurrent { get; set; }
+    }
+
     public class Consultant
     {
         public string Id { get; set; }
@@ -33,5 +40,8 @@ namespace ConnectExtension.Backend.Models
         public bool LinkedinValidated { get; set; }
         public AvailabilityStatus Availability { get; set; }
         public string Message { get; set; }
+        public List<Experience> Experiences { get; set; } = new List<Experience>();
+        public List<string> Expertises { get; set; } = new List<string>();
+        public List<string> Sectors { get; set; } = new List<string>();
     }
 }

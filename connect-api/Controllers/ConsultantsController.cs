@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using ConnectExtension.Backend.Models;
 using ConnectExtension.Backend.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ConnectExtension.Backend.Controllers
 {
@@ -10,16 +11,19 @@ namespace ConnectExtension.Backend.Controllers
     public class ConsultantsController : ControllerBase
     {
         private readonly IConsultantService _consultantService;
+        private readonly ILogger<ConsultantsController> _logger;
 
-        public ConsultantsController(IConsultantService consultantService)
+        public ConsultantsController(IConsultantService consultantService, ILogger<ConsultantsController> logger)
         {
             _consultantService = consultantService;
+            _logger = logger;
         }
 
         // GET: api/consultants
         [HttpGet]
         public ActionResult<IEnumerable<Consultant>> GetAllConsultants()
         {
+            _logger.LogInformation("Récupération de tous les consultants");
             return Ok(_consultantService.GetAllConsultants());
         }
         
@@ -29,9 +33,11 @@ namespace ConnectExtension.Backend.Controllers
         {
             if (page < 1 || pageSize < 1)
             {
+                _logger.LogWarning("Tentative d'accès avec des paramètres de pagination invalides: page={Page}, pageSize={PageSize}", page, pageSize);
                 return BadRequest("Page and pageSize must be greater than 0");
             }
             
+            _logger.LogInformation("Récupération des consultants paginés: page={Page}, pageSize={PageSize}", page, pageSize);
             return Ok(_consultantService.GetPagedConsultants(page, pageSize));
         }
 
@@ -39,10 +45,12 @@ namespace ConnectExtension.Backend.Controllers
         [HttpGet("{id}")]
         public ActionResult<Consultant> GetConsultantById(string id)
         {
+            _logger.LogInformation("Récupération du consultant avec l'ID: {Id}", id);
             var consultant = _consultantService.GetConsultantById(id);
             
             if (consultant == null)
             {
+                _logger.LogWarning("Consultant non trouvé avec l'ID: {Id}", id);
                 return NotFound();
             }
             
@@ -55,10 +63,12 @@ namespace ConnectExtension.Backend.Controllers
         {
             if (string.IsNullOrWhiteSpace(skills))
             {
+                _logger.LogWarning("Tentative de recherche par compétences sans spécifier de compétences");
                 return BadRequest("At least one skill must be provided");
             }
             
             var skillsList = skills.Split(',');
+            _logger.LogInformation("Recherche de consultants avec les compétences: {Skills}", skills);
             return Ok(_consultantService.GetConsultantsBySkills(new List<string>(skillsList)));
         }
 
@@ -68,9 +78,11 @@ namespace ConnectExtension.Backend.Controllers
         {
             if (string.IsNullOrWhiteSpace(availability) || !TryParseAvailability(availability, out AvailabilityStatus status))
             {
+                _logger.LogWarning("Tentative de recherche par disponibilité avec une valeur invalide: {Availability}", availability);
                 return BadRequest("Invalid availability status");
             }
             
+            _logger.LogInformation("Recherche de consultants avec disponibilité: {Availability}", availability);
             return Ok(_consultantService.GetConsultantsByAvailability(status));
         }
 
@@ -80,9 +92,11 @@ namespace ConnectExtension.Backend.Controllers
         {
             if (string.IsNullOrWhiteSpace(experience) || !TryParseExperience(experience, out ExperienceLevel level))
             {
+                _logger.LogWarning("Tentative de recherche par expérience avec une valeur invalide: {Experience}", experience);
                 return BadRequest("Invalid experience level");
             }
             
+            _logger.LogInformation("Recherche de consultants avec niveau d'expérience: {Experience}", experience);
             return Ok(_consultantService.GetConsultantsByExperience(level));
         }
 
