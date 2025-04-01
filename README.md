@@ -154,6 +154,16 @@ Pour plus de commodité, des scripts spécifiques à chaque plateforme sont éga
 2. Le panneau latéral s'ouvrira, affichant la liste des consultants
 3. Utiliser les filtres pour trouver les consultants selon vos critères
 
+## Comptes de test
+
+Les comptes de test suivants sont disponibles pour se connecter à l'application :
+
+| Email | Mot de passe | Rôle |
+|-------|-------------|------|
+| admin@fastconnect.com | admin123 | Administrateur |
+| consultant@fastconnect.com | consultant123 | Consultant |
+| recruiter@fastconnect.com | recruiter123 | Recruteur |
+
 ## Fonctionnalités
 
 - Affichage des consultants disponibles
