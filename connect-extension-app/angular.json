@@ -57,15 +57,15 @@
           "options": {
             "port": 5000,
             "host": "0.0.0.0",
-            "buildTarget": "angular-app:build",
+            "browserTarget": "angular-app:build",
             "proxyConfig": "proxy.conf.json"
           },
           "configurations": {
             "production": {
-              "buildTarget": "angular-app:build:production"
+              "browserTarget": "angular-app:build:production"
             },
             "development": {
-              "buildTarget": "angular-app:build:development"
+              "browserTarget": "angular-app:build:development"
             }
           },
           "defaultConfiguration": "development"

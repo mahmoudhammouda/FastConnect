@@ -180,9 +180,92 @@ public class ConsultantsController : ControllerBase
 }
 ```
 
+### Problème 8: Erreur de connexion ECONNREFUSED dans Angular lors des appels à l'API
+**Problème**: L'application Angular n'arrivait pas à communiquer avec l'API backend malgré la configuration du proxy, générant des erreurs ECONNREFUSED.
+
+**Solution**:
+- Modification des options de démarrage de l'application Angular dans le script `start` de `package.json`:
+
+```javascript
+// Avant
+"start": "ng serve --proxy-config proxy.conf.json"
+
+// Après
+"start": "ng serve --host localhost --disable-host-check --proxy-config proxy.conf.json"
+```
+
+Les modifications clés qui ont résolu le problème sont:
+1. `--host localhost` : Spécification explicite du nom d'hôte au lieu d'utiliser l'adresse 0.0.0.0 par défaut qui écoute sur toutes les interfaces.
+2. `--disable-host-check` : Désactivation de la vérification d'hôte qui pouvait empêcher certaines requêtes proxy.
+
+Cette configuration a permis de résoudre les problèmes de proxy, comme en témoignent les logs du serveur backend qui montrent des requêtes réussies:
+
+```
+2025-04-01 23:09:45 [INFO] Request starting HTTP/1.1 GET http://127.0.0.1:8000/api/consultants
+2025-04-01 23:09:45 [INFO] Executing endpoint 'ConnectExtension.Backend.Controllers.ConsultantsController.GetAllConsultants'
+2025-04-01 23:09:45 [INFO] Executed action ConnectExtension.Backend.Controllers.ConsultantsController.GetAllConsultants in 6.0203ms
+2025-04-01 23:09:45 [INFO] Réponse: StatusCode 200
+```
+
+### Problème 9: Test de connectivité à l'API difficile
+**Problème**: Il était difficile de déterminer si les problèmes venaient de l'application Angular ou de l'API backend elle-même.
+
+**Solution**:
+- Création d'un script de test JavaScript simple (`test-api.js`) pour vérifier directement la connectivité avec l'API:
+
+```javascript
+// test-api.js
+const http = require('http');
+
+const options = {
+  hostname: '127.0.0.1',
+  port: 8000,
+  path: '/api/consultants',
+  method: 'GET'
+};
+
+console.log('Test de connexion à l\'API...');
+console.log(`URL testée: http://${options.hostname}:${options.port}${options.path}`);
+
+const req = http.request(options, (res) => {
+  console.log(`Code de statut: ${res.statusCode}`);
+  
+  let data = '';
+  res.on('data', (chunk) => {
+    data += chunk;
+  });
+  
+  res.on('end', () => {
+    if (data) {
+      try {
+        const parsedData = JSON.parse(data);
+        console.log('Réponse reçue (premiers éléments) :');
+        console.log(JSON.stringify(parsedData.slice(0, 2), null, 2));
+      } catch (e) {
+        console.log('Réponse reçue (non JSON) :');
+        console.log(data.substring(0, 200) + '...');
+      }
+    } else {
+      console.log('Aucune donnée reçue');
+    }
+  });
+});
+
+req.on('error', (e) => {
+  console.error(`Erreur : ${e.message}`);
+  if (e.code === 'ECONNREFUSED') {
+    console.error('Le serveur backend n\'est pas accessible à l\'adresse spécifiée.');
+  }
+});
+
+req.end();
+```
+
+Cette approche a permis d'isoler les problèmes de connectivité et de confirmer que l'API backend était bien accessible sur l'adresse 127.0.0.1:8000.
+
 ## Problèmes de gestion des données
 
-### Problème 8: Modèle de données incomplet
+### Problème 10: Modèle de données incomplet
 **Problème**: Le modèle Consultant dans l'API backend n'incluait pas tous les champs nécessaires qui étaient présents dans le modèle frontend.
 
 **Solution**:
@@ -218,7 +301,7 @@ public class Experience
 }
 ```
 
-### Problème 9: Données mockées vs API
+### Problème 11: Données mockées vs API
 **Problème**: À l'origine, les données des consultants étaient générées côté frontend, mais il fallait passer à des données fournies par l'API.
 
 **Solution**:
@@ -259,7 +342,7 @@ private List<Consultant> InitializeConsultants()
 }
 ```
 
-### Problème 10: Mapping des types énumérés
+### Problème 12: Mapping des types énumérés
 **Problème**: Les énumérations utilisées dans le backend .NET (ExperienceLevel, AvailabilityStatus) ne correspondaient pas exactement à leurs équivalents TypeScript.
 
 **Solution**:
@@ -295,7 +378,7 @@ private mapAvailabilityStatus(backendValue: string): AvailabilityStatus {
 
 ## Problèmes d'authentification
 
-### Problème 11: Intégration de l'authentification LinkedIn
+### Problème 13: Intégration de l'authentification LinkedIn
 **Problème**: Une exigence était d'utiliser l'authentification LinkedIn comme méthode principale, mais l'implémentation était complexe en raison des spécificités de l'API LinkedIn et du contexte d'une extension Chrome.
 
 **Solution**:
@@ -329,7 +412,7 @@ const socialConfig = {
 })
 ```
 
-### Problème 12: Stockage sécurisé des tokens JWT
+### Problème 14: Stockage sécurisé des tokens JWT
 **Problème**: Les tokens JWT devaient être stockés de manière sécurisée et persistante entre les sessions.
 
 **Solution**:
@@ -386,7 +469,7 @@ export class AuthService {
 }
 ```
 
-### Problème 13: Gestion des rôles utilisateur
+### Problème 15: Gestion des rôles utilisateur
 **Problème**: Les différents types d'utilisateurs (consultant, recruteur, admin) devaient avoir des accès différents dans l'application.
 
 **Solution**:
@@ -427,7 +510,7 @@ export class RoleGuard implements CanActivate {
 }
 ```
 
-### Problème 14: Processus d'onboarding utilisateur
+### Problème 16: Processus d'onboarding utilisateur
 **Problème**: Les nouveaux utilisateurs devaient compléter un processus d'onboarding pour définir leur rôle et leurs informations de profil.
 
 **Solution**:
@@ -458,7 +541,7 @@ export class OnboardingGuard implements CanActivate {
 
 ## Problèmes d'extension Chrome
 
-### Problème 15: Intégration de l'application Angular dans une extension Chrome
+### Problème 17: Intégration de l'application Angular dans une extension Chrome
 **Problème**: L'application Angular devait fonctionner à la fois comme une application web standard et comme une extension Chrome, avec des interactions spécifiques au navigateur.
 
 **Solution**:
@@ -496,7 +579,7 @@ export class OnboardingGuard implements CanActivate {
 }
 ```
 
-### Problème 16: Automatisation de la génération de l'extension
+### Problème 18: Automatisation de la génération de l'extension
 **Problème**: Le processus de génération de l'extension Chrome était complexe et nécessitait plusieurs étapes manuelles.
 
 **Solution**:
@@ -541,7 +624,7 @@ async function generateExtension() {
 }
 ```
 
-### Problème 17: Affichage du panneau latéral de l'extension
+### Problème 19: Affichage du panneau latéral de l'extension
 **Problème**: L'extension devait s'ouvrir comme un panneau latéral depuis le côté droit du navigateur, mais l'API Chrome SidePanel est relativement nouvelle et peu documentée.
 
 **Solution**:
@@ -573,7 +656,7 @@ export class EnvironmentDetectionService {
 
 ## Problèmes d'UI/UX
 
-### Problème 18: Affichage des cartes consultant non responsive
+### Problème 20: Affichage des cartes consultant non responsive
 **Problème**: L'affichage des cartes consultant n'était pas optimal sur différentes tailles d'écran.
 
 **Solution**:
@@ -585,7 +668,7 @@ export class EnvironmentDetectionService {
 </div>
 ```
 
-### Problème 19: Barre de recherche non fixe
+### Problème 21: Barre de recherche non fixe
 **Problème**: La barre de recherche disparaissait lors du défilement de la liste des consultants.
 
 **Solution**:
@@ -599,7 +682,7 @@ export class EnvironmentDetectionService {
 
 ## Problèmes de performance
 
-### Problème 20: Temps de build Angular excessifs dans Replit
+### Problème 22: Temps de build Angular excessifs dans Replit
 **Problème**: La compilation de l'application Angular en mode production prenait trop de temps dans l'environnement Replit, causant des timeouts.
 
 **Solution**:
@@ -607,7 +690,7 @@ export class EnvironmentDetectionService {
 - Génération de scripts adaptatifs qui s'ajustent aux contraintes de l'environnement
 - Optimisation des configurations de build pour réduire la taille et le temps de compilation
 
-### Problème 21: Lenteur dans l'affichage des consultants
+### Problème 23: Lenteur dans l'affichage des consultants
 **Problème**: Le chargement et le rendu de nombreux consultants ralentissaient l'interface utilisateur.
 
 **Solution**:
@@ -628,7 +711,7 @@ export class ConsultantListComponent implements OnInit {
 
 ## Problèmes de déploiement
 
-### Problème 22: Complexité de l'installation de l'extension Chrome
+### Problème 24: Complexité de l'installation de l'extension Chrome
 **Problème**: Le processus d'installation de l'extension Chrome était manuel et complexe pour les utilisateurs.
 
 **Solution**:
@@ -647,7 +730,7 @@ if (Test-Path -Path $outputDir) {
 node generate-extension.js
 ```
 
-### Problème 23: Difficulté de mise à jour de l'extension
+### Problème 25: Difficulté de mise à jour de l'extension
 **Problème**: Les utilisateurs devaient réinstaller manuellement l'extension après chaque mise à jour.
 
 **Solution**:

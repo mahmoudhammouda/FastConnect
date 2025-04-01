@@ -3,12 +3,13 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "echo n | ng serve --host 0.0.0.0 --port 5000 --disable-host-check",
+    "start": "ng serve --host localhost --disable-host-check --proxy-config proxy.conf.json",
     "build": "ng build",
     "watch": "ng build --watch --configuration development"
   },
   "private": true,
   "dependencies": {
+    "@abacritt/angularx-social-login": "^1.3.0",
     "@angular/animations": "^16.0.0",
     "@angular/common": "^16.0.0",
     "@angular/compiler": "^16.0.0",
