@@ -14,6 +14,7 @@ import {
   UserRole
 } from '../models/user.model';
 import { environment } from '../../environments/environment';
+import { ApiService } from './api.service';
 
 /**
  * Service d'authentification pour gérer la connexion/déconnexion et les sessions utilisateur
@@ -24,6 +25,7 @@ import { environment } from '../../environments/environment';
 export class AuthService {
   private readonly AUTH_DATA_KEY = 'auth_data';
   private readonly API_URL = environment.apiUrl;
+  private readonly IS_EXTENSION = environment.isExtension;
 
   private authStateSubject = new BehaviorSubject<AuthState>({
     isAuthenticated: false,
@@ -35,8 +37,9 @@ export class AuthService {
 
   public authState$ = this.authStateSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private apiService: ApiService) {
     this.loadAuthState();
+    console.log('Auth Service initialisé');
   }
 
   /**
@@ -75,7 +78,7 @@ export class AuthService {
    * @param credentials Informations d'authentification (email, mot de passe)
    */
   loginWithEmail(credentials: EmailAuthCredentials): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/auth/login`, credentials)
+    return this.apiService.post<AuthResponse>('auth/login', credentials)
       .pipe(
         tap(response => this.handleAuthResponse(response)),
         catchError(error => {
@@ -90,7 +93,7 @@ export class AuthService {
    * @param profile Profil LinkedIn
    */
   loginWithLinkedIn(profile: LinkedInProfile): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/auth/linkedin`, profile)
+    return this.apiService.post<AuthResponse>('auth/linkedin', profile)
       .pipe(
         tap(response => this.handleAuthResponse(response)),
         catchError(error => {
@@ -105,7 +108,7 @@ export class AuthService {
    * @param user Données de l'utilisateur à inscrire
    */
   register(user: UserRegistration): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/auth/register`, user)
+    return this.apiService.post<AuthResponse>('auth/register', user)
       .pipe(
         tap(response => this.handleAuthResponse(response)),
         catchError(error => {
@@ -120,7 +123,7 @@ export class AuthService {
    * @param onboardingData Données d'onboarding
    */
   completeOnboarding(onboardingData: UserOnboarding): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.API_URL}/auth/onboarding`, onboardingData)
+    return this.apiService.post<AuthResponse>('auth/onboarding', onboardingData)
       .pipe(
         tap(response => this.handleAuthResponse(response)),
         catchError(error => {
@@ -136,7 +139,7 @@ export class AuthService {
    */
   refreshToken(refreshToken: string): Observable<AuthResponse> {
     const request: RefreshTokenRequest = { refreshToken };
-    return this.http.post<AuthResponse>(`${this.API_URL}/auth/refresh-token`, request)
+    return this.apiService.post<AuthResponse>('auth/refresh-token', request)
       .pipe(
         tap(response => this.handleAuthResponse(response)),
         catchError(error => {
@@ -169,7 +172,7 @@ export class AuthService {
    */
   logout(): Observable<boolean> {
     // Appel à l'API pour invalider le token côté serveur (optionnel)
-    return this.http.post<boolean>(`${this.API_URL}/auth/logout`, {}).pipe(
+    return this.apiService.post<boolean>('auth/logout', {}).pipe(
       tap(() => {
         this.clearAuthState();
       }),
