@@ -241,12 +241,62 @@ Le modèle de données central est le **Consultant** avec les propriétés suiva
    - Scripts de génération d'extension compatibles avec Windows, Linux et macOS
    - Solutions pour différents environnements de shell (PowerShell, bash, etc.)
 
+## Système d'authentification
+
+FastConnect intègre un système d'authentification complet avec les fonctionnalités suivantes :
+
+### Architecture d'authentification
+- **Authentification basée sur JWT** : Utilisation de tokens JWT (JSON Web Tokens) pour l'authentification et l'autorisation
+- **Modal de connexion** : Interface de connexion présentée sous forme de fenêtre modale plutôt que de page dédiée
+- **Intercepteur HTTP** : Ajout automatique du token d'authentification à toutes les requêtes HTTP
+- **Guards de route** : Protection des routes selon le statut d'authentification et le rôle de l'utilisateur
+
+### Types d'authentification supportés
+- **Email/mot de passe** : Authentification traditionnelle
+- **OAuth avec Google** (en cours d'implémentation)
+- **OAuth avec LinkedIn** (en cours d'implémentation)
+
+### Flux d'authentification
+1. **Première connexion** :
+   - Choix entre connexion sociale (Google/LinkedIn) ou email/mot de passe
+   - Pour une nouvelle inscription, sélection du rôle (consultant ou recruteur)
+   - Processus d'onboarding pour compléter le profil utilisateur
+
+2. **Connexions suivantes** :
+   - Reconnexion directe avec les identifiants précédemment utilisés
+   - Pas de sélection de rôle (déjà enregistré)
+   - Redirection vers la dernière page visitée ou la page d'accueil
+
+3. **Gestion des sessions** :
+   - Stockage sécurisé du token JWT dans le localStorage
+   - Refreshing automatique du token avant expiration
+   - Déconnexion manuelle via le menu utilisateur
+
+### Code d'implémentation
+L'authentification est gérée par plusieurs composants clés :
+
+1. **AuthService** : Service central qui gère l'état d'authentification, les connexions/déconnexions, et la communication avec l'API d'authentification.
+
+2. **AuthInterceptor** : Intercepteur HTTP qui ajoute le token JWT à toutes les requêtes sortantes et gère les erreurs 401 (non autorisé).
+
+3. **Guards de routes** : 
+   - `AuthGuard` : Vérifie si l'utilisateur est authentifié
+   - `GuestGuard` : Vérifie si l'utilisateur n'est PAS authentifié (pour les pages de login/register)
+   - `OnboardingGuard` : Redirige vers l'onboarding si nécessaire
+   - `RoleGuard` : Vérifie le rôle de l'utilisateur
+
+4. **ModalService** : Service qui gère l'affichage des modals, notamment celui d'authentification
+
+5. **LoginComponent** : Composant autonome qui gère l'interface utilisateur de connexion et s'affiche dans une modal
+
 ## État actuel du développement
 
-- Application Angular fonctionnelle avec composants autonomes
-- API .NET Core opérationnelle
-- Scripts de génération d'extension pour le développement et la production
-- Développement des fonctionnalités de filtrage avancées en cours
-- Optimisation de l'affichage sur mobile en cours
+- ✅ Application Angular fonctionnelle avec composants autonomes
+- ✅ API .NET Core opérationnelle
+- ✅ Scripts de génération d'extension pour le développement et la production
+- ✅ Système d'authentification avec modal et JWT
+- 🚧 Authentification avec Google et LinkedIn OAuth (en cours)
+- 🚧 Développement des fonctionnalités de filtrage avancées (en cours)
+- 🚧 Optimisation de l'affichage sur mobile (en cours)
 
-Ce document fournit un aperçu complet du contexte de l'application Connect Extension, de son architecture, de ses fonctionnalités, et des considérations techniques importantes pour comprendre pleinement le projet.
+Ce document fournit un aperçu complet du contexte de l'application FastConnect, de son architecture, de ses fonctionnalités, et des considérations techniques importantes pour comprendre pleinement le projet.

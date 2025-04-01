@@ -1,7 +1,7 @@
 <div class="flex justify-center w-full h-screen flex-col overflow-hidden">
   <div class="w-full max-w-3xl mx-auto flex flex-col h-full">
     <!-- Header Section en position fixe -->
-    <div class="bg-gray-50 p-4 shadow-md z-50">
+    <div class="bg-gray-50 p-4 shadow-md z-40">
       <div class="flex items-center justify-between">
         <h1 class="text-xl font-bold">
           <a routerLink="/" class="hover:text-indigo-600 transition duration-150">
@@ -12,9 +12,11 @@
         <div class="flex items-center">
           <!-- User not authenticated -->
           <div *ngIf="!isAuthenticated" class="flex items-center space-x-4">
-            <a routerLink="/login" class="px-3 py-1.5 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-150 text-sm">
+            <button 
+              (click)="openLoginModal()" 
+              class="px-3 py-1.5 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-150 text-sm">
               Connexion
-            </a>
+            </button>
           </div>
           
           <!-- User authenticated -->
@@ -81,4 +83,14 @@
     <!-- Afficher la liste des consultants sur la route principale -->
     <app-consultant-list *ngIf="currentRoute === '/' || currentRoute === '/consultants'"></app-consultant-list>
   </div>
+  
+  <!-- Login Modal Component -->
+  <app-login></app-login>
+  
+  <!-- Modal Backdrop -->
+  <div 
+    *ngIf="modalService.isModalBackdropVisible" 
+    class="fixed inset-0 bg-black bg-opacity-50 z-40"
+    (click)="modalService.closeAllModals()"
+  ></div>
 </div>

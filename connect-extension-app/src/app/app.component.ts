@@ -3,6 +3,7 @@ import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService } from './services/auth.service';
 import { User } from './models/user.model';
+import { ModalService } from './services/modal.service';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,7 @@ import { User } from './models/user.model';
   standalone: false
 })
 export class AppComponent implements OnInit {
-  title = 'Connect Extension - Consultants';
+  title = 'FastConnect';
   currentUser: User | null = null;
   isAuthenticated = false;
   currentRoute = '';
@@ -19,7 +20,8 @@ export class AppComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    public modalService: ModalService
   ) {}
 
   ngOnInit(): void {
@@ -42,15 +44,19 @@ export class AppComponent implements OnInit {
     this.menuOpen = !this.menuOpen;
   }
 
+  openLoginModal(): void {
+    this.modalService.openLoginModal();
+  }
+
   logout(): void {
     this.authService.logout().subscribe({
       next: () => {
-        this.router.navigate(['/login']);
+        // Au lieu de rediriger, on reste sur la même page
+        this.menuOpen = false;
       },
       error: (error) => {
         console.error('Erreur lors de la déconnexion:', error);
-        // Même en cas d'erreur, on redirige vers la page de connexion
-        this.router.navigate(['/login']);
+        this.menuOpen = false;
       }
     });
   }

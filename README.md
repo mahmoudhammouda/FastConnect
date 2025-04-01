@@ -1,6 +1,6 @@
-# Connect Extension
+# FastConnect
 
-Extension Chrome pour la découverte de consultants spécialisés.
+Extension Chrome et application web pour la découverte intelligente de consultants spécialisés.
 
 ## Structure du projet
 
@@ -15,6 +15,8 @@ Extension Chrome pour la découverte de consultants spécialisés.
 ✅ Application Angular fonctionnelle avec composants autonomes (standalone)
 ✅ API .NET Core opérationnelle
 ✅ Scripts de génération d'extension pour le développement et la production
+✅ Système d'authentification avec modal et JWT
+🚧 En cours : Authentification avec Google et LinkedIn OAuth
 🚧 En cours : Développement des fonctionnalités de filtrage avancées
 🚧 En cours : Optimisation de l'affichage sur mobile
 
@@ -158,6 +160,12 @@ Pour plus de commodité, des scripts spécifiques à chaque plateforme sont éga
 - Filtrage par compétences, niveau d'expérience, disponibilité et localisation
 - Vue détaillée des informations du consultant
 - Contact direct via LinkedIn, email ou téléphone (si disponible)
+- Système d'authentification complet avec :
+  - Modal de connexion intégré (sans navigation vers une page séparée)
+  - Possibilité de connexion par email/mot de passe
+  - Préparation pour connexion via Google et LinkedIn (en cours)
+  - Jetons JWT pour l'authentification sécurisée
+  - Protection des routes selon le rôle utilisateur (auth guards)
 
 ## Développement
 

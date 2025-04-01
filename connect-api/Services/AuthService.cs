@@ -30,7 +30,7 @@ namespace ConnectExtension.Backend.Services
                 Id = "admin-id",
                 Username = "Admin",
                 Email = "admin@fastconnect.com",
-                PasswordHash = BCrypt.HashPassword("admin123"),
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123"),
                 Role = UserRole.Admin,
                 IsVerified = true,
                 OnboardingCompleted = true,
@@ -44,7 +44,7 @@ namespace ConnectExtension.Backend.Services
                 Id = "consultant-id",
                 Username = "Consultant Test",
                 Email = "consultant@fastconnect.com",
-                PasswordHash = BCrypt.HashPassword("consultant123"),
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("consultant123"),
                 Role = UserRole.Consultant,
                 IsVerified = true,
                 OnboardingCompleted = true,
@@ -58,7 +58,7 @@ namespace ConnectExtension.Backend.Services
                 Id = "recruiter-id",
                 Username = "Recruteur Test",
                 Email = "recruiter@fastconnect.com",
-                PasswordHash = BCrypt.HashPassword("recruiter123"),
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("recruiter123"),
                 Role = UserRole.Recruiter,
                 IsVerified = true,
                 OnboardingCompleted = true,
@@ -90,7 +90,7 @@ namespace ConnectExtension.Backend.Services
                 };
             }
             
-            if (!BCrypt.Verify(request.Password, user.PasswordHash))
+            if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
                 return new AuthResponse
                 {
@@ -173,7 +173,7 @@ namespace ConnectExtension.Backend.Services
             {
                 Email = request.Email,
                 Username = request.Username,
-                PasswordHash = BCrypt.HashPassword(request.Password),
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
                 Role = request.Role,
                 LinkedInProfile = request.LinkedInProfile,
                 ProfileImageUrl = request.ProfileImageUrl,
