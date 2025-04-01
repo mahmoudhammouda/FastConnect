@@ -1,4 +1,5 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://0.0.0.0:8000/api'
+  // Utilisation d'une URL relative pour éviter les problèmes de mixed content (HTTPS/HTTP)
+  apiUrl: '/api'
 };
