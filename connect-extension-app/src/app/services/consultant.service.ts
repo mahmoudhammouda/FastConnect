@@ -11,14 +11,11 @@ import { environment } from '../../environments/environment';
 export class ConsultantService {
   private apiUrl = environment.apiUrl;
   private mockData: Consultant[] = [];
-  private useMockData = true; // Utilisons les données simulées pour l'environnement Replit
 
   constructor(private http: HttpClient) { 
     console.log('ConsultantService initialized with API URL:', this.apiUrl);
     
-    // Nous utilisons directement les données simulées
-    this.useMockData = true;
-    
+    // Générons quand même les données mockées en cas de besoin
     this.generateMockData();
   }
 
@@ -184,17 +181,7 @@ export class ConsultantService {
   getConsultants(): Observable<ConsultantWithTags[]> {
     console.log('Fetching consultants from URL:', `${this.apiUrl}/consultants`);
     
-    if (this.useMockData) {
-      console.log('Using mock data instead of API');
-      return of(this.mockData).pipe(
-        delay(300), // Simulate network delay
-        map(consultants => consultants.map(consultant => ({
-          ...consultant,
-          tags: this.extractTags(consultant.message)
-        })))
-      );
-    }
-    
+    // Always use the real API
     return this.http.get<Consultant[]>(`${this.apiUrl}/consultants`)
       .pipe(
         tap(response => console.log('API Response received:', response)),
@@ -221,24 +208,6 @@ export class ConsultantService {
   getPagedConsultants(page: number, pageSize: number): Observable<ConsultantWithTags[]> {
     console.log(`Fetching consultants from URL: ${this.apiUrl}/consultants`);
     console.log(`Page: ${page}, PageSize: ${pageSize}`);
-    
-    if (this.useMockData) {
-      console.log('Using mock data for pagination instead of API');
-      return of(this.mockData).pipe(
-        delay(150), // Simulation de délai réseau réduit pour les performances
-        map(consultants => {
-          // Simuler la pagination côté client
-          const startIndex = (page - 1) * pageSize;
-          const endIndex = startIndex + pageSize;
-          console.log(`Slice de ${startIndex} à ${endIndex} sur ${consultants.length} consultants`);
-          return consultants.slice(startIndex, endIndex);
-        }),
-        map(consultants => consultants.map(consultant => ({
-          ...consultant,
-          tags: this.extractTags(consultant.message)
-        })))
-      );
-    }
     
     // Pour le moment, nous utilisons l'API complète et simulons la pagination côté client
     return this.http.get<Consultant[]>(`${this.apiUrl}/consultants`)
