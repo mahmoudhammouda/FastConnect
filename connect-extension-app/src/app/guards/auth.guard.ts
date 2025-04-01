@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { 
-  ActivatedRouteSnapshot, 
-  RouterStateSnapshot, 
-  Router,
-  CanActivate
+import {
+  CanActivate,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+  Router
 } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { UserRole } from '../models/user.model';
@@ -28,18 +28,22 @@ export class AuthGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): boolean {
-    if (this.authService.isAuthenticated) {
-      // Vérifier si l'utilisateur a besoin de compléter l'onboarding
-      if (this.authService.needsOnboarding() && !state.url.includes('/onboarding')) {
-        this.router.navigate(['/onboarding']);
-        return false;
-      }
-      return true;
+    // Vérifier si l'utilisateur est authentifié
+    if (!this.authService.isAuthenticated) {
+      // Rediriger vers la page de connexion
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl: state.url }
+      });
+      return false;
     }
 
-    // Rediriger vers la page de connexion
-    this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
-    return false;
+    // Si l'utilisateur doit compléter l'onboarding, rediriger vers cette page (sauf si déjà sur cette page)
+    if (this.authService.needsOnboarding() && !state.url.includes('/onboarding')) {
+      this.router.navigate(['/onboarding']);
+      return false;
+    }
+
+    return true;
   }
 }
 
@@ -63,13 +67,18 @@ export class GuestGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): boolean {
-    if (!this.authService.isAuthenticated) {
-      return true;
+    // Si l'utilisateur est authentifié, rediriger vers la page d'accueil
+    if (this.authService.isAuthenticated) {
+      // Si l'utilisateur doit compléter l'onboarding, rediriger vers cette page
+      if (this.authService.needsOnboarding()) {
+        this.router.navigate(['/onboarding']);
+      } else {
+        this.router.navigate(['/']);
+      }
+      return false;
     }
 
-    // Si l'utilisateur est déjà authentifié, le rediriger vers la page d'accueil
-    this.router.navigate(['/']);
-    return false;
+    return true;
   }
 }
 
@@ -99,14 +108,13 @@ export class OnboardingGuard implements CanActivate {
       return false;
     }
 
-    // Vérifier si l'utilisateur a besoin de compléter l'onboarding
-    if (this.authService.needsOnboarding()) {
-      return true;
+    // Si l'utilisateur a déjà complété l'onboarding, rediriger vers la page d'accueil
+    if (!this.authService.needsOnboarding()) {
+      this.router.navigate(['/']);
+      return false;
     }
 
-    // Si l'onboarding est déjà complété, rediriger vers la page d'accueil
-    this.router.navigate(['/']);
-    return false;
+    return true;
   }
 }
 
@@ -132,31 +140,25 @@ export class RoleGuard implements CanActivate {
   ): boolean {
     // Vérifier si l'utilisateur est authentifié
     if (!this.authService.isAuthenticated) {
-      this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl: state.url }
+      });
       return false;
     }
 
-    // Vérifier si l'onboarding est complété
-    if (this.authService.needsOnboarding()) {
-      this.router.navigate(['/onboarding']);
-      return false;
-    }
-
-    const rolesRequired = route.data['roles'] as UserRole[];
-    
-    // Si aucun rôle n'est spécifié, autoriser l'accès
-    if (!rolesRequired || rolesRequired.length === 0) {
-      return true;
+    // Récupérer les rôles autorisés depuis les données de la route
+    const allowedRoles = route.data['roles'] as UserRole[];
+    if (!allowedRoles || allowedRoles.length === 0) {
+      return true; // Si aucun rôle n'est spécifié, l'accès est autorisé
     }
 
     // Vérifier si l'utilisateur a l'un des rôles requis
     const userRole = this.authService.getUserRole();
-    if (userRole && rolesRequired.includes(userRole)) {
-      return true;
+    if (!userRole || !allowedRoles.includes(userRole)) {
+      this.router.navigate(['/forbidden']);
+      return false;
     }
 
-    // Rediriger vers la page d'accueil si l'utilisateur n'a pas le rôle requis
-    this.router.navigate(['/']);
-    return false;
+    return true;
   }
 }

@@ -2,9 +2,9 @@
  * Enumération des rôles d'utilisateur possibles
  */
 export enum UserRole {
-  Consultant = 'Consultant',
-  Recruiter = 'Recruiter',
-  Admin = 'Admin'
+  Admin = 'admin',
+  Consultant = 'consultant',
+  Recruiter = 'recruiter'
 }
 
 /**

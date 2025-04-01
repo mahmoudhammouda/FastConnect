@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
-import { AuthCredentials } from '../../../models/user.model';
+import { EmailAuthCredentials } from '../../../models/user.model';
 
 @Component({
   selector: 'app-login',
@@ -47,13 +47,13 @@ export class LoginComponent implements OnInit {
     this.isLoading = true;
     this.loginError = null;
 
-    const credentials: AuthCredentials = {
-      username: this.loginForm.value.username,
+    const credentials: EmailAuthCredentials = {
+      email: this.loginForm.value.username,
       password: this.loginForm.value.password,
       rememberMe: this.loginForm.value.rememberMe
     };
 
-    this.authService.login(credentials).subscribe({
+    this.authService.loginWithEmail(credentials).subscribe({
       next: (response) => {
         this.isLoading = false;
         this.router.navigate(['/']);

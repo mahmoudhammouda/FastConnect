@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { 
   SocialLoginModule, 
   SocialAuthServiceConfig,
-  LinkedInLoginProvider
+  GoogleLoginProvider
 } from '@abacritt/angularx-social-login';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -16,8 +16,8 @@ import { LoginComponent } from './components/auth/login/login.component';
 import { UserProfileComponent } from './components/user/profile/user-profile.component';
 import { AuthInterceptor } from './services/auth.interceptor';
 
-// Note: Il faut obtenir un Client ID LinkedIn valide depuis LinkedIn Developers
-const linkedInClientId = 'LINKEDIN_CLIENT_ID'; // Remplacer par un ID réel
+// Note: Il faut obtenir un Client ID Google valide depuis Google Developer Console
+const googleClientId = 'GOOGLE_CLIENT_ID'; // Remplacer par un ID réel
 
 @NgModule({
   declarations: [
@@ -37,16 +37,16 @@ const linkedInClientId = 'LINKEDIN_CLIENT_ID'; // Remplacer par un ID réel
     UserProfileComponent
   ],
   providers: [
-    // Configuration pour LinkedIn OAuth
+    // Configuration pour Google OAuth (temporaire en attendant LinkedIn)
     {
       provide: 'SocialAuthServiceConfig',
       useValue: {
         autoLogin: false,
         providers: [
           {
-            id: LinkedInLoginProvider.PROVIDER_ID,
-            provider: new LinkedInLoginProvider(linkedInClientId, {
-              scope: 'r_emailaddress r_liteprofile'
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(googleClientId, {
+              scopes: 'email profile'
             })
           }
         ],
