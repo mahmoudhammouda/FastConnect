@@ -181,7 +181,7 @@ export class ConsultantService {
   getConsultants(): Observable<ConsultantWithTags[]> {
     console.log('Fetching consultants from URL:', `${this.apiUrl}/consultants`);
     
-    // Always use the real API
+    // Use the real API with proper error handling
     return this.http.get<Consultant[]>(`${this.apiUrl}/consultants`)
       .pipe(
         tap(response => console.log('API Response received:', response)),
