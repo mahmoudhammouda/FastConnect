@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FastConnect - Redirection</title>
+    <meta http-equiv="refresh" content="0; url=https://5000-${REPL_SLUG}-${REPL_OWNER}-${REPL_ID}.replit.dev">
+    <script>
+        // Récupérer les informations de Replit depuis l'URL actuelle
+        function getRedirectUrl() {
+            const currentUrl = window.location.href;
+            // Si nous sommes sur Replit
+            if (currentUrl.includes('replit.dev')) {
+                const urlParts = currentUrl.split('-');
+                // Construire l'URL avec le port 5000 qui est l'interface Angular
+                // Format: https://5000-replslug-replowner-replid.replit.dev
+                if (urlParts.length >= 3) {
+                    return currentUrl.replace(/^https?:\/\/[^-]+-/, 'https://5000-');
+                }
+            }
+            // Par défaut, rediriger vers localhost:5000 si nous sommes en local
+            return 'http://localhost:5000';
+        }
+
+        window.location.href = getRedirectUrl();
+    </script>
+</head>
+<body>
+    <h1>Redirection vers FastConnect...</h1>
+    <p>Si vous n'êtes pas redirigé automatiquement, <a id="redirect-link" href="#">cliquez ici</a>.</p>
+    <script>
+        document.getElementById('redirect-link').href = getRedirectUrl();
+    </script>
+</body>
+</html>

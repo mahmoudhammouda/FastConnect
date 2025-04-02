@@ -1,7 +1,12 @@
 <div class="flex justify-center w-full h-screen flex-col overflow-hidden">
+  <!-- DÉBOGEUR STATIQUE -->
+  <div style="position: fixed; top: 0; left: 0; right: 0; background-color: #2563eb; color: white; padding: 5px; text-align: center; font-size: 14px; z-index: 9999;">
+    FastConnect v1.0 - Environnement: {{ debugInfo.environment }} - Base: {{ debugInfo.baseHref }}
+  </div>
+
   <div class="w-full max-w-3xl mx-auto flex flex-col h-full">
     <!-- Header Section en position fixe -->
-    <div class="bg-gray-50 p-4 shadow-md z-40">
+    <div class="bg-gray-50 p-4 shadow-md z-40 mt-8">
       <div class="flex items-center justify-between">
         <h1 class="text-xl font-bold">
           <a routerLink="/" class="hover:text-indigo-600 transition duration-150">

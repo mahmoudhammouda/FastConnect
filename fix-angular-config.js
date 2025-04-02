@@ -8,7 +8,11 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
+// Détecter si nous sommes sur Replit
+const isReplit = process.env.REPL_ID || process.env.REPL_SLUG;
+
 console.log('🔧 Correction automatique de la configuration Angular...');
+console.log(`🔍 Environnement détecté: ${isReplit ? 'Replit' : 'Local'}`);
 
 // Chemins des fichiers
 const angularAppDir = path.join(__dirname, 'connect-extension-app');
@@ -44,15 +48,30 @@ try {
   // Détermination du paramètre à utiliser (browserTarget ou buildTarget)
   // À partir d'Angular 15+, buildTarget est utilisé au lieu de browserTarget
   const majorVersion = parseInt(angularVersion.split('.')[0], 10) || 0;
-  // Angular 19 utilise buildTarget
-  const usesBuildTarget = majorVersion >= 15;
-  const targetParamName = usesBuildTarget ? 'buildTarget' : 'browserTarget';
   
-  console.log("🔧 Utilisation du paramètre \"" + targetParamName + "\" pour cette version d'Angular (v" + majorVersion + "+)");
+  // Le comportement est différent selon l'environnement
+  let usesBuildTarget;
+  let targetParamName;
+  
+  if (isReplit) {
+    // Sur Replit, Angular 19 utilise forcément buildTarget
+    usesBuildTarget = true;
+    targetParamName = 'buildTarget';
+  } else {
+    // En local, on respecte la version de Angular
+    usesBuildTarget = majorVersion >= 15;
+    targetParamName = usesBuildTarget ? 'buildTarget' : 'browserTarget';
+  }
+  
+  console.log("🔧 Utilisation du paramètre \"" + targetParamName + "\" pour cette version d'Angular (v" + majorVersion + "+) en environnement " + (isReplit ? 'Replit' : 'local'));
 
-  // Création d'une sauvegarde
-  console.log("💾 Création d'une sauvegarde du fichier angular.json...");
-  fs.copyFileSync(angularJsonPath, angularJsonBackupPath);
+  // Création d'une sauvegarde si elle n'existe pas déjà
+  if (!fs.existsSync(angularJsonBackupPath)) {
+    console.log("💾 Création d'une sauvegarde du fichier angular.json...");
+    fs.copyFileSync(angularJsonPath, angularJsonBackupPath);
+  } else {
+    console.log("💾 Une sauvegarde du fichier angular.json existe déjà.");
+  }
   
   // Lecture et analyse du fichier angular.json
   console.log("📂 Lecture du fichier de configuration...");

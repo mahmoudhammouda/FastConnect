@@ -1,5 +1,5 @@
 /**
- * Script pour démarrer l'application Angular sur Replit
+ * Script pour démarrer l'application Angular sur Replit ou en local
  * Ce script utilise fix-angular-config.js pour adapter automatiquement
  * la configuration selon la version d'Angular CLI
  */
@@ -28,6 +28,7 @@ try {
   // Détermination du paramètre à utiliser (browserTarget ou buildTarget)
   // À partir d'Angular 15+, buildTarget est utilisé au lieu de browserTarget
   const majorVersion = angularVersion ? parseInt(angularVersion.split('.')[0], 10) : 0;
+  const usesBuildTarget = majorVersion >= 15;
   
   // Déterminer la commande à exécuter en fonction de l'environnement
   let command;
@@ -36,7 +37,20 @@ try {
     // Sur Replit, on utilise toujours la configuration replit
     command = 'cd connect-extension-app && ng serve --configuration=replit --host 0.0.0.0 --port 5000 --disable-host-check --proxy-config proxy.conf.json';
   } else {
-    // En local, on utilise la configuration par défaut
+    // En local, on utilise la configuration par défaut mais on doit restaurer le angular.json original
+    // car la configuration locale peut nécessiter browserTarget au lieu de buildTarget selon la version
+    
+    console.log('🔄 Restauration de la configuration Angular d\'origine pour l\'environnement local...');
+    const angularJsonBackupPath = path.join(__dirname, 'connect-extension-app', 'angular.json.bak');
+    const angularJsonPath = path.join(__dirname, 'connect-extension-app', 'angular.json');
+    
+    if (fs.existsSync(angularJsonBackupPath)) {
+      fs.copyFileSync(angularJsonBackupPath, angularJsonPath);
+      console.log('✅ Configuration originale restaurée!');
+    } else {
+      console.warn('⚠️ Aucune sauvegarde trouvée, utilisation de la configuration actuelle');
+    }
+    
     command = 'cd connect-extension-app && ng serve';
   }
   
