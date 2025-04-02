@@ -123,6 +123,22 @@ Pour l'environnement Replit, toujours utiliser `0.0.0.0` comme hôte et dans les
 
 **Ne modifiez jamais ces configurations sans tester dans les deux environnements pour éviter les régressions.**
 
+### Structure des scripts de déploiement
+
+Pour faciliter le déploiement et la maintenance du projet, les scripts utilitaires ont été organisés dans un répertoire dédié :
+
+```
+connect-deployment/
+├── generate-extension-local.bat    # Génération de l'extension en mode local (Windows)
+├── generate-extension-local.js     # Script Node.js pour la génération locale
+├── generate-extension-prod.bat     # Génération de l'extension en mode production (Windows)
+├── generate-extension-prod.js      # Script Node.js pour la génération production
+├── start-api.bat                   # Démarrage de l'API backend en local
+└── test-api.js                     # Script de test de connectivité avec l'API
+```
+
+Ces scripts sont conçus pour être utilisés lors des différentes phases de déploiement et de test du projet.
+
 ### Génération de l'extension Chrome
 
 #### Génération en mode local
@@ -131,10 +147,10 @@ Pour générer l'extension Chrome avec la configuration adaptée au développeme
 
 ```bash
 # Méthode recommandée (Windows)
-generate-extension-local.bat
+connect-deployment/generate-extension-local.bat
 
 # Alternative avec Node.js directement
-node generate-extension-local.js
+node connect-deployment/generate-extension-local.js
 ```
 
 Cette commande :
@@ -151,10 +167,10 @@ Pour générer l'extension Chrome avec la configuration de production :
 
 ```bash
 # Méthode recommandée (Windows)
-generate-extension-prod.bat
+connect-deployment/generate-extension-prod.bat
 
 # Alternative avec Node.js directement
-node generate-extension-prod.js
+node connect-deployment/generate-extension-prod.js
 ```
 
 Cette version de l'extension est optimisée pour la distribution et utilisera les URLs de production.
@@ -163,9 +179,32 @@ Cette version de l'extension est optimisée pour la distribution et utilisera le
 
 | Script | Configuration | Environnement | URLs |
 |--------|---------------|---------------|------|
-| `generate-extension-local.js` | local-extension | Développement local | http://localhost:8000 |
-| `generate-extension-prod.js` | production | Production | URLs de production |
+| `connect-deployment/generate-extension-local.js` | local-extension | Développement local | http://localhost:8000 |
+| `connect-deployment/generate-extension-prod.js` | production | Production | URLs de production |
 | `generate-extension.js` | - | Utilise l'application en cours d'exécution | Dépend du contexte |
+
+### Démarrage de l'API backend
+
+Pour démarrer l'API backend avec les paramètres corrects pour le développement local :
+
+```bash
+connect-deployment/start-api.bat
+```
+
+Cette commande lance l'API avec les paramètres suivants :
+```
+dotnet run --urls=http://localhost:8000 --environment Development
+```
+
+### Test de connectivité avec l'API
+
+Pour vérifier rapidement si l'API backend est accessible :
+
+```bash
+node connect-deployment/test-api.js
+```
+
+Ce script tentera de se connecter à l'API sur l'URL http://localhost:8000/api/consultants et affichera le résultat ou les erreurs rencontrées.
 
 ### Exécution dans l'environnement Replit
 
@@ -208,12 +247,12 @@ Cette méthode est idéale pendant le développement car elle est rapide et ne n
 
 2. Dans un autre terminal, exécutez simplement la commande suivante à la racine du projet :
    ```
-   ./generate-extension
+   connect-deployment/generate-extension-local.bat
    ```
    
    Ou utilisez le script JavaScript directement :
    ```
-   node generate-extension.js
+   node connect-deployment/generate-extension-local.js
    ```
 
 3. C'est tout ! Le script :
@@ -228,12 +267,12 @@ Cette méthode est idéale pour générer une version optimisée et minimisée d
 
 1. Exécutez simplement la commande suivante à la racine du projet :
    ```
-   ./generate-extension-prod
+   connect-deployment/generate-extension-prod.bat
    ```
    
    Ou utilisez le script JavaScript directement :
    ```
-   node generate-extension-prod.js
+   node connect-deployment/generate-extension-prod.js
    ```
 
 2. Le script :
@@ -247,15 +286,15 @@ Cette méthode est idéale pour générer une version optimisée et minimisée d
 Pour plus de commodité, des scripts spécifiques à chaque plateforme sont également disponibles :
 
 #### Windows
-- Mode Développement : `generate-extension.bat`
-- Mode Production : `generate-extension-prod.bat`
+- Mode Développement : `connect-deployment/generate-extension-local.bat`
+- Mode Production : `connect-deployment/generate-extension-prod.bat`
 
 #### Linux/macOS
-- Mode Développement : `./generate-extension.sh`
-- Mode Production : `./generate-extension-prod.sh`
+- Mode Développement : `./connect-deployment/generate-extension-local.sh`
+- Mode Production : `./connect-deployment/generate-extension-prod.sh`
 
 #### PowerShell (Windows)
-- Mode Développement : `./generate-extension.ps1`
+- Mode Développement : `./connect-deployment/generate-extension-local.ps1`
 - Il existe également une version PowerShell détaillée qui fournit des instructions plus précises.
 
 ### Quand utiliser quelle méthode ?
@@ -338,7 +377,7 @@ Les données des consultants sont gérées par le backend et consommées par les
 
 Le workflow de développement typique consiste à :
 1. Développer et tester les fonctionnalités dans l'application Angular (`connect-extension-app/`)
-2. Générer l'extension avec la commande simple `./generate-extension`
+2. Générer l'extension avec la commande simple `connect-deployment/generate-extension-local.bat`
 3. Tester l'extension dans Chrome
 
 ## Architecture des environnements et déploiement
@@ -419,7 +458,7 @@ Chaque configuration remplace `environment.ts` par le fichier d'environnement ap
 3. Pour tester l'extension Chrome :
    ```bash
    # À la racine du projet
-   node generate-extension.js
+   connect-deployment/generate-extension-local.bat
    ```
    Puis installez l'extension dans Chrome depuis le dossier `connect-extension-dist`
 
@@ -478,7 +517,7 @@ Chaque configuration remplace `environment.ts` par le fichier d'environnement ap
 3. Build de l'extension Chrome :
    ```bash
    # À la racine du projet
-   node generate-extension-prod.js
+   connect-deployment/generate-extension-prod.bat
    ```
 
 **Déploiement sur serveur :**
@@ -547,7 +586,7 @@ Le projet a été restructuré pour utiliser une architecture complètement sép
 **Solution** :
 - Vérifier que le manifest.json est correctement configuré avec les bonnes permissions
 - Vérifier la console du développeur dans Chrome pour identifier les erreurs potentielles
-- Régénérer l'extension avec `./generate-extension-prod` pour obtenir une version optimisée
+- Régénérer l'extension avec `connect-deployment/generate-extension-prod.bat` pour obtenir une version optimisée
 
 ### Problème : API backend non accessible
 **Symptôme** : Erreurs CORS ou erreurs de connexion à l'API  
@@ -575,10 +614,10 @@ Le projet a été restructuré pour utiliser une architecture complètement sép
 ### Problème : Erreurs de build extension
 **Symptôme** : Erreurs lors de la génération de l'extension Chrome avec les scripts  
 **Solution** :
-- Si vous utilisez `generate-extension.js`, vérifiez que l'application Angular est en cours d'exécution
-- Si vous utilisez `generate-extension-prod.js`, vérifiez que Node.js dispose de suffisamment de mémoire
+- Si vous utilisez `connect-deployment/generate-extension-local.js`, vérifiez que l'application Angular est en cours d'exécution
+- Si vous utilisez `connect-deployment/generate-extension-prod.js`, vérifiez que Node.js dispose de suffisamment de mémoire
 - En cas d'erreur "Memory allocation failed", exécutez `export NODE_OPTIONS=--max_old_space_size=4096`
-- Sur Replit, utilisez `generate-extension-prod.js` car il ne nécessite pas le serveur de développement
+- Sur Replit, utilisez `connect-deployment/generate-extension-prod.js` car il ne nécessite pas le serveur de développement
 
 ## Licence
 
