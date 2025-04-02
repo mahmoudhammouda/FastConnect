@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { map, catchError, tap, delay } from 'rxjs/operators';
 import { Consultant, ConsultantWithTags, ExperienceLevel, AvailabilityStatus } from '../models/consultant.model';
 import { environment } from '../../environments/environment';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConsultantService {
-  private apiUrl = environment.apiUrl;
   private mockData: Consultant[] = [];
 
-  constructor(private http: HttpClient) { 
-    console.log('ConsultantService initialized with API URL:', this.apiUrl);
+  constructor(private apiService: ApiService) { 
+    console.log('ConsultantService initialized');
     
     // Générons quand même les données mockées en cas de besoin
     this.generateMockData();
@@ -179,10 +178,10 @@ export class ConsultantService {
    * Get all consultants
    */
   getConsultants(): Observable<ConsultantWithTags[]> {
-    console.log('Fetching consultants from URL:', `${this.apiUrl}/consultants`);
+    console.log('Fetching consultants from API');
     
     // Use the real API with proper error handling
-    return this.http.get<Consultant[]>(`${this.apiUrl}/consultants`)
+    return this.apiService.get<Consultant[]>('consultants')
       .pipe(
         tap(response => console.log('API Response received:', response)),
         map(consultants => consultants.map(consultant => ({
@@ -206,11 +205,11 @@ export class ConsultantService {
    * Get consultants with pagination
    */
   getPagedConsultants(page: number, pageSize: number): Observable<ConsultantWithTags[]> {
-    console.log(`Fetching consultants from URL: ${this.apiUrl}/consultants`);
+    console.log(`Fetching paged consultants`);
     console.log(`Page: ${page}, PageSize: ${pageSize}`);
     
     // Pour le moment, nous utilisons l'API complète et simulons la pagination côté client
-    return this.http.get<Consultant[]>(`${this.apiUrl}/consultants`)
+    return this.apiService.get<Consultant[]>('consultants')
       .pipe(
         tap(response => console.log('API Response received:', response)),
         map(consultants => {

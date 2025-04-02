@@ -46,7 +46,7 @@ task = "packager.installForAll"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd connect-extension-app && npm run start"
+args = "cd connect-extension-app && ng serve --host 0.0.0.0 --port 5000 --disable-host-check --proxy-config proxy.conf.json"
 waitForPort = 5000
 
 [deployment]
@@ -63,7 +63,6 @@ externalPort = 4200
 [[ports]]
 localPort = 5000
 externalPort = 5000
-exposeLocalhost = true
 
 [[ports]]
 localPort = 8000

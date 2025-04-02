@@ -123,6 +123,9 @@ namespace ConnectExtension.Backend
             // Middleware de logging des requêtes/réponses
             app.UseRequestResponseLogging();
             
+            // Activer les fichiers statiques pour servir l'application Angular
+            app.UseStaticFiles();
+            
             app.UseRouting();
             
             // Use CORS policy
@@ -135,6 +138,9 @@ namespace ConnectExtension.Backend
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                
+                // Route par défaut pour l'app Angular - redirige vers index.html
+                endpoints.MapFallbackToFile("index.html");
             });
             
             logger.LogInformation("Routes et middlewares configurés");
