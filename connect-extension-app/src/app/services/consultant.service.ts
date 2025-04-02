@@ -190,13 +190,11 @@ export class ConsultantService {
         }))),
         catchError(error => {
           console.error('Error fetching consultants:', error);
-          console.log('Falling back to mock data');
-          return of(this.mockData).pipe(
-            map(consultants => consultants.map(consultant => ({
-              ...consultant,
-              tags: this.extractTags(consultant.message)
-            })))
-          );
+          // Retourner l'erreur au lieu d'utiliser des données de repli
+          return throwError(() => new Error('Impossible de récupérer les consultants. ' + 
+            (error.status === 0 ? 
+              'Le serveur API est peut-être indisponible.' : 
+              `Erreur ${error.status}: ${error.message || 'message inconnu'}`)));
         })
       );
   }
@@ -224,18 +222,11 @@ export class ConsultantService {
         }))),
         catchError(error => {
           console.error('Error fetching paged consultants:', error);
-          console.log('Falling back to mock data for pagination');
-          return of(this.mockData).pipe(
-            map(consultants => {
-              const startIndex = (page - 1) * pageSize;
-              const endIndex = startIndex + pageSize;
-              return consultants.slice(startIndex, endIndex);
-            }),
-            map(consultants => consultants.map(consultant => ({
-              ...consultant,
-              tags: this.extractTags(consultant.message)
-            })))
-          );
+          // Retourner l'erreur au lieu d'utiliser des données de repli
+          return throwError(() => new Error('Impossible de récupérer les consultants paginés. ' + 
+            (error.status === 0 ? 
+              'Le serveur API est peut-être indisponible.' : 
+              `Erreur ${error.status}: ${error.message || 'message inconnu'}`)));
         })
       );
   }

@@ -18,6 +18,8 @@ Extension Chrome et application web pour la découverte intelligente de consulta
 ✅ Système d'authentification avec modal et JWT
 ✅ Architecture multi-environnements (locale, Replit, production)
 ✅ Séparation complète frontend (Angular) / backend (.NET Core)
+✅ Configuration automatique adaptable à tous les environnements
+✅ Scripts de déploiement et de build simplifiés et robustes
 ✅ Configuration de proxy pour l'environnement Replit
 ✅ Service API centralisé pour une gestion cohérente des URL
 ✅ Logging avancé des requêtes API et des réponses
@@ -48,7 +50,9 @@ Extension Chrome et application web pour la découverte intelligente de consulta
 
 ## Exécution de l'application
 
-L'architecture du projet a été conçue pour fonctionner dans différents environnements (développement local, extension Chrome, production, Replit).
+L'architecture du projet a été conçue pour fonctionner dans différents environnements (développement local, extension Chrome, production, Replit) avec une configuration automatique.
+
+> **NOUVEAU !** Un système de configuration automatique a été implémenté pour faciliter le déploiement dans différents environnements. Pour plus de détails, consultez [README_CONFIG.md](README_CONFIG.md).
 
 ### Architecture des environnements
 
@@ -63,7 +67,34 @@ Le projet utilise un système de configurations d'environnement multiples :
 | Production            | environment.prod.ts                   | Application web en production                        |
 | Production Extension  | environment.prod-extension.ts         | Extension Chrome en production                       |
 
-### Exécution dans l'environnement local
+### Exécution simplifiée (Nouvelle méthode recommandée)
+
+#### Configuration de l'environnement (sans démarrer l'application)
+
+**Windows**:
+```
+configure-extension-app.bat
+```
+
+**Linux/MacOS/Replit**:
+```
+node configure-angular-app.js --config-only
+```
+
+#### Démarrage de l'application
+
+Dans tous les environnements (détection automatique) :
+```
+cd connect-extension-app
+npm start
+```
+
+Ou avec le script de détection global :
+```
+node detect-env-and-serve.js
+```
+
+### Exécution manuelle (Méthode traditionnelle)
 
 #### Backend
 
@@ -75,13 +106,6 @@ dotnet run --urls=http://localhost:8000 --environment Development
 Le serveur backend sera disponible sur `http://localhost:8000`
 
 #### Application Angular pour l'extension (version navigateur)
-
-```
-cd connect-extension-app
-npm start
-```
-
-Ou manuellement avec :
 
 ```
 cd connect-extension-app
