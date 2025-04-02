@@ -123,6 +123,9 @@
             },
             "development": {
               "buildTarget": "angular-app:build:development"
+            },
+            "replit": {
+              "buildTarget": "angular-app:build:replit"
             }
           },
           "defaultConfiguration": "development"

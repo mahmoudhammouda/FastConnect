@@ -123,8 +123,7 @@ namespace ConnectExtension.Backend
             // Middleware de logging des requêtes/réponses
             app.UseRequestResponseLogging();
             
-            // Activer les fichiers statiques pour servir l'application Angular
-            app.UseStaticFiles();
+            // Note: Nous n'utilisons plus app.UseStaticFiles() car l'API et l'application Angular sont séparées
             
             app.UseRouting();
             
@@ -139,8 +138,7 @@ namespace ConnectExtension.Backend
             {
                 endpoints.MapControllers();
                 
-                // Route par défaut pour l'app Angular - redirige vers index.html
-                endpoints.MapFallbackToFile("index.html");
+                // Note: Nous avons retiré le fallback vers index.html car l'API et l'application Angular sont séparées
             });
             
             logger.LogInformation("Routes et middlewares configurés");
