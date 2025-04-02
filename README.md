@@ -69,7 +69,7 @@ Le projet utilise un système de configurations d'environnement multiples :
 
 ```
 cd connect-api
-dotnet run --urls=http://0.0.0.0:8000
+dotnet run --urls=http://localhost:8000 --environment Development
 ```
 
 Le serveur backend sera disponible sur `http://localhost:8000`
@@ -78,7 +78,14 @@ Le serveur backend sera disponible sur `http://localhost:8000`
 
 ```
 cd connect-extension-app
-ng serve --configuration=local --host 0.0.0.0 --port 5000 --disable-host-check
+npm start
+```
+
+Ou manuellement avec :
+
+```
+cd connect-extension-app
+ng serve --host localhost --port 5000 --disable-host-check --proxy-config proxy.conf.json
 ```
 
 L'application pour l'extension sera disponible sur `http://localhost:5000`
@@ -87,10 +94,78 @@ L'application pour l'extension sera disponible sur `http://localhost:5000`
 
 ```
 cd connect-web-app
-ng serve --configuration=local --host 0.0.0.0 --port 5001 --disable-host-check
+ng serve --configuration=local --host localhost --port 5001 --disable-host-check
 ```
 
 L'application web principale sera disponible sur `http://localhost:5001`
+
+### ⚠️ Configuration des adresses pour le développement local et Replit ⚠️
+
+> **IMPORTANT**: Il existe une différence critique dans les configurations d'adresses entre le développement local et l'environnement Replit.
+
+#### Développement local
+
+Pour le développement local, toujours utiliser `localhost` comme hôte et dans les URLs d'API:
+
+- **Fichiers d'environnement**: `apiUrl: 'http://localhost:8000/api'`
+- **Configuration du proxy**: `"target": "http://localhost:8000"`
+- **Scripts Angular**: `--host localhost`
+- **API Backend**: `dotnet run --urls=http://localhost:8000`
+
+#### Environnement Replit
+
+Pour l'environnement Replit, toujours utiliser `0.0.0.0` comme hôte et dans les URLs d'API:
+
+- **Fichiers d'environnement**: `apiUrl: 'http://0.0.0.0:8000/api'`
+- **Configuration du proxy**: `"target": "http://0.0.0.0:8000"`
+- **Scripts Angular**: `--host 0.0.0.0`
+- **API Backend**: `dotnet run --urls=http://0.0.0.0:8000`
+
+**Ne modifiez jamais ces configurations sans tester dans les deux environnements pour éviter les régressions.**
+
+### Génération de l'extension Chrome
+
+#### Génération en mode local
+
+Pour générer l'extension Chrome avec la configuration adaptée au développement local :
+
+```bash
+# Méthode recommandée (Windows)
+generate-extension-local.bat
+
+# Alternative avec Node.js directement
+node generate-extension-local.js
+```
+
+Cette commande :
+1. Compile l'application Angular avec la configuration `local-extension`
+2. Copie les fichiers du build dans le répertoire `connect-extension-dist`
+3. Ajoute les fichiers spécifiques de l'extension (manifest.json, background.js, etc.)
+4. Met à jour les références dans sidebar.html
+
+L'extension générée utilisera les URLs avec `localhost` et est prête à être chargée dans Chrome pour le développement local.
+
+#### Génération en mode production
+
+Pour générer l'extension Chrome avec la configuration de production :
+
+```bash
+# Méthode recommandée (Windows)
+generate-extension-prod.bat
+
+# Alternative avec Node.js directement
+node generate-extension-prod.js
+```
+
+Cette version de l'extension est optimisée pour la distribution et utilisera les URLs de production.
+
+#### Différentes méthodes de génération d'extension
+
+| Script | Configuration | Environnement | URLs |
+|--------|---------------|---------------|------|
+| `generate-extension-local.js` | local-extension | Développement local | http://localhost:8000 |
+| `generate-extension-prod.js` | production | Production | URLs de production |
+| `generate-extension.js` | - | Utilise l'application en cours d'exécution | Dépend du contexte |
 
 ### Exécution dans l'environnement Replit
 
