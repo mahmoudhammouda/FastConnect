@@ -1240,13 +1240,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   environment: () => (/* binding */ environment)
 /* harmony export */ });
 const environment = {
-  production: false,
-  // URL complète pour le mode développement
-  apiUrl: 'http://0.0.0.0:8000/api',
-  // URL spécifique pour l'environnement Replit
-  apiUrlReplit: `https://${window.location.hostname.replace('5000', '80')}/api`,
-  // Pour l'extension Chrome, on détecte si on est dans un contexte d'extension
-  isExtension: typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id
+  production: true,
+  // URL pour l'API en mode Replit
+  apiUrl: '/api',
+  // L'app est servie depuis l'API via SSR, donc chemin relatif
+  isExtension: false,
+  envName: 'replit'
 };
 
 /***/ }),
@@ -1619,14 +1618,10 @@ class ApiService {
     this.http = http;
     this.API_URL = _environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.apiUrl;
     this.IS_EXTENSION = _environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.isExtension;
-    this.IS_REPLIT = window.location.hostname.includes('.replit.dev') || window.location.hostname.includes('.replit.app');
-    // Si nous sommes sur Replit, utilisez l'URL Replit
-    if (this.IS_REPLIT && _environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.apiUrlReplit) {
-      this.API_URL = _environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.apiUrlReplit;
-    }
+    this.ENV_NAME = _environments_environment__WEBPACK_IMPORTED_MODULE_0__.environment.envName || 'default';
     console.log('API Service initialisé avec URL:', this.API_URL);
     console.log('Contexte: ', this.IS_EXTENSION ? 'Extension Chrome' : 'Application Web');
-    console.log('Environnement: ', this.IS_REPLIT ? 'Replit' : 'Local');
+    console.log('Environnement: ', this.ENV_NAME);
   }
   /**
    * Crée une URL complète pour une route API
@@ -1642,10 +1637,9 @@ class ApiService {
     if (!endpoint.startsWith('/')) {
       endpoint = '/' + endpoint;
     }
-    // Pour l'extension Chrome, assurons-nous d'utiliser une URL absolue
-    if (this.IS_EXTENSION) {
-      console.log(`Extension context: building absolute URL: ${this.API_URL}${endpoint}`);
-    }
+    // Les URL sont configurées par environnement et ne devraient pas
+    // nécessiter de logique conditionnelle supplémentaire ici
+    // Utiliser simplement l'URL configurée dans l'environnement
     return `${this.API_URL}${endpoint}`;
   }
   /**

@@ -13,18 +13,12 @@ import { environment } from '../../environments/environment';
 export class ApiService {
   private API_URL = environment.apiUrl;
   private readonly IS_EXTENSION = environment.isExtension;
-  private readonly IS_REPLIT = window.location.hostname.includes('.replit.dev') || 
-                               window.location.hostname.includes('.replit.app');
+  private readonly ENV_NAME = environment.envName || 'default';
 
   constructor(private http: HttpClient) {
-    // Si nous sommes sur Replit, utilisez l'URL Replit
-    if (this.IS_REPLIT && environment.apiUrlReplit) {
-      this.API_URL = environment.apiUrlReplit;
-    }
-    
     console.log('API Service initialisé avec URL:', this.API_URL);
     console.log('Contexte: ', this.IS_EXTENSION ? 'Extension Chrome' : 'Application Web');
-    console.log('Environnement: ', this.IS_REPLIT ? 'Replit' : 'Local');
+    console.log('Environnement: ', this.ENV_NAME);
   }
 
   /**
@@ -43,10 +37,9 @@ export class ApiService {
       endpoint = '/' + endpoint;
     }
     
-    // Pour l'extension Chrome, assurons-nous d'utiliser une URL absolue
-    if (this.IS_EXTENSION) {
-      console.log(`Extension context: building absolute URL: ${this.API_URL}${endpoint}`);
-    }
+    // Les URL sont configurées par environnement et ne devraient pas
+    // nécessiter de logique conditionnelle supplémentaire ici
+    // Utiliser simplement l'URL configurée dans l'environnement
     
     return `${this.API_URL}${endpoint}`;
   }
