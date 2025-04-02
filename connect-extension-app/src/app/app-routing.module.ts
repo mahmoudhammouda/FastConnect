@@ -8,8 +8,8 @@ import { AppDebugComponent } from './app.component.debug';
 
 const routes: Routes = [
   // Route principale - consultants list
-  { path: '', redirectTo: '/consultants', pathMatch: 'full' },
-  { path: 'consultants', component: ConsultantListComponent }, // Route principale pour la liste des consultants
+  { path: '', component: ConsultantListComponent }, // Route principale directe vers la liste des consultants
+  { path: 'consultants', component: ConsultantListComponent }, // Route alternative
   
   // Routes d'authentification
   { path: 'login', component: LoginComponent },
@@ -39,7 +39,7 @@ const routes: Routes = [
   },
   
   // Redirection par défaut
-  { path: '**', redirectTo: '' }
+  { path: '**', component: ConsultantListComponent } // Redirection vers la liste des consultants
 ];
 
 @NgModule({
