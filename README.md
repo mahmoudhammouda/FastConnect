@@ -16,6 +16,11 @@ Extension Chrome et application web pour la découverte intelligente de consulta
 ✅ API .NET Core opérationnelle
 ✅ Scripts de génération d'extension pour le développement et la production
 ✅ Système d'authentification avec modal et JWT
+✅ Architecture multi-environnements (locale, Replit, production)
+✅ Séparation complète frontend (Angular) / backend (.NET Core)
+✅ Configuration de proxy pour l'environnement Replit
+✅ Service API centralisé pour une gestion cohérente des URL
+✅ Logging avancé des requêtes API et des réponses
 🚧 En cours : Authentification avec Google et LinkedIn OAuth
 🚧 En cours : Développement des fonctionnalités de filtrage avancées
 🚧 En cours : Optimisation de l'affichage sur mobile
@@ -43,32 +48,74 @@ Extension Chrome et application web pour la découverte intelligente de consulta
 
 ## Exécution de l'application
 
-### Backend
+L'architecture du projet a été conçue pour fonctionner dans différents environnements (développement local, extension Chrome, production, Replit).
+
+### Architecture des environnements
+
+Le projet utilise un système de configurations d'environnement multiples :
+
+| Environnement         | Fichier de configuration              | Usage                                                |
+|-----------------------|---------------------------------------|------------------------------------------------------|
+| Développement         | environment.ts                        | Développement standard                               |
+| Local                 | environment.local.ts                  | Développement local sans extension                   |
+| Local Extension       | environment.local-extension.ts        | Développement local avec extension Chrome            |
+| Replit                | environment.replit.ts                 | Environnement de développement sur Replit            |
+| Production            | environment.prod.ts                   | Application web en production                        |
+| Production Extension  | environment.prod-extension.ts         | Extension Chrome en production                       |
+
+### Exécution dans l'environnement local
+
+#### Backend
 
 ```
 cd connect-api
-dotnet run
+dotnet run --urls=http://0.0.0.0:8000
 ```
 
 Le serveur backend sera disponible sur `http://localhost:8000`
 
-### Application Angular pour l'extension (version navigateur)
+#### Application Angular pour l'extension (version navigateur)
 
 ```
 cd connect-extension-app
-ng serve --host 0.0.0.0 --port 5000 --disable-host-check
+ng serve --configuration=local --host 0.0.0.0 --port 5000 --disable-host-check
 ```
 
 L'application pour l'extension sera disponible sur `http://localhost:5000`
 
-### Application Web pour les consultants et recruteurs
+#### Application Web pour les consultants et recruteurs
 
 ```
 cd connect-web-app
-ng serve --host 0.0.0.0 --port 5001 --disable-host-check
+ng serve --configuration=local --host 0.0.0.0 --port 5001 --disable-host-check
 ```
 
 L'application web principale sera disponible sur `http://localhost:5001`
+
+### Exécution dans l'environnement Replit
+
+#### Backend
+
+```
+cd connect-api
+dotnet run --urls=http://0.0.0.0:8000
+```
+
+#### Application Angular (avec proxy)
+
+```
+cd connect-extension-app
+ng serve --configuration=replit --host 0.0.0.0 --port 5000 --disable-host-check --proxy-config proxy.conf.json
+```
+
+### Exécution avec l'extension Chrome en mode développement
+
+```
+cd connect-extension-app
+ng serve --configuration=local-extension --host 0.0.0.0 --port 5000 --disable-host-check
+```
+
+Puis générer l'extension comme décrit dans la section "Génération de l'extension Chrome".
 
 ## Génération de l'extension Chrome
 
@@ -219,6 +266,199 @@ Le workflow de développement typique consiste à :
 2. Générer l'extension avec la commande simple `./generate-extension`
 3. Tester l'extension dans Chrome
 
+## Architecture des environnements et déploiement
+
+### Configurations d'environnement
+
+Le projet utilise plusieurs fichiers de configuration pour s'adapter aux différents environnements :
+
+#### 1. Fichiers d'environnement Angular
+
+| Fichier | Description | API URL | isExtension | Production |
+|---------|-------------|---------|-------------|------------|
+| `environment.ts` | Développement par défaut | http://0.0.0.0:8000/api | Auto-détection | Non |
+| `environment.local.ts` | Développement local | http://localhost:8000/api | Non | Non |
+| `environment.local-extension.ts` | Extension locale | http://localhost:8000/api | Oui | Non |
+| `environment.replit.ts` | Environnement Replit | /api (proxy) | Non | Non |
+| `environment.prod.ts` | Production | https://api.fastconnect.io/api | Auto-détection | Oui |
+| `environment.prod-extension.ts` | Extension en production | https://api.fastconnect.io/api | Oui | Oui |
+
+#### 2. Configuration Angular (angular.json)
+
+Le fichier `angular.json` a été configuré pour supporter différentes configurations de build et de serve :
+
+```json
+"configurations": {
+  "production": { ... },
+  "local": { ... },
+  "local-extension": { ... },
+  "replit": { ... },
+  "prod-extension": { ... }
+}
+```
+
+Chaque configuration remplace `environment.ts` par le fichier d'environnement approprié et définit les options d'optimisation, de minification et de débogage.
+
+#### 3. Configuration du proxy pour Replit (proxy.conf.json)
+
+```json
+{
+  "/api": {
+    "target": "http://0.0.0.0:8000",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "headers": {
+      "Connection": "keep-alive"
+    },
+    "timeout": 60000
+  }
+}
+```
+
+### Guide de déploiement et lancement
+
+#### Environnement local (développement)
+
+**Préparation initiale :**
+1. Assurez-vous que .NET Core 7.0 est installé : `dotnet --version`
+2. Vérifiez que Node.js est installé (v20+) : `node --version`
+3. Installez Angular CLI globalement : `npm install -g @angular/cli`
+4. Installez les dépendances du projet :
+   ```bash
+   cd connect-extension-app && npm install
+   cd connect-web-app && npm install
+   ```
+
+**Lancement de l'application :**
+1. Démarrer le backend :
+   ```bash
+   cd connect-api
+   dotnet run --urls=http://0.0.0.0:8000
+   ```
+2. Démarrer le frontend (dans un autre terminal) :
+   ```bash
+   cd connect-extension-app
+   ng serve --configuration=local --host 0.0.0.0 --port 5000 --disable-host-check
+   ```
+3. Pour tester l'extension Chrome :
+   ```bash
+   # À la racine du projet
+   node generate-extension.js
+   ```
+   Puis installez l'extension dans Chrome depuis le dossier `connect-extension-dist`
+
+**Accès à l'application :**
+- Frontend principal : http://localhost:5000
+- API backend : http://localhost:8000/api
+- Web app pour consultants/recruteurs : http://localhost:5001 (quand implémentée)
+
+#### Environnement Replit
+
+**Préparation initiale :**
+1. Assurez-vous que tous les fichiers sont synchronisés avec le dépôt Git
+2. Configurez les workflows pour le backend et le frontend
+
+**Configuration des workflows :**
+1. Workflow Backend API :
+   - Nom : "Connect API"
+   - Commande : `cd connect-api && dotnet run --urls=http://0.0.0.0:8000`
+   - Port : 8000
+
+2. Workflow Frontend Angular :
+   - Nom : "Angular Frontend"
+   - Commande : `cd connect-extension-app && ng serve --host 0.0.0.0 --port 5000 --disable-host-check --proxy-config proxy.conf.json --configuration=replit`
+   - Port : 5000
+
+**Lancement de l'application :**
+1. Démarrez le workflow Backend API
+2. Démarrez le workflow Angular Frontend
+3. L'application sera accessible via l'URL de prévisualisation Replit
+
+**Points importants :**
+- Le proxy est crucial dans l'environnement Replit pour contourner les restrictions CORS
+- L'URL de l'API dans `environment.replit.ts` doit être configurée comme `/api` pour utiliser le proxy
+- Les workflows doivent être relancés après modification des fichiers de configuration
+
+#### Environnement de production
+
+**Préparation du build :**
+1. Configurez les variables d'environnement de production :
+   - Vérifiez `environment.prod.ts` et `environment.prod-extension.ts`
+   - Mettez à jour les URLs de l'API avec votre domaine de production
+
+**Build et déploiement :**
+1. Build du backend :
+   ```bash
+   cd connect-api
+   dotnet publish -c Release -o ./publish
+   ```
+
+2. Build du frontend web :
+   ```bash
+   cd connect-extension-app
+   ng build --configuration=production
+   ```
+
+3. Build de l'extension Chrome :
+   ```bash
+   # À la racine du projet
+   node generate-extension-prod.js
+   ```
+
+**Déploiement sur serveur :**
+1. Déployez le dossier `connect-api/publish` sur votre serveur web (.NET)
+2. Déployez le dossier `connect-extension-app/dist` sur votre serveur web statique
+3. Configurez le serveur web pour rediriger les requêtes `/api/*` vers le backend
+4. Soumettez le dossier `connect-extension-dist` au Chrome Web Store Developer Dashboard
+
+**Configuration serveur nginx (exemple) :**
+```nginx
+server {
+    listen 80;
+    server_name votredomaine.com;
+
+    location / {
+        root /chemin/vers/connect-extension-app/dist;
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /api/ {
+        proxy_pass http://localhost:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+**Automatisation CI/CD (suggestions) :**
+- Utilisez GitHub Actions pour automatiser les builds et déploiements
+- Configurez des workflows séparés pour le backend et le frontend
+- Incluez des tests automatisés avant le déploiement
+
+### Architecture client-serveur
+
+Le projet a été restructuré pour utiliser une architecture complètement séparée entre frontend et backend :
+
+1. **Frontend** (Angular)
+   - Serveur de développement sur le port 5000
+   - Utilise les appels API via HttpClient
+   - S'adapte automatiquement à différents environnements
+   - Service ApiService pour gérer les URL d'API de manière centralisée
+
+2. **Backend** (.NET Core)
+   - API RESTful sur le port 8000
+   - CORS configuré pour accepter les requêtes du frontend
+   - Logging avancé des requêtes/réponses avec RequestResponseLoggingMiddleware
+   - Authentification JWT
+
+3. **Communication**
+   - En développement : Communication directe ou via proxy
+   - En production : Communication via API RESTful sécurisée
+
 ## Problèmes courants et solutions
 
 ### Problème : Composants Angular standalone non affichés
@@ -238,8 +478,32 @@ Le workflow de développement typique consiste à :
 **Symptôme** : Erreurs CORS ou erreurs de connexion à l'API  
 **Solution** :
 - Vérifier que l'API backend .NET est en cours d'exécution sur le port 8000
-- Vérifier que l'URL de l'API est correctement configurée dans environment.ts
-- Configurer CORS correctement dans le backend pour autoriser les requêtes depuis l'extension
+- Vérifier que l'URL de l'API est correctement configurée dans le fichier d'environnement utilisé
+- S'assurer que le proxy est correctement configuré pour l'environnement Replit
+
+### Problème : Erreurs dans l'environnement Replit
+**Symptôme** : Erreurs de connexion ou problèmes CORS spécifiques à Replit  
+**Solution** :
+- Vérifier que les deux workflows sont en cours d'exécution (Backend API et Angular Frontend)
+- S'assurer que le backend utilise `--urls=http://0.0.0.0:8000` pour être accessible
+- Utiliser la configuration Replit avec `--proxy-config proxy.conf.json`
+- Redémarrer les workflows si des modifications ont été apportées aux fichiers de configuration
+
+### Problème : Application blanche ou erreurs 404 au démarrage
+**Symptôme** : L'application affiche une page blanche ou les requêtes API retournent 404  
+**Solution** :
+- Vérifier que les deux services (frontend et backend) sont bien en cours d'exécution
+- Dans la console du navigateur, vérifier qu'il n'y a pas d'erreurs JavaScript
+- Attendre la fin complète du build Angular (peut prendre jusqu'à 30 secondes)
+- Si le problème persiste, redémarrer les workflows dans Replit
+
+### Problème : Erreurs de build extension
+**Symptôme** : Erreurs lors de la génération de l'extension Chrome avec les scripts  
+**Solution** :
+- Si vous utilisez `generate-extension.js`, vérifiez que l'application Angular est en cours d'exécution
+- Si vous utilisez `generate-extension-prod.js`, vérifiez que Node.js dispose de suffisamment de mémoire
+- En cas d'erreur "Memory allocation failed", exécutez `export NODE_OPTIONS=--max_old_space_size=4096`
+- Sur Replit, utilisez `generate-extension-prod.js` car il ne nécessite pas le serveur de développement
 
 ## Licence
 
