@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular-app": {
+    "connect-extension-app": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -18,7 +18,9 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.json",
-            "assets": ["src/favicon.ico"],
+            "assets": [
+              "src/favicon.ico"
+            ],
             "styles": [
               "src/styles.css"
             ],
@@ -113,20 +115,23 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "angular-app:build:development",
             "port": 5000,
             "host": "0.0.0.0",
-            "proxyConfig": "proxy.conf.json"
+            "proxyConfig": "proxy.conf.json",
+            "browserTarget": "connect-extension-app:build:development"
           },
           "configurations": {
             "production": {
-              "browserTarget": "angular-app:build:production"
+              "buildTarget": "connect-extension-app:build:production",
+              "browserTarget": "connect-extension-app:build:production"
             },
             "development": {
-              "browserTarget": "angular-app:build:development"
+              "buildTarget": "connect-extension-app:build:development",
+              "browserTarget": "connect-extension-app:build:development"
             },
             "replit": {
-              "browserTarget": "angular-app:build:replit"
+              "buildTarget": "connect-extension-app:build:replit",
+              "browserTarget": "connect-extension-app:build:replit"
             }
           },
           "defaultConfiguration": "development"
