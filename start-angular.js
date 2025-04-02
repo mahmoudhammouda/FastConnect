@@ -4,68 +4,46 @@
  * la configuration selon la version d'Angular CLI
  */
 
-const { execSync, spawn } = require('child_process');
-const path = require('path');
+const { execSync } = require('child_process');
 const fs = require('fs');
+const path = require('path');
 
-console.log('🚀 Démarrage de l\'application Angular...');
+// Détecter si nous sommes sur Replit
+const isReplit = process.env.REPL_ID || process.env.REPL_SLUG;
 
-// Chemin vers le répertoire de l'application Angular
-const angularAppDir = path.join(__dirname, 'connect-extension-app');
-
-// Vérification que le répertoire existe
-if (!fs.existsSync(angularAppDir)) {
-  console.error(`❌ Erreur: Le répertoire ${angularAppDir} n'existe pas.`);
-  process.exit(1);
-}
+console.log(`🔍 Détection de l'environnement: ${isReplit ? 'Replit' : 'Local'}`);
 
 try {
-  // Exécution du script de correction de configuration
-  console.log('🔧 Application des corrections automatiques de configuration...');
+  // Exécuter le script de correction de configuration Angular
+  console.log('🔧 Exécution du script de correction de configuration Angular...');
   execSync('node fix-angular-config.js', { stdio: 'inherit' });
   
-  console.log('🚀 Lancement du serveur Angular...');
+  // Obtenir la version d'Angular CLI
+  const ngVersionOutput = execSync('cd connect-extension-app && ng version', { encoding: 'utf8' });
+  const versionMatch = ngVersionOutput.match(/Angular CLI: (\d+\.\d+\.\d+)/);
+  const angularVersion = versionMatch ? versionMatch[1] : null;
   
-  const args = [
-    'serve',
-    '--host', '0.0.0.0',
-    '--port', '5000',
-    '--disable-host-check',
-    '--proxy-config', 'proxy.conf.json',
-    '--configuration', 'replit'
-  ];
+  console.log(`📊 Version d'Angular CLI: ${angularVersion}`);
   
-  console.log(`📋 Commande: ng ${args.join(' ')}`);
+  // Détermination du paramètre à utiliser (browserTarget ou buildTarget)
+  // À partir d'Angular 15+, buildTarget est utilisé au lieu de browserTarget
+  const majorVersion = angularVersion ? parseInt(angularVersion.split('.')[0], 10) : 0;
   
-  // Lancement du processus Angular CLI
-  const ngProcess = spawn('ng', args, {
-    cwd: angularAppDir,
-    stdio: 'inherit',
-    shell: true
-  });
+  // Déterminer la commande à exécuter en fonction de l'environnement
+  let command;
   
-  // Gestion des événements du processus
-  ngProcess.on('error', (error) => {
-    console.error(`❌ Erreur lors du démarrage d'Angular CLI: ${error.message}`);
-    process.exit(1);
-  });
+  if (isReplit) {
+    // Sur Replit, on utilise toujours la configuration replit
+    command = 'cd connect-extension-app && ng serve --configuration=replit --host 0.0.0.0 --port 5000 --disable-host-check --proxy-config proxy.conf.json';
+  } else {
+    // En local, on utilise la configuration par défaut
+    command = 'cd connect-extension-app && ng serve';
+  }
   
-  ngProcess.on('close', (code) => {
-    if (code !== 0) {
-      console.error(`❌ Angular CLI s'est terminé avec le code: ${code}`);
-      process.exit(code);
-    }
-  });
-
-  // Gestion des signaux pour arrêter proprement le processus
-  ['SIGINT', 'SIGTERM'].forEach(signal => {
-    process.on(signal, () => {
-      ngProcess.kill(signal);
-    });
-  });
+  console.log(`▶️ Exécution de la commande: ${command}`);
+  execSync(command, { stdio: 'inherit' });
   
 } catch (error) {
-  console.error(`❌ Erreur: ${error.message}`);
-  console.error(error.stack);
+  console.error('❌ Erreur lors du démarrage de l\'application Angular:', error.message);
   process.exit(1);
 }
