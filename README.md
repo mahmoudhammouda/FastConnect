@@ -9,11 +9,13 @@ Extension Chrome et application web pour la découverte intelligente de consulta
 - `connect-web-app/` : Application web principale pour les consultants et recruteurs
 - `connect-api/` : API backend en .NET Core
 - `connect-extension-dist/` : Répertoire de build pour l'extension Chrome (généré automatiquement, non suivi par git)
+- `connect-deployment/` : Scripts et outils de déploiement pour différents environnements
 
 ## Statut du projet
 
 ✅ Application Angular fonctionnelle avec composants autonomes (standalone)
-✅ API .NET Core opérationnelle
+✅ API .NET Core opérationnelle avec génération de données de test
+✅ Communication correcte entre le frontend et l'API via proxy
 ✅ Scripts de génération d'extension pour le développement et la production
 ✅ Système d'authentification avec modal et JWT
 ✅ Architecture multi-environnements (locale, Replit, production)
@@ -23,6 +25,8 @@ Extension Chrome et application web pour la découverte intelligente de consulta
 ✅ Configuration de proxy pour l'environnement Replit
 ✅ Service API centralisé pour une gestion cohérente des URL
 ✅ Logging avancé des requêtes API et des réponses
+✅ Composant de débogage pour faciliter le diagnostic
+✅ Récupération et affichage de la liste des consultants depuis l'API
 🚧 En cours : Authentification avec Google et LinkedIn OAuth
 🚧 En cours : Développement des fonctionnalités de filtrage avancées
 🚧 En cours : Optimisation de l'affichage sur mobile

@@ -2,6 +2,34 @@
 
 Ce document recense les modifications significatives apportées au projet FastConnect, avec les détails des commits, branches, et explications des changements.
 
+## 2025-04-02 (Suite)
+
+### Modification: "Fix: Corrected Angular environment configuration to properly communicate with API"
+
+**Description**: Correction des problèmes de communication entre l'application Angular frontend et l'API backend sur Replit.
+
+**Modifications**:
+1. **Mise à jour du fichier d'environnement par défaut**:
+   - Modification de `environment.ts` pour utiliser le proxy Angular avec `/api` au lieu de l'URL complète
+   - Ajout d'informations de débogage dans l'objet `debugInfo`
+
+2. **Amélioration du composant de liste des consultants**:
+   - Ajout de logs détaillés dans `consultant-list.component.ts` pour faciliter le diagnostic
+   - Mise à jour du format des messages de log pour une meilleure traçabilité
+
+3. **Mise à jour de la configuration des workflows Replit**:
+   - Amélioration de la configuration pour garantir le redémarrage correct des services
+
+**Problèmes résolus**:
+- Communication défaillante entre le frontend Angular et l'API backend sur Replit
+- Manque de logs pour diagnostiquer les problèmes de rendu du composant consultant-list
+- Utilisateur maintenant capable de se connecter avec les identifiants de test et d'accéder aux données de consultants
+
+**Détails techniques**:
+- L'application Angular utilise désormais le proxy configuré dans `proxy.conf.json` pour communiquer avec l'API
+- Le proxy redirige les requêtes `/api/*` vers le serveur backend sans exposer l'URL complète
+- La configuration d'environnement a été standardisée avec le modèle de Replit pour une meilleure compatibilité
+
 ## 2025-04-02
 
 ### Commit: "Refactor: Move deployment scripts to connect-deployment directory for better organization"

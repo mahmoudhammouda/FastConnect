@@ -86,10 +86,10 @@
     </div>
 
     <!-- Route principale (consultants ou autre contenu) -->
-    <router-outlet *ngIf="currentRoute !== '/' && currentRoute !== '/consultants'"></router-outlet>
+    <router-outlet></router-outlet>
     
-    <!-- Afficher la liste des consultants sur la route principale -->
-    <app-consultant-list *ngIf="currentRoute === '/' || currentRoute === '/consultants'"></app-consultant-list>
+    <!-- Afficher la liste des consultants sur la route principale directement si nécessaire -->
+    <!-- <app-consultant-list *ngIf="currentRoute === '/' || currentRoute === '/consultants'"></app-consultant-list> -->
   </div>
   
   <!-- Login Modal Component -->
