@@ -122,24 +122,27 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
    * Charge les premières données des consultants
    */
   loadInitialConsultants(): void {
+    console.log('[ConsultantListComponent] Démarrage du chargement des consultants initiaux');
     this.isLoading = true;
     this.errorMessage = null;
     this.currentPage = 1;
     
     this.consultantService.getPagedConsultants(this.currentPage, this.pageSize)
-      .subscribe(
-        data => {
-          console.log(`Slice de 0 à ${this.pageSize} sur ${data.length} consultants`);
+      .subscribe({
+        next: (data) => {
+          console.log(`[ConsultantListComponent] Consultants initiaux reçus: ${data.length} consultants`);
           this.consultants = data;
+          console.log('[ConsultantListComponent] Application des filtres');
           this.applyFilters();
+          console.log(`[ConsultantListComponent] Après filtrage: ${this.filteredConsultants.length} consultants affichés`);
           this.isLoading = false;
         },
-        error => {
-          console.error('Error fetching consultants:', error);
+        error: (error) => {
+          console.error('[ConsultantListComponent] Erreur lors du chargement des consultants:', error);
           this.errorMessage = 'Impossible de charger les consultants. Veuillez réessayer plus tard.';
           this.isLoading = false;
         }
-      );
+      });
   }
 
   /**

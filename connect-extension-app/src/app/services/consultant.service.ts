@@ -20,8 +20,11 @@ export class ConsultantService {
 
   /**
    * Génère des données de test pour le développement
+   * NOTE: Ces données sont uniquement pour le développement en local et ne sont plus utilisées
+   * Les données réelles proviennent exclusivement de l'API
    */
   private generateMockData(): void {
+    console.log('[ConsultantService] Génération de données mockées pour le développement (inutilisées)');
     const roles = ['Développeur Full Stack', 'Data Scientist', 'DevOps Engineer', 'UX/UI Designer', 'Product Manager', 'Architecte Logiciel', 'Mobile Developer', 'Frontend Developer', 'Backend Developer', 'SRE/Cloud Engineer'];
     const types = ['Freelance', 'Salarié', 'Consultant'];
     const locations = ['Paris', 'Lyon', 'Marseille', 'Toulouse', 'Bordeaux', 'Lille', 'Nantes', 'Strasbourg', 'Remote', 'Hybride', 'Full-Remote', 'Luxembourg', 'Bruxelles'];
@@ -178,18 +181,31 @@ export class ConsultantService {
    * Get all consultants
    */
   getConsultants(): Observable<ConsultantWithTags[]> {
-    console.log('Fetching consultants from API');
+    console.log('[ConsultantService] Fetching all consultants from API');
     
     // Use the real API with proper error handling
     return this.apiService.get<Consultant[]>('consultants')
       .pipe(
-        tap(response => console.log('API Response received:', response)),
-        map(consultants => consultants.map(consultant => ({
-          ...consultant,
-          tags: this.extractTags(consultant.message)
-        }))),
+        tap(response => {
+          console.log('[ConsultantService] All consultants API Response received - length:', response?.length || 0);
+          if (response?.length === 0) {
+            console.warn('[ConsultantService] API returned empty consultant array');
+          }
+        }),
+        map(consultants => {
+          // Vérifier que consultants est bien un tableau
+          if (!Array.isArray(consultants)) {
+            console.error('[ConsultantService] API did not return an array of consultants:', consultants);
+            return [];
+          }
+          console.log(`[ConsultantService] Processing ${consultants.length} consultants, adding tags`);
+          return consultants.map(consultant => ({
+            ...consultant,
+            tags: this.extractTags(consultant?.message || '')
+          }));
+        }),
         catchError(error => {
-          console.error('Error fetching consultants:', error);
+          console.error('[ConsultantService] Error fetching all consultants:', error);
           // Retourner l'erreur au lieu d'utiliser des données de repli
           return throwError(() => new Error('Impossible de récupérer les consultants. ' + 
             (error.status === 0 ? 
@@ -203,25 +219,39 @@ export class ConsultantService {
    * Get consultants with pagination
    */
   getPagedConsultants(page: number, pageSize: number): Observable<ConsultantWithTags[]> {
-    console.log(`Fetching paged consultants`);
-    console.log(`Page: ${page}, PageSize: ${pageSize}`);
+    console.log(`[ConsultantService] Fetching paged consultants`);
+    console.log(`[ConsultantService] Page: ${page}, PageSize: ${pageSize}`);
     
     // Pour le moment, nous utilisons l'API complète et simulons la pagination côté client
     return this.apiService.get<Consultant[]>('consultants')
       .pipe(
-        tap(response => console.log('API Response received:', response)),
+        tap(response => {
+          console.log('[ConsultantService] API Response received - length:', response?.length || 0);
+          if (response?.length === 0) {
+            console.warn('[ConsultantService] API returned empty consultant array');
+          }
+        }),
         map(consultants => {
+          // Vérifier que consultants est bien un tableau
+          if (!Array.isArray(consultants)) {
+            console.error('[ConsultantService] API did not return an array of consultants:', consultants);
+            return [];
+          }
           // Simuler la pagination côté client
           const startIndex = (page - 1) * pageSize;
           const endIndex = startIndex + pageSize;
+          console.log(`[ConsultantService] Slice from ${startIndex} to ${endIndex}`);
           return consultants.slice(startIndex, endIndex);
         }),
-        map(consultants => consultants.map(consultant => ({
-          ...consultant,
-          tags: this.extractTags(consultant.message)
-        }))),
+        map(consultants => {
+          console.log(`[ConsultantService] Processing ${consultants.length} consultants, adding tags`);
+          return consultants.map(consultant => ({
+            ...consultant,
+            tags: this.extractTags(consultant?.message || '')
+          }));
+        }),
         catchError(error => {
-          console.error('Error fetching paged consultants:', error);
+          console.error('[ConsultantService] Error fetching paged consultants:', error);
           // Retourner l'erreur au lieu d'utiliser des données de repli
           return throwError(() => new Error('Impossible de récupérer les consultants paginés. ' + 
             (error.status === 0 ? 
