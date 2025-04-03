@@ -46,7 +46,7 @@ task = "packager.installForAll"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd connect-extension-app && ng serve --host 0.0.0.0 --port 5000 --disable-host-check --proxy-config proxy.conf.json"
+args = "cd connect-extension-app && node set-environment.js"
 waitForPort = 5000
 
 [deployment]
