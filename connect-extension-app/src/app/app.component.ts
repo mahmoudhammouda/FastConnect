@@ -344,7 +344,17 @@ export class AppComponent implements OnInit {
   /**
    * Fonction pour fermer les dropdowns lorsqu'on clique ailleurs
    */
-  closeSkillsDropdowns = () => {
+  closeSkillsDropdowns = (event: MouseEvent) => {
+    // Vérifier si le clic est dans un des dropdowns
+    const desktopDropdown = document.querySelector('.skill-dropdown-desktop');
+    const mobileDropdown = document.querySelector('.skill-dropdown-mobile');
+    
+    // Ne pas fermer si on a cliqué dans le dropdown
+    if ((desktopDropdown && desktopDropdown.contains(event.target as Node)) || 
+        (mobileDropdown && mobileDropdown.contains(event.target as Node))) {
+      return;
+    }
+    
     this.skillsDropdownOpen = false;
     this.mobileSkillsDropdownOpen = false;
     document.removeEventListener('click', this.closeSkillsDropdowns);
