@@ -123,9 +123,13 @@ namespace ConnectExtension.Backend
             // Middleware de logging des requêtes/réponses
             app.UseRequestResponseLogging();
             
-            // Note: Nous n'utilisons plus app.UseStaticFiles() car l'API et l'application Angular sont séparées
-            
+            // Routes et middleware
             app.UseRouting();
+            
+            // Activation des fichiers statiques pour servir l'application Angular via .NET Core
+            // Important: UseStaticFiles doit être après UseRouting pour que les routes API soient prioritaires
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             
             // Use CORS policy
             app.UseCors("AllowChromeExtension");
@@ -138,7 +142,12 @@ namespace ConnectExtension.Backend
             {
                 endpoints.MapControllers();
                 
-                // Note: Nous avons retiré le fallback vers index.html car l'API et l'application Angular sont séparées
+                // Ajout du fallback vers index.html pour les routes non-API (SPA fallback)
+                // Exclure explicitement les routes commençant par /api/
+                endpoints.MapFallbackToFile("/index.html", new Microsoft.AspNetCore.StaticFiles.StaticFileOptions
+                {
+                    RequestPath = ""
+                }).WithDisplayName("SPA-Fallback").WithMetadata(new Microsoft.AspNetCore.Builder.SpaFallbackMetadata());
             });
             
             logger.LogInformation("Routes et middlewares configurés");

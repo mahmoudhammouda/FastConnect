@@ -46,8 +46,7 @@ task = "packager.installForAll"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd connect-extension-app && npm run serve:replit"
-waitForPort = 5000
+args = "cd connect-extension-app && npm run build:replit && mkdir -p ../connect-api/wwwroot && cp -r dist/* ../connect-api/wwwroot/"
 
 [deployment]
 run = ["sh", "-c", "cd connect-api && dotnet run"]
