@@ -128,6 +128,7 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
         this.selectedExperience = filterParams.selectedExperience || 'all';
         this.selectedAvailability = filterParams.selectedAvailability || 'all';
         this.selectedLocation = filterParams.selectedLocation || 'all';
+        this.selectedSkills = filterParams.selectedSkills || []; // Récupérer les compétences sélectionnées
         
         // Appliquer les filtres avec les nouvelles valeurs
         this.applyFilters();

@@ -32,7 +32,13 @@ export class AppComponent implements OnInit {
   selectedExperience: string = 'all';
   selectedAvailability: string = 'all';
   selectedLocation: string = 'all';
+  selectedSkills: string[] = []; // Pour stocker les compétences sélectionnées
   availableLocations: string[] = [];
+  availableSkills: string[] = []; // Pour stocker les compétences disponibles
+  
+  // États pour les dropdowns de compétences
+  skillsDropdownOpen = false;
+  mobileSkillsDropdownOpen = false;
   experienceOptions = [
     { value: 'less_than_3', label: 'Moins de 3 ans' },
     { value: 'between_3_and_10', label: 'Entre 3 et 10 ans' },
@@ -105,15 +111,30 @@ export class AppComponent implements OnInit {
     this.consultantService.getConsultants().subscribe(consultants => {
       // Extraire les localisations disponibles
       const locationsSet = new Set<string>();
+      
+      // Extraire les compétences disponibles
+      const skillsSet = new Set<string>();
+      
       consultants.forEach(consultant => {
+        // Traitement des localisations
         if (consultant.location) {
           const locations = consultant.location.split(',').map(loc => loc.trim());
           locations.forEach(location => {
             locationsSet.add(location);
           });
         }
+        
+        // Traitement des compétences
+        if (consultant.skills && Array.isArray(consultant.skills)) {
+          // Si skills est déjà un tableau, on peut directement itérer dessus
+          consultant.skills.forEach((skill: string) => {
+            if (skill) skillsSet.add(skill.trim());
+          });
+        }
       });
+      
       this.availableLocations = Array.from(locationsSet).sort();
+      this.availableSkills = Array.from(skillsSet).sort();
     });
   }
   
@@ -141,7 +162,8 @@ export class AppComponent implements OnInit {
       searchText: this.searchText,
       selectedExperience: this.selectedExperience,
       selectedAvailability: this.selectedAvailability,
-      selectedLocation: this.selectedLocation
+      selectedLocation: this.selectedLocation,
+      selectedSkills: this.selectedSkills // Ajout des compétences sélectionnées
     };
     localStorage.setItem('fastconnect-filter-params', JSON.stringify(filterParams));
     
@@ -160,6 +182,7 @@ export class AppComponent implements OnInit {
     this.selectedExperience = 'all';
     this.selectedAvailability = 'all';
     this.selectedLocation = 'all';
+    this.selectedSkills = []; // Vider les compétences sélectionnées
     
     // Appliquer les filtres réinitialisés
     this.applyAdvancedFilters();
@@ -284,5 +307,67 @@ export class AppComponent implements OnInit {
    */
   isMobileView(): boolean {
     return window.innerWidth < this.mobileBreakpoint;
+  }
+
+  /**
+   * Ouvre/ferme le dropdown de compétences en mode desktop
+   */
+  toggleSkillsDropdown(event: Event): void {
+    event.stopPropagation();
+    this.skillsDropdownOpen = !this.skillsDropdownOpen;
+    this.mobileSkillsDropdownOpen = false; // Ferme le dropdown mobile si ouvert
+    
+    // Ajouter un écouteur d'événement au document pour fermer le dropdown quand on clique ailleurs
+    if (this.skillsDropdownOpen) {
+      setTimeout(() => {
+        document.addEventListener('click', this.closeSkillsDropdowns);
+      }, 0);
+    }
+  }
+
+  /**
+   * Ouvre/ferme le dropdown de compétences en mode mobile
+   */
+  toggleMobileSkillsDropdown(event: Event): void {
+    event.stopPropagation();
+    this.mobileSkillsDropdownOpen = !this.mobileSkillsDropdownOpen;
+    this.skillsDropdownOpen = false; // Ferme le dropdown desktop si ouvert
+    
+    // Ajouter un écouteur d'événement au document pour fermer le dropdown quand on clique ailleurs
+    if (this.mobileSkillsDropdownOpen) {
+      setTimeout(() => {
+        document.addEventListener('click', this.closeSkillsDropdowns);
+      }, 0);
+    }
+  }
+
+  /**
+   * Fonction pour fermer les dropdowns lorsqu'on clique ailleurs
+   */
+  closeSkillsDropdowns = () => {
+    this.skillsDropdownOpen = false;
+    this.mobileSkillsDropdownOpen = false;
+    document.removeEventListener('click', this.closeSkillsDropdowns);
+  }
+
+  /**
+   * Vérifie si une compétence est déjà sélectionnée
+   */
+  isSkillSelected(skill: string): boolean {
+    return this.selectedSkills.includes(skill);
+  }
+
+  /**
+   * Ajoute ou retire une compétence de la sélection
+   */
+  toggleSkill(skill: string): void {
+    const index = this.selectedSkills.indexOf(skill);
+    if (index === -1) {
+      // Ajouter la compétence si elle n'est pas déjà sélectionnée
+      this.selectedSkills.push(skill);
+    } else {
+      // Retirer la compétence si elle est déjà sélectionnée
+      this.selectedSkills.splice(index, 1);
+    }
   }
 }
