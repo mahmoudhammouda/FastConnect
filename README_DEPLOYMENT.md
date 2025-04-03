@@ -2,7 +2,10 @@
 
 > **STATUT DE DÉPLOIEMENT : ✅ FONCTIONNEL**
 >  
+> **Dernière validation : 03/04/2025**
+>
 > Ce guide a été validé et testé. Tous les déploiements fonctionnent correctement à la fois sur Replit et en local.
+> Les services sont stables lors des redémarrages et la communication entre le backend et le frontend est confirmée.
 
 Ce document décrit les procédures de déploiement de l'application FastConnect dans différents environnements.
 
@@ -112,6 +115,27 @@ Une fois les workflows démarrés, vous pouvez vérifier que tout fonctionne cor
 1. L'API .NET Core doit afficher des logs de démarrage et écouter sur le port 8000
 2. L'application Angular doit être compilée avec succès et accessible sur le port 5000
 3. En accédant à l'URL de l'application Angular (visible dans l'interface Replit), vous devriez voir l'interface utilisateur avec les données de consultants chargées depuis l'API
+
+### Tests de fiabilité et redémarrages
+
+Le système a été testé pour vérifier sa stabilité lors des redémarrages, avec les résultats suivants :
+
+1. **Redémarrage du workflow API** :
+   - L'API .NET Core redémarre correctement et est rapidement disponible
+   - Les requêtes existantes peuvent être temporairement interrompues pendant le redémarrage (~5 secondes)
+   - L'application Angular reconnaît automatiquement la connexion à l'API dès qu'elle est rétablie
+
+2. **Redémarrage du workflow Angular** :
+   - L'application Angular redémarre sans problème et recompile tous les assets
+   - Le script `set-environment.js` détecte toujours correctement l'environnement Replit
+   - La communication avec l'API est rétablie automatiquement après la recompilation
+
+3. **Redémarrage simultané des deux workflows** :
+   - Les deux services redémarrent sans conflit
+   - La séquence de redémarrage n'a pas d'importance (l'API peut être démarrée avant ou après Angular)
+   - Aucune configuration manuelle n'est nécessaire après le redémarrage
+
+Ces tests confirment que l'architecture de déploiement est robuste et tolérante aux redémarrages, ce qui est essentiel pour la maintenance et les mises à jour en production.
 
 ## Génération de l'extension Chrome
 

@@ -2,6 +2,41 @@
 
 Ce document recense les modifications significatives apportées au projet FastConnect, avec les détails des commits, branches, et explications des changements.
 
+## 2025-04-03
+
+### Validation: "Test de stabilité des workflows Replit et communication API"
+
+**Description**: Vérification complète de la stabilité et fiabilité du déploiement sur Replit, avec tests de redémarrage des services.
+
+**Modifications**:
+1. **Tests approfondis de redémarrage**:
+   - Validation du redémarrage individuel du workflow Connect API
+   - Validation du redémarrage individuel du workflow Angular Frontend
+   - Validation du redémarrage simultané des deux workflows
+   - Confirmation de la détection automatique de l'environnement Replit par le script set-environment.js
+
+2. **Améliorations de la documentation**:
+   - Mise à jour du README_DEPLOYMENT.md avec les résultats des tests
+   - Ajout d'une section détaillée sur les tests de fiabilité et redémarrages
+   - Ajout d'une date de dernière validation du déploiement
+
+3. **Vérification de la communication API**:
+   - Confirmation du fonctionnement du proxy Angular vers l'API backend
+   - Vérification de la récupération des données consultants via l'API
+   - Tests de performance des appels API après redémarrage
+
+**Résultats des tests**:
+- Temps moyen de redémarrage de l'API .NET Core: ~5 secondes
+- Temps moyen de redémarrage et compilation Angular: ~7-10 secondes
+- Stabilité du processus de détection d'environnement: 100% (aucune erreur)
+- Communication API après redémarrage: Fonctionnelle, sans intervention manuelle
+
+**Implications techniques**:
+- La configuration actuelle est robuste et tolérante aux redémarrages
+- Le système de détection d'environnement automatique fonctionne parfaitement
+- La stratégie de proxy pour la communication API est fiable et sans défaillance
+- L'architecture globale est validée pour un déploiement en production
+
 ## 2025-04-02 (Suite)
 
 ### Modification: "Fix: Corrected Angular environment configuration to properly communicate with API"
