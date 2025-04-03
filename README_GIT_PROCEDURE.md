@@ -6,10 +6,11 @@ Ce document recense les commandes Git couramment utilisées dans le projet FastC
 1. [Commandes basiques](#commandes-basiques)
 2. [Navigation entre branches](#navigation-entre-branches)
 3. [Synchronisation avec le dépôt distant](#synchronisation-avec-le-dépôt-distant)
-4. [Gestion des modifications](#gestion-des-modifications)
-5. [Gestion des branches](#gestion-des-branches)
-6. [Résolution de conflits](#résolution-de-conflits)
-7. [Bonnes pratiques](#bonnes-pratiques)
+4. [Création et suivi de branches distantes](#création-et-suivi-de-branches-distantes)
+5. [Gestion des modifications](#gestion-des-modifications)
+6. [Gestion des branches](#gestion-des-branches)
+7. [Résolution de conflits](#résolution-de-conflits)
+8. [Bonnes pratiques](#bonnes-pratiques)
 
 ## Commandes basiques
 
@@ -102,7 +103,22 @@ git push
 git push origin feature/adaptation_chrome
 ```
 
-### Configurer le suivi d'une branche distante
+## Création et suivi de branches distantes
+
+### Créer une branche distante et configurer le suivi
+Si vous avez créé une branche locale et que vous souhaitez la pousser vers le dépôt distant (créer la branche distante si elle n'existe pas), puis configurer le suivi :
+
+```bash
+# Créer une branche locale à partir de develop
+git checkout -b feature/nouvelle-fonctionnalite develop
+
+# Pousser la branche locale vers le dépôt distant et configurer le suivi (-u ou --set-upstream)
+git push -u origin feature/nouvelle-fonctionnalite
+```
+
+Cette commande crée la branche distante `feature/nouvelle-fonctionnalite` si elle n'existe pas encore et configure automatiquement le suivi. Votre branche locale est maintenant liée à la branche distante.
+
+### Configurer le suivi d'une branche distante existante
 Si vous obtenez une erreur du type "no upstream branch", vous devez configurer le suivi:
 ```bash
 git branch --set-upstream-to=origin/feature/adaptation_chrome feature/adaptation_chrome
@@ -230,8 +246,9 @@ git merge --abort
    git add .
    git commit -m "Feature: Implement consultant card component"
    ```
-4. Pousser la branche (pour sauvegarder ou partager)
+4. Pousser la branche et créer la branche distante (pour sauvegarder ou partager)
    ```bash
+   # Cette commande crée la branche distante si elle n'existe pas et configure le suivi
    git push -u origin feature/nouvelle-fonctionnalite
    ```
 5. Créer une Pull Request lorsque la fonctionnalité est terminée

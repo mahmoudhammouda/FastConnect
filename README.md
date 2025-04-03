@@ -57,6 +57,8 @@ Extension Chrome et application web pour la découverte intelligente de consulta
 L'architecture du projet a été conçue pour fonctionner dans différents environnements (développement local, extension Chrome, production, Replit) avec une configuration automatique.
 
 > **NOUVEAU !** Un système de configuration automatique a été implémenté pour faciliter le déploiement dans différents environnements. Pour plus de détails, consultez [README_CONFIG.md](README_CONFIG.md).
+>
+> ✅ **VALIDATION DÉPLOIEMENT (03/04/2025) :** Le déploiement a été validé et fonctionne correctement à la fois sur Replit et en local. La stabilité des services a été confirmée lors de tests de redémarrage. Pour des instructions détaillées sur le déploiement et les résultats des tests, consultez le [Guide de Déploiement](./README_DEPLOYMENT.md).
 
 ### Architecture des environnements
 
