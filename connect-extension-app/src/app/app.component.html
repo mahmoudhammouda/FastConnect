@@ -1,7 +1,33 @@
 <div class="flex justify-center w-full h-screen flex-col overflow-hidden">
+  <!-- DÉBOGEUR STATIQUE -->
+  <div id="header-debug-bar" *ngIf="isDebugEnabled" style="position: fixed; top: 0; left: 0; right: 0; background-color: #2563eb; color: white; padding: 5px; text-align: center; font-size: 14px; z-index: 9999;">
+    FastConnect v1.0 - Environnement: {{ debugInfo.environment }} - Base: {{ debugInfo.baseHref }}
+    <span class="ml-2 text-yellow-200">
+      <a routerLink="/debug" class="underline hover:text-white mr-2">Debug Page</a>
+      <button (click)="toggleFloatingDebug()" class="px-2 py-0.5 bg-indigo-700 rounded-sm text-xs hover:bg-indigo-800 mr-1" title="Activer/désactiver le panneau de débogage flottant">
+        {{ showFloatingDebug ? 'Cacher Infos' : 'Afficher Infos' }}
+      </button>
+      <button (click)="toggleDebugMode()" class="px-2 py-0.5 bg-red-700 rounded-sm text-xs hover:bg-red-800" title="Désactiver complètement le mode débogage">
+        Mode Debug {{ isDebugEnabled ? 'ON' : 'OFF' }}
+      </button>
+    </span>
+  </div>
+  
+  <!-- Bouton pour réactiver le mode debug (visible uniquement quand le mode debug est désactivé) -->
+  <div *ngIf="!isDebugEnabled" 
+       #debugButton
+       style="position: fixed; bottom: 10px; right: 10px; z-index: 9999; opacity: 0.6; transition: opacity 0.3s ease; cursor: pointer;" 
+       (click)="toggleDebugMode()" 
+       (mouseenter)="debugButton.style.opacity = '1'" 
+       (mouseleave)="debugButton.style.opacity = '0.6'">
+    <button class="px-2 py-1 bg-gray-800 text-white rounded text-xs">
+      <i class="fas fa-bug mr-1"></i> Debug
+    </button>
+  </div>
+
   <div class="w-full max-w-3xl mx-auto flex flex-col h-full">
     <!-- Header Section en position fixe -->
-    <div class="bg-gray-50 p-4 shadow-md z-40">
+    <div class="bg-gray-50 p-4 shadow-md z-40 mt-8">
       <div class="flex items-center justify-between">
         <h1 class="text-xl font-bold">
           <a routerLink="/" class="hover:text-indigo-600 transition duration-150">
@@ -78,10 +104,10 @@
     </div>
 
     <!-- Route principale (consultants ou autre contenu) -->
-    <router-outlet *ngIf="currentRoute !== '/' && currentRoute !== '/consultants'"></router-outlet>
+    <router-outlet></router-outlet>
     
-    <!-- Afficher la liste des consultants sur la route principale -->
-    <app-consultant-list *ngIf="currentRoute === '/' || currentRoute === '/consultants'"></app-consultant-list>
+    <!-- Afficher la liste des consultants sur la route principale directement si nécessaire -->
+    <!-- <app-consultant-list *ngIf="currentRoute === '/' || currentRoute === '/consultants'"></app-consultant-list> -->
   </div>
   
   <!-- Login Modal Component -->

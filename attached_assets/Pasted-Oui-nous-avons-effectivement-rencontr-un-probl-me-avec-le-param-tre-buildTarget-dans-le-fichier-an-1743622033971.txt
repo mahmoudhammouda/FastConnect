@@ -1,0 +1,46 @@
+Oui, nous avons effectivement rencontré un problème avec le paramètre buildTarget dans le fichier angular.json. Voici ce qui s'est passé :
+
+Problème avec buildTarget dans Angular
+Lorsque nous travaillions sur la configuration Angular pour la génération de l'extension Chrome, nous avons rencontré une erreur de schéma dans le fichier angular.json. L'erreur indiquait quelque chose comme :
+
+CopyInsert
+Data path must have required property 'browserTarget'
+Le problème était que dans la configuration du projet Angular, nous utilisions buildTarget alors que la version d'Angular que nous utilisons exige l'utilisation de browserTarget à la place.
+
+Cause du problème
+Cette erreur est survenue parce que les versions plus récentes d'Angular ont modifié leur schéma de configuration. Dans les versions antérieures, il était possible d'utiliser buildTarget, mais cela a été remplacé par browserTarget dans les versions plus récentes.
+
+Solution mise en œuvre
+Nous avons résolu ce problème en modifiant le fichier angular.json pour remplacer toutes les occurrences de buildTarget par browserTarget. Voici un exemple de la modification que nous avons effectuée :
+
+json
+CopyInsert
+// Avant
+"architect": {
+  "build": {
+    // ...
+  },
+  "serve-extension": {
+    "builder": "@angular-devkit/build-angular:dev-server",
+    "options": {
+      "buildTarget": "connect-extension-app:build-local-extension"
+    }
+  }
+}
+
+// Après
+"architect": {
+  "build": {
+    // ...
+  },
+  "serve-extension": {
+    "builder": "@angular-devkit/build-angular:dev-server",
+    "options": {
+      "browserTarget": "connect-extension-app:build-local-extension"
+    }
+  }
+}
+Impact et importance
+Cette modification était cruciale car sans elle, nous ne pouvions pas générer correctement l'extension Chrome en mode développement. L'erreur empêchait le serveur de développement Angular de démarrer, ce qui bloquait notre workflow de développement.
+
+Cette correction fait partie des améliorations apportées pour assurer la compatibilité avec les versions actuelles d'Angular et permettre un développement fluide de l'extension FastConnect pour la découverte de consultants spécialisés.

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FastConnect - Redirection</title>
+    <script>
+        // Fonction pour rediriger vers l'application Angular
+        function redirectToAngular() {
+            // Obtenir l'URL de base actuelle
+            const currentUrl = window.location.href;
+            let angularUrl;
+            
+            // Si nous sommes sur Replit
+            if (currentUrl.includes('.replit.dev') || currentUrl.includes('.repl.co')) {
+                // Récupérer la partie du domaine actuel
+                const urlObj = new URL(currentUrl);
+                const domain = urlObj.hostname;
+                
+                // Construire l'URL pour le port 5000 (Angular)
+                // Format: https://5000-[domain]
+                const domainParts = domain.split('.');
+                if (domainParts.length >= 2) {
+                    // Remplacer le premier segment (le port ou l'ID) par 5000
+                    let newDomain;
+                    if (domain.match(/^\d+-/)) {
+                        // Si le domaine commence déjà par un nombre suivi d'un tiret
+                        newDomain = domain.replace(/^\d+-/, '5000-');
+                    } else {
+                        // Sinon, ajouter 5000- au début
+                        newDomain = '5000-' + domain;
+                    }
+                    
+                    angularUrl = urlObj.protocol + '//' + newDomain;
+                } else {
+                    // Fallback: essayer directement avec le port 5000
+                    angularUrl = 'https://5000-' + domain;
+                }
+            } else {
+                // En local, rediriger vers localhost:5000
+                angularUrl = 'http://localhost:5000';
+            }
+            
+            // Effectuer la redirection
+            console.log("Redirection vers: " + angularUrl);
+            window.location.href = angularUrl;
+            
+            // Mettre à jour le lien de redirection manuelle
+            document.getElementById('manual-link').href = angularUrl;
+            document.getElementById('manual-link').textContent = angularUrl;
+        }
+        
+        // Attendre que le DOM soit chargé
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mettre à jour l'URL dans le texte
+            document.getElementById('angular-url').textContent = window.location.origin.replace(/^https?:\/\/[^-]*/, 'https://5000-') || 'https://5000-[votre-replit].replit.dev';
+            
+            // Configurer le bouton de redirection
+            document.getElementById('redirect-button').addEventListener('click', redirectToAngular);
+        });
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        h1 {
+            color: #4a5568;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        .button {
+            background-color: #4F46E5;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .button:hover {
+            background-color: #4338CA;
+        }
+        .info {
+            background-color: #EFF6FF;
+            border-left: 4px solid #3B82F6;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+        }
+        code {
+            background-color: #EDF2F7;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>FastConnect - Accès à l'Application</h1>
+    
+    <div class="info">
+        <p><strong>Remarque :</strong> Cette page est une page d'accueil temporaire. L'application Angular s'exécute sur le port 5000.</p>
+    </div>
+    
+    <div class="container">
+        <h2>Accéder à l'application Angular</h2>
+        <p>Pour accéder à l'application FastConnect, veuillez utiliser l'URL suivante :</p>
+        <code id="angular-url">https://5000-[votre-replit].replit.dev</code>
+        
+        <p>Vous pouvez cliquer sur le bouton ci-dessous pour être redirigé automatiquement :</p>
+        <button id="redirect-button" class="button">Accéder à FastConnect</button>
+        
+        <p>Si la redirection automatique ne fonctionne pas, <a id="manual-link" href="#" target="_blank">cliquez ici</a> pour ouvrir l'application dans un nouvel onglet.</p>
+    </div>
+    
+    <div class="container">
+        <h2>Documentation</h2>
+        <p>FastConnect est une extension Chrome pour la découverte intelligente de consultants. L'application est composée de :</p>
+        <ul>
+            <li>Frontend Angular (port 5000)</li>
+            <li>Backend .NET Core (port 8000)</li>
+        </ul>
+        <p>Pour plus d'informations, consultez le fichier README.md du projet.</p>
+    </div>
+    
+    <script>
+        // Tenter la redirection après un court délai
+        setTimeout(redirectToAngular, 1000);
+    </script>
+</body>
+</html>

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular-app": {
+    "connect-extension-app": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -18,7 +18,9 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.json",
-            "assets": ["src/favicon.ico"],
+            "assets": [
+              "src/favicon.ico"
+            ],
             "styles": [
               "src/styles.css"
             ],
@@ -41,6 +43,64 @@
               ],
               "outputHashing": "all"
             },
+            "local": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
+                }
+              ],
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
+            "local-extension": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local-extension.ts"
+                }
+              ],
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
+            "replit": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.replit.ts"
+                }
+              ],
+              "optimization": false,
+              "outputHashing": "none",
+              "sourceMap": true,
+              "namedChunks": true,
+              "extractLicenses": false,
+              "vendorChunk": true,
+              "buildOptimizer": false
+            },
+            "prod-extension": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod-extension.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true
+            },
             "development": {
               "buildOptimizer": false,
               "optimization": false,
@@ -57,15 +117,18 @@
           "options": {
             "port": 5000,
             "host": "0.0.0.0",
-            "browserTarget": "angular-app:build",
-            "proxyConfig": "proxy.conf.json"
+            "proxyConfig": "proxy.conf.json",
+            "buildTarget": "connect-extension-app:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "angular-app:build:production"
+              "buildTarget": "connect-extension-app:build:production"
             },
             "development": {
-              "browserTarget": "angular-app:build:development"
+              "buildTarget": "connect-extension-app:build:development"
+            },
+            "replit": {
+              "buildTarget": "connect-extension-app:build:replit"
             }
           },
           "defaultConfiguration": "development"

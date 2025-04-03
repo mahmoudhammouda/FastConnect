@@ -4,14 +4,18 @@ import { LoginComponent } from './components/auth/login/login.component';
 import { UserProfileComponent } from './components/user/profile/user-profile.component';
 import { ConsultantListComponent } from './components/consultant-list/consultant-list.component';
 import { AuthGuard } from './guards/auth.guard';
+import { AppDebugComponent } from './app.component.debug';
 
 const routes: Routes = [
   // Route principale - consultants list
-  { path: '', redirectTo: '/consultants', pathMatch: 'full' },
-  { path: 'consultants', component: ConsultantListComponent }, // Route principale pour la liste des consultants
+  { path: '', component: ConsultantListComponent }, // Route principale directe vers la liste des consultants
+  { path: 'consultants', component: ConsultantListComponent }, // Route alternative
   
   // Routes d'authentification
   { path: 'login', component: LoginComponent },
+
+  // Route de débogage
+  { path: 'debug', component: AppDebugComponent },
   
   // Routes protégées par AuthGuard
   { 
@@ -35,11 +39,11 @@ const routes: Routes = [
   },
   
   // Redirection par défaut
-  { path: '**', redirectTo: '' }
+  { path: '**', component: ConsultantListComponent } // Redirection vers la liste des consultants
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true })],
+  imports: [RouterModule.forRoot(routes, { useHash: false })], // Suppression du mode hash pour une meilleure compatibilité
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

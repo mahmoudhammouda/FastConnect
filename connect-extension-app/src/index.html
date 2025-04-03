@@ -2,14 +2,74 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Connect Extension</title>
-  <base href="/">
+  <title>FastConnect</title>
+  <base href="/"><!-- Utilisé pour l'application web -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Style de débug pré-application -->
+  <style>
+    .pre-app-debug {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background-color: #2c3e50;
+      color: white;
+      padding: 10px;
+      font-family: monospace;
+      z-index: 10000;
+      text-align: center;
+    }
+    
+    /* Début de l'animation de chargement */
+    .loader {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body class="bg-gray-100">
+  <!-- Élément de débogage pré-application -->
+  <div class="pre-app-debug">
+    Chargement de FastConnect...
+    <div class="loader"></div>
+    <div id="pre-debug-info">
+      <small>URL: <span id="current-url"></span></small>
+    </div>
+  </div>
+  
+  <script>
+    // Script de débogage pré-application
+    document.getElementById('current-url').textContent = window.location.href;
+    
+    // Supprimer l'élément de débogage après le chargement de l'application (ou après un délai)
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        const debugElement = document.querySelector('.pre-app-debug');
+        if (debugElement) {
+          debugElement.style.opacity = '0';
+          debugElement.style.transition = 'opacity 0.5s';
+          setTimeout(() => {
+            if (debugElement.parentNode) {
+              debugElement.parentNode.removeChild(debugElement);
+            }
+          }, 500);
+        }
+      }, 2000);
+    });
+  </script>
+  
   <app-root></app-root>
 </body>
 </html>

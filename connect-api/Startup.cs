@@ -123,6 +123,8 @@ namespace ConnectExtension.Backend
             // Middleware de logging des requêtes/réponses
             app.UseRequestResponseLogging();
             
+            // Note: Nous n'utilisons plus app.UseStaticFiles() car l'API et l'application Angular sont séparées
+            
             app.UseRouting();
             
             // Use CORS policy
@@ -135,6 +137,8 @@ namespace ConnectExtension.Backend
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                
+                // Note: Nous avons retiré le fallback vers index.html car l'API et l'application Angular sont séparées
             });
             
             logger.LogInformation("Routes et middlewares configurés");
