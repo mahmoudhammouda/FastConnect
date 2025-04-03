@@ -11,11 +11,11 @@ const { execSync } = require('child_process');
 
 // Configuration
 const config = {
-    angularAppDir: path.join(__dirname, 'connect-extension-app'),
-    extensionDir: path.join(__dirname, 'connect-extension-chrome'),
-    outputDir: path.join(__dirname, 'connect-extension-dist'),
+    angularAppDir: path.join(__dirname, '..', 'connect-extension-app'),
+    extensionDir: path.join(__dirname, '..', 'connect-extension-chrome'),
+    outputDir: path.join(__dirname, '..', 'connect-extension-dist'),
     buildCommand: 'npx ng build --configuration local-extension',
-    buildOutputDir: path.join(__dirname, 'connect-extension-app', 'dist')
+    buildOutputDir: path.join(__dirname, '..', 'connect-extension-app', 'dist')
 };
 
 // Couleurs pour les messages de console
@@ -195,12 +195,22 @@ function generateExtension() {
         fs.copyFileSync(manifestSrc, manifestDest);
         logMessage('✅ manifest.json copié', 'green');
         
-        // Copier les icônes
+        // Copier les icônes depuis le dossier icons (si existe)
         const iconsSrc = path.join(config.extensionDir, 'icons');
         if (fs.existsSync(iconsSrc)) {
             const iconsDest = path.join(config.outputDir, 'icons');
             copyFileOrDirectory(iconsSrc, iconsDest);
-            logMessage('✅ Icônes copiées', 'green');
+            logMessage('✅ Icônes du dossier copiées', 'green');
+        }
+        
+        // Copier l'icône principale icon.png si elle existe
+        const iconSrc = path.join(config.extensionDir, 'icon.png');
+        if (fs.existsSync(iconSrc)) {
+            const iconDest = path.join(config.outputDir, 'icon.png');
+            fs.copyFileSync(iconSrc, iconDest);
+            logMessage('✅ icon.png copié', 'green');
+        } else {
+            logMessage('⚠ Attention: icon.png n\'existe pas dans le répertoire source', 'yellow');
         }
         
         // Copier les scripts de background et autres fichiers JS
