@@ -177,23 +177,30 @@
 
 /* Styles pour le panneau de filtres */
 .filter-panel {
-  transform-origin: top left;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  position: absolute;
+  transform-origin: top center;
+  box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  position: relative;
   width: 100%;
   max-width: 100%;
-  z-index: 30;
+  z-index: 20;
+  max-height: 0;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  overflow: hidden;
 }
 
 .filter-panel-show {
-  transform: translateY(0);
+  max-height: 400px; /* Hauteur par défaut pour desktop (une seule ligne) */
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
   opacity: 1;
   visibility: visible;
+  overflow: visible; /* Permet au contenu de déborder si nécessaire */
 }
 
 .filter-panel-hide {
-  transform: translateY(-20px);
+  max-height: 0;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -201,7 +208,7 @@
 
 /* Espace réservé pour éviter les sauts de contenu */
 .filter-panel-spacer-visible {
-  height: 180px; /* Ajuster selon la hauteur approximative du panneau de filtres */
+  height: 200px; /* Réduit pour desktop (affichage sur une ligne) */
   transition: height 0.3s ease;
 }
 
@@ -210,14 +217,19 @@
   transition: height 0.3s ease;
 }
 
-/* Adaptation pour mobile */
-@media (max-width: 640px) {
+/* Adaptation pour mobile et tablette */
+@media (max-width: 768px) {
   .filter-panel {
-    top: 56px; /* Ajuster pour les appareils mobiles si nécessaire */
+    top: 48px; /* Réduit pour coller à la barre de navigation mobile */
   }
   
   .filter-panel-spacer-visible {
-    height: 280px; /* Ajuster pour les appareils mobiles */
+    height: 420px; /* Augmenté pour s'assurer que tout le contenu est visible sur mobile */
+  }
+  
+  .filter-panel-show {
+    max-height: 700px; /* Augmenté pour mobile pour s'assurer que tous les filtres sont visibles */
+    border-top: none; /* Supprime la bordure supérieure pour une transition fluide */
   }
 }
 

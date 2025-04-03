@@ -29,7 +29,7 @@
     <!-- Header Style LinkedIn - sans nom d'application - optimisé pour mobile -->
     <div class="bg-white p-2 shadow-sm z-40 mt-8 sticky top-0">
       <div class="flex items-center justify-between space-x-2 px-1">
-        <!-- Barre de recherche style LinkedIn (sans padding latéral) avec panneau de filtres -->
+        <!-- Barre de recherche style LinkedIn (sans padding latéral) -->
         <div class="relative flex-grow">
           <input 
             type="text" 
@@ -43,89 +43,16 @@
               <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
             </svg>
           </div>
-          
-          <!-- Panneau de filtres avancés - style LinkedIn -->
-          <div 
-            [ngClass]="{'filter-panel-show': showFilterPanel, 'filter-panel-hide': !showFilterPanel}"
-            class="bg-white shadow-md w-full filter-panel p-3 overflow-hidden top-full mt-1 rounded-md border border-gray-200">
-            <div class="space-y-3">
-              <div class="flex justify-between items-center mb-2">
-                <h3 class="font-medium text-sm text-gray-700">Filtres avancés</h3>
-                <button 
-                  (click)="toggleFilterPanel()" 
-                  class="text-gray-400 hover:text-gray-600">
-                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                  </svg>
-                </button>
-              </div>
-              
-              <!-- Filtres -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <div>
-                  <label class="block text-xs text-gray-600 mb-1">Expérience</label>
-                  <select 
-                    [(ngModel)]="selectedExperience"
-                    class="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                    <option value="all">Tout niveau</option>
-                    <option *ngFor="let exp of experienceOptions" [value]="exp.value">{{ exp.label }}</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label class="block text-xs text-gray-600 mb-1">Disponibilité</label>
-                  <select 
-                    [(ngModel)]="selectedAvailability"
-                    class="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                    <option value="all">Toutes</option>
-                    <option *ngFor="let avail of availabilityOptions" [value]="avail.value">{{ avail.label }}</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label class="block text-xs text-gray-600 mb-1">Localisation</label>
-                  <select 
-                    [(ngModel)]="selectedLocation"
-                    class="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                    <option value="all">Toutes</option>
-                    <option *ngFor="let location of availableLocations" [value]="location">{{ location }}</option>
-                  </select>
-                </div>
-                
-                <!-- Note: La sélection multiple des compétences sera implémentée ultérieurement -->
-                <div>
-                  <label class="block text-xs text-gray-600 mb-1">Recherche</label>
-                  <input 
-                    type="text" 
-                    [(ngModel)]="searchText"
-                    placeholder="Mots-clés..." 
-                    class="w-full px-2 py-1.5 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                </div>
-              </div>
-              
-              <div class="pt-2 flex justify-end space-x-2">
-                <button 
-                  (click)="resetAllFilters()"
-                  class="px-3 py-1.5 text-xs text-gray-700 border border-gray-300 rounded hover:bg-gray-50">
-                  Réinitialiser
-                </button>
-                <button 
-                  (click)="applyAdvancedFilters()"
-                  class="px-3 py-1.5 text-xs text-white bg-blue-600 rounded hover:bg-blue-700">
-                  Appliquer
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
         
-        <!-- Bouton de filtre -->
+        <!-- Bouton de filtres avancés -->
         <button 
           (click)="toggleFilterPanel()"
-          class="flex items-center justify-center p-2 rounded-full bg-gray-50 hover:bg-gray-100 transition-colors duration-150 w-8 h-8">
+          class="flex items-center justify-center gap-1 px-2 py-1.5 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors duration-150 h-8">
           <svg class="h-4 w-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
           </svg>
+          <span class="text-xs text-gray-600 hidden md:inline">Filtres avancés</span>
         </button>
         
         <!-- Bouton Profil / Connexion -->
@@ -196,8 +123,123 @@
       </div>
     </div>
     
-    <!-- Espace réservé pour le panneau de filtres (évite les sauts de contenu) -->
-    <div [ngClass]="{'filter-panel-spacer-visible': showFilterPanel, 'filter-panel-spacer-hidden': !showFilterPanel}"></div>
+    <!-- Panneau de filtres avancés - collapsable depuis la navbar -->
+    <div 
+      [ngClass]="{'filter-panel-show': showFilterPanel, 'filter-panel-hide': !showFilterPanel}"
+      class="w-full bg-white shadow-md filter-panel py-4 px-4 overflow-hidden border-t md:border-t border-gray-200">
+      <div class="space-y-4 max-w-3xl mx-auto">
+        <div class="flex justify-between items-center">
+          <h3 class="font-medium text-sm text-gray-700">Filtres avancés</h3>
+          <button 
+            (click)="toggleFilterPanel()" 
+            class="text-gray-400 hover:text-gray-600">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Filtres - Ligne unique pour desktop/tablette/extension, vertical pour mobile -->
+        <!-- Version desktop: affichage sur une ligne (4 colonnes) -->
+        <div class="hidden md:flex md:flex-row md:gap-3 md:items-end">
+          <div class="flex-1 min-w-0">
+            <label class="block text-xs font-medium text-gray-600 mb-1.5">Expérience</label>
+            <select 
+              [(ngModel)]="selectedExperience"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <option value="all">Tout niveau</option>
+              <option *ngFor="let exp of experienceOptions" [value]="exp.value">{{ exp.label }}</option>
+            </select>
+          </div>
+          
+          <div class="flex-1 min-w-0">
+            <label class="block text-xs font-medium text-gray-600 mb-1.5">Disponibilité</label>
+            <select 
+              [(ngModel)]="selectedAvailability"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <option value="all">Toutes</option>
+              <option *ngFor="let avail of availabilityOptions" [value]="avail.value">{{ avail.label }}</option>
+            </select>
+          </div>
+          
+          <div class="flex-1 min-w-0">
+            <label class="block text-xs font-medium text-gray-600 mb-1.5">Localisation</label>
+            <select 
+              [(ngModel)]="selectedLocation"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <option value="all">Toutes</option>
+              <option *ngFor="let location of availableLocations" [value]="location">{{ location }}</option>
+            </select>
+          </div>
+          
+          <div class="flex-1 min-w-0">
+            <label class="block text-xs font-medium text-gray-600 mb-1.5">Recherche</label>
+            <input 
+              type="text" 
+              [(ngModel)]="searchText"
+              placeholder="Mots-clés..." 
+              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+          </div>
+        </div>
+        
+        <!-- Version mobile: affichage vertical (1 colonne) -->
+        <div class="grid grid-cols-1 gap-4 md:hidden">
+          <div class="mb-2">
+            <label class="block text-xs font-medium text-gray-600 mb-1.5">Expérience</label>
+            <select 
+              [(ngModel)]="selectedExperience"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <option value="all">Tout niveau</option>
+              <option *ngFor="let exp of experienceOptions" [value]="exp.value">{{ exp.label }}</option>
+            </select>
+          </div>
+          
+          <div class="mb-2">
+            <label class="block text-xs font-medium text-gray-600 mb-1.5">Disponibilité</label>
+            <select 
+              [(ngModel)]="selectedAvailability"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <option value="all">Toutes</option>
+              <option *ngFor="let avail of availabilityOptions" [value]="avail.value">{{ avail.label }}</option>
+            </select>
+          </div>
+          
+          <div class="mb-2">
+            <label class="block text-xs font-medium text-gray-600 mb-1.5">Localisation</label>
+            <select 
+              [(ngModel)]="selectedLocation"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <option value="all">Toutes</option>
+              <option *ngFor="let location of availableLocations" [value]="location">{{ location }}</option>
+            </select>
+          </div>
+          
+          <div class="mb-2">
+            <label class="block text-xs font-medium text-gray-600 mb-1.5">Recherche</label>
+            <input 
+              type="text" 
+              [(ngModel)]="searchText"
+              placeholder="Mots-clés..." 
+              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+          </div>
+        </div>
+        
+        <div class="pt-3 flex justify-end space-x-3">
+          <button 
+            (click)="resetAllFilters()"
+            class="px-4 py-2 text-xs text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-150">
+            Réinitialiser
+          </button>
+          <button 
+            (click)="applyAdvancedFilters()"
+            class="px-4 py-2 text-xs text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-150">
+            Appliquer
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- L'espacement n'est plus nécessaire car le panneau utilise maintenant max-height pour l'animation -->
 
     <!-- Route principale (consultants ou autre contenu) -->
     <router-outlet></router-outlet>
