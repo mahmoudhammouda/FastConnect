@@ -124,9 +124,9 @@
     
     <!-- Panneau de filtres avancés - style LinkedIn -->
     <div 
-      *ngIf="showFilterPanel" 
-      class="bg-white shadow-md w-full z-30 filter-panel-animation p-3 overflow-hidden transition-all duration-300">
-      <div class="space-y-3">
+      [ngClass]="{'filter-panel-show': showFilterPanel, 'filter-panel-hide': !showFilterPanel}"
+      class="bg-white shadow-md w-full fixed z-30 left-0 right-0 filter-panel p-3 overflow-hidden">
+      <div class="space-y-3 max-w-3xl mx-auto">
         <div class="flex justify-between items-center mb-2">
           <h3 class="font-medium text-sm text-gray-700">Filtres avancés</h3>
           <button 
@@ -139,7 +139,7 @@
         </div>
         
         <!-- Filtres -->
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <div>
             <label class="block text-xs text-gray-600 mb-1">Expérience</label>
             <select 
@@ -195,12 +195,12 @@
         </div>
       </div>
     </div>
+    
+    <!-- Espace réservé pour le panneau de filtres (évite les sauts de contenu) -->
+    <div [ngClass]="{'filter-panel-spacer-visible': showFilterPanel, 'filter-panel-spacer-hidden': !showFilterPanel}"></div>
 
     <!-- Route principale (consultants ou autre contenu) -->
     <router-outlet></router-outlet>
-    
-    <!-- Afficher la liste des consultants sur la route principale directement si nécessaire -->
-    <!-- <app-consultant-list *ngIf="currentRoute === '/' || currentRoute === '/consultants'"></app-consultant-list> -->
   </div>
   
   <!-- Login Modal Component -->

@@ -175,6 +175,48 @@
   visibility: visible;
 }
 
+/* Styles pour le panneau de filtres */
+.filter-panel {
+  transform-origin: top center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  top: 48px; /* Ajuster en fonction de la hauteur de votre header */
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.filter-panel-show {
+  transform: translateY(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.filter-panel-hide {
+  transform: translateY(-100%);
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Espace réservé pour éviter les sauts de contenu */
+.filter-panel-spacer-visible {
+  height: 180px; /* Ajuster selon la hauteur approximative du panneau de filtres */
+  transition: height 0.3s ease;
+}
+
+.filter-panel-spacer-hidden {
+  height: 0;
+  transition: height 0.3s ease;
+}
+
+/* Adaptation pour mobile */
+@media (max-width: 640px) {
+  .filter-panel {
+    top: 56px; /* Ajuster pour les appareils mobiles si nécessaire */
+  }
+  
+  .filter-panel-spacer-visible {
+    height: 280px; /* Ajuster pour les appareils mobiles */
+  }
+}
+
 /* Responsive adjustments */
 @media (max-width: 640px) {
   .skill-badge {

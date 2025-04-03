@@ -43,7 +43,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: false })], // Suppression du mode hash pour une meilleure compatibilité
+  imports: [RouterModule.forRoot(routes, { useHash: true })], // Utilisation du mode hash pour une meilleure compatibilité avec Replit
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
