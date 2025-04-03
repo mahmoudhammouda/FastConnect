@@ -201,6 +201,15 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
         next: (data) => {
           console.log(`[ConsultantListComponent] Consultants initiaux reçus: ${data.length} consultants`);
           this.consultants = data;
+          
+          // Initialiser les messages comme étant affichés par défaut
+          this.consultants.forEach(consultant => {
+            // Initialiser le message principal
+            this.expandedMessages[consultant.id] = this.showDetailsDefault;
+            // Initialiser le message détaillé
+            this.expandedMessages[consultant.id + '-message'] = this.showDetailsDefault;
+          });
+          
           console.log('[ConsultantListComponent] Application des filtres');
           this.applyFilters();
           console.log(`[ConsultantListComponent] Après filtrage: ${this.filteredConsultants.length} consultants affichés`);
@@ -237,6 +246,14 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
             console.log("hasMoreData défini à false");
             return;
           }
+          
+          // Initialiser les messages comme étant affichés par défaut pour les nouveaux consultants
+          newData.forEach(consultant => {
+            // Initialiser le message principal
+            this.expandedMessages[consultant.id] = this.showDetailsDefault;
+            // Initialiser le message détaillé
+            this.expandedMessages[consultant.id + '-message'] = this.showDetailsDefault;
+          });
           
           // Ajouter les nouvelles données aux consultants existants
           this.consultants = [...this.consultants, ...newData];
