@@ -1,6 +1,17 @@
 # Guide de Déploiement - FastConnect
 
+> **STATUT DE DÉPLOIEMENT : ✅ FONCTIONNEL**
+>  
+> Ce guide a été validé et testé. Tous les déploiements fonctionnent correctement à la fois sur Replit et en local.
+
 Ce document décrit les procédures de déploiement de l'application FastConnect dans différents environnements.
+
+## Documentation liée
+- [README principal](./README.md) - Vue d'ensemble du projet
+- [Procédure Git](./README_GIT_PROCEDURE.md) - Workflow et procédures Git
+- [Contexte du projet](./README_CONTEXT.md) - Contexte et objectifs du projet
+- [Configuration](./README_CONFIG.md) - Options de configuration
+- [Changelog](./README_CHANGE_LOG.md) - Historique des modifications
 
 ## Table des matières
 1. [Déploiement en local](#déploiement-en-local)
