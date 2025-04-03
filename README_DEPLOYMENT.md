@@ -39,16 +39,68 @@ En environnement local, le script appelle `npm run serve:local`, qui lance l'app
 
 ## Déploiement sur Replit
 
-Sur Replit, le processus est similaire mais la configuration est automatiquement adaptée à l'environnement Replit :
+Sur Replit, le processus est simplifié grâce aux workflows qui gèrent automatiquement le démarrage des différents services.
 
-1. Lancer l'application avec :
-```bash
-npm start
-```
+### Configuration des workflows
 
-2. Le script `set-environment.js` détectera automatiquement l'environnement Replit et :
-   - Copiera `environment.replit.ts` vers `environment.ts`
-   - Lancera `npm run serve:replit` qui configure le serveur pour écouter sur `0.0.0.0:5000` permettant l'accès externe
+Le projet utilise deux workflows principaux :
+
+1. **Connect API** : Lance l'API .NET Core
+2. **Angular Frontend** : Lance l'application Angular avec la configuration Replit
+
+Pour démarrer ces workflows, Replit s'occupe automatiquement de l'exécution au démarrage. Si besoin, vous pouvez les (re)démarrer manuellement depuis l'interface Replit.
+
+### Fonctionnement de l'environnement Replit
+
+1. Au démarrage du workflow Angular Frontend, le script `set-environment.js` est exécuté :
+   ```bash
+   cd connect-extension-app && node set-environment.js
+   ```
+
+2. Ce script détecte automatiquement l'environnement Replit grâce à la présence des variables d'environnement `REPL_ID` ou `REPL_SLUG` et :
+   - Copie `environment.replit.ts` vers `environment.ts` pour utiliser la bonne configuration
+   - Lance `npm run serve:replit` qui démarre Angular avec les paramètres adaptés à Replit :
+     ```
+     ng serve --host 0.0.0.0 --port 5000 --disable-host-check --proxy-config proxy.conf.json
+     ```
+
+3. La configuration de l'environnement Replit utilise un proxy pour communiquer avec l'API :
+   ```typescript
+   export const environment = {
+     production: false,
+     apiUrl: '/api',  // Utilise le proxy configuré dans proxy.conf.json
+     isExtension: false,
+     envName: 'replit',
+     debugInfo: {
+       timestamp: new Date().toISOString(),
+       buildMode: 'Replit Development'
+     }
+   };
+   ```
+
+4. Le fichier `proxy.conf.json` redirige les requêtes `/api` vers l'API .NET Core sur le port 8000 :
+   ```json
+   {
+     "/api": {
+       "target": "http://0.0.0.0:8000",
+       "secure": false,
+       "logLevel": "debug",
+       "changeOrigin": true,
+       "headers": {
+         "Connection": "keep-alive"
+       },
+       "timeout": 60000
+     }
+   }
+   ```
+
+### Vérification du déploiement
+
+Une fois les workflows démarrés, vous pouvez vérifier que tout fonctionne correctement :
+
+1. L'API .NET Core doit afficher des logs de démarrage et écouter sur le port 8000
+2. L'application Angular doit être compilée avec succès et accessible sur le port 5000
+3. En accédant à l'URL de l'application Angular (visible dans l'interface Replit), vous devriez voir l'interface utilisateur avec les données de consultants chargées depuis l'API
 
 ## Génération de l'extension Chrome
 
@@ -112,3 +164,29 @@ Ce script fonctionne de manière similaire au script local, mais utilise la conf
    - Tous les fichiers ont été correctement copiés dans le dossier de l'extension
    - Le fichier `manifest.json` est valide
    - L'icône `icon.png` est présente dans le dossier de l'extension
+
+### Problèmes spécifiques à Replit
+
+1. **Application Angular ne se connecte pas à l'API** : Si dans l'environnement Replit, l'application ne parvient pas à se connecter à l'API, vérifiez que :
+   - Le workflow **Connect API** est bien démarré et fonctionne sur le port 8000
+   - Le fichier `environment.ts` a bien été mis à jour avec la configuration Replit (apiUrl: '/api')
+   - Le proxy est correctement configuré dans `proxy.conf.json` pour rediriger vers `http://0.0.0.0:8000`
+   - Les workflows sont redémarrés après toute modification de configuration
+
+2. **Problème de détection d'environnement** : Si le script `set-environment.js` ne détecte pas correctement l'environnement Replit :
+   - Vérifiez que les variables d'environnement `REPL_ID` ou `REPL_SLUG` sont bien définies
+   - Vous pouvez forcer l'utilisation de la configuration Replit en exécutant manuellement :
+     ```bash
+     cd connect-extension-app
+     cp src/environments/environment.replit.ts src/environments/environment.ts
+     npm run serve:replit
+     ```
+
+3. **Problèmes de performance** : Si l'application est lente sur Replit :
+   - La première compilation Angular peut prendre du temps, soyez patient
+   - Utilisez le mode production pour les déploiements à long terme :
+     ```bash
+     cd connect-extension-app
+     ng build --prod
+     ```
+   - Considérez l'utilisation d'un CDN pour les assets statiques
