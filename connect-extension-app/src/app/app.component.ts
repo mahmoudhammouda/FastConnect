@@ -24,6 +24,9 @@ export class AppComponent implements OnInit {
   showFloatingDebug = false; // Le débogueur flottant est désactivé par défaut
   debugElement: HTMLElement | null = null;
   
+  // Taille d'écran pour déterminer si on est en mobile ou desktop
+  private mobileBreakpoint = 768;
+  
   // Variables pour les filtres dans le style LinkedIn
   searchText: string = '';
   selectedExperience: string = 'all';
@@ -273,5 +276,13 @@ export class AppComponent implements OnInit {
       }
     }
     return 'U';
+  }
+  
+  /**
+   * Détermine si l'affichage est en mode mobile
+   * @returns true si la largeur d'écran est inférieure au point de rupture mobile
+   */
+  isMobileView(): boolean {
+    return window.innerWidth < this.mobileBreakpoint;
   }
 }

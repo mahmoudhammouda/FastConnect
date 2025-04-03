@@ -239,10 +239,11 @@
       </div>
     </div>
     
-    <!-- L'espacement n'est plus nécessaire car le panneau utilise maintenant max-height pour l'animation -->
-
-    <!-- Route principale (consultants ou autre contenu) -->
-    <router-outlet></router-outlet>
+    <!-- Espace pour le mode mobile lorsque le panneau de filtres est ouvert -->
+    <div [ngClass]="{'pt-0': !showFilterPanel, 'pt-0 md:pt-0': showFilterPanel, 'pt-[420px]': showFilterPanel && isMobileView()}" class="transition-all duration-300 ease-in-out">
+      <!-- Route principale (consultants ou autre contenu) -->
+      <router-outlet></router-outlet>
+    </div>
   </div>
   
   <!-- Login Modal Component -->
