@@ -196,7 +196,7 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('[ConsultantListComponent] Erreur lors du chargement des consultants:', error);
-          this.errorMessage = 'Impossible de charger les consultants. Veuillez réessayer plus tard.';
+          this.errorMessage = 'erreur_chargement';
           this.isLoading = false;
         }
       });
@@ -241,7 +241,7 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
         error => {
           console.error('Error fetching more consultants:', error);
           this.isLoadingMore = false;
-          this.errorMessage = 'Erreur lors du chargement de plus de consultants. Veuillez réessayer.';
+          this.errorMessage = 'erreur_chargement';
         }
       );
   }
