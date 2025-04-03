@@ -31,20 +31,18 @@
     <button (click)="loadInitialConsultants()" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded">Réessayer</button>
   </div>
   
-  <!-- Liste des consultants (version complète avec consultant-card) -->
+  <!-- Liste des consultants (version simplifiée) -->
   <div *ngIf="!isLoading && !errorMessage" class="space-y-4">
-    <div *ngFor="let consultant of filteredConsultants; let i = index" class="mb-4">
-      <app-consultant-card 
-        [consultant]="consultant"
-        [expanded]="isExpanded(consultant.id, '')"
-        [messageExpanded]="isExpanded(consultant.id, '-message')"
-        [detailsExpanded]="isDetailsExpanded(consultant.id)"
-        [dropdownOpen]="isDropdownOpen(consultant.id)"
-        (toggleExpansion)="handleToggleExpansion($event, consultant.id)"
-        (toggleMessageExpansion)="handleToggleMessageExpansion($event, consultant.id)"
-        (toggleDetailsExpansion)="handleToggleDetailsExpansion($event, consultant.id)"
-        (toggleDropdown)="handleToggleDropdown($event, consultant.id)">
-      </app-consultant-card>
+    <div *ngFor="let consultant of filteredConsultants" class="p-4 bg-white rounded-lg shadow">
+      <h3 class="text-lg font-semibold">{{ consultant.name || 'Consultant' }}</h3>
+      <p class="text-gray-600">{{ consultant.role || 'Rôle non spécifié' }}</p>
+      <p class="text-sm text-gray-500">ID: {{ consultant.id }}</p>
+      <p class="text-sm text-blue-500">Disponibilité: {{ consultant.availability }}</p>
+      <div class="mt-2">
+        <span *ngFor="let skill of consultant.skills" class="inline-block mr-2 mb-2 px-2 py-1 bg-gray-100 rounded text-xs">
+          {{ skill }}
+        </span>
+      </div>
     </div>
   </div>
   

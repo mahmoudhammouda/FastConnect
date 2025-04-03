@@ -38,10 +38,21 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
   selectedAvailability: string = 'all';
   selectedExperience: string = 'all';
   selectedLocation: string = 'all';
+  selectedSortOrder: string = 'relevance'; // Tri par défaut
   
   // Options disponibles pour les filtres
   availableSkills: string[] = [];
   availableLocations: string[] = [];
+  
+  // Options de tri
+  sortOptions = [
+    { value: 'relevance', label: 'Pertinence' },
+    { value: 'last_updated', label: 'Dernière mise à jour' },
+    { value: 'availability', label: 'Disponibilité' }
+  ];
+  
+  // État du dropdown de tri
+  sortDropdownOpen: boolean = false;
   experienceOptions = [
     { value: 'less_than_3', label: 'Moins de 3 ans' },
     { value: 'between_3_and_10', label: 'Entre 3 et 10 ans' },
@@ -81,6 +92,7 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
       });
       this.skillsDropdownOpen = false;
       this.configDropdownOpen = false;
+      this.sortDropdownOpen = false;
     };
     document.addEventListener('click', this.documentClickListener);
     
@@ -316,6 +328,11 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
     );
     
     console.log(`Après filtrage, taille totale de la liste: ${this.filteredConsultants.length}`);
+    
+    // Appliquer le tri si nécessaire (sauf pour 'relevance' qui est l'ordre par défaut)
+    if (this.selectedSortOrder !== 'relevance') {
+      this.applySorting();
+    }
   }
   
   // Méthodes pour les filtres
@@ -457,10 +474,169 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
     return 3;
   }
   
+  /**
+   * Ouvre ou ferme le dropdown de tri
+   * @param event Événement de souris
+   */
+  toggleSortDropdown(event: MouseEvent): void {
+    event.stopPropagation();
+    this.sortDropdownOpen = !this.sortDropdownOpen;
+  }
+  
+  /**
+   * Change l'ordre de tri des consultants
+   * @param sortOrder Nouvel ordre de tri
+   */
+  changeSortOrder(sortOrder: string): void {
+    if (this.selectedSortOrder === sortOrder) return;
+    
+    this.selectedSortOrder = sortOrder;
+    this.applySorting();
+    this.sortDropdownOpen = false;
+  }
+  
+  /**
+   * Applique le tri aux consultants filtrés
+   */
+  applySorting(): void {
+    if (!this.filteredConsultants.length) return;
+    
+    switch (this.selectedSortOrder) {
+      case 'relevance':
+        // Le tri par pertinence est l'ordre par défaut (aucun tri particulier)
+        // On réapplique simplement les filtres pour réinitialiser l'ordre
+        this.applyFilters();
+        break;
+      
+      case 'last_updated':
+        // Comme nous n'avons pas de champ updatedAt, nous utilisons l'identifiant
+        // qui est généralement incrémental et peut servir de proxy pour la date de création/mise à jour
+        this.filteredConsultants.sort((a, b) => {
+          // Comparer par ID (supposant que les ID plus élevés sont plus récents)
+          // Filtrage des caractères non numériques si l'ID contient des lettres
+          const idA = parseInt(a.id.replace(/\D/g, ''), 10) || 0;
+          const idB = parseInt(b.id.replace(/\D/g, ''), 10) || 0;
+          return idB - idA; // Ordre décroissant
+        });
+        break;
+      
+      case 'availability':
+        // Trier par disponibilité (d'abord les consultants disponibles immédiatement)
+        this.filteredConsultants.sort((a, b) => {
+          // availability est déjà un nombre selon le modèle
+          return a.availability - b.availability;
+        });
+        break;
+    }
+  }
+  
   @HostListener('document:click')
   closeDropdowns(): void {
     Object.keys(this.dropdownOpen).forEach(id => {
       this.dropdownOpen[id] = false;
     });
+    this.sortDropdownOpen = false;
+  }
+  
+  /**
+   * Retourne le libellé de l'option de tri actuellement sélectionnée
+   * @returns Le libellé de l'option de tri
+   */
+  getSortLabel(): string {
+    const option = this.sortOptions.find(opt => opt.value === this.selectedSortOrder);
+    return option ? option.label : 'Pertinence';
+  }
+  
+  /**
+   * Vérifie si un consultant a sa carte de message étendue
+   * @param id Identifiant du consultant
+   * @param suffix Suffixe à ajouter à l'identifiant ('-message' ou '')
+   * @returns true si le message est étendu
+   */
+  isExpanded(id: string, suffix: string): boolean {
+    return !!this.expandedMessages[id + suffix];
+  }
+  
+  /**
+   * Vérifie si les détails d'un consultant sont étendus
+   * @param id Identifiant du consultant
+   * @returns true si les détails sont étendus
+   */
+  isDetailsExpanded(id: string): boolean {
+    return !!this.expandedDetails[id];
+  }
+  
+  /**
+   * Vérifie si le dropdown d'un consultant est ouvert
+   * @param id Identifiant du consultant
+   * @returns true si le dropdown est ouvert
+   */
+  isDropdownOpen(id: string): boolean {
+    return !!this.dropdownOpen[id];
+  }
+  
+  /**
+   * Gère l'expansion du message d'un consultant
+   * @param event Événement émis par le composant
+   * @param id Identifiant du consultant
+   */
+  handleToggleExpansion(event: any, id: string): void {
+    if (event.expanded !== undefined) {
+      this.expandedMessages[id + '-message'] = event.expanded;
+    } else if (event && event.stopPropagation) {
+      event.stopPropagation();
+      this.expandedMessages[id + '-message'] = !this.expandedMessages[id + '-message'];
+    }
+  }
+  
+  /**
+   * Gère l'expansion du message principal d'un consultant
+   * @param event Événement émis par le composant
+   * @param id Identifiant du consultant
+   */
+  handleToggleMessageExpansion(event: any, id: string): void {
+    if (event.event && event.event.stopPropagation) {
+      event.event.stopPropagation();
+    } else if (event && event.stopPropagation) {
+      event.stopPropagation();
+    }
+    this.expandedMessages[id] = !this.expandedMessages[id];
+  }
+  
+  /**
+   * Gère l'expansion des détails d'un consultant
+   * @param event Événement émis par le composant
+   * @param id Identifiant du consultant
+   */
+  handleToggleDetailsExpansion(event: any, id: string): void {
+    if (event.event && event.event.stopPropagation) {
+      event.event.stopPropagation();
+    } else if (event && event.stopPropagation) {
+      event.stopPropagation();
+    }
+    this.expandedDetails[id] = !this.expandedDetails[id];
+  }
+  
+  /**
+   * Gère l'ouverture/fermeture du dropdown d'un consultant
+   * @param event Événement émis par le composant
+   * @param id Identifiant du consultant
+   */
+  handleToggleDropdown(event: any, id: string): void {
+    if (event.event && event.event.stopPropagation) {
+      event.event.stopPropagation();
+    } else if (event && event.stopPropagation) {
+      event.stopPropagation();
+    }
+    
+    // Fermer tous les autres dropdowns
+    Object.keys(this.dropdownOpen).forEach(key => {
+      if (key !== id) {
+        this.dropdownOpen[key] = false;
+      }
+    });
+    
+    // Basculer l'état du dropdown actuel
+    this.dropdownOpen[id] = !this.dropdownOpen[id];
   }
 }
