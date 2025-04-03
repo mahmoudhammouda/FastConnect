@@ -161,4 +161,20 @@ export class AppComponent implements OnInit {
       }
     });
   }
+  
+  /**
+   * Retourne l'initiale du prénom ou du nom d'utilisateur pour l'affichage mobile
+   * @returns Une lettre initiale ou 'U' par défaut
+   */
+  getInitials(): string {
+    if (this.currentUser) {
+      if (this.currentUser.firstName) {
+        return this.currentUser.firstName.charAt(0);
+      }
+      if (this.currentUser.username) {
+        return this.currentUser.username.charAt(0);
+      }
+    }
+    return 'U';
+  }
 }

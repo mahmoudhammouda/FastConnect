@@ -1,4 +1,5 @@
-<div class="bg-white border border-gray-200 rounded-md overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+<!-- Version desktop du composant (masquée sur mobile) -->
+<div class="bg-white border border-gray-200 rounded-md overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 hidden md:block">
   <table class="w-full border-collapse">
     <tr class="transition-all duration-300 hover:bg-gray-50 cursor-pointer">
       <!-- Left Column: Lock/Status and ID -->
@@ -197,6 +198,188 @@
     
     <!-- Sections détaillées - affichées seulement si detailsExpanded est true -->
     <div *ngIf="detailsExpanded">
+      <!-- Secteurs d'activité (affiché en premier dans la vue détaillée) -->
+      <div class="mb-4" *ngIf="consultant.sectors && consultant.sectors.length > 0">
+        <h3 class="text-sm font-medium text-gray-800 mb-1">Secteurs d'activité</h3>
+        <div class="flex flex-wrap space-x-1">
+          <span *ngFor="let sector of consultant.sectors" class="sector-badge">
+            {{ sector }}
+          </span>
+        </div>
+      </div>
+      
+      <!-- Expertises (mots-clés) -->
+      <div class="mb-4" *ngIf="consultant.expertises && consultant.expertises.length > 0">
+        <h3 class="text-sm font-medium text-gray-800 mb-1">Expertises</h3>
+        <div class="flex flex-wrap space-x-1">
+          <span *ngFor="let expertise of consultant.expertises" class="expertise-badge">
+            {{ expertise }}
+          </span>
+        </div>
+      </div>
+      
+      <!-- Compétences techniques (visible aussi sur la carte) -->
+      <div class="mb-4">
+        <h3 class="text-sm font-medium text-gray-800 mb-1">Compétences techniques</h3>
+        <div class="flex flex-wrap">
+          <span *ngFor="let skill of consultant.skills" class="skill-badge">
+            {{ skill }}
+          </span>
+        </div>
+      </div>
+      
+      <!-- Dernières expériences -->
+      <div *ngIf="consultant.experiences && consultant.experiences.length > 0">
+        <h3 class="text-sm font-medium text-gray-800 mb-1">Dernières expériences</h3>
+        <ul class="text-sm text-gray-600 space-y-2">
+          <li *ngFor="let exp of consultant.experiences" class="flex items-start">
+            <div class="mt-0.5 mr-1.5 w-1.5 h-1.5 rounded-full bg-gray-400 flex-shrink-0"></div>
+            <div>
+              <span class="font-medium">{{ exp.role }}</span>
+              <span *ngIf="exp.company" class="ml-1">• {{ exp.company }}</span>
+              <span *ngIf="exp.isCurrent" class="text-xs ml-1 text-blue-600">(Actuelle)</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Version mobile du composant (masquée sur desktop) -->
+<div class="mobile-consultant-card block md:hidden">
+  <!-- Header Row avec icônes et actions alignés -->
+  <div class="mobile-header-row">
+    <div class="flex items-center">
+      <!-- Lock icon et ID sur une même ligne -->
+      <span class="material-icons text-xl mr-2" 
+            [ngClass]="{
+              'text-green-500': !consultant.locked,
+              'text-red-500': consultant.locked
+            }">
+        {{ consultant.locked ? 'lock' : 'lock_open' }}
+      </span>
+      <span class="text-xs text-gray-500 mr-2">#{{ consultant.id }}</span>
+      
+      <!-- Disponibilité et barres d'expérience condensées -->
+      <div class="w-2.5 h-2.5 rounded-full mr-1.5"
+            [ngClass]="{
+              'bg-green-500': consultant.availability === 0,
+              'bg-yellow-500': consultant.availability === 1,
+              'bg-red-500': consultant.availability === 2
+            }">
+      </div>
+      <!-- Barres d'expérience compactes -->
+      <div class="flex space-x-0.5 items-end h-3 ml-1">
+        <div *ngFor="let i of [1, 2, 3]" 
+            class="w-0.5 rounded-sm"
+            [ngClass]="{
+              'bg-blue-600': i <= getSeniorityBars(consultant.experience), 
+              'bg-blue-200': i > getSeniorityBars(consultant.experience),
+              'h-1': i === 1,
+              'h-2': i === 2,
+              'h-3': i === 3
+            }">
+        </div>
+      </div>
+    </div>
+    
+    <!-- Actions row -->
+    <div class="mobile-action-buttons">
+      <!-- Action buttons avec taille réduite -->
+      <button (click)="onLinkedInClick(consultant.linkedinUrl, $event)" 
+              [disabled]="!consultant.linkedinValidated" 
+              class="w-7 h-7 flex items-center justify-center rounded-full"
+              [ngClass]="{'opacity-50 cursor-not-allowed': !consultant.linkedinValidated, 'bg-blue-100': consultant.linkedinValidated}">
+        <i class="fab fa-linkedin text-blue-600 text-sm"></i>
+      </button>
+      
+      <button (click)="onPhoneClick(consultant.phone, $event)" 
+              [disabled]="!consultant.phoneValidated || !consultant.phone" 
+              class="w-7 h-7 flex items-center justify-center rounded-full"
+              [ngClass]="{'opacity-50 cursor-not-allowed': !consultant.phoneValidated || !consultant.phone, 'bg-green-100': consultant.phoneValidated && consultant.phone}">
+        <i class="fas fa-phone-alt text-green-600 text-sm"></i>
+      </button>
+      
+      <button (click)="onEmailClick(consultant.email, $event)" 
+              [disabled]="!consultant.emailValidated || !consultant.email" 
+              class="w-7 h-7 flex items-center justify-center rounded-full"
+              [ngClass]="{'opacity-50 cursor-not-allowed': !consultant.emailValidated || !consultant.email, 'bg-red-100': consultant.emailValidated && consultant.email}">
+        <i class="fas fa-envelope text-red-600 text-sm"></i>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Rôle et info principale -->
+  <div class="px-4 pt-2 pb-3">
+    <!-- Rôle (plus grand pour meilleure lisibilité sur mobile) -->
+    <div class="font-medium text-base mb-2.5">
+      {{ consultant.role }}
+    </div>
+    
+    <!-- Location avec icône -->
+    <div class="text-xs text-gray-600 flex items-center mb-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+      <span class="flex flex-wrap">
+        <ng-container *ngFor="let location of consultant.location.split(','); let last = last">
+          <span class="location-badge">{{ location.trim() }}</span>
+          <span *ngIf="!last" class="mx-1">•</span>
+        </ng-container>
+      </span>
+    </div>
+    
+    <!-- Skills badges (full width dans la version mobile) -->
+    <div class="flex flex-wrap mt-2.5">
+      <span *ngFor="let skill of consultant.skills.slice(0, 5)" class="skill-badge text-xs py-0.5 px-2 mb-1">
+        {{ skill }}
+      </span>
+      <span *ngIf="consultant.skills.length > 5" class="text-xs text-gray-500 flex items-center ml-1 mb-1">
+        +{{ consultant.skills.length - 5 }}
+      </span>
+    </div>
+    
+    <!-- Bouton pour afficher plus -->
+    <div class="mt-3">
+      <button 
+        (click)="onToggleMessageExpansion(consultant.id, $event)"
+        class="text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300">
+        {{ messageExpanded ? 'Masquer les détails' : 'Voir plus' }}
+      </button>
+    </div>
+  </div>
+  
+  <!-- Partie étendue (message et détails additionnels) -->
+  <div *ngIf="messageExpanded" class="px-4 py-3 border-t border-gray-100 bg-gray-50 mobile-scrollable-container transition-all duration-300">
+    <!-- Message avec hashtags -->
+    <div class="mb-4">
+      <h3 class="text-sm font-medium text-gray-800 mb-1">Message</h3>
+      <div class="relative">
+        <div class="text-sm text-gray-600 consultantMessage" [innerHTML]="formatMessage(consultant.message)"
+            [class.truncated]="isMessageLong(consultant.message) && !expanded">
+        </div>
+        <!-- Gradient overlay pour la troncature -->
+        <div *ngIf="isMessageLong(consultant.message) && !expanded" class="bg-gradient-overlay"></div>
+      </div>
+      <div class="flex justify-between mt-1">
+        <button *ngIf="isMessageLong(consultant.message)" 
+               (click)="onToggleExpansion(consultant.id, $event)"
+               class="text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300">
+          {{ expanded ? 'Masquer' : 'Voir tout le message' }}
+        </button>
+        <button 
+               (click)="onToggleDetailsExpansion(consultant.id, $event)"
+               class="text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300">
+          {{ detailsExpanded ? 'Masquer les détails' : 'Voir plus' }}
+        </button>
+      </div>
+    </div>
+    
+    <!-- Détails étendus -->
+    <div *ngIf="detailsExpanded">
+      <!-- Même contenu que la version desktop -->
       <!-- Secteurs d'activité (affiché en premier dans la vue détaillée) -->
       <div class="mb-4" *ngIf="consultant.sectors && consultant.sectors.length > 0">
         <h3 class="text-sm font-medium text-gray-800 mb-1">Secteurs d'activité</h3>

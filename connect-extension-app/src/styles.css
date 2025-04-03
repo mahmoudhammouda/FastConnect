@@ -112,6 +112,40 @@ app-root {
     @apply bg-blue-100 text-blue-700 hover:bg-blue-200;
   }
   
+  /* Mobile optimizations */
+  .mobile-consultant-card {
+    @apply bg-white rounded-lg shadow-sm overflow-hidden mb-4 border border-gray-100 w-full mx-auto max-w-full;
+  }
+  
+  .mobile-header-row {
+    @apply flex items-center justify-between w-full p-3 border-b border-gray-100;
+  }
+  
+  .mobile-status-container {
+    @apply flex items-center;
+  }
+  
+  .mobile-action-buttons {
+    @apply flex space-x-2;
+  }
+  
+  /* Mobile scrolling container with hidden scrollbar */
+  .mobile-scrollable-container {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    @apply overflow-y-auto;
+  }
+  
+  .mobile-scrollable-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+  
+  /* Ensure content stretches full width on mobile */
+  .mobile-full-width {
+    @apply w-full px-4;
+  }
+}
+  
   .phone-button {
     @apply bg-green-100 text-green-700 hover:bg-green-200;
   }
@@ -179,4 +213,3 @@ app-root {
   .dropdown-top {
     transform-origin: bottom right;
   }
-}

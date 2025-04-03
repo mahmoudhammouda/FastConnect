@@ -14,6 +14,7 @@ import { ConsultantService } from '../../services/consultant.service';
 })
 export class ConsultantListComponent implements OnInit, OnDestroy {
   @ViewChild('consultantsList', { static: false }) consultantsList?: ElementRef;
+  @ViewChild('consultantsListMobile', { static: false }) consultantsListMobile?: ElementRef;
   
   // Données principales
   allConsultants: ConsultantWithTags[] = [];
@@ -105,9 +106,17 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
    * Cette méthode est appelée via (scroll) sur le conteneur défilant
    */
   onScroll(event: Event): void {
-    if (!this.consultantsList) return;
+    let element: HTMLElement | null = null;
     
-    const element = this.consultantsList.nativeElement;
+    // Déterminer quel conteneur est actif selon la taille d'écran
+    if (this.consultantsList && window.innerWidth >= 768) {
+      element = this.consultantsList.nativeElement;
+    } else if (this.consultantsListMobile && window.innerWidth < 768) {
+      element = this.consultantsListMobile.nativeElement;
+    }
+    
+    if (!element) return;
+    
     const scrollPosition = element.scrollTop + element.clientHeight;
     
     // Si nous avons atteint le bas du conteneur (avec une marge de 100px)

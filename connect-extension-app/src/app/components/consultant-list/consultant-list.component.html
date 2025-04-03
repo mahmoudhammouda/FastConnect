@@ -117,8 +117,8 @@
   </div>
 </div>
 
-<!-- Section défilante pour les consultants -->
-<div #consultantsList class="flex-1 overflow-y-auto p-4 h-full" (scroll)="onScroll($event)" style="min-height: 70vh; height: calc(100vh - 200px); overflow-y: auto">
+<!-- Section défilante pour les consultants - Desktop -->
+<div #consultantsList class="flex-1 overflow-y-auto p-4 h-full hidden md:block" (scroll)="onScroll($event)" style="min-height: 70vh; height: calc(100vh - 200px);">
   <!-- Loading State -->
   <div *ngIf="isLoading" class="flex justify-center items-center p-10">
     <div class="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full" role="status">
@@ -136,7 +136,7 @@
     <p class="text-gray-500">Aucun consultant trouvé</p>
   </div>
   
-  <!-- Consultants List -->
+  <!-- Consultants List - Desktop -->
   <div *ngIf="!isLoading && filteredConsultants.length > 0" class="space-y-4 mx-auto px-2 py-1">
     <app-consultant-card 
       *ngFor="let consultant of filteredConsultants"
@@ -165,5 +165,56 @@
   <!-- End of Results -->
   <div *ngIf="!isLoading && !isLoadingMore && !hasMoreData && filteredConsultants.length > 0" class="text-center p-6">
     <p class="text-gray-500 text-sm">Fin des résultats</p>
+  </div>
+</div>
+
+<!-- Section défilante pour les consultants - Mobile avec scrollbar masquée -->
+<div #consultantsListMobile class="mobile-scrollable-container flex-1 p-2 h-full block md:hidden" (scroll)="onScroll($event)" style="min-height: 70vh; height: calc(100vh - 200px);">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex justify-center items-center p-6">
+    <div class="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full" role="status">
+      <span class="sr-only">Chargement...</span>
+    </div>
+  </div>
+  
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="bg-red-50 border-l-4 border-red-500 text-red-700 p-3 rounded-md shadow-sm mb-3 text-sm">
+    {{ errorMessage }}
+  </div>
+  
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !errorMessage && filteredConsultants.length === 0" class="text-center p-6 bg-gray-50 rounded-lg">
+    <p class="text-gray-500 text-sm">Aucun consultant trouvé</p>
+  </div>
+  
+  <!-- Consultants List - Mobile -->
+  <div *ngIf="!isLoading && filteredConsultants.length > 0" class="space-y-3 mobile-full-width">
+    <app-consultant-card 
+      *ngFor="let consultant of filteredConsultants"
+      [consultant]="consultant"
+      [expanded]="expandedMessages[consultant.id + '-message']"
+      [messageExpanded]="expandedMessages[consultant.id]"
+      [detailsExpanded]="expandedDetails[consultant.id]"
+      [dropdownOpen]="dropdownOpen[consultant.id]"
+      (toggleExpansion)="toggleExpandMessage(consultant.id, $event)"
+      (toggleMessageExpansion)="toggleMessageExpansion(consultant.id, $event)"
+      (toggleDetailsExpansion)="toggleDetailsExpansion(consultant.id, $event)"
+      (toggleDropdown)="toggleDropdown(consultant.id, $event)"
+      (linkedinClick)="openLinkedIn(consultant.linkedinUrl)"
+      (phoneClick)="showPhone(consultant.phone)"
+      (emailClick)="sendEmail(consultant.email)">
+    </app-consultant-card>
+  </div>
+  
+  <!-- Loading More Indicator - Mobile -->
+  <div *ngIf="isLoadingMore" class="flex justify-center items-center p-4">
+    <div class="animate-spin h-6 w-6 border-3 border-blue-500 border-t-transparent rounded-full" role="status">
+      <span class="sr-only">Chargement...</span>
+    </div>
+  </div>
+  
+  <!-- End of Results - Mobile -->
+  <div *ngIf="!isLoading && !isLoadingMore && !hasMoreData && filteredConsultants.length > 0" class="text-center p-4">
+    <p class="text-gray-500 text-xs">Fin des résultats</p>
   </div>
 </div>
