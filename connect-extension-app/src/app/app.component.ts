@@ -5,6 +5,7 @@ import { AuthService } from './services/auth.service';
 import { User } from './models/user.model';
 import { ModalService } from './services/modal.service';
 import { environment } from '../environments/environment';
+import { ConsultantService } from './services/consultant.service';
 
 @Component({
   selector: 'app-root',
@@ -18,9 +19,27 @@ export class AppComponent implements OnInit {
   isAuthenticated = false;
   currentRoute = '';
   menuOpen = false;
+  showFilterPanel = false; // Pour gérer l'affichage du panneau de filtres
   isDebugEnabled = true; // Par défaut, le débogage est activé
   showFloatingDebug = false; // Le débogueur flottant est désactivé par défaut
   debugElement: HTMLElement | null = null;
+  
+  // Variables pour les filtres dans le style LinkedIn
+  searchText: string = '';
+  selectedExperience: string = 'all';
+  selectedAvailability: string = 'all';
+  selectedLocation: string = 'all';
+  availableLocations: string[] = [];
+  experienceOptions = [
+    { value: 'less_than_3', label: 'Moins de 3 ans' },
+    { value: 'between_3_and_10', label: 'Entre 3 et 10 ans' },
+    { value: 'more_than_10', label: 'Plus de 10 ans' }
+  ];
+  availabilityOptions = [
+    { value: '0', label: 'Disponible maintenant' },
+    { value: '1', label: 'Disponible prochainement' },
+    { value: '2', label: 'Non disponible' }
+  ];
   debugInfo = {
     baseHref: document.getElementsByTagName('base')[0]?.getAttribute('href') || 'undefined',
     location: window.location.href,
@@ -34,7 +53,8 @@ export class AppComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    public modalService: ModalService
+    public modalService: ModalService,
+    private consultantService: ConsultantService
   ) {
     console.log('🔍 FastConnect initialisation:', this.debugInfo);
     
@@ -70,6 +90,76 @@ export class AppComponent implements OnInit {
       this.currentRoute = event.url;
       this.menuOpen = false; // Fermer le menu à chaque changement de route
     });
+    
+    // Charger les données pour les filtres
+    this.loadFilterOptions();
+  }
+  
+  /**
+   * Charge les options disponibles pour les filtres
+   */
+  loadFilterOptions(): void {
+    this.consultantService.getConsultants().subscribe(consultants => {
+      // Extraire les localisations disponibles
+      const locationsSet = new Set<string>();
+      consultants.forEach(consultant => {
+        if (consultant.location) {
+          const locations = consultant.location.split(',').map(loc => loc.trim());
+          locations.forEach(location => {
+            locationsSet.add(location);
+          });
+        }
+      });
+      this.availableLocations = Array.from(locationsSet).sort();
+    });
+  }
+  
+  /**
+   * Gère le changement de texte dans la barre de recherche
+   */
+  onSearchTextChange(): void {
+    // On émet un événement pour le composant de liste de consultants
+    // qui utilisera cette valeur pour le filtrage
+    const searchParams = {
+      searchText: this.searchText
+    };
+    // Passer les paramètres de recherche via localStorage
+    localStorage.setItem('fastconnect-search-params', JSON.stringify(searchParams));
+    // Émettre un événement custom pour notifier les composants
+    window.dispatchEvent(new CustomEvent('fastconnect-search-updated'));
+  }
+  
+  /**
+   * Gère l'application des filtres avancés
+   */
+  applyAdvancedFilters(): void {
+    // On stocke les paramètres de filtrage que le composant de liste récupérera
+    const filterParams = {
+      searchText: this.searchText,
+      selectedExperience: this.selectedExperience,
+      selectedAvailability: this.selectedAvailability,
+      selectedLocation: this.selectedLocation
+    };
+    localStorage.setItem('fastconnect-filter-params', JSON.stringify(filterParams));
+    
+    // Émettre un événement custom pour notifier les composants
+    window.dispatchEvent(new CustomEvent('fastconnect-filters-updated'));
+    
+    // Fermer le panneau de filtres
+    this.showFilterPanel = false;
+  }
+  
+  /**
+   * Réinitialise tous les filtres
+   */
+  resetAllFilters(): void {
+    this.searchText = '';
+    this.selectedExperience = 'all';
+    this.selectedAvailability = 'all';
+    this.selectedLocation = 'all';
+    
+    // Appliquer les filtres réinitialisés
+    this.applyAdvancedFilters();
   }
   
   /**
@@ -139,6 +229,13 @@ export class AppComponent implements OnInit {
     this.showFloatingDebug = !this.showFloatingDebug;
     localStorage.setItem('fastconnect-floating-debug', this.showFloatingDebug.toString());
     this.updateFloatingDebugVisibility();
+  }
+
+  /**
+   * Active ou désactive le panneau de filtres
+   */
+  toggleFilterPanel(): void {
+    this.showFilterPanel = !this.showFilterPanel;
   }
 
   toggleMenu(): void {

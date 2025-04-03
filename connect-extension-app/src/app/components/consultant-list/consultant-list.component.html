@@ -1,7 +1,7 @@
 <!-- Filters Section -->
-<div class="bg-white border border-gray-200 rounded-md p-4 mb-4 shadow-sm transition-all duration-300 hover:shadow">
+<div class="bg-white border border-gray-200 rounded-md p-4 mb-4 shadow-sm transition-all duration-300 hover:shadow md:rounded-md md:p-4 p-0 rounded-none">
   <!-- Search Input - Seul sur sa ligne -->
-  <div class="mb-1">
+  <div class="mb-1 px-3 md:px-0">
     <div class="relative">
       <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
         <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -169,7 +169,7 @@
 </div>
 
 <!-- Section défilante pour les consultants - Mobile avec scrollbar masquée -->
-<div #consultantsListMobile class="mobile-scrollable-container flex-1 p-2 h-full block md:hidden" (scroll)="onScroll($event)" style="min-height: 70vh; height: calc(100vh - 200px);">
+<div #consultantsListMobile class="mobile-scrollable-container flex-1 py-2 px-0 h-full block md:hidden" (scroll)="onScroll($event)" style="min-height: 70vh; height: calc(100vh - 200px);">
   <!-- Loading State -->
   <div *ngIf="isLoading" class="flex justify-center items-center p-6">
     <div class="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full" role="status">
@@ -178,12 +178,12 @@
   </div>
   
   <!-- Error Message -->
-  <div *ngIf="errorMessage" class="bg-red-50 border-l-4 border-red-500 text-red-700 p-3 rounded-md shadow-sm mb-3 text-sm">
+  <div *ngIf="errorMessage" class="bg-red-50 border-l-4 border-red-500 text-red-700 p-3 rounded-md shadow-sm mb-3 text-sm mx-2">
     {{ errorMessage }}
   </div>
   
   <!-- Empty State -->
-  <div *ngIf="!isLoading && !errorMessage && filteredConsultants.length === 0" class="text-center p-6 bg-gray-50 rounded-lg">
+  <div *ngIf="!isLoading && !errorMessage && filteredConsultants.length === 0" class="text-center p-6 bg-gray-50 rounded-lg mx-2">
     <p class="text-gray-500 text-sm">Aucun consultant trouvé</p>
   </div>
   

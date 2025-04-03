@@ -248,64 +248,67 @@
 
 <!-- Version mobile du composant (masquée sur desktop) -->
 <div class="mobile-consultant-card block md:hidden">
-  <!-- Header Row avec icônes et actions alignés -->
+  <!-- Header Row avec icônes et actions alignés sur une seule ligne -->
   <div class="mobile-header-row">
     <div class="flex items-center">
-      <!-- Lock icon et ID sur une même ligne -->
-      <span class="material-icons text-xl mr-2" 
+      <!-- Lock icon et ID très compacts -->
+      <span class="material-icons text-lg mr-1.5" 
             [ngClass]="{
               'text-green-500': !consultant.locked,
               'text-red-500': consultant.locked
             }">
         {{ consultant.locked ? 'lock' : 'lock_open' }}
       </span>
-      <span class="text-xs text-gray-500 mr-2">#{{ consultant.id }}</span>
+      <span class="text-xs text-gray-500 mr-1.5">#{{ consultant.id }}</span>
       
-      <!-- Disponibilité et barres d'expérience condensées -->
-      <div class="w-2.5 h-2.5 rounded-full mr-1.5"
-            [ngClass]="{
-              'bg-green-500': consultant.availability === 0,
-              'bg-yellow-500': consultant.availability === 1,
-              'bg-red-500': consultant.availability === 2
-            }">
-      </div>
-      <!-- Barres d'expérience compactes -->
-      <div class="flex space-x-0.5 items-end h-3 ml-1">
-        <div *ngFor="let i of [1, 2, 3]" 
-            class="w-0.5 rounded-sm"
-            [ngClass]="{
-              'bg-blue-600': i <= getSeniorityBars(consultant.experience), 
-              'bg-blue-200': i > getSeniorityBars(consultant.experience),
-              'h-1': i === 1,
-              'h-2': i === 2,
-              'h-3': i === 3
-            }">
+      <!-- Indicateurs de statut compacts -->
+      <div class="flex items-center">
+        <!-- Disponibilité (point coloré) -->
+        <div class="w-2 h-2 rounded-full mr-1"
+              [ngClass]="{
+                'bg-green-500': consultant.availability === 0,
+                'bg-yellow-500': consultant.availability === 1,
+                'bg-red-500': consultant.availability === 2
+              }">
+        </div>
+        <!-- Barres d'expérience ultra-compactes -->
+        <div class="flex space-x-0.5 items-end h-2.5">
+          <div *ngFor="let i of [1, 2, 3]" 
+              class="w-0.5 rounded-sm"
+              [ngClass]="{
+                'bg-blue-600': i <= getSeniorityBars(consultant.experience), 
+                'bg-blue-200': i > getSeniorityBars(consultant.experience),
+                'h-1': i === 1,
+                'h-1.5': i === 2,
+                'h-2.5': i === 3
+              }">
+          </div>
         </div>
       </div>
     </div>
     
     <!-- Actions row -->
     <div class="mobile-action-buttons">
-      <!-- Action buttons avec taille réduite -->
+      <!-- Action buttons plus compacts -->
       <button (click)="onLinkedInClick(consultant.linkedinUrl, $event)" 
               [disabled]="!consultant.linkedinValidated" 
-              class="w-7 h-7 flex items-center justify-center rounded-full"
+              class="w-6 h-6 flex items-center justify-center rounded-full"
               [ngClass]="{'opacity-50 cursor-not-allowed': !consultant.linkedinValidated, 'bg-blue-100': consultant.linkedinValidated}">
-        <i class="fab fa-linkedin text-blue-600 text-sm"></i>
+        <i class="fab fa-linkedin text-blue-600 text-xs"></i>
       </button>
       
       <button (click)="onPhoneClick(consultant.phone, $event)" 
               [disabled]="!consultant.phoneValidated || !consultant.phone" 
-              class="w-7 h-7 flex items-center justify-center rounded-full"
+              class="w-6 h-6 flex items-center justify-center rounded-full"
               [ngClass]="{'opacity-50 cursor-not-allowed': !consultant.phoneValidated || !consultant.phone, 'bg-green-100': consultant.phoneValidated && consultant.phone}">
-        <i class="fas fa-phone-alt text-green-600 text-sm"></i>
+        <i class="fas fa-phone-alt text-green-600 text-xs"></i>
       </button>
       
       <button (click)="onEmailClick(consultant.email, $event)" 
               [disabled]="!consultant.emailValidated || !consultant.email" 
-              class="w-7 h-7 flex items-center justify-center rounded-full"
+              class="w-6 h-6 flex items-center justify-center rounded-full"
               [ngClass]="{'opacity-50 cursor-not-allowed': !consultant.emailValidated || !consultant.email, 'bg-red-100': consultant.emailValidated && consultant.email}">
-        <i class="fas fa-envelope text-red-600 text-sm"></i>
+        <i class="fas fa-envelope text-red-600 text-xs"></i>
       </button>
     </div>
   </div>

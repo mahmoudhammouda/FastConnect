@@ -92,6 +92,49 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
         });
       });
     }, 500);
+    
+    // Écouter les événements de recherche et filtrage provenant de l'UI LinkedIn-style
+    window.addEventListener('fastconnect-search-updated', this.handleSearchUpdate.bind(this));
+    window.addEventListener('fastconnect-filters-updated', this.handleFiltersUpdate.bind(this));
+  }
+  
+  /**
+   * Gère les mises à jour de recherche provenant de la barre de recherche principale
+   */
+  handleSearchUpdate(): void {
+    try {
+      const searchParamsStr = localStorage.getItem('fastconnect-search-params');
+      if (searchParamsStr) {
+        const searchParams = JSON.parse(searchParamsStr);
+        this.searchText = searchParams.searchText || '';
+        
+        // Appliquer les filtres avec la nouvelle valeur de recherche
+        this.applyFilters();
+      }
+    } catch (error) {
+      console.error('Erreur lors de la gestion des paramètres de recherche:', error);
+    }
+  }
+  
+  /**
+   * Gère les mises à jour des filtres avancés
+   */
+  handleFiltersUpdate(): void {
+    try {
+      const filterParamsStr = localStorage.getItem('fastconnect-filter-params');
+      if (filterParamsStr) {
+        const filterParams = JSON.parse(filterParamsStr);
+        this.searchText = filterParams.searchText || '';
+        this.selectedExperience = filterParams.selectedExperience || 'all';
+        this.selectedAvailability = filterParams.selectedAvailability || 'all';
+        this.selectedLocation = filterParams.selectedLocation || 'all';
+        
+        // Appliquer les filtres avec les nouvelles valeurs
+        this.applyFilters();
+      }
+    } catch (error) {
+      console.error('Erreur lors de la gestion des paramètres de filtrage:', error);
+    }
   }
   
   ngOnDestroy(): void {
@@ -99,6 +142,10 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
     if (this.documentClickListener) {
       document.removeEventListener('click', this.documentClickListener);
     }
+    
+    // Supprimer les écouteurs d'événements personnalisés
+    window.removeEventListener('fastconnect-search-updated', this.handleSearchUpdate.bind(this));
+    window.removeEventListener('fastconnect-filters-updated', this.handleFiltersUpdate.bind(this));
   }
   
   /**

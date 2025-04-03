@@ -46,7 +46,7 @@ task = "packager.installForAll"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd connect-extension-app && node set-environment.js"
+args = "cd connect-extension-app && npm run serve:replit"
 waitForPort = 5000
 
 [deployment]
