@@ -15,7 +15,11 @@ try {
   const command = isReplit ? 'npm run start:replit' : 'npm run start:local';
   
   console.log(`▶️ Exécution de la commande: ${command}`);
-  execSync(command, { stdio: 'inherit', cwd: './connect-extension-app' });
+  // Détecter si nous sommes déjà dans le répertoire connect-extension-app ou à la racine du projet
+  const currentDir = process.cwd();
+  const isInAppDir = currentDir.endsWith('connect-extension-app');
+  
+  execSync(command, { stdio: 'inherit', cwd: isInAppDir ? '.' : './connect-extension-app' });
   
 } catch (error) {
   console.error('❌ Erreur lors du démarrage de l\'application Angular:', error.message);
