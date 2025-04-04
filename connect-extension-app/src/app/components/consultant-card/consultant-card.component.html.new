@@ -186,13 +186,16 @@
         </div>
       </div>
       <div class="flex justify-between mt-1">
-        <!-- Bouton unique pour voir/masquer le message -->
-        <button *ngIf="isMessageLong(consultant.message)" 
+        <button *ngIf="isMessageLong(consultant.message) && !expanded" 
                 (click)="onToggleExpansion(consultant.id, $event)"
                 class="text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300">
-          {{ expanded ? 'Masquer le message' : 'Voir tout le message' }}
+          Voir tout le message
         </button>
-        <div></div> <!-- Élément vide pour maintenir l'espacement -->
+        <button *ngIf="expanded" 
+                (click)="onToggleExpansion(consultant.id, $event)"
+                class="text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300">
+          Masquer
+        </button>
         <button 
                (click)="onToggleDetailsExpansion(consultant.id, $event)"
                class="text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300">
@@ -368,13 +371,16 @@
         </div>
       </div>
       <div class="flex justify-between mt-1">
-        <!-- Bouton unique pour voir/masquer le message -->
-        <button *ngIf="isMessageLong(consultant.message)" 
+        <button *ngIf="isMessageLong(consultant.message) && !expanded" 
                (click)="onToggleExpansion(consultant.id, $event)"
                class="text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300">
-          {{ expanded ? 'Masquer le message' : 'Voir tout le message' }}
+          Voir tout le message
         </button>
-        <div></div> <!-- Élément vide pour maintenir l'espacement -->
+        <button *ngIf="expanded" 
+               (click)="onToggleExpansion(consultant.id, $event)"
+               class="text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300">
+          Masquer
+        </button>
         <button 
                (click)="onToggleDetailsExpansion(consultant.id, $event)"
                class="text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300">

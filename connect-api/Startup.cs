@@ -3,13 +3,18 @@ using ConnectExtension.Backend.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ConnectExtension.Backend
 {
@@ -143,11 +148,8 @@ namespace ConnectExtension.Backend
                 endpoints.MapControllers();
                 
                 // Ajout du fallback vers index.html pour les routes non-API (SPA fallback)
-                // Exclure explicitement les routes commençant par /api/
-                endpoints.MapFallbackToFile("/index.html", new Microsoft.AspNetCore.StaticFiles.StaticFileOptions
-                {
-                    RequestPath = ""
-                }).WithDisplayName("SPA-Fallback").WithMetadata(new Microsoft.AspNetCore.Builder.SpaFallbackMetadata());
+                // Version simplifiée pour éviter les problèmes de références
+                endpoints.MapFallbackToFile("index.html");
             });
             
             logger.LogInformation("Routes et middlewares configurés");

@@ -42,9 +42,26 @@ export class ConsultantCardComponent {
   
   /**
    * Check if a message is long enough to be truncated
+   * Utilise une combinaison de longueur et de nombre de lignes pour
+   * déterminer si un message doit être tronqué
+   * Algorithme optimisé pour considérer plus de messages comme "longs"
    */
   isMessageLong(message: string): boolean {
-    return message.length > 150;
+    // Si le message est vide, il n'est pas long
+    if (!message || message.trim() === '') return false;
+    
+    // Si le message dépasse un certain nombre de caractères (réduit à 100)
+    if (message.length > 100) return true;
+    
+    // Si le message contient plusieurs lignes (toute ligne additionnelle compte)
+    const lineCount = (message.match(/\n/g) || []).length + 1;
+    if (lineCount > 1) return true;
+    
+    // Si le message contient beaucoup de mots (réduit à 15)
+    const wordCount = message.split(/\s+/).length;
+    if (wordCount > 15) return true;
+    
+    return false;
   }
 
   onLinkedInClick(url: string, event: MouseEvent): void {
