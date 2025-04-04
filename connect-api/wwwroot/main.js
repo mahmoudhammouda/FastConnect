@@ -4187,19 +4187,27 @@ function ConsultantCardComponent_div_46_Template(rf, ctx) {
 function ConsultantCardComponent_button_48_Template(rf, ctx) {
   if (rf & 1) {
     const _r8 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "button", 41);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "button", 42);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function ConsultantCardComponent_button_48_Template_button_click_0_listener($event) {
       _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r8);
       const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
       return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r1.onToggleExpansion(ctx_r1.consultant.id, $event));
     });
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1, " Voir tout le message ");
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
   }
-  if (rf & 2) {
-    const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", ctx_r1.expanded ? "Masquer le message" : "Voir tout le message", " ");
+}
+function ConsultantCardComponent_span_49_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r9 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span")(1, "button", 42);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function ConsultantCardComponent_span_49_Template_button_click_1_listener($event) {
+      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r9);
+      const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
+      return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r1.onToggleExpansion(ctx_r1.consultant.id, $event));
+    });
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](2, " Masquer ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()();
   }
 }
 function ConsultantCardComponent_div_52_div_1_span_4_Template(rf, ctx) {
@@ -4209,9 +4217,9 @@ function ConsultantCardComponent_div_52_div_1_span_4_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
   }
   if (rf & 2) {
-    const sector_r9 = ctx.$implicit;
+    const sector_r10 = ctx.$implicit;
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", sector_r9, " ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", sector_r10, " ");
   }
 }
 function ConsultantCardComponent_div_52_div_1_Template(rf, ctx) {
@@ -4236,9 +4244,9 @@ function ConsultantCardComponent_div_52_div_2_span_4_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
   }
   if (rf & 2) {
-    const expertise_r10 = ctx.$implicit;
+    const expertise_r11 = ctx.$implicit;
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", expertise_r10, " ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", expertise_r11, " ");
   }
 }
 function ConsultantCardComponent_div_52_div_2_Template(rf, ctx) {
@@ -4263,9 +4271,9 @@ function ConsultantCardComponent_div_52_span_7_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
   }
   if (rf & 2) {
-    const skill_r11 = ctx.$implicit;
+    const skill_r12 = ctx.$implicit;
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", skill_r11, " ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", skill_r12, " ");
   }
 }
 function ConsultantCardComponent_div_52_div_8_li_4_span_5_Template(rf, ctx) {
@@ -4275,9 +4283,9 @@ function ConsultantCardComponent_div_52_div_8_li_4_span_5_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
   }
   if (rf & 2) {
-    const exp_r12 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]().$implicit;
+    const exp_r13 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]().$implicit;
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"]("\u2022 ", exp_r12.company, "");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"]("\u2022 ", exp_r13.company, "");
   }
 }
 function ConsultantCardComponent_div_52_div_8_li_4_span_6_Template(rf, ctx) {
@@ -4298,13 +4306,13 @@ function ConsultantCardComponent_div_52_div_8_li_4_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()();
   }
   if (rf & 2) {
-    const exp_r12 = ctx.$implicit;
+    const exp_r13 = ctx.$implicit;
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](exp_r12.role);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](exp_r13.role);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", exp_r12.company);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", exp_r13.company);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", exp_r12.isCurrent);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", exp_r13.isCurrent);
   }
 }
 function ConsultantCardComponent_div_52_div_8_Template(rf, ctx) {
@@ -4332,7 +4340,7 @@ function ConsultantCardComponent_div_52_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](6, "div", 13);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](7, ConsultantCardComponent_div_52_span_7_Template, 2, 1, "span", 78);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](8, ConsultantCardComponent_div_52_div_8_Template, 5, 1, "div", 42);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](8, ConsultantCardComponent_div_52_div_8_Template, 5, 1, "div", 41);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
   }
   if (rf & 2) {
@@ -4352,9 +4360,9 @@ function ConsultantCardComponent_div_63_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "div", 94);
   }
   if (rf & 2) {
-    const i_r13 = ctx.$implicit;
+    const i_r14 = ctx.$implicit;
     const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction5"](1, _c8, i_r13 <= ctx_r1.getSeniorityBars(ctx_r1.consultant.experience), i_r13 > ctx_r1.getSeniorityBars(ctx_r1.consultant.experience), i_r13 === 1, i_r13 === 2, i_r13 === 3));
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction5"](1, _c8, i_r14 <= ctx_r1.getSeniorityBars(ctx_r1.consultant.experience), i_r14 > ctx_r1.getSeniorityBars(ctx_r1.consultant.experience), i_r14 === 1, i_r14 === 2, i_r14 === 3));
   }
 }
 function ConsultantCardComponent_ng_container_79_span_3_Template(rf, ctx) {
@@ -4374,12 +4382,12 @@ function ConsultantCardComponent_ng_container_79_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementContainerEnd"]();
   }
   if (rf & 2) {
-    const location_r14 = ctx.$implicit;
-    const last_r15 = ctx.last;
+    const location_r15 = ctx.$implicit;
+    const last_r16 = ctx.last;
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](location_r14.trim());
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](location_r15.trim());
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", !last_r15);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", !last_r16);
   }
 }
 function ConsultantCardComponent_span_81_Template(rf, ctx) {
@@ -4389,9 +4397,9 @@ function ConsultantCardComponent_span_81_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
   }
   if (rf & 2) {
-    const skill_r16 = ctx.$implicit;
+    const skill_r17 = ctx.$implicit;
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", skill_r16, " ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", skill_r17, " ");
   }
 }
 function ConsultantCardComponent_span_82_Template(rf, ctx) {
@@ -4408,10 +4416,10 @@ function ConsultantCardComponent_span_82_Template(rf, ctx) {
 }
 function ConsultantCardComponent_div_89_Template(rf, ctx) {
   if (rf & 1) {
-    const _r17 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
+    const _r18 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 75);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function ConsultantCardComponent_div_89_Template_div_click_0_listener($event) {
-      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r17);
+      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r18);
       const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
       return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r1.onToggleExpansion(ctx_r1.consultant.id, $event));
     });
@@ -4420,20 +4428,28 @@ function ConsultantCardComponent_div_89_Template(rf, ctx) {
 }
 function ConsultantCardComponent_button_91_Template(rf, ctx) {
   if (rf & 1) {
-    const _r18 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "button", 41);
+    const _r19 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "button", 42);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function ConsultantCardComponent_button_91_Template_button_click_0_listener($event) {
-      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r18);
+      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r19);
       const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
       return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r1.onToggleExpansion(ctx_r1.consultant.id, $event));
     });
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1, " Voir tout le message ");
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
   }
-  if (rf & 2) {
-    const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", ctx_r1.expanded ? "Masquer le message" : "Voir tout le message", " ");
+}
+function ConsultantCardComponent_span_92_Template(rf, ctx) {
+  if (rf & 1) {
+    const _r20 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span")(1, "button", 42);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function ConsultantCardComponent_span_92_Template_button_click_1_listener($event) {
+      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r20);
+      const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
+      return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r1.onToggleExpansion(ctx_r1.consultant.id, $event));
+    });
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](2, " Masquer ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()();
   }
 }
 function ConsultantCardComponent_div_95_div_1_span_4_Template(rf, ctx) {
@@ -4443,9 +4459,9 @@ function ConsultantCardComponent_div_95_div_1_span_4_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
   }
   if (rf & 2) {
-    const sector_r19 = ctx.$implicit;
+    const sector_r21 = ctx.$implicit;
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", sector_r19, " ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", sector_r21, " ");
   }
 }
 function ConsultantCardComponent_div_95_div_1_Template(rf, ctx) {
@@ -4470,9 +4486,9 @@ function ConsultantCardComponent_div_95_div_2_span_4_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
   }
   if (rf & 2) {
-    const expertise_r20 = ctx.$implicit;
+    const expertise_r22 = ctx.$implicit;
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", expertise_r20, " ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", expertise_r22, " ");
   }
 }
 function ConsultantCardComponent_div_95_div_2_Template(rf, ctx) {
@@ -4497,9 +4513,9 @@ function ConsultantCardComponent_div_95_span_7_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
   }
   if (rf & 2) {
-    const skill_r21 = ctx.$implicit;
+    const skill_r23 = ctx.$implicit;
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", skill_r21, " ");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", skill_r23, " ");
   }
 }
 function ConsultantCardComponent_div_95_div_8_li_4_span_5_Template(rf, ctx) {
@@ -4509,9 +4525,9 @@ function ConsultantCardComponent_div_95_div_8_li_4_span_5_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
   }
   if (rf & 2) {
-    const exp_r22 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]().$implicit;
+    const exp_r24 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]().$implicit;
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"]("\u2022 ", exp_r22.company, "");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"]("\u2022 ", exp_r24.company, "");
   }
 }
 function ConsultantCardComponent_div_95_div_8_li_4_span_6_Template(rf, ctx) {
@@ -4532,13 +4548,13 @@ function ConsultantCardComponent_div_95_div_8_li_4_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()();
   }
   if (rf & 2) {
-    const exp_r22 = ctx.$implicit;
+    const exp_r24 = ctx.$implicit;
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](exp_r22.role);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](exp_r24.role);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", exp_r22.company);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", exp_r24.company);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", exp_r22.isCurrent);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", exp_r24.isCurrent);
   }
 }
 function ConsultantCardComponent_div_95_div_8_Template(rf, ctx) {
@@ -4566,7 +4582,7 @@ function ConsultantCardComponent_div_95_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](6, "div", 13);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](7, ConsultantCardComponent_div_95_span_7_Template, 2, 1, "span", 78);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](8, ConsultantCardComponent_div_95_div_8_Template, 5, 1, "div", 42);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](8, ConsultantCardComponent_div_95_div_8_Template, 5, 1, "div", 41);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
   }
   if (rf & 2) {
@@ -4700,8 +4716,8 @@ class ConsultantCardComponent {
         toggleDetailsExpansion: "toggleDetailsExpansion"
       },
       decls: 96,
-      vars: 80,
-      consts: [[1, "bg-white", "border", "border-gray-200", "rounded-md", "overflow-hidden", "shadow-md", "hover:shadow-lg", "transition-shadow", "duration-300", "hidden", "md:block"], [1, "w-full", "border-collapse"], [1, "transition-all", "duration-300", "hover:bg-gray-50", "cursor-pointer"], [1, "whitespace-nowrap", "p-2", "border-r", "border-gray-100", "w-16", "align-middle"], [1, "flex", "flex-col", "items-center", "justify-center", "h-full"], [1, "material-icons", "text-2xl", "mb-1", 3, "ngClass", "title"], [1, "text-xs", "text-gray-400", "text-center"], [1, "p-2", "pl-4", "align-top"], [1, "font-medium", "text-base", "mb-1.5", "flex", "items-center"], [1, "w-2.5", "h-2.5", "rounded-full", "mr-1.5", 3, "ngClass"], [1, "flex", "items-center", "mb-2"], [1, "flex", "space-x-0.5", "items-end", "h-3.5", "mr-3"], ["class", "w-1 rounded-sm", 3, "ngClass", 4, "ngFor", "ngForOf"], [1, "flex", "flex-wrap"], ["class", "skill-badge text-xs py-0 px-1.5 mb-0.5", 4, "ngFor", "ngForOf"], ["class", "text-xs text-gray-500 flex items-center ml-1", 4, "ngIf"], [1, "text-xs", "text-gray-600", "flex", "items-center"], ["xmlns", "http://www.w3.org/2000/svg", "fill", "none", "viewBox", "0 0 24 24", "stroke", "currentColor", 1, "h-3.5", "w-3.5", "mr-0.5", "flex-shrink-0"], ["stroke-linecap", "round", "stroke-linejoin", "round", "stroke-width", "2", "d", "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"], ["stroke-linecap", "round", "stroke-linejoin", "round", "stroke-width", "2", "d", "M15 11a3 3 0 11-6 0 3 3 0 016 0z"], [4, "ngFor", "ngForOf"], [1, "py-2", "pr-4", "align-top", "w-24", "text-right"], [1, "hidden", "lg:flex", "lg:space-x-2", "mb-2"], [1, "action-button", 3, "click", "disabled", "title", "ngClass"], [1, "fab", "fa-linkedin", "text-blue-600"], [1, "fas", "fa-phone-alt", "text-green-600"], [1, "fas", "fa-envelope", "text-red-600"], [1, "lg:hidden"], [1, "relative"], ["type", "button", 1, "inline-flex", "justify-center", "px-3", "py-2", "w-10", "h-8", "text-sm", "font-medium", "text-gray-700", "bg-gray-100", "border", "border-gray-300", "rounded-md", "hover:bg-gray-200", "focus:outline-none", "focus:ring-2", "focus:ring-blue-500", "transition-all", "duration-300", 3, "click"], ["xmlns", "http://www.w3.org/2000/svg", "fill", "none", "viewBox", "0 0 24 24", "stroke", "currentColor", 1, "h-4", "w-4"], ["stroke-linecap", "round", "stroke-linejoin", "round", "stroke-width", "2", "d", "M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"], ["class", "origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50", 3, "click", 4, "ngIf"], [1, "mt-2", "h-6"], [1, "px-4", "py-3", "border-t", "border-gray-100", "bg-gray-50", "transition-all", "duration-300"], [1, "mb-2"], [1, "text-sm", "font-medium", "text-gray-800", "mb-1"], [1, "text-sm", "text-gray-600", "consultantMessage", 3, "innerHTML"], ["class", "bg-gradient-overlay", 3, "click", 4, "ngIf"], [1, "flex", "justify-between", "mt-1"], ["class", "text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300", 3, "click", 4, "ngIf"], [1, "text-xs", "text-blue-600", "hover:text-blue-800", "hover:underline", "focus:outline-none", "transition-colors", "duration-300", 3, "click"], [4, "ngIf"], [1, "mobile-consultant-card", "block", "md:hidden"], [1, "mobile-header-row"], [1, "flex", "items-center"], [1, "material-icons", "text-lg", "mr-1.5", 3, "ngClass"], [1, "text-xs", "text-gray-500", "mr-1.5"], [1, "w-2", "h-2", "rounded-full", "mr-1", 3, "ngClass"], [1, "flex", "space-x-0.5", "items-end", "h-2.5"], ["class", "w-0.5 rounded-sm", 3, "ngClass", 4, "ngFor", "ngForOf"], [1, "mobile-action-buttons"], [1, "w-6", "h-6", "flex", "items-center", "justify-center", "rounded-full", 3, "click", "disabled", "ngClass"], [1, "fab", "fa-linkedin", "text-blue-600", "text-xs"], [1, "fas", "fa-phone-alt", "text-green-600", "text-xs"], [1, "fas", "fa-envelope", "text-red-600", "text-xs"], [1, "px-4", "pt-2", "pb-3"], [1, "font-medium", "text-base", "mb-2.5"], [1, "text-xs", "text-gray-600", "flex", "items-center", "mb-2"], [1, "flex", "flex-wrap", "mt-2.5"], ["class", "skill-badge text-xs py-0.5 px-2 mb-1", 4, "ngFor", "ngForOf"], ["class", "text-xs text-gray-500 flex items-center ml-1 mb-1", 4, "ngIf"], [1, "px-4", "py-3", "border-t", "border-gray-100", "bg-gray-50", "mobile-scrollable-container", "transition-all", "duration-300"], [1, "w-1", "rounded-sm", 3, "ngClass"], [1, "skill-badge", "text-xs", "py-0", "px-1.5", "mb-0.5"], [1, "text-xs", "text-gray-500", "flex", "items-center", "ml-1"], [1, "location-badge"], ["class", "mx-1", 4, "ngIf"], [1, "mx-1"], [1, "origin-top-right", "absolute", "right-0", "mt-2", "w-48", "rounded-md", "shadow-lg", "bg-white", "ring-1", "ring-black", "ring-opacity-5", "focus:outline-none", "z-50", 3, "click"], ["role", "none", 1, "py-1"], ["href", "javascript:void(0)", 1, "flex", "items-center", "px-4", "py-2", "text-sm", "text-gray-700", "hover:bg-gray-100", "transition-colors", "duration-300", 3, "click"], [1, "fab", "fa-linkedin", "text-blue-600", "mr-2"], [1, "fas", "fa-phone-alt", "text-green-600", "mr-2"], [1, "fas", "fa-envelope", "text-red-600", "mr-2"], [1, "bg-gradient-overlay", 3, "click"], ["class", "mb-4", 4, "ngIf"], [1, "mb-4"], ["class", "skill-badge", 4, "ngFor", "ngForOf"], [1, "flex", "flex-wrap", "space-x-1"], ["class", "sector-badge", 4, "ngFor", "ngForOf"], [1, "sector-badge"], ["class", "expertise-badge", 4, "ngFor", "ngForOf"], [1, "expertise-badge"], [1, "skill-badge"], [1, "text-sm", "text-gray-600", "space-y-2"], ["class", "flex items-start", 4, "ngFor", "ngForOf"], [1, "flex", "items-start"], [1, "mt-0.5", "mr-1.5", "w-1.5", "h-1.5", "rounded-full", "bg-gray-400", "flex-shrink-0"], [1, "font-medium"], ["class", "ml-1", 4, "ngIf"], ["class", "text-xs ml-1 text-blue-600", 4, "ngIf"], [1, "ml-1"], [1, "text-xs", "ml-1", "text-blue-600"], [1, "w-0.5", "rounded-sm", 3, "ngClass"], [1, "skill-badge", "text-xs", "py-0.5", "px-2", "mb-1"], [1, "text-xs", "text-gray-500", "flex", "items-center", "ml-1", "mb-1"]],
+      vars: 82,
+      consts: [[1, "bg-white", "border", "border-gray-200", "rounded-md", "overflow-hidden", "shadow-md", "hover:shadow-lg", "transition-shadow", "duration-300", "hidden", "md:block"], [1, "w-full", "border-collapse"], [1, "transition-all", "duration-300", "hover:bg-gray-50", "cursor-pointer"], [1, "whitespace-nowrap", "p-2", "border-r", "border-gray-100", "w-16", "align-middle"], [1, "flex", "flex-col", "items-center", "justify-center", "h-full"], [1, "material-icons", "text-2xl", "mb-1", 3, "ngClass", "title"], [1, "text-xs", "text-gray-400", "text-center"], [1, "p-2", "pl-4", "align-top"], [1, "font-medium", "text-base", "mb-1.5", "flex", "items-center"], [1, "w-2.5", "h-2.5", "rounded-full", "mr-1.5", 3, "ngClass"], [1, "flex", "items-center", "mb-2"], [1, "flex", "space-x-0.5", "items-end", "h-3.5", "mr-3"], ["class", "w-1 rounded-sm", 3, "ngClass", 4, "ngFor", "ngForOf"], [1, "flex", "flex-wrap"], ["class", "skill-badge text-xs py-0 px-1.5 mb-0.5", 4, "ngFor", "ngForOf"], ["class", "text-xs text-gray-500 flex items-center ml-1", 4, "ngIf"], [1, "text-xs", "text-gray-600", "flex", "items-center"], ["xmlns", "http://www.w3.org/2000/svg", "fill", "none", "viewBox", "0 0 24 24", "stroke", "currentColor", 1, "h-3.5", "w-3.5", "mr-0.5", "flex-shrink-0"], ["stroke-linecap", "round", "stroke-linejoin", "round", "stroke-width", "2", "d", "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"], ["stroke-linecap", "round", "stroke-linejoin", "round", "stroke-width", "2", "d", "M15 11a3 3 0 11-6 0 3 3 0 016 0z"], [4, "ngFor", "ngForOf"], [1, "py-2", "pr-4", "align-top", "w-24", "text-right"], [1, "hidden", "lg:flex", "lg:space-x-2", "mb-2"], [1, "action-button", 3, "click", "disabled", "title", "ngClass"], [1, "fab", "fa-linkedin", "text-blue-600"], [1, "fas", "fa-phone-alt", "text-green-600"], [1, "fas", "fa-envelope", "text-red-600"], [1, "lg:hidden"], [1, "relative"], ["type", "button", 1, "inline-flex", "justify-center", "px-3", "py-2", "w-10", "h-8", "text-sm", "font-medium", "text-gray-700", "bg-gray-100", "border", "border-gray-300", "rounded-md", "hover:bg-gray-200", "focus:outline-none", "focus:ring-2", "focus:ring-blue-500", "transition-all", "duration-300", 3, "click"], ["xmlns", "http://www.w3.org/2000/svg", "fill", "none", "viewBox", "0 0 24 24", "stroke", "currentColor", 1, "h-4", "w-4"], ["stroke-linecap", "round", "stroke-linejoin", "round", "stroke-width", "2", "d", "M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"], ["class", "origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50", 3, "click", 4, "ngIf"], [1, "mt-2", "h-6"], [1, "px-4", "py-3", "border-t", "border-gray-100", "bg-gray-50", "transition-all", "duration-300"], [1, "mb-2"], [1, "text-sm", "font-medium", "text-gray-800", "mb-1"], [1, "text-sm", "text-gray-600", "consultantMessage", 3, "innerHTML"], ["class", "bg-gradient-overlay", 3, "click", 4, "ngIf"], [1, "flex", "justify-between", "mt-1"], ["class", "text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300", 3, "click", 4, "ngIf"], [4, "ngIf"], [1, "text-xs", "text-blue-600", "hover:text-blue-800", "hover:underline", "focus:outline-none", "transition-colors", "duration-300", 3, "click"], [1, "mobile-consultant-card", "block", "md:hidden"], [1, "mobile-header-row"], [1, "flex", "items-center"], [1, "material-icons", "text-lg", "mr-1.5", 3, "ngClass"], [1, "text-xs", "text-gray-500", "mr-1.5"], [1, "w-2", "h-2", "rounded-full", "mr-1", 3, "ngClass"], [1, "flex", "space-x-0.5", "items-end", "h-2.5"], ["class", "w-0.5 rounded-sm", 3, "ngClass", 4, "ngFor", "ngForOf"], [1, "mobile-action-buttons"], [1, "w-6", "h-6", "flex", "items-center", "justify-center", "rounded-full", 3, "click", "disabled", "ngClass"], [1, "fab", "fa-linkedin", "text-blue-600", "text-xs"], [1, "fas", "fa-phone-alt", "text-green-600", "text-xs"], [1, "fas", "fa-envelope", "text-red-600", "text-xs"], [1, "px-4", "pt-2", "pb-3"], [1, "font-medium", "text-base", "mb-2.5"], [1, "text-xs", "text-gray-600", "flex", "items-center", "mb-2"], [1, "flex", "flex-wrap", "mt-2.5"], ["class", "skill-badge text-xs py-0.5 px-2 mb-1", 4, "ngFor", "ngForOf"], ["class", "text-xs text-gray-500 flex items-center ml-1 mb-1", 4, "ngIf"], [1, "px-4", "py-3", "border-t", "border-gray-100", "bg-gray-50", "mobile-scrollable-container", "transition-all", "duration-300"], [1, "w-1", "rounded-sm", 3, "ngClass"], [1, "skill-badge", "text-xs", "py-0", "px-1.5", "mb-0.5"], [1, "text-xs", "text-gray-500", "flex", "items-center", "ml-1"], [1, "location-badge"], ["class", "mx-1", 4, "ngIf"], [1, "mx-1"], [1, "origin-top-right", "absolute", "right-0", "mt-2", "w-48", "rounded-md", "shadow-lg", "bg-white", "ring-1", "ring-black", "ring-opacity-5", "focus:outline-none", "z-50", 3, "click"], ["role", "none", 1, "py-1"], ["href", "javascript:void(0)", 1, "flex", "items-center", "px-4", "py-2", "text-sm", "text-gray-700", "hover:bg-gray-100", "transition-colors", "duration-300", 3, "click"], [1, "fab", "fa-linkedin", "text-blue-600", "mr-2"], [1, "fas", "fa-phone-alt", "text-green-600", "mr-2"], [1, "fas", "fa-envelope", "text-red-600", "mr-2"], [1, "bg-gradient-overlay", 3, "click"], ["class", "mb-4", 4, "ngIf"], [1, "mb-4"], ["class", "skill-badge", 4, "ngFor", "ngForOf"], [1, "flex", "flex-wrap", "space-x-1"], ["class", "sector-badge", 4, "ngFor", "ngForOf"], [1, "sector-badge"], ["class", "expertise-badge", 4, "ngFor", "ngForOf"], [1, "expertise-badge"], [1, "skill-badge"], [1, "text-sm", "text-gray-600", "space-y-2"], ["class", "flex items-start", 4, "ngFor", "ngForOf"], [1, "flex", "items-start"], [1, "mt-0.5", "mr-1.5", "w-1.5", "h-1.5", "rounded-full", "bg-gray-400", "flex-shrink-0"], [1, "font-medium"], ["class", "ml-1", 4, "ngIf"], ["class", "text-xs ml-1 text-blue-600", 4, "ngIf"], [1, "ml-1"], [1, "text-xs", "ml-1", "text-blue-600"], [1, "w-0.5", "rounded-sm", 3, "ngClass"], [1, "skill-badge", "text-xs", "py-0.5", "px-2", "mb-1"], [1, "text-xs", "text-gray-500", "flex", "items-center", "ml-1", "mb-1"]],
       template: function ConsultantCardComponent_Template(rf, ctx) {
         if (rf & 1) {
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0)(1, "table", 1)(2, "tr", 2)(3, "td", 3)(4, "div", 4)(5, "span", 5);
@@ -4768,15 +4784,14 @@ class ConsultantCardComponent {
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](46, ConsultantCardComponent_div_46_Template, 1, 0, "div", 38);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](47, "div", 39);
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](48, ConsultantCardComponent_button_48_Template, 2, 1, "button", 40);
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](49, "div");
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](50, "button", 41);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](48, ConsultantCardComponent_button_48_Template, 2, 0, "button", 40)(49, ConsultantCardComponent_span_49_Template, 3, 0, "span", 41);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](50, "button", 42);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function ConsultantCardComponent_Template_button_click_50_listener($event) {
             return ctx.onToggleDetailsExpansion(ctx.consultant.id, $event);
           });
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](51);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()()();
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](52, ConsultantCardComponent_div_52_Template, 9, 4, "div", 42);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](52, ConsultantCardComponent_div_52_Template, 9, 4, "div", 41);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()();
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](53, "div", 43)(54, "div", 44)(55, "div", 45)(56, "span", 46);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](57);
@@ -4830,30 +4845,29 @@ class ConsultantCardComponent {
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](89, ConsultantCardComponent_div_89_Template, 1, 0, "div", 38);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](90, "div", 39);
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](91, ConsultantCardComponent_button_91_Template, 2, 1, "button", 40);
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](92, "div");
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](93, "button", 41);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](91, ConsultantCardComponent_button_91_Template, 2, 0, "button", 40)(92, ConsultantCardComponent_span_92_Template, 3, 0, "span", 41);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](93, "button", 42);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function ConsultantCardComponent_Template_button_click_93_listener($event) {
             return ctx.onToggleDetailsExpansion(ctx.consultant.id, $event);
           });
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](94);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()()();
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](95, ConsultantCardComponent_div_95_Template, 9, 4, "div", 42);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](95, ConsultantCardComponent_div_95_Template, 9, 4, "div", 41);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()();
         }
         if (rf & 2) {
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](5);
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](49, _c0, !ctx.consultant.locked, ctx.consultant.locked))("title", ctx.consultant.locked ? "Profil verrouill\u00E9" : "Profil accessible");
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](51, _c0, !ctx.consultant.locked, ctx.consultant.locked))("title", ctx.consultant.locked ? "Profil verrouill\u00E9" : "Profil accessible");
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", ctx.consultant.locked ? "lock" : "lock_open", " ");
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"]("#", ctx.consultant.id, "");
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](3);
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction3"](52, _c1, ctx.consultant.availability === 0, ctx.consultant.availability === 1, ctx.consultant.availability === 2));
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction3"](54, _c1, ctx.consultant.availability === 0, ctx.consultant.availability === 1, ctx.consultant.availability === 2));
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", ctx.consultant.role, " ");
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](3);
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction0"](56, _c2));
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction0"](58, _c2));
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", ctx.consultant.skills.slice(0, 3));
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
@@ -4861,11 +4875,11 @@ class ConsultantCardComponent {
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](6);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", ctx.consultant.location.split(","));
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](3);
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx.consultant.linkedinValidated)("title", ctx.consultant.linkedinValidated ? "Voir profil LinkedIn" : "LinkedIn non disponible")("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](57, _c3, !ctx.consultant.linkedinValidated));
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx.consultant.linkedinValidated)("title", ctx.consultant.linkedinValidated ? "Voir profil LinkedIn" : "LinkedIn non disponible")("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](59, _c3, !ctx.consultant.linkedinValidated));
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx.consultant.phoneValidated || !ctx.consultant.phone)("title", ctx.consultant.phoneValidated && ctx.consultant.phone ? "Appeler" : "T\u00E9l\u00E9phone non disponible")("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](59, _c3, !ctx.consultant.phoneValidated || !ctx.consultant.phone));
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx.consultant.phoneValidated || !ctx.consultant.phone)("title", ctx.consultant.phoneValidated && ctx.consultant.phone ? "Appeler" : "T\u00E9l\u00E9phone non disponible")("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](61, _c3, !ctx.consultant.phoneValidated || !ctx.consultant.phone));
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx.consultant.emailValidated || !ctx.consultant.email)("title", ctx.consultant.emailValidated && ctx.consultant.email ? "Envoyer un email" : "Email non disponible")("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](61, _c3, !ctx.consultant.emailValidated || !ctx.consultant.email));
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx.consultant.emailValidated || !ctx.consultant.email)("title", ctx.consultant.emailValidated && ctx.consultant.email ? "Envoyer un email" : "Email non disponible")("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](63, _c3, !ctx.consultant.emailValidated || !ctx.consultant.email));
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](7);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.dropdownOpen);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](7);
@@ -4874,27 +4888,29 @@ class ConsultantCardComponent {
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.isMessageLong(ctx.consultant.message) && !ctx.expanded);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.isMessageLong(ctx.consultant.message));
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](3);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.isMessageLong(ctx.consultant.message) && !ctx.expanded);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.expanded);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", ctx.detailsExpanded ? "Masquer les d\u00E9tails" : "Voir plus", " ");
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.detailsExpanded);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](63, _c0, !ctx.consultant.locked, ctx.consultant.locked));
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](65, _c0, !ctx.consultant.locked, ctx.consultant.locked));
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", ctx.consultant.locked ? "lock" : "lock_open", " ");
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"]("#", ctx.consultant.id, "");
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction3"](66, _c1, ctx.consultant.availability === 0, ctx.consultant.availability === 1, ctx.consultant.availability === 2));
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction3"](68, _c1, ctx.consultant.availability === 0, ctx.consultant.availability === 1, ctx.consultant.availability === 2));
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction0"](70, _c2));
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction0"](72, _c2));
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx.consultant.linkedinValidated)("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](71, _c4, !ctx.consultant.linkedinValidated, ctx.consultant.linkedinValidated));
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx.consultant.linkedinValidated)("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](73, _c4, !ctx.consultant.linkedinValidated, ctx.consultant.linkedinValidated));
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx.consultant.phoneValidated || !ctx.consultant.phone)("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](74, _c5, !ctx.consultant.phoneValidated || !ctx.consultant.phone, ctx.consultant.phoneValidated && ctx.consultant.phone));
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx.consultant.phoneValidated || !ctx.consultant.phone)("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](76, _c5, !ctx.consultant.phoneValidated || !ctx.consultant.phone, ctx.consultant.phoneValidated && ctx.consultant.phone));
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx.consultant.emailValidated || !ctx.consultant.email)("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](77, _c6, !ctx.consultant.emailValidated || !ctx.consultant.email, ctx.consultant.emailValidated && ctx.consultant.email));
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("disabled", !ctx.consultant.emailValidated || !ctx.consultant.email)("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](79, _c6, !ctx.consultant.emailValidated || !ctx.consultant.email, ctx.consultant.emailValidated && ctx.consultant.email));
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", ctx.consultant.role, " ");
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](6);
@@ -4909,8 +4925,10 @@ class ConsultantCardComponent {
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.isMessageLong(ctx.consultant.message) && !ctx.expanded);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.isMessageLong(ctx.consultant.message));
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](3);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.isMessageLong(ctx.consultant.message) && !ctx.expanded);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.expanded);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"](" ", ctx.detailsExpanded ? "Masquer les d\u00E9tails" : "Voir plus", " ");
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"]();
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", ctx.detailsExpanded);
