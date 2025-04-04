@@ -170,10 +170,10 @@
     </tr>
   </table>
   
-  <!-- Expanded Message and Additional Info - Only showed when expanded -->
-  <div *ngIf="messageExpanded" class="px-4 py-3 border-t border-gray-100 bg-gray-50 transition-all duration-300">
+  <!-- Message Preview - Always shown -->
+  <div class="px-4 py-3 border-t border-gray-100 bg-gray-50 transition-all duration-300">
     <!-- Message avec hashtags -->
-    <div class="mb-4">
+    <div class="mb-2">
       <h3 class="text-sm font-medium text-gray-800 mb-1">Message</h3>
       <div class="relative">
         <div class="text-sm text-gray-600 consultantMessage" [innerHTML]="formatMessage(consultant.message)"
@@ -344,20 +344,13 @@
       </span>
     </div>
     
-    <!-- Bouton pour afficher plus -->
-    <div class="mt-3">
-      <button 
-        (click)="onToggleMessageExpansion(consultant.id, $event)"
-        class="text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300">
-        {{ messageExpanded ? 'Masquer les détails' : 'Voir plus' }}
-      </button>
-    </div>
+    <!-- Ce bouton n'est plus nécessaire car le message est toujours affiché -->
   </div>
   
-  <!-- Partie étendue (message et détails additionnels) -->
-  <div *ngIf="messageExpanded" class="px-4 py-3 border-t border-gray-100 bg-gray-50 mobile-scrollable-container transition-all duration-300">
+  <!-- Message Preview - Always shown -->
+  <div class="px-4 py-3 border-t border-gray-100 bg-gray-50 mobile-scrollable-container transition-all duration-300">
     <!-- Message avec hashtags -->
-    <div class="mb-4">
+    <div class="mb-2">
       <h3 class="text-sm font-medium text-gray-800 mb-1">Message</h3>
       <div class="relative">
         <div class="text-sm text-gray-600 consultantMessage" [innerHTML]="formatMessage(consultant.message)"
