@@ -718,7 +718,7 @@ class ConsultantListComponent {
     this.consultants = [];
     this.filteredConsultants = [];
     // Paramètre global pour contrôler l'affichage des détails
-    this.showDetailsDefault = false; // Contrôle si les détails sont affichés par défaut
+    this.showDetailsDefault = true; // Contrôle si les détails sont affichés par défaut
     // Paramètres de pagination
     this.currentPage = 1;
     this.pageSize = 10;
