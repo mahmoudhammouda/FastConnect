@@ -615,11 +615,15 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
     if (event.expanded !== undefined) {
       // Mise à jour directe avec la valeur expanded de l'événement
       this.expandedMessages[id + '-message'] = event.expanded;
+      // Synchroniser les deux états d'expansion
+      this.expandedMessages[id] = event.expanded;
       console.log(`[ConsultantListComponent] Message expansion set to ${event.expanded} for consultant ${id}`);
     } else if (event && event.stopPropagation) {
       // C'est un événement de clic direct
       event.stopPropagation();
       this.expandedMessages[id + '-message'] = !this.expandedMessages[id + '-message'];
+      // Synchroniser les deux états d'expansion
+      this.expandedMessages[id] = this.expandedMessages[id + '-message'];
       console.log(`[ConsultantListComponent] Message expansion toggled to ${this.expandedMessages[id + '-message']} for consultant ${id}`);
     }
   }
@@ -639,6 +643,10 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
     
     // Basculer l'état d'expansion du message
     this.expandedMessages[id] = !this.expandedMessages[id];
+    
+    // Synchroniser les deux états d'expansion pour assurer la cohérence
+    this.expandedMessages[id + '-message'] = this.expandedMessages[id];
+    
     console.log(`[ConsultantListComponent] Main message expansion toggled to ${this.expandedMessages[id]} for consultant ${id}`);
   }
   
