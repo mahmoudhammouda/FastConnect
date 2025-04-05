@@ -132,9 +132,10 @@ namespace ConnectExtension.Backend
             app.UseRouting();
             
             // Activation des fichiers statiques pour servir l'application Angular via .NET Core
-            // Important: UseStaticFiles doit être après UseRouting pour que les routes API soient prioritaires
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
+            // Mode indépendant : nous ne servons plus les fichiers statiques du frontend
+            // Les commentaires suivants sont laissés pour référence
+            // app.UseDefaultFiles();
+            // app.UseStaticFiles();
             
             // Use CORS policy
             app.UseCors("AllowChromeExtension");
@@ -147,9 +148,9 @@ namespace ConnectExtension.Backend
             {
                 endpoints.MapControllers();
                 
-                // Ajout du fallback vers index.html pour les routes non-API (SPA fallback)
-                // Version simplifiée pour éviter les problèmes de références
-                endpoints.MapFallbackToFile("index.html");
+                // En mode indépendant, nous ne gérons pas le fallback des routes Angular
+                // Les commentaires suivants sont laissés pour référence
+                // endpoints.MapFallbackToFile("index.html");
             });
             
             logger.LogInformation("Routes et middlewares configurés");
