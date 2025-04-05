@@ -8,10 +8,11 @@
   line-height: 1.5;
   word-break: break-word;
   padding: 0.5rem 0;
+  transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out;
 }
 
 .truncated {
-  max-height: 45px;
+  max-height: 4.5em; /* Environ 3 lignes de texte */
   overflow: hidden;
   position: relative;
 }
@@ -26,6 +27,7 @@
   cursor: pointer;
   border-bottom: 2px solid rgba(59, 130, 246, 0.2);
   transition: all 0.2s ease-in-out;
+  pointer-events: auto;
 }
 
 .bg-gradient-overlay:hover {
@@ -72,4 +74,19 @@ td.p-2 {
 /* Amélioration visuelle de la partie expandée */
 div[class*="bg-gray-50"] {
   box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Animation pour les messages extensibles */
+.consultantMessage:not(.truncated) {
+  animation: messageExpand 0.3s ease-out forwards;
+}
+
+@keyframes messageExpand {
+  from { opacity: 0.8; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile styles spécifiques */
+.mobile-consultant-card .consultantMessage.truncated {
+  max-height: 4.5em; /* Même hauteur que pour desktop */
 }

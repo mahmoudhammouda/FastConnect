@@ -50,16 +50,19 @@ export class ConsultantCardComponent {
     // Si le message est vide, il n'est pas long
     if (!message || message.trim() === '') return false;
     
-    // Si le message dépasse un certain nombre de caractères (réduit à 100)
-    if (message.length > 100) return true;
+    // Si le message dépasse un certain nombre de caractères (réduit à 80)
+    if (message.length > 80) return true;
     
     // Si le message contient plusieurs lignes (toute ligne additionnelle compte)
     const lineCount = (message.match(/\n/g) || []).length + 1;
     if (lineCount > 1) return true;
     
-    // Si le message contient beaucoup de mots (réduit à 15)
+    // Si le message contient beaucoup de mots (réduit à 12)
     const wordCount = message.split(/\s+/).length;
-    if (wordCount > 15) return true;
+    if (wordCount > 12) return true;
+    
+    // Estimation supplémentaire: si le message a plus de 55 caractères, il occupe probablement plus de 3 lignes
+    if (message.length > 55 && message.includes(' ')) return true;
     
     return false;
   }

@@ -599,10 +599,14 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
    */
   handleToggleExpansion(event: any, id: string): void {
     if (event.expanded !== undefined) {
+      // Mise à jour directe avec la valeur expanded de l'événement
       this.expandedMessages[id + '-message'] = event.expanded;
+      console.log(`[ConsultantListComponent] Message expansion set to ${event.expanded} for consultant ${id}`);
     } else if (event && event.stopPropagation) {
+      // C'est un événement de clic direct
       event.stopPropagation();
       this.expandedMessages[id + '-message'] = !this.expandedMessages[id + '-message'];
+      console.log(`[ConsultantListComponent] Message expansion toggled to ${this.expandedMessages[id + '-message']} for consultant ${id}`);
     }
   }
   
@@ -612,12 +616,16 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
    * @param id Identifiant du consultant
    */
   handleToggleMessageExpansion(event: any, id: string): void {
+    // S'assurer que la propagation de l'événement est arrêtée
     if (event.event && event.event.stopPropagation) {
       event.event.stopPropagation();
     } else if (event && event.stopPropagation) {
       event.stopPropagation();
     }
+    
+    // Basculer l'état d'expansion du message
     this.expandedMessages[id] = !this.expandedMessages[id];
+    console.log(`[ConsultantListComponent] Main message expansion toggled to ${this.expandedMessages[id]} for consultant ${id}`);
   }
   
   /**
