@@ -4,7 +4,7 @@ modules = ["dotnet", "dotnet-7.0", "nodejs-20", "python-3.11"]
 channel = "stable-24_05"
 
 [workflows]
-runButton = "Connect API"
+runButton = "Angular Frontend"
 
 [[workflows.workflow]]
 name = "Project"
