@@ -131,18 +131,6 @@ namespace ConnectExtension.Backend
             // Routes et middleware
             app.UseRouting();
             
-            // Rediriger la racine vers Swagger
-            app.Use(async (context, next) =>
-            {
-                if (context.Request.Path.Value == "/")
-                {
-                    context.Response.Redirect("/swagger");
-                    return;
-                }
-                
-                await next();
-            });
-            
             // Activation des fichiers statiques pour servir l'application Angular via .NET Core
             // Mode indépendant : nous ne servons plus les fichiers statiques du frontend
             // Les commentaires suivants sont laissés pour référence
