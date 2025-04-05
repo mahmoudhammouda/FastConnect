@@ -1,0 +1,16 @@
+      <div class="block mt-2 mb-2 text-center flex justify-between gap-2">
+        <!-- Bouton Voir tout le message (à gauche) -->
+        <button *ngIf="isMessageLong(consultant.message)"
+               (click)="onToggleMessageExpansion(consultant.id, $event)"
+               class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-1 inline-block px-2 py-1 border border-blue-300 rounded-md bg-blue-50">
+          {{ messageExpanded ? 'Réduire le message' : 'Voir tout le message' }}
+        </button>
+        <div class="flex gap-2">
+          <!-- Bouton Voir plus (à droite) -->
+          <button 
+                (click)="onToggleDetailsExpansion(consultant.id, $event)"
+                class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-1 inline-block px-2 py-1 border border-blue-300 rounded-md bg-blue-50">
+            {{ detailsExpanded ? 'Masquer les détails' : 'Voir plus' }}
+          </button>
+        </div>
+      </div>

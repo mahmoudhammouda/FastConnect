@@ -180,7 +180,7 @@
         </div>
         <div *ngIf="!messageExpanded && isMessageLong(consultant.message)" 
              class="bg-gradient-overlay"
-             (click)="onToggleExpansion(consultant.id, $event)">
+             (click)="onToggleMessageExpansion(consultant.id, $event)">
         </div>
       </div>
       <div class="block mt-2 mb-2 text-center flex justify-between gap-2">
@@ -188,16 +188,9 @@
         <button *ngIf="isMessageLong(consultant.message)"
                (click)="onToggleMessageExpansion(consultant.id, $event)"
                class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-1 inline-block px-2 py-1 border border-blue-300 rounded-md bg-blue-50">
-          {{ messageExpanded ? 'Masquer le message' : 'Voir tout le message' }}
+          {{ messageExpanded ? 'Réduire le message' : 'Voir tout le message' }}
         </button>
-        <div class="flex gap-2">
-          <!-- Bouton pour masquer le message (montré quand expanded est true) -->
-          <span *ngIf="expanded && isMessageLong(consultant.message)">
-            <button (click)="onToggleExpansion(consultant.id, $event)"
-                  class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-1 inline-block px-2 py-1 border border-blue-300 rounded-md bg-blue-50">
-              Masquer
-            </button>
-          </span>
+        <div>
           <!-- Bouton Voir plus (à droite) -->
           <button 
                 (click)="onToggleDetailsExpansion(consultant.id, $event)"
@@ -325,102 +318,97 @@
     </div>
   </div>
   
-  <!-- Mobile Main Content with compact layout -->
-  <div class="p-2 pt-1">
-    <!-- Role avec statut de disponibilité (plus compact) -->
-    <div class="font-medium text-sm mb-2">
-      {{ consultant.role }}
-    </div>
+  <!-- Info Row avec le rôle et les compétences -->
+  <div class="mobile-info-row">
+    <!-- Rôle -->
+    <div class="font-medium mb-1">{{ consultant.role }}</div>
     
-    <!-- Compétences (badges) -->
+    <!-- Skills -->
     <div class="flex flex-wrap mb-2">
-      <span *ngFor="let skill of consultant.skills.slice(0, 3)" class="skill-badge text-xs py-0 px-1.5 mb-1 mr-1">
+      <span *ngFor="let skill of consultant.skills.slice(0, 3)" class="skill-badge-mobile">
         {{ skill }}
       </span>
-      <span *ngIf="consultant.skills.length > 3" class="text-2xs text-gray-500 mt-0.5">
+      <span *ngIf="consultant.skills.length > 3" class="text-xs text-gray-500 flex items-center ml-1 mt-1">
         +{{ consultant.skills.length - 3 }}
       </span>
     </div>
     
-    <!-- Localisation (minimaliste) -->
-    <div class="text-xs text-gray-600 flex items-center mb-2">
+    <!-- Location -->
+    <div class="flex items-center text-xs text-gray-500 mb-1">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
       </svg>
-      <span class="flex flex-wrap">
-        <ng-container *ngFor="let location of consultant.location.split(','); let last = last">
-          <span class="location-badge">{{ location.trim() }}</span>
-          <span *ngIf="!last" class="mx-1">•</span>
-        </ng-container>
-      </span>
+      <span class="location-badge-mobile">{{ consultant.location }}</span>
     </div>
     
-    <!-- Message avec overlay et gradient -->
-    <div class="relative mb-2">
+    <!-- Message avec gradient pour les messages tronqués -->
+    <div class="mt-3 mb-2">
+      <h3 class="text-xs font-medium text-gray-700 mb-1">Message</h3>
+      <div class="relative">
       <div class="text-xs text-gray-600 consultantMessage" [innerHTML]="formatMessage(consultant.message)" [ngClass]="{'truncated': !messageExpanded}">
       </div>
       <div *ngIf="!messageExpanded && isMessageLong(consultant.message)" 
            class="bg-gradient-overlay-mobile"
-           (click)="onToggleExpansion(consultant.id, $event)">
+           (click)="onToggleMessageExpansion(consultant.id, $event)">
       </div>
     </div>
     
-    <!-- Actions Row -->
-    <div class="mobile-actions block mb-1 text-center flex justify-center gap-2">
-      <!-- Bouton pour masquer le message (montré quand expanded est true ET si le message est long) -->
-      <span *ngIf="expanded && isMessageLong(consultant.message)">
-        <button (click)="onToggleExpansion(consultant.id, $event)"
-               class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-0 inline-block px-2 py-0.5 border border-blue-300 rounded-md bg-blue-50">
-          Masquer
-        </button>
-      </span>
-      <!-- Bouton Voir plus (à droite) -->
-      <button 
-             (click)="onToggleDetailsExpansion(consultant.id, $event)"
+    <div class="text-center mt-1 flex justify-between gap-2">
+      <!-- Bouton Voir tout le message (à gauche) -->
+      <button *ngIf="isMessageLong(consultant.message)"
+             (click)="onToggleMessageExpansion(consultant.id, $event)"
              class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-0 inline-block px-2 py-0.5 border border-blue-300 rounded-md bg-blue-50">
-        {{ detailsExpanded ? 'Masquer' : 'Voir plus' }}
+        {{ messageExpanded ? 'Réduire le message' : 'Voir tout le message' }}
       </button>
+      <div>
+        <!-- Bouton Voir plus (à droite) -->
+        <button 
+               (click)="onToggleDetailsExpansion(consultant.id, $event)"
+               class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-0 inline-block px-2 py-0.5 border border-blue-300 rounded-md bg-blue-50">
+          {{ detailsExpanded ? 'Masquer les détails' : 'Voir plus' }}
+        </button>
+      </div>
     </div>
     
     <!-- Section détails (version mobile) -->
     <div *ngIf="detailsExpanded" class="block md:hidden pt-1 border-t border-gray-100">
-      <!-- Secteurs d'activité -->
-      <div class="mb-3" *ngIf="consultant.sectors && consultant.sectors.length > 0">
-        <h3 class="text-2xs font-medium text-gray-800 mb-1">Secteurs d'activité</h3>
-        <div class="flex flex-wrap">
-          <span *ngFor="let sector of consultant.sectors" class="sector-badge text-2xs mr-1 mb-1">
+      <!-- Secteurs d'activité (affiché en premier dans la vue détaillée) -->
+      <div class="my-2" *ngIf="consultant.sectors && consultant.sectors.length > 0">
+        <h3 class="text-xs font-medium text-gray-700 mb-1">Secteurs d'activité</h3>
+        <div class="flex flex-wrap gap-1">
+          <span *ngFor="let sector of consultant.sectors" class="text-xs px-2 py-0.5 bg-gray-100 rounded-md text-gray-600">
             {{ sector }}
           </span>
         </div>
       </div>
       
-      <!-- Expertises -->
-      <div class="mb-3" *ngIf="consultant.expertises && consultant.expertises.length > 0">
-        <h3 class="text-2xs font-medium text-gray-800 mb-1">Expertises</h3>
-        <div class="flex flex-wrap">
-          <span *ngFor="let expertise of consultant.expertises" class="expertise-badge text-2xs mr-1 mb-1">
+      <!-- Expertises (mots-clés) -->
+      <div class="my-2" *ngIf="consultant.expertises && consultant.expertises.length > 0">
+        <h3 class="text-xs font-medium text-gray-700 mb-1">Expertises</h3>
+        <div class="flex flex-wrap gap-1">
+          <span *ngFor="let expertise of consultant.expertises" class="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded-md">
             {{ expertise }}
           </span>
         </div>
       </div>
       
-      <!-- Compétences techniques -->
-      <div class="mb-3">
-        <h3 class="text-2xs font-medium text-gray-800 mb-1">Compétences techniques</h3>
-        <div class="flex flex-wrap">
-          <span *ngFor="let skill of consultant.skills" class="skill-badge text-2xs mr-1 mb-1">
+      <!-- Toutes les compétences techniques -->
+      <div class="my-2">
+        <h3 class="text-xs font-medium text-gray-700 mb-1">Compétences techniques</h3>
+        <div class="flex flex-wrap gap-1">
+          <span *ngFor="let skill of consultant.skills" class="text-xs px-2 py-0.5 bg-gray-50 border border-gray-200 rounded-md text-gray-600">
             {{ skill }}
           </span>
         </div>
       </div>
       
       <!-- Dernières expériences -->
-      <div *ngIf="consultant.experiences && consultant.experiences.length > 0">
-        <h3 class="text-2xs font-medium text-gray-800 mb-1">Dernières expériences</h3>
-        <ul class="text-2xs text-gray-600 space-y-1">
+      <div class="my-2" *ngIf="consultant.experiences && consultant.experiences.length > 0">
+        <h3 class="text-xs font-medium text-gray-700 mb-1">Dernières expériences</h3>
+        <ul class="text-xs text-gray-600 space-y-1 pl-1">
           <li *ngFor="let exp of consultant.experiences" class="flex items-start">
-            <div class="mt-0.5 mr-1 w-1 h-1 rounded-full bg-gray-400 flex-shrink-0"></div>
+            <div class="mt-1 mr-1.5 w-1 h-1 rounded-full bg-gray-400 flex-shrink-0"></div>
             <div>
               <span class="font-medium">{{ exp.role }}</span>
               <span *ngIf="exp.company" class="ml-1">• {{ exp.company }}</span>
