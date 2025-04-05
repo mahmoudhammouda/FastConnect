@@ -449,18 +449,32 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
       // Si c'est un MouseEvent
       event.stopPropagation();
     }
+    
+    // Met à jour l'état d'expansion du message
     this.expandedMessages[id] = !this.expandedMessages[id];
-    console.log("Message expansion toggled for ID:", id, "New state:", this.expandedMessages[id]);
+    
+    // Pour la cohérence, on met également à jour l'état secondaire du message
+    this.expandedMessages[id + '-message'] = this.expandedMessages[id];
+    
+    console.log("[ConsultantListComponent] Main message expansion toggled to " + this.expandedMessages[id] + " for consultant " + id);
   }
   
   toggleExpandMessage(id: string, event: any): void {
     if (event.expanded !== undefined) {
       // Si c'est un objet avec expanded, c'est un événement de notre composant
       this.expandedMessages[id + '-message'] = event.expanded;
+      // Pour la cohérence, met également à jour l'état principal du message
+      this.expandedMessages[id] = event.expanded;
     } else if (event && event.stopPropagation) {
       // Si c'est un MouseEvent
       event.stopPropagation();
+      
+      // Inverse l'état
       this.expandedMessages[id + '-message'] = !this.expandedMessages[id + '-message'];
+      // Pour la cohérence, met également à jour l'état principal du message
+      this.expandedMessages[id] = this.expandedMessages[id + '-message'];
+      
+      console.log("[ConsultantListComponent] Message expansion toggled to " + this.expandedMessages[id] + " for consultant " + id);
     }
   }
   
