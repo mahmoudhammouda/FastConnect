@@ -1,12 +1,11 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ConsultantWithTags, ExperienceLevel } from '../../models/consultant.model';
-import { ConsultantDetailSectionsComponent } from '../consultant-detail-sections/consultant-detail-sections.component';
 
 @Component({
   selector: 'app-consultant-card',
   standalone: true,
-  imports: [CommonModule, ConsultantDetailSectionsComponent],
+  imports: [CommonModule],
   templateUrl: './consultant-card.component.html',
   styleUrls: ['./consultant-card.component.css']
 })
@@ -43,17 +42,36 @@ export class ConsultantCardComponent {
   
   /**
    * Check if a message is long enough to be truncated
-   * Nous considérons tous les messages comme "longs" pour garantir
-   * l'affichage du bouton "Voir tout le message"
+   * Utilise une combinaison de longueur et de nombre de lignes pour
+   * déterminer si un message doit être tronqué
+   * Algorithme optimisé pour considérer TOUS les messages comme "longs"
+   * afin de toujours afficher le bouton "Voir tout le message"
    */
   isMessageLong(message: string): boolean {
     // Si le message est vide, il n'est pas long
     if (!message || message.trim() === '') return false;
     
-    // IMPORTANT: Considère TOUS les messages comme longs
-    // pour toujours afficher le bouton "Voir tout le message"
-    console.log(`isMessageLong called for message length: ${message.length}, returning true`);
+    // IMPORTANT: Force la plupart des messages à être considérés comme longs
+    // Pour garantir l'affichage du bouton "Voir tout le message"
     return true;
+    
+    /* Ancien algorithme désactivé pour forcer l'affichage du bouton
+    // Si le message dépasse un certain nombre de caractères (réduit à 80)
+    if (message.length > 80) return true;
+    
+    // Si le message contient plusieurs lignes (toute ligne additionnelle compte)
+    const lineCount = (message.match(/\n/g) || []).length + 1;
+    if (lineCount > 1) return true;
+    
+    // Si le message contient beaucoup de mots (réduit à 12)
+    const wordCount = message.split(/\s+/).length;
+    if (wordCount > 12) return true;
+    
+    // Estimation supplémentaire: si le message a plus de 55 caractères, il occupe probablement plus de 3 lignes
+    if (message.length > 55 && message.includes(' ')) return true;
+    
+    return false;
+    */
   }
 
   onLinkedInClick(url: string, event: MouseEvent): void {
