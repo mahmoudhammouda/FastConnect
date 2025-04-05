@@ -176,27 +176,35 @@
     <div class="mb-2">
       <h3 class="text-sm font-medium text-gray-800 mb-1">Message</h3>
       <div class="relative">
-        <div class="text-sm text-gray-600 consultantMessage" [innerHTML]="formatMessage(consultant.message)" [ngClass]="{'truncated': !expanded}">
+        <div class="text-sm text-gray-600 consultantMessage" [innerHTML]="formatMessage(consultant.message)" [ngClass]="{'truncated': !messageExpanded}">
         </div>
-        <div *ngIf="!expanded && isMessageLong(consultant.message)" 
+        <div *ngIf="!messageExpanded && isMessageLong(consultant.message)" 
              class="bg-gradient-overlay"
              (click)="onToggleExpansion(consultant.id, $event)">
         </div>
       </div>
-      <div class="block mt-2 mb-2 text-center flex justify-center gap-2">
-        <!-- Bouton pour masquer le message (montré quand expanded est true) -->
-        <span *ngIf="expanded && isMessageLong(consultant.message)">
-          <button (click)="onToggleExpansion(consultant.id, $event)"
-                 class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-1 inline-block px-2 py-1 border border-blue-300 rounded-md bg-blue-50">
-            Masquer
-          </button>
-        </span>
-        <!-- Bouton Voir plus (à droite) -->
-        <button 
-               (click)="onToggleDetailsExpansion(consultant.id, $event)"
+      <div class="block mt-2 mb-2 text-center flex justify-between gap-2">
+        <!-- Bouton Voir tout le message (à gauche) -->
+        <button *ngIf="isMessageLong(consultant.message)"
+               (click)="onToggleMessageExpansion(consultant.id, $event)"
                class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-1 inline-block px-2 py-1 border border-blue-300 rounded-md bg-blue-50">
-          {{ detailsExpanded ? 'Masquer les détails' : 'Voir plus' }}
+          {{ messageExpanded ? 'Masquer le message' : 'Voir tout le message' }}
         </button>
+        <div class="flex gap-2">
+          <!-- Bouton pour masquer le message (montré quand expanded est true) -->
+          <span *ngIf="expanded && isMessageLong(consultant.message)">
+            <button (click)="onToggleExpansion(consultant.id, $event)"
+                  class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-1 inline-block px-2 py-1 border border-blue-300 rounded-md bg-blue-50">
+              Masquer
+            </button>
+          </span>
+          <!-- Bouton Voir plus (à droite) -->
+          <button 
+                (click)="onToggleDetailsExpansion(consultant.id, $event)"
+                class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-1 inline-block px-2 py-1 border border-blue-300 rounded-md bg-blue-50">
+            {{ detailsExpanded ? 'Masquer les détails' : 'Voir plus' }}
+          </button>
+        </div>
       </div>
     </div>
     
@@ -350,9 +358,9 @@
     
     <!-- Message avec overlay et gradient -->
     <div class="relative mb-2">
-      <div class="text-xs text-gray-600 consultantMessage" [innerHTML]="formatMessage(consultant.message)" [ngClass]="{'truncated': !expanded}">
+      <div class="text-xs text-gray-600 consultantMessage" [innerHTML]="formatMessage(consultant.message)" [ngClass]="{'truncated': !messageExpanded}">
       </div>
-      <div *ngIf="!expanded && isMessageLong(consultant.message)" 
+      <div *ngIf="!messageExpanded && isMessageLong(consultant.message)" 
            class="bg-gradient-overlay-mobile"
            (click)="onToggleExpansion(consultant.id, $event)">
       </div>

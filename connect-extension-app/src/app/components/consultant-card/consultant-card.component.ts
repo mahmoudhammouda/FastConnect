@@ -97,7 +97,7 @@ export class ConsultantCardComponent {
 
   onToggleExpansion(id: string, event: MouseEvent): void {
     event.stopPropagation();
-    this.toggleExpansion.emit({id, expanded: !this.expanded});
+    this.toggleExpansion.emit({id, expanded: !this.messageExpanded});
   }
 
   onToggleDropdown(id: string, event: MouseEvent): void {
