@@ -8,20 +8,20 @@
   line-height: 1.5;
   word-break: break-word;
   padding: 0.5rem 0;
-  transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, margin-bottom 0.5s ease;
+  transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, margin-bottom 0.5s ease-out;
   /* Forcer tous les messages à être tronqués par défaut */
   max-height: 6em; /* Environ 4-5 lignes de texte */
   overflow: hidden;
   position: relative;
   padding-bottom: 5px !important; /* Espace pour le gradient */
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
 }
 
 /* Annuler la troncature si explicitement mentionné */
 .consultantMessage:not(.truncated) {
   max-height: none !important;
   overflow: visible !important;
-  margin-bottom: 1.5rem !important; /* Augmenter l'espace en bas pour bien pousser les boutons */
+  margin-bottom: 2.5rem !important; /* Augmenter l'espace en bas pour bien pousser les boutons */
 }
 
 .truncated {
@@ -165,8 +165,8 @@ div[class*="bg-gray-50"] {
   max-height: 6em; /* Même hauteur que desktop */
   line-height: 1.5; /* Cohérent */
   font-size: 0.75rem;
-  transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, margin-bottom 0.5s ease;
-  margin-bottom: 0;
+  transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out, margin-bottom 0.5s ease-out;
+  margin-bottom: 0 !important;
 }
 
 /* Version mobile du message développé */
