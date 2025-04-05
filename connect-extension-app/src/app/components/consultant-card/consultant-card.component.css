@@ -9,6 +9,17 @@
   word-break: break-word;
   padding: 0.5rem 0;
   transition: max-height 0.3s ease-in-out, opacity 0.2s ease-in-out;
+  /* Forcer tous les messages à être tronqués par défaut */
+  max-height: 6em; /* Environ 4-5 lignes de texte */
+  overflow: hidden;
+  position: relative;
+  padding-bottom: 5px !important; /* Espace pour le gradient */
+}
+
+/* Annuler la troncature si explicitement mentionné */
+.consultantMessage:not(.truncated) {
+  max-height: none !important;
+  overflow: visible !important;
 }
 
 .truncated {
@@ -89,6 +100,6 @@ div[class*="bg-gray-50"] {
 }
 
 /* Mobile styles spécifiques */
-.mobile-consultant-card .consultantMessage.truncated {
+.mobile-consultant-card .consultantMessage {
   max-height: 6em; /* Même hauteur augmentée que pour desktop */
 }

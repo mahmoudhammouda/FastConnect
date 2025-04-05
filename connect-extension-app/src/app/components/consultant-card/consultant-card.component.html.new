@@ -78,257 +78,244 @@
       </td>
       
       <!-- Right Column: Menu -->
-      <td class="py-2 pr-4 align-top w-24 text-right">
-        
-        <!-- Desktop Action Buttons (always visible on lg and up) -->
-        <div class="hidden lg:flex lg:space-x-2 mb-2">
-          <!-- LinkedIn button (always visible, grayed out if not available) -->
-          <button (click)="onLinkedInClick(consultant.linkedinUrl, $event)" 
-                  [disabled]="!consultant.linkedinValidated" 
-                  [title]="consultant.linkedinValidated ? 'Voir profil LinkedIn' : 'LinkedIn non disponible'"
-                  class="action-button"
-                  [ngClass]="{'opacity-50 cursor-not-allowed': !consultant.linkedinValidated}">
-            <i class="fab fa-linkedin text-blue-600"></i>
-          </button>
-          
-          <!-- Phone button (always visible, grayed out if not available) -->
-          <button (click)="onPhoneClick(consultant.phone, $event)" 
-                  [disabled]="!consultant.phoneValidated || !consultant.phone" 
-                  [title]="consultant.phoneValidated && consultant.phone ? 'Appeler' : 'Téléphone non disponible'"
-                  class="action-button"
-                  [ngClass]="{'opacity-50 cursor-not-allowed': !consultant.phoneValidated || !consultant.phone}">
-            <i class="fas fa-phone-alt text-green-600"></i>
-          </button>
-          
-          <!-- Email button (always visible, grayed out if not available) -->
-          <button (click)="onEmailClick(consultant.email, $event)" 
-                  [disabled]="!consultant.emailValidated || !consultant.email" 
-                  [title]="consultant.emailValidated && consultant.email ? 'Envoyer un email' : 'Email non disponible'"
-                  class="action-button"
-                  [ngClass]="{'opacity-50 cursor-not-allowed': !consultant.emailValidated || !consultant.email}">
-            <i class="fas fa-envelope text-red-600"></i>
-          </button>
-        </div>
-        
-        <!-- Mobile Dropdown Button (visible only on small screens) -->
-        <div class="lg:hidden">
-          <div class="relative">
-            <button 
-              type="button"
-              (click)="onToggleDropdown(consultant.id, $event)"
-              class="inline-flex justify-center px-3 py-2 w-10 h-8 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300">
-              <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-              </svg>
+      <td class="whitespace-nowrap p-2 border-l border-gray-100 w-16 align-top">
+        <div class="flex flex-col items-end">
+          <!-- Menu button (3 dots) with dropdown -->
+          <div class="relative" [id]="'dropdown-container-' + consultant.id">
+            <button class="action-button" 
+                    [id]="'dropdown-button-' + consultant.id"
+                    (click)="onDropdownToggle(consultant.id, $event)">
+              <span class="material-icons text-sm">more_vert</span>
             </button>
             
-            <!-- Dropdown Menu for Mobile -->
-            <div *ngIf="dropdownOpen" 
-                class="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
-                (click)="$event.stopPropagation()">
-              <div class="py-1" role="none">
-                <!-- LinkedIn option - toujours affiché mais désactivé si non disponible -->
-                <a href="javascript:void(0)" 
-                    (click)="onLinkedInClick(consultant.linkedinUrl, $event)"
-                    [class.opacity-50]="!consultant.linkedinValidated"
-                    [class.cursor-not-allowed]="!consultant.linkedinValidated"
-                    [class.pointer-events-none]="!consultant.linkedinValidated"
-                    class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-300">
-                  <i class="fab fa-linkedin text-blue-600 mr-2"></i>
-                  Voir sur LinkedIn
-                </a>
-                
-                <!-- Phone option - toujours affiché mais désactivé si non disponible -->
-                <a href="javascript:void(0)" 
-                    (click)="onPhoneClick(consultant.phone, $event)"
-                    [class.opacity-50]="!consultant.phoneValidated || !consultant.phone"
-                    [class.cursor-not-allowed]="!consultant.phoneValidated || !consultant.phone"
-                    [class.pointer-events-none]="!consultant.phoneValidated || !consultant.phone"
-                    class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-300">
-                  <i class="fas fa-phone-alt text-green-600 mr-2"></i>
-                  Appeler
-                </a>
-                
-                <!-- Email option - toujours affiché mais désactivé si non disponible -->
-                <a href="javascript:void(0)" 
-                    (click)="onEmailClick(consultant.email, $event)"
-                    [class.opacity-50]="!consultant.emailValidated || !consultant.email"
-                    [class.cursor-not-allowed]="!consultant.emailValidated || !consultant.email"
-                    [class.pointer-events-none]="!consultant.emailValidated || !consultant.email"
-                    class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-300">
-                  <i class="fas fa-envelope text-red-600 mr-2"></i>
-                  Envoyer un email
-                </a>
-              </div>
+            <!-- Dropdown menu -->
+            <div *ngIf="isDropdownOpen && openDropdownId === consultant.id" 
+                 class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1 text-sm"
+                 (clickOutside)="onClickOutsideDropdown($event)">
+              
+              <!-- LinkedIn option -->
+              <a *ngIf="consultant.linkedinUrl" 
+                 [href]="consultant.linkedinUrl" 
+                 target="_blank" 
+                 class="block px-4 py-2 text-gray-800 hover:bg-blue-50 flex items-center">
+                <span class="material-icons text-blue-600 mr-2 text-base">link</span>
+                Voir sur LinkedIn
+              </a>
+              
+              <!-- Phone option - disabled if not validated -->
+              <a [href]="'tel:' + consultant.phone" 
+                 [class.pointer-events-none]="!consultant.phoneValidated"
+                 class="block px-4 py-2 hover:bg-blue-50 flex items-center"
+                 [ngClass]="consultant.phoneValidated ? 'text-gray-800' : 'text-gray-400'">
+                <span class="material-icons mr-2 text-base" 
+                      [ngClass]="consultant.phoneValidated ? 'text-green-600' : 'text-gray-400'">
+                  phone
+                </span>
+                {{ consultant.phone || 'Non disponible' }}
+                <span *ngIf="!consultant.phoneValidated" class="ml-auto text-xs text-red-500">Non validé</span>
+              </a>
+              
+              <!-- Email option - toujours affiché mais grisé si non validé -->
+              <a [href]="'mailto:' + consultant.email" 
+                 [class.pointer-events-none]="!consultant.emailValidated"
+                 class="block px-4 py-2 hover:bg-blue-50 flex items-center"
+                 [ngClass]="consultant.emailValidated ? 'text-gray-800' : 'text-gray-400'">
+                <span class="material-icons mr-2 text-base" 
+                      [ngClass]="consultant.emailValidated ? 'text-green-600' : 'text-gray-400'">
+                  email
+                </span>
+                {{ consultant.email || 'Non disponible' }}
+                <span *ngIf="!consultant.emailValidated" class="ml-auto text-xs text-red-500">Non validé</span>
+              </a>
+              
+              <!-- Lock/Unlock action -->
+              <button (click)="onToggleLock(consultant.id, $event)" 
+                     class="w-full text-left block px-4 py-2 text-gray-800 hover:bg-blue-50 flex items-center">
+                <span class="material-icons mr-2 text-base" 
+                      [ngClass]="consultant.locked ? 'text-red-600' : 'text-green-600'">
+                  {{ consultant.locked ? 'lock' : 'lock_open' }}
+                </span>
+                {{ consultant.locked ? 'Débloquer' : 'Bloquer' }} le profil
+              </button>
             </div>
           </div>
+          
+          <!-- Contact indicators - shown by default -->
+          <div class="flex flex-col items-end mt-auto space-y-1.5">
+            <!-- LinkedIn indicator (blue when validated) -->
+            <span class="material-icons text-base" 
+                  [ngClass]="consultant.linkedinValidated ? 'text-blue-600' : 'text-gray-300'">
+              link
+            </span>
+            
+            <!-- Phone indicator (green when validated) -->
+            <span class="material-icons text-base" 
+                  [ngClass]="consultant.phoneValidated ? 'text-green-600' : 'text-gray-300'">
+              phone
+            </span>
+            
+            <!-- Email indicator (green when validated) -->
+            <span class="material-icons text-base" 
+                  [ngClass]="consultant.emailValidated ? 'text-green-600' : 'text-gray-300'">
+              email
+            </span>
+          </div>
         </div>
-        
-        <!-- Espace pour aligner la mise en page sans le bouton -->
-        <div class="mt-2 h-6"></div>
       </td>
     </tr>
   </table>
   
-  <!-- Message Preview - Always shown -->
-  <div class="px-4 py-3 border-t border-gray-100 bg-gray-50 transition-all duration-300">
-    <!-- Message avec hashtags -->
-    <div class="mb-2">
-      <h3 class="text-sm font-medium text-gray-800 mb-1">Message</h3>
-      <div class="relative">
-        <div class="text-sm text-gray-600 consultantMessage" [innerHTML]="formatMessage(consultant.message)"
-             [class.truncated]="isMessageLong(consultant.message) && !expanded">
-        </div>
-        <!-- Gradient overlay pour la troncature - cliquable pour voir tout le message -->
-        <div *ngIf="isMessageLong(consultant.message) && !expanded" 
+  <!-- Section extensible du message consultant (non affichée sur mobile) -->
+  <div *ngIf="consultant.message && consultant.message.trim() !== ''" class="px-4 pb-3 pt-0">
+    <div class="text-sm text-gray-700 relative">
+      <!-- Message du consultant (tronqué ou complet selon l'état) -->
+      <div class="consultantMessage" [ngClass]="{'truncated': !expanded}">
+        <!-- Affichage avec formatage automatique des sauts de ligne -->
+        <div [innerHTML]="formatMessage(consultant.message)"></div>
+        
+        <!-- Gradient overlay pour indiquer qu'il y a plus de contenu -->
+        <div *ngIf="!expanded" 
              class="bg-gradient-overlay"
              (click)="onToggleExpansion(consultant.id, $event)">
         </div>
       </div>
-      <div class="flex justify-between mt-1">
-        <button *ngIf="isMessageLong(consultant.message) && !expanded" 
+      <div class="block mt-2 mb-2 text-center flex justify-center gap-2">
+        <!-- Bouton pour voir tout le message (à gauche) - Toujours visible si !expanded et le message n'est pas vide -->
+        <button *ngIf="!expanded && consultant.message" 
                 (click)="onToggleExpansion(consultant.id, $event)"
-                class="text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300">
+                class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-1 inline-block px-2 py-1 border border-blue-300 rounded-md bg-blue-50">
           Voir tout le message
         </button>
-        <button *ngIf="expanded" 
-                (click)="onToggleExpansion(consultant.id, $event)"
-                class="text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300">
-          Masquer
-        </button>
-        <button 
-               (click)="onToggleDetailsExpansion(consultant.id, $event)"
-               class="text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300">
-          {{ detailsExpanded ? 'Masquer les détails' : 'Voir plus' }}
-        </button>
-      </div>
-    </div>
-    
-    <!-- Sections détaillées - affichées seulement si detailsExpanded est true -->
-    <div *ngIf="detailsExpanded">
-      <!-- Secteurs d'activité (affiché en premier dans la vue détaillée) -->
-      <div class="mb-4" *ngIf="consultant.sectors && consultant.sectors.length > 0">
-        <h3 class="text-sm font-medium text-gray-800 mb-1">Secteurs d'activité</h3>
-        <div class="flex flex-wrap space-x-1">
-          <span *ngFor="let sector of consultant.sectors" class="sector-badge">
-            {{ sector }}
-          </span>
-        </div>
-      </div>
-      
-      <!-- Expertises (mots-clés) -->
-      <div class="mb-4" *ngIf="consultant.expertises && consultant.expertises.length > 0">
-        <h3 class="text-sm font-medium text-gray-800 mb-1">Expertises</h3>
-        <div class="flex flex-wrap space-x-1">
-          <span *ngFor="let expertise of consultant.expertises" class="expertise-badge">
-            {{ expertise }}
-          </span>
-        </div>
-      </div>
-      
-      <!-- Compétences techniques (visible aussi sur la carte) -->
-      <div class="mb-4">
-        <h3 class="text-sm font-medium text-gray-800 mb-1">Compétences techniques</h3>
-        <div class="flex flex-wrap">
-          <span *ngFor="let skill of consultant.skills" class="skill-badge">
-            {{ skill }}
-          </span>
-        </div>
-      </div>
-      
-      <!-- Dernières expériences -->
-      <div *ngIf="consultant.experiences && consultant.experiences.length > 0">
-        <h3 class="text-sm font-medium text-gray-800 mb-1">Dernières expériences</h3>
-        <ul class="text-sm text-gray-600 space-y-2">
-          <li *ngFor="let exp of consultant.experiences" class="flex items-start">
-            <div class="mt-0.5 mr-1.5 w-1.5 h-1.5 rounded-full bg-gray-400 flex-shrink-0"></div>
-            <div>
-              <span class="font-medium">{{ exp.role }}</span>
-              <span *ngIf="exp.company" class="ml-1">• {{ exp.company }}</span>
-              <span *ngIf="exp.isCurrent" class="text-xs ml-1 text-blue-600">(Actuelle)</span>
-            </div>
-          </li>
-        </ul>
+        <!-- Bouton pour masquer le message (montré quand expanded est true) -->
+        <span *ngIf="expanded">
+          <button (click)="onToggleExpansion(consultant.id, $event)"
+                  class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-1 inline-block px-2 py-1 border border-blue-300 rounded-md bg-blue-50">
+            Masquer
+          </button>
+        </span>
       </div>
     </div>
   </div>
 </div>
 
 <!-- Version mobile du composant (masquée sur desktop) -->
-<div class="mobile-consultant-card block md:hidden">
-  <!-- Header Row avec icônes et actions alignés sur une seule ligne -->
-  <div class="mobile-header-row">
+<div class="mobile-consultant-card bg-white border border-gray-200 rounded-md overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 md:hidden">
+  <!-- Header avec Lock/Status, Role, et Menu -->
+  <div class="bg-gray-50 p-3 flex items-center justify-between">
     <div class="flex items-center">
-      <!-- Lock icon et ID très compacts -->
-      <span class="material-icons text-lg mr-1.5" 
-            [ngClass]="{
-              'text-green-500': !consultant.locked,
-              'text-red-500': consultant.locked
-            }">
-        {{ consultant.locked ? 'lock' : 'lock_open' }}
-      </span>
-      <span class="text-xs text-gray-500 mr-1.5">#{{ consultant.id }}</span>
+      <!-- Lock icon and ID -->
+      <div class="mr-3">
+        <span class="material-icons text-xl" 
+              [ngClass]="{
+                'text-green-500': !consultant.locked,
+                'text-red-500': consultant.locked
+              }">
+          {{ consultant.locked ? 'lock' : 'lock_open' }}
+        </span>
+        <span class="text-xs text-gray-500 block">#{{ consultant.id }}</span>
+      </div>
       
-      <!-- Indicateurs de statut compacts -->
-      <div class="flex items-center">
-        <!-- Disponibilité (point coloré) -->
-        <div class="w-2 h-2 rounded-full mr-1"
+      <!-- Role with availability indicator -->
+      <div class="font-medium flex items-center">
+        <div class="w-2 h-2 rounded-full mr-1.5"
               [ngClass]="{
                 'bg-green-500': consultant.availability === 0,
                 'bg-yellow-500': consultant.availability === 1,
                 'bg-red-500': consultant.availability === 2
               }">
         </div>
-        <!-- Barres d'expérience ultra-compactes -->
-        <div class="flex space-x-0.5 items-end h-2.5">
-          <div *ngFor="let i of [1, 2, 3]" 
-              class="w-0.5 rounded-sm"
-              [ngClass]="{
-                'bg-blue-600': i <= getSeniorityBars(consultant.experience), 
-                'bg-blue-200': i > getSeniorityBars(consultant.experience),
-                'h-1': i === 1,
-                'h-1.5': i === 2,
-                'h-2.5': i === 3
-              }">
-          </div>
-        </div>
+        {{ consultant.role }}
       </div>
     </div>
     
-    <!-- Actions row -->
-    <div class="mobile-action-buttons">
-      <!-- Action buttons plus compacts -->
-      <button (click)="onLinkedInClick(consultant.linkedinUrl, $event)" 
-              [disabled]="!consultant.linkedinValidated" 
-              class="w-6 h-6 flex items-center justify-center rounded-full"
-              [ngClass]="{'opacity-50 cursor-not-allowed': !consultant.linkedinValidated, 'bg-blue-100': consultant.linkedinValidated}">
-        <i class="fab fa-linkedin text-blue-600 text-xs"></i>
+    <!-- Menu dropdown -->
+    <div class="relative" [id]="'mobile-dropdown-container-' + consultant.id">
+      <button class="action-button" 
+              [id]="'mobile-dropdown-button-' + consultant.id"
+              (click)="onDropdownToggle('mobile-' + consultant.id, $event)">
+        <span class="material-icons text-sm">more_vert</span>
       </button>
       
-      <button (click)="onPhoneClick(consultant.phone, $event)" 
-              [disabled]="!consultant.phoneValidated || !consultant.phone" 
-              class="w-6 h-6 flex items-center justify-center rounded-full"
-              [ngClass]="{'opacity-50 cursor-not-allowed': !consultant.phoneValidated || !consultant.phone, 'bg-green-100': consultant.phoneValidated && consultant.phone}">
-        <i class="fas fa-phone-alt text-green-600 text-xs"></i>
-      </button>
-      
-      <button (click)="onEmailClick(consultant.email, $event)" 
-              [disabled]="!consultant.emailValidated || !consultant.email" 
-              class="w-6 h-6 flex items-center justify-center rounded-full"
-              [ngClass]="{'opacity-50 cursor-not-allowed': !consultant.emailValidated || !consultant.email, 'bg-red-100': consultant.emailValidated && consultant.email}">
-        <i class="fas fa-envelope text-red-600 text-xs"></i>
-      </button>
+      <!-- Dropdown menu - same as desktop -->
+      <div *ngIf="isDropdownOpen && openDropdownId === 'mobile-' + consultant.id" 
+           class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1 text-sm"
+           (clickOutside)="onClickOutsideDropdown($event)">
+        
+        <!-- Same dropdown content as desktop version -->
+        <a *ngIf="consultant.linkedinUrl" 
+           [href]="consultant.linkedinUrl" 
+           target="_blank" 
+           class="block px-4 py-2 text-gray-800 hover:bg-blue-50 flex items-center">
+          <span class="material-icons text-blue-600 mr-2 text-base">link</span>
+          Voir sur LinkedIn
+        </a>
+        
+        <a [href]="'tel:' + consultant.phone" 
+           [class.pointer-events-none]="!consultant.phoneValidated"
+           class="block px-4 py-2 hover:bg-blue-50 flex items-center"
+           [ngClass]="consultant.phoneValidated ? 'text-gray-800' : 'text-gray-400'">
+          <span class="material-icons mr-2 text-base" 
+                [ngClass]="consultant.phoneValidated ? 'text-green-600' : 'text-gray-400'">
+            phone
+          </span>
+          {{ consultant.phone || 'Non disponible' }}
+          <span *ngIf="!consultant.phoneValidated" class="ml-auto text-xs text-red-500">Non validé</span>
+        </a>
+        
+        <a [href]="'mailto:' + consultant.email" 
+           [class.pointer-events-none]="!consultant.emailValidated"
+           class="block px-4 py-2 hover:bg-blue-50 flex items-center"
+           [ngClass]="consultant.emailValidated ? 'text-gray-800' : 'text-gray-400'">
+          <span class="material-icons mr-2 text-base" 
+                [ngClass]="consultant.emailValidated ? 'text-green-600' : 'text-gray-400'">
+            email
+          </span>
+          {{ consultant.email || 'Non disponible' }}
+          <span *ngIf="!consultant.emailValidated" class="ml-auto text-xs text-red-500">Non validé</span>
+        </a>
+        
+        <button (click)="onToggleLock(consultant.id, $event)" 
+               class="w-full text-left block px-4 py-2 text-gray-800 hover:bg-blue-50 flex items-center">
+          <span class="material-icons mr-2 text-base" 
+                [ngClass]="consultant.locked ? 'text-red-600' : 'text-green-600'">
+            {{ consultant.locked ? 'lock' : 'lock_open' }}
+          </span>
+          {{ consultant.locked ? 'Débloquer' : 'Bloquer' }} le profil
+        </button>
+      </div>
     </div>
   </div>
   
-  <!-- Rôle et info principale -->
-  <div class="px-4 pt-2 pb-3">
-    <!-- Rôle (plus grand pour meilleure lisibilité sur mobile) -->
-    <div class="font-medium text-base mb-2.5">
-      {{ consultant.role }}
+  <!-- Body content: Seniority, Skills, Location -->
+  <div class="p-3">
+    <!-- Experience level and Skills -->
+    <div class="flex flex-wrap items-center mb-3">
+      <!-- Experience level / Seniority bars (vertical) -->
+      <div class="flex space-x-0.5 items-end h-3.5 mr-3">
+        <div *ngFor="let i of [1, 2, 3]" 
+            class="w-1 rounded-sm"
+            [ngClass]="{
+              'bg-blue-600': i <= getSeniorityBars(consultant.experience), 
+              'bg-blue-200': i > getSeniorityBars(consultant.experience),
+              'h-1': i === 1,
+              'h-2': i === 2,
+              'h-3.5': i === 3
+            }">
+        </div>
+      </div>
+      
+      <!-- Skills badges with overflow -->
+      <div class="flex flex-wrap flex-1">
+        <span *ngFor="let skill of consultant.skills.slice(0, 4)" class="skill-badge text-xs py-0.5 px-2 mb-1">
+          {{ skill }}
+        </span>
+        <span *ngIf="consultant.skills.length > 4" class="text-xs text-gray-500 flex items-center mt-1 ml-1">
+          +{{ consultant.skills.length - 4 }}
+        </span>
+      </div>
     </div>
     
-    <!-- Location avec icône -->
+    <!-- Locations with icon -->
     <div class="text-xs text-gray-600 flex items-center mb-2">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -342,93 +329,67 @@
       </span>
     </div>
     
-    <!-- Skills badges (full width dans la version mobile) -->
-    <div class="flex flex-wrap mt-2.5">
-      <span *ngFor="let skill of consultant.skills.slice(0, 5)" class="skill-badge text-xs py-0.5 px-2 mb-1">
-        {{ skill }}
+    <!-- Contact indicators -->
+    <div class="flex items-center space-x-2 text-sm">
+      <span class="material-icons text-base" 
+            [ngClass]="consultant.linkedinValidated ? 'text-blue-600' : 'text-gray-300'">
+        link
       </span>
-      <span *ngIf="consultant.skills.length > 5" class="text-xs text-gray-500 flex items-center ml-1 mb-1">
-        +{{ consultant.skills.length - 5 }}
+      
+      <span class="material-icons text-base" 
+            [ngClass]="consultant.phoneValidated ? 'text-green-600' : 'text-gray-300'">
+        phone
+      </span>
+      
+      <span class="material-icons text-base" 
+            [ngClass]="consultant.emailValidated ? 'text-green-600' : 'text-gray-300'">
+        email
       </span>
     </div>
-    
-    <!-- Ce bouton n'est plus nécessaire car le message est toujours affiché -->
   </div>
   
-  <!-- Message Preview - Always shown -->
-  <div class="px-4 py-3 border-t border-gray-100 bg-gray-50 mobile-scrollable-container transition-all duration-300">
-    <!-- Message avec hashtags -->
-    <div class="mb-2">
-      <h3 class="text-sm font-medium text-gray-800 mb-1">Message</h3>
-      <div class="relative">
-        <div class="text-sm text-gray-600 consultantMessage" [innerHTML]="formatMessage(consultant.message)"
-            [class.truncated]="isMessageLong(consultant.message) && !expanded">
-        </div>
-        <!-- Gradient overlay pour la troncature - cliquable pour voir tout le message -->
-        <div *ngIf="isMessageLong(consultant.message) && !expanded" 
+  <!-- Message section (if message exists) -->
+  <div *ngIf="consultant.message && consultant.message.trim() !== ''" class="px-3 pb-3 pt-0 border-t border-gray-100">
+    <div class="text-sm text-gray-700 relative">
+      <!-- Message du consultant (tronqué ou complet selon l'état) -->
+      <div class="consultantMessage" [ngClass]="{'truncated': !expanded}">
+        <!-- Affichage avec formatage automatique des sauts de ligne -->
+        <div [innerHTML]="formatMessage(consultant.message)"></div>
+        
+        <!-- Gradient overlay pour indiquer qu'il y a plus de contenu -->
+        <div *ngIf="!expanded" 
              class="bg-gradient-overlay"
              (click)="onToggleExpansion(consultant.id, $event)">
         </div>
       </div>
-      <div class="flex justify-between mt-1">
-        <button *ngIf="isMessageLong(consultant.message) && !expanded" 
-               (click)="onToggleExpansion(consultant.id, $event)"
-               class="text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300">
+      <div class="block mt-2 mb-2 text-center flex justify-center gap-2">
+        <!-- Bouton pour voir tout le message (montré seulement si !expanded) -->
+        <button *ngIf="!expanded && consultant.message" 
+                (click)="onToggleExpansion(consultant.id, $event)"
+                class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-1 inline-block px-2 py-1 border border-blue-300 rounded-md bg-blue-50">
           Voir tout le message
         </button>
-        <button *ngIf="expanded" 
-               (click)="onToggleExpansion(consultant.id, $event)"
-               class="text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300">
-          Masquer
-        </button>
-        <button 
-               (click)="onToggleDetailsExpansion(consultant.id, $event)"
-               class="text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300">
-          {{ detailsExpanded ? 'Masquer les détails' : 'Voir plus' }}
-        </button>
+        <!-- Bouton pour masquer le message (montré seulement si expanded) -->
+        <span *ngIf="expanded">
+          <button (click)="onToggleExpansion(consultant.id, $event)"
+                  class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-1 inline-block px-2 py-1 border border-blue-300 rounded-md bg-blue-50">
+            Masquer
+          </button>
+        </span>
       </div>
     </div>
-    
-    <!-- Détails étendus -->
-    <div *ngIf="detailsExpanded">
-      <!-- Même contenu que la version desktop -->
-      <!-- Secteurs d'activité (affiché en premier dans la vue détaillée) -->
-      <div class="mb-4" *ngIf="consultant.sectors && consultant.sectors.length > 0">
-        <h3 class="text-sm font-medium text-gray-800 mb-1">Secteurs d'activité</h3>
-        <div class="flex flex-wrap space-x-1">
-          <span *ngFor="let sector of consultant.sectors" class="sector-badge">
-            {{ sector }}
-          </span>
-        </div>
-      </div>
-      
-      <!-- Expertises (mots-clés) -->
-      <div class="mb-4" *ngIf="consultant.expertises && consultant.expertises.length > 0">
-        <h3 class="text-sm font-medium text-gray-800 mb-1">Expertises</h3>
-        <div class="flex flex-wrap space-x-1">
-          <span *ngFor="let expertise of consultant.expertises" class="expertise-badge">
-            {{ expertise }}
-          </span>
-        </div>
-      </div>
-      
-      <!-- Compétences techniques (visible aussi sur la carte) -->
-      <div class="mb-4">
-        <h3 class="text-sm font-medium text-gray-800 mb-1">Compétences techniques</h3>
-        <div class="flex flex-wrap">
-          <span *ngFor="let skill of consultant.skills" class="skill-badge">
-            {{ skill }}
-          </span>
-        </div>
-      </div>
-      
-      <!-- Dernières expériences -->
-      <div *ngIf="consultant.experiences && consultant.experiences.length > 0">
-        <h3 class="text-sm font-medium text-gray-800 mb-1">Dernières expériences</h3>
-        <ul class="text-sm text-gray-600 space-y-2">
-          <li *ngFor="let exp of consultant.experiences" class="flex items-start">
-            <div class="mt-0.5 mr-1.5 w-1.5 h-1.5 rounded-full bg-gray-400 flex-shrink-0"></div>
-            <div>
+  </div>
+  
+  <!-- Expandable experiences section -->
+  <div *ngIf="mobileExpanded && consultant.experiences && consultant.experiences.length > 0" 
+       class="bg-gray-50 p-3 border-t border-gray-200 animated-expand">
+    <div class="mb-2 font-medium text-sm">Expériences</div>
+    <div class="text-sm">
+      <ul class="space-y-2">
+        <li *ngFor="let exp of consultant.experiences.slice(0, 3)" class="flex items-start">
+          <div class="w-1 h-1 rounded-full bg-gray-400 mr-2 mt-1.5"></div>
+          <div>
+            <div class="text-xs text-gray-800">
               <span class="font-medium">{{ exp.role }}</span>
               <span *ngIf="exp.company" class="ml-1">• {{ exp.company }}</span>
               <span *ngIf="exp.isCurrent" class="text-xs ml-1 text-blue-600">(Actuelle)</span>
