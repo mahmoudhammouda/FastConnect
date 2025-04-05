@@ -206,8 +206,8 @@
       </div>
     </div>
     
-    <!-- Sections détaillées - affichées seulement si detailsExpanded est true -->
-    <div *ngIf="detailsExpanded">
+    <!-- Section détails (desktop version) -->
+    <div *ngIf="detailsExpanded" class="hidden md:block">
       <!-- Secteurs d'activité (affiché en premier dans la vue détaillée) -->
       <div class="mb-4" *ngIf="consultant.sectors && consultant.sectors.length > 0">
         <h3 class="text-sm font-medium text-gray-800 mb-1">Secteurs d'activité</h3>
@@ -323,80 +323,68 @@
     </div>
   </div>
   
-  <!-- Rôle et info principale -->
-  <div class="px-4 pt-2 pb-3">
-    <!-- Rôle (plus grand pour meilleure lisibilité sur mobile) -->
-    <div class="font-medium text-base mb-2.5">
-      {{ consultant.role }}
+  <!-- Main Consultant Info Row -->
+  <div class="mobile-info-row mt-1">
+    <!-- Role + Seniority, plus compact -->
+    <div class="text-sm font-medium mb-1">{{ consultant.role }}</div>
+    
+    <!-- Skills Row (optimisé pour l'espace limité) -->
+    <div class="flex flex-wrap mb-1">
+      <span *ngFor="let skill of consultant.skills.slice(0, 2)" class="skill-badge-mobile">{{ skill }}</span>
+      <span *ngIf="consultant.skills.length > 2" class="text-xs text-gray-500 flex items-center ml-1">
+        +{{ consultant.skills.length - 2 }}
+      </span>
     </div>
     
-    <!-- Location avec icône -->
+    <!-- Localisation -->
     <div class="text-xs text-gray-600 flex items-center mb-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
       </svg>
       <span class="flex flex-wrap">
         <ng-container *ngFor="let location of consultant.location.split(','); let last = last">
-          <span class="location-badge">{{ location.trim() }}</span>
+          <span class="location-badge-mobile">{{ location.trim() }}</span>
           <span *ngIf="!last" class="mx-1">•</span>
         </ng-container>
       </span>
     </div>
     
-    <!-- Skills badges (full width dans la version mobile) -->
-    <div class="flex flex-wrap mt-2.5">
-      <span *ngFor="let skill of consultant.skills.slice(0, 5)" class="skill-badge text-xs py-0.5 px-2 mb-1">
-        {{ skill }}
-      </span>
-      <span *ngIf="consultant.skills.length > 5" class="text-xs text-gray-500 flex items-center ml-1 mb-1">
-        +{{ consultant.skills.length - 5 }}
-      </span>
-    </div>
-    
-    <!-- Ce bouton n'est plus nécessaire car le message est toujours affiché -->
-  </div>
-  
-  <!-- Message Preview - Always shown -->
-  <div class="px-4 py-3 border-t border-gray-100 bg-gray-50 mobile-scrollable-container transition-all duration-300">
-    <!-- Message avec hashtags -->
-    <div class="mb-2">
-      <h3 class="text-sm font-medium text-gray-800 mb-1">Message</h3>
-        <div class="text-sm text-gray-600 consultantMessage truncated" [innerHTML]="formatMessage(consultant.message)">
-        </div>
-        </div>
-        <!-- Gradient overlay pour la troncature - cliquable pour voir tout le message -->
-        <div *ngIf="!expanded" 
-             class="bg-gradient-overlay"
-             (click)="onToggleExpansion(consultant.id, $event)">
-        </div>
+    <!-- Message Teaser Condensé (plus court, avec bouton d'expansion) -->
+    <div class="relative mb-2">
+      <div class="text-xs text-gray-600 consultantMessage truncated" [innerHTML]="formatMessage(consultant.message)">
       </div>
-      <div class="block mt-2 mb-2 text-center flex justify-center gap-2">
-        <!-- Bouton pour voir tout le message (à gauche) -->
-        <button *ngIf="!expanded" 
-               (click)="onToggleExpansion(consultant.id, $event)"
-               class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-1 inline-block px-2 py-1 border border-blue-300 rounded-md bg-blue-50">
-          Voir tout le message
-        </button>
-        <!-- Bouton pour masquer le message (montré quand expanded est true) -->
-        <span *ngIf="expanded">
-          <button (click)="onToggleExpansion(consultant.id, $event)"
-                 class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-1 inline-block px-2 py-1 border border-blue-300 rounded-md bg-blue-50">
-            Masquer
-          </button>
-        </span>
-        <!-- Bouton Voir plus (à droite) -->
-        <button 
-               (click)="onToggleDetailsExpansion(consultant.id, $event)"
-               class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-1 inline-block px-2 py-1 border border-blue-300 rounded-md bg-blue-50">
-          {{ detailsExpanded ? 'Masquer les détails' : 'Voir plus' }}
-        </button>
+      <div *ngIf="!expanded" 
+           class="bg-gradient-overlay-mobile"
+           (click)="onToggleExpansion(consultant.id, $event)">
       </div>
     </div>
     
-    <!-- Détails étendus -->
-    <div *ngIf="detailsExpanded">
-      <!-- Même contenu que la version desktop -->
+    <!-- Actions Row -->
+    <div class="mobile-actions block mb-1 text-center flex justify-center gap-2">
+      <!-- Bouton pour voir tout le message (à gauche) - Toujours visible si !expanded -->
+      <button *ngIf="!expanded" 
+              (click)="onToggleExpansion(consultant.id, $event)"
+              class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-0 inline-block px-2 py-0.5 border border-blue-300 rounded-md bg-blue-50">
+        Voir message
+      </button>
+      <!-- Bouton pour masquer le message (montré quand expanded est true) -->
+      <span *ngIf="expanded">
+        <button (click)="onToggleExpansion(consultant.id, $event)"
+               class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-0 inline-block px-2 py-0.5 border border-blue-300 rounded-md bg-blue-50">
+          Masquer
+        </button>
+      </span>
+      <!-- Bouton Voir plus (à droite) -->
+      <button 
+             (click)="onToggleDetailsExpansion(consultant.id, $event)"
+             class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-0 inline-block px-2 py-0.5 border border-blue-300 rounded-md bg-blue-50">
+        {{ detailsExpanded ? 'Masquer les détails' : 'Voir plus' }}
+      </button>
+    </div>
+    
+    <!-- Section détails (mobile version) -->
+    <div *ngIf="detailsExpanded" class="block md:hidden">
       <!-- Secteurs d'activité (affiché en premier dans la vue détaillée) -->
       <div class="mb-4" *ngIf="consultant.sectors && consultant.sectors.length > 0">
         <h3 class="text-sm font-medium text-gray-800 mb-1">Secteurs d'activité</h3>
@@ -417,7 +405,7 @@
         </div>
       </div>
       
-      <!-- Compétences techniques (visible aussi sur la carte) -->
+      <!-- Compétences techniques -->
       <div class="mb-4">
         <h3 class="text-sm font-medium text-gray-800 mb-1">Compétences techniques</h3>
         <div class="flex flex-wrap">
@@ -442,3 +430,5 @@
         </ul>
       </div>
     </div>
+  </div>
+</div>
