@@ -257,40 +257,40 @@
 </div>
 
 <!-- Version mobile du composant (masquée sur desktop) -->
-<div class="mobile-consultant-card block md:hidden">
+<div class="mobile-consultant-card block md:hidden bg-white border border-gray-200 rounded-md overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
   <!-- Header Row avec icônes et actions alignés sur une seule ligne -->
-  <div class="mobile-header-row">
+  <div class="mobile-header-row flex justify-between items-center p-2 border-b border-gray-100">
     <div class="flex items-center">
-      <!-- Lock icon et ID très compacts -->
-      <span class="material-icons text-lg mr-1.5" 
+      <!-- Lock icon et ID minimalistes -->
+      <span class="material-icons text-base mr-1" 
             [ngClass]="{
-              'text-green-500': !consultant.locked,
-              'text-red-500': consultant.locked
+              'text-green-400': !consultant.locked,
+              'text-red-400': consultant.locked
             }">
         {{ consultant.locked ? 'lock' : 'lock_open' }}
       </span>
-      <span class="text-xs text-gray-500 mr-1.5">#{{ consultant.id }}</span>
+      <span class="text-xs text-gray-400 mr-2">#{{ consultant.id }}</span>
       
-      <!-- Indicateurs de statut compacts -->
+      <!-- Indicateurs de statut épurés -->
       <div class="flex items-center">
         <!-- Disponibilité (point coloré) -->
-        <div class="w-2 h-2 rounded-full mr-1"
+        <div class="w-2 h-2 rounded-full mr-1.5"
               [ngClass]="{
-                'bg-green-500': consultant.availability === 0,
-                'bg-yellow-500': consultant.availability === 1,
-                'bg-red-500': consultant.availability === 2
+                'bg-green-400': consultant.availability === 0,
+                'bg-amber-400': consultant.availability === 1,
+                'bg-red-400': consultant.availability === 2
               }">
         </div>
-        <!-- Barres d'expérience ultra-compactes -->
-        <div class="flex space-x-0.5 items-end h-2.5">
+        <!-- Barres d'expérience ultra-minimalistes -->
+        <div class="flex space-x-0.5 items-end h-2">
           <div *ngFor="let i of [1, 2, 3]" 
-              class="w-0.5 rounded-sm"
+              class="w-0.5 rounded-full"
               [ngClass]="{
-                'bg-blue-600': i <= getSeniorityBars(consultant.experience), 
-                'bg-blue-200': i > getSeniorityBars(consultant.experience),
-                'h-1': i === 1,
-                'h-1.5': i === 2,
-                'h-2.5': i === 3
+                'bg-blue-400': i <= getSeniorityBars(consultant.experience), 
+                'bg-gray-200': i > getSeniorityBars(consultant.experience),
+                'h-0.5': i === 1,
+                'h-1': i === 2,
+                'h-2': i === 3
               }">
           </div>
         </div>
@@ -324,9 +324,19 @@
   </div>
   
   <!-- Main Consultant Info Row -->
-  <div class="mobile-info-row mt-1">
-    <!-- Role + Seniority, plus compact -->
-    <div class="text-sm font-medium mb-1">{{ consultant.role }}</div>
+  <div class="mobile-info-row p-3">
+    <!-- Role avec indicateur de disponibilité (comme desktop) -->
+    <div class="font-medium text-base mb-1.5 flex items-center">
+      <!-- Point de disponibilité -->
+      <div class="w-2.5 h-2.5 rounded-full mr-1.5"
+          [ngClass]="{
+            'bg-green-500': consultant.availability === 0,
+            'bg-yellow-500': consultant.availability === 1,
+            'bg-red-500': consultant.availability === 2
+          }">
+      </div>
+      {{ consultant.role }}
+    </div>
     
     <!-- Skills Row (optimisé pour l'espace limité) -->
     <div class="flex flex-wrap mb-1">
@@ -352,9 +362,9 @@
     
     <!-- Message Teaser Condensé (plus court, avec bouton d'expansion) -->
     <div class="relative mb-2">
-      <div class="text-xs text-gray-600 consultantMessage truncated" [innerHTML]="formatMessage(consultant.message)">
+      <div class="text-xs text-gray-600 consultantMessage truncated" [innerHTML]="formatMessage(consultant.message)" [ngClass]="{'truncated': !expanded}">
       </div>
-      <div *ngIf="!expanded" 
+      <div *ngIf="!expanded && isMessageLong(consultant.message)" 
            class="bg-gradient-overlay-mobile"
            (click)="onToggleExpansion(consultant.id, $event)">
       </div>
@@ -362,14 +372,14 @@
     
     <!-- Actions Row -->
     <div class="mobile-actions block mb-1 text-center flex justify-center gap-2">
-      <!-- Bouton pour voir tout le message (à gauche) - Toujours visible si !expanded -->
-      <button *ngIf="!expanded" 
+      <!-- Bouton pour voir tout le message (à gauche) - Visible uniquement si non expanded ET si le message est long -->
+      <button *ngIf="!expanded && isMessageLong(consultant.message)" 
               (click)="onToggleExpansion(consultant.id, $event)"
               class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-0 inline-block px-2 py-0.5 border border-blue-300 rounded-md bg-blue-50">
         Voir message
       </button>
-      <!-- Bouton pour masquer le message (montré quand expanded est true) -->
-      <span *ngIf="expanded">
+      <!-- Bouton pour masquer le message (montré quand expanded est true ET si le message est long) -->
+      <span *ngIf="expanded && isMessageLong(consultant.message)">
         <button (click)="onToggleExpansion(consultant.id, $event)"
                class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 mt-1 mb-0 inline-block px-2 py-0.5 border border-blue-300 rounded-md bg-blue-50">
           Masquer
