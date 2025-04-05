@@ -12,9 +12,10 @@
 }
 
 .truncated {
-  max-height: 4.5em; /* Environ 3 lignes de texte */
+  max-height: 6em; /* Environ 4-5 lignes de texte */
   overflow: hidden;
   position: relative;
+  padding-bottom: 5px !important; /* Espace pour le gradient */
 }
 
 .bg-gradient-overlay {
@@ -22,17 +23,18 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 35px;
-  background: linear-gradient(to bottom, rgba(249, 250, 251, 0) 0%, rgba(249, 250, 251, 0.8) 60%, rgba(249, 250, 251, 0.95) 100%);
+  height: 60px; /* Hauteur augmentée pour un meilleur effet de gradient */
+  background: linear-gradient(to bottom, rgba(249, 250, 251, 0) 0%, rgba(249, 250, 251, 0.8) 40%, rgba(249, 250, 251, 1) 100%);
   cursor: pointer;
-  border-bottom: 2px solid rgba(59, 130, 246, 0.2);
+  border-bottom: 2px solid rgba(59, 130, 246, 0.3); /* Bordure plus visible */
   transition: all 0.2s ease-in-out;
   pointer-events: auto;
+  z-index: 5; /* S'assurer que le gradient est au-dessus du texte */
 }
 
 .bg-gradient-overlay:hover {
-  background: linear-gradient(to bottom, rgba(249, 250, 251, 0) 0%, rgba(219, 234, 254, 0.5) 60%, rgba(219, 234, 254, 0.8) 100%);
-  border-bottom: 2px solid rgba(59, 130, 246, 0.4);
+  background: linear-gradient(to bottom, rgba(249, 250, 251, 0) 0%, rgba(219, 234, 254, 0.7) 50%, rgba(219, 234, 254, 0.9) 100%);
+  border-bottom: 2px solid rgba(59, 130, 246, 0.6); /* Bordure plus visible au survol */
 }
 
 .action-button {
@@ -88,5 +90,5 @@ div[class*="bg-gray-50"] {
 
 /* Mobile styles spécifiques */
 .mobile-consultant-card .consultantMessage.truncated {
-  max-height: 4.5em; /* Même hauteur que pour desktop */
+  max-height: 6em; /* Même hauteur augmentée que pour desktop */
 }

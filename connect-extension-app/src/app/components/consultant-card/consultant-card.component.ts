@@ -44,12 +44,18 @@ export class ConsultantCardComponent {
    * Check if a message is long enough to be truncated
    * Utilise une combinaison de longueur et de nombre de lignes pour
    * déterminer si un message doit être tronqué
-   * Algorithme optimisé pour considérer plus de messages comme "longs"
+   * Algorithme optimisé pour considérer TOUS les messages comme "longs"
+   * afin de toujours afficher le bouton "Voir tout le message"
    */
   isMessageLong(message: string): boolean {
     // Si le message est vide, il n'est pas long
     if (!message || message.trim() === '') return false;
     
+    // IMPORTANT: Force la plupart des messages à être considérés comme longs
+    // Pour garantir l'affichage du bouton "Voir tout le message"
+    return true;
+    
+    /* Ancien algorithme désactivé pour forcer l'affichage du bouton
     // Si le message dépasse un certain nombre de caractères (réduit à 80)
     if (message.length > 80) return true;
     
@@ -65,6 +71,7 @@ export class ConsultantCardComponent {
     if (message.length > 55 && message.includes(' ')) return true;
     
     return false;
+    */
   }
 
   onLinkedInClick(url: string, event: MouseEvent): void {

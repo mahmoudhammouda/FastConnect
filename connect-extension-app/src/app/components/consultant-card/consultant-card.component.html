@@ -186,8 +186,8 @@
         </div>
       </div>
       <div class="flex justify-between mt-1">
-        <!-- Bouton pour voir tout le message (à gauche) -->
-        <button *ngIf="isMessageLong(consultant.message) && !expanded" 
+        <!-- Bouton pour voir tout le message (à gauche) - Toujours visible si !expanded -->
+        <button *ngIf="!expanded" 
                 (click)="onToggleExpansion(consultant.id, $event)"
                 class="text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300">
           Voir tout le message
