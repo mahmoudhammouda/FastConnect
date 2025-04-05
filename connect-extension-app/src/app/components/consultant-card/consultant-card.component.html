@@ -177,10 +177,10 @@
       <h3 class="text-sm font-medium text-gray-800 mb-1">Message</h3>
       <div class="relative">
         <div class="text-sm text-gray-600 consultantMessage" [innerHTML]="formatMessage(consultant.message)"
-             [class.truncated]="isMessageLong(consultant.message) && !expanded">
+             [class.truncated]="!expanded">
         </div>
         <!-- Gradient overlay pour la troncature - cliquable pour voir tout le message -->
-        <div *ngIf="isMessageLong(consultant.message) && !expanded" 
+        <div *ngIf="!expanded" 
              class="bg-gradient-overlay"
              (click)="onToggleExpansion(consultant.id, $event)">
         </div>
@@ -366,17 +366,17 @@
       <h3 class="text-sm font-medium text-gray-800 mb-1">Message</h3>
       <div class="relative">
         <div class="text-sm text-gray-600 consultantMessage" [innerHTML]="formatMessage(consultant.message)"
-            [class.truncated]="isMessageLong(consultant.message) && !expanded">
+            [class.truncated]="!expanded">
         </div>
         <!-- Gradient overlay pour la troncature - cliquable pour voir tout le message -->
-        <div *ngIf="isMessageLong(consultant.message) && !expanded" 
+        <div *ngIf="!expanded" 
              class="bg-gradient-overlay"
              (click)="onToggleExpansion(consultant.id, $event)">
         </div>
       </div>
       <div class="flex justify-between mt-1">
         <!-- Bouton pour voir tout le message (à gauche) -->
-        <button *ngIf="isMessageLong(consultant.message) && !expanded" 
+        <button *ngIf="!expanded" 
                (click)="onToggleExpansion(consultant.id, $event)"
                class="text-xs text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300">
           Voir tout le message
