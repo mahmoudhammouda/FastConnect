@@ -22,7 +22,7 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
   filteredConsultants: ConsultantWithTags[] = [];
   
   // Paramètre global pour contrôler l'affichage des détails
-  showDetailsDefault: boolean = true; // Contrôle si les détails sont affichés par défaut
+  showDetailsDefault: boolean = false; // Contrôle si les détails sont affichés par défaut
   
   // Paramètres de pagination
   currentPage: number = 1;

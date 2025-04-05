@@ -1,12 +1,11 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ConsultantWithTags, ExperienceLevel } from '../../models/consultant.model';
-import { ConsultantDetailSectionsComponent } from '../consultant-detail-sections/consultant-detail-sections.component';
 
 @Component({
   selector: 'app-consultant-card',
   standalone: true,
-  imports: [CommonModule, ConsultantDetailSectionsComponent],
+  imports: [CommonModule],
   templateUrl: './consultant-card.component.html',
   styleUrls: ['./consultant-card.component.css']
 })
