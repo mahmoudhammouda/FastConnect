@@ -17,7 +17,7 @@ args = "Connect API"
 
 [[workflows.workflow.tasks]]
 task = "workflow.run"
-args = "Express Server"
+args = "Angular App"
 
 [[workflows.workflow]]
 name = "Connect API"
@@ -35,7 +35,7 @@ args = "cd connect-api && dotnet run --urls=http://0.0.0.0:8000"
 waitForPort = 8000
 
 [[workflows.workflow]]
-name = "Express Server"
+name = "Angular App"
 author = "agent"
 
 [workflows.workflow.metadata]
@@ -46,7 +46,7 @@ task = "packager.installForAll"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd connect-extension-app && node server.js"
+args = "cd connect-extension-app && npx ng serve --host 0.0.0.0 --port 5000 --disable-host-check --proxy-config ../replit/proxy.conf.replit.json"
 waitForPort = 5000
 
 [deployment]
