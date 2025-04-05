@@ -4,7 +4,7 @@ modules = ["dotnet", "dotnet-7.0", "nodejs-20", "python-3.11"]
 channel = "stable-24_05"
 
 [workflows]
-runButton = "Angular Frontend"
+runButton = "Project"
 
 [[workflows.workflow]]
 name = "Project"
@@ -46,7 +46,8 @@ task = "packager.installForAll"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd connect-extension-app && npm run build:replit && mkdir -p ../connect-api/wwwroot && cp -r dist/* ../connect-api/wwwroot/"
+args = "cd connect-extension-app && npm run serve:replit"
+waitForPort = 5000
 
 [deployment]
 run = ["sh", "-c", "cd connect-api && dotnet run"]
