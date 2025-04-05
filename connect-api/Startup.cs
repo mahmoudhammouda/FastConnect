@@ -119,17 +119,29 @@ namespace ConnectExtension.Backend
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                
-                // Enable Swagger UI in development
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FastConnect API v1"));
             }
+                
+            // Enable Swagger UI in all environments
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FastConnect API v1"));
 
             // Middleware de logging des requêtes/réponses
             app.UseRequestResponseLogging();
             
             // Routes et middleware
             app.UseRouting();
+            
+            // Rediriger la racine vers Swagger
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path.Value == "/")
+                {
+                    context.Response.Redirect("/swagger");
+                    return;
+                }
+                
+                await next();
+            });
             
             // Activation des fichiers statiques pour servir l'application Angular via .NET Core
             // Mode indépendant : nous ne servons plus les fichiers statiques du frontend
