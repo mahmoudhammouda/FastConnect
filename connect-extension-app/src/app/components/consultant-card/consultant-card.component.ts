@@ -1,17 +1,21 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ConsultantWithTags, ExperienceLevel } from '../../models/consultant.model';
+import { BookmarkList, BookmarkState } from '../../models/bookmark.model';
+import { BookmarkService } from '../../services/bookmark.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-consultant-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './consultant-card.component.html',
   styleUrls: ['./consultant-card.component.scss'],
   schemas: [NO_ERRORS_SCHEMA]
 })
-export class ConsultantCardComponent {
+export class ConsultantCardComponent implements OnInit, OnDestroy {
   @Input() consultant!: ConsultantWithTags;
   @Input() expanded: boolean = false;
   @Input() messageExpanded: boolean = false;
@@ -23,6 +27,17 @@ export class ConsultantCardComponent {
   
   // Propriété pour gérer l'ouverture du menu déroulant en mode desktop (usage interne)
   activeDropdownId: string | null = null;
+  
+  // Propriétés pour gérer les favoris
+  bookmarkDropdownOpen: string | null = null;
+  bookmarkSubscription!: Subscription;
+  bookmarkLists: BookmarkList[] = [];
+  isCreatingNewList: boolean = false;
+  newListName: string = '';
+  bookmarkStatusMessage: string = '';
+  bookmarkMessageTimeout: any;
+  // Pour savoir si un consultant est déjà dans au moins une liste de favoris
+  isBookmarked: boolean = false;
 
   @Output() linkedinClick = new EventEmitter<string>();
   @Output() phoneClick = new EventEmitter<string | null>();
@@ -31,6 +46,8 @@ export class ConsultantCardComponent {
   @Output() toggleDropdown = new EventEmitter<{id: string, event: MouseEvent}>();
   @Output() toggleMessageExpansion = new EventEmitter<{id: string, event: MouseEvent}>();
   @Output() toggleDetailsExpansion = new EventEmitter<{id: string, event: MouseEvent}>(); // Nouvel événement pour afficher/masquer les détails
+  
+  constructor(public bookmarkService: BookmarkService) {}
 
   /**
    * Get the experience level as 1-3 bars
@@ -177,5 +194,146 @@ export class ConsultantCardComponent {
   isDropdownOpen(consultantId: string): boolean {
     // Utilise soit l'entrée du composant parent soit notre état interne
     return !!this.dropdownOpen || this.activeDropdownId === consultantId;
+  }
+  
+  /**
+   * Initialisation du composant : souscription aux favoris
+   */
+  ngOnInit(): void {
+    this.bookmarkSubscription = this.bookmarkService.getBookmarkState().subscribe(state => {
+      this.bookmarkLists = state.lists;
+      this.updateBookmarkStatus();
+    });
+  }
+  
+  /**
+   * Nettoyage lors de la destruction du composant
+   */
+  ngOnDestroy(): void {
+    if (this.bookmarkSubscription) {
+      this.bookmarkSubscription.unsubscribe();
+    }
+    if (this.bookmarkMessageTimeout) {
+      clearTimeout(this.bookmarkMessageTimeout);
+    }
+  }
+  
+  /**
+   * Met à jour le statut de favori pour le consultant actuel
+   */
+  updateBookmarkStatus(): void {
+    if (this.consultant) {
+      this.isBookmarked = this.bookmarkService.isConsultantBookmarked(this.consultant.id);
+    }
+  }
+  
+  /**
+   * Bascule l'ouverture/fermeture du dropdown de favoris
+   * @param event L'événement de clic
+   * @param consultantId ID du consultant
+   */
+  toggleBookmarkDropdown(event: MouseEvent, consultantId: string): void {
+    event.stopPropagation();
+    
+    // Ferme le menu si déjà ouvert pour ce consultant
+    if (this.bookmarkDropdownOpen === consultantId) {
+      this.bookmarkDropdownOpen = null;
+      this.isCreatingNewList = false;
+      this.newListName = '';
+    } else {
+      // Ouvre le menu pour ce consultant et ferme autres menus
+      this.bookmarkDropdownOpen = consultantId;
+      this.mobileActionsOpen = null; // Ferme le menu d'actions mobile
+      this.activeDropdownId = null; // Ferme le menu des 3 points desktop
+    }
+  }
+  
+  /**
+   * Ajoute le consultant actuel à une liste de favoris existante
+   * @param listId ID de la liste de favoris
+   * @param event L'événement de clic
+   */
+  addToBookmarkList(listId: string, event: MouseEvent): void {
+    event.stopPropagation();
+    
+    if (this.bookmarkService.addConsultantToList(listId, this.consultant.id)) {
+      const list = this.bookmarkLists.find(l => l.id === listId);
+      this.showBookmarkMessage(`Consultant ajouté à la liste "${list?.name}"`);      
+    } else {
+      this.showBookmarkMessage('Erreur lors de l\'ajout aux favoris', true);
+    }
+    
+    this.bookmarkDropdownOpen = null;
+  }
+  
+  /**
+   * Commence la création d'une nouvelle liste de favoris
+   * @param event L'événement de clic
+   */
+  startCreatingNewList(event: MouseEvent): void {
+    event.stopPropagation();
+    this.isCreatingNewList = true;
+    this.newListName = '';
+    // Focus sur le champ de texte avec un petit délai pour laisser le DOM se mettre à jour
+    setTimeout(() => {
+      const input = document.getElementById('new-list-input');
+      if (input) {
+        input.focus();
+      }
+    }, 50);
+  }
+  
+  /**
+   * Crée une nouvelle liste de favoris
+   * @param event L'événement de soumission
+   */
+  createNewBookmarkList(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    if (!this.newListName || this.newListName.trim() === '') {
+      return;
+    }
+    
+    const listId = this.bookmarkService.createBookmarkList(this.newListName.trim(), this.consultant.id);
+    if (listId) {
+      this.showBookmarkMessage(`Consultant ajouté à la nouvelle liste "${this.newListName.trim()}"`);      
+    } else {
+      this.showBookmarkMessage('Erreur lors de la création de la liste', true);
+    }
+    
+    this.isCreatingNewList = false;
+    this.newListName = '';
+    this.bookmarkDropdownOpen = null;
+  }
+  
+  /**
+   * Annule la création d'une nouvelle liste
+   * @param event L'événement de clic
+   */
+  cancelNewList(event: MouseEvent): void {
+    event.stopPropagation();
+    this.isCreatingNewList = false;
+    this.newListName = '';
+  }
+  
+  /**
+   * Affiche un message temporaire de statut de l'opération de bookmark
+   * @param message Le message à afficher
+   * @param isError Indique s'il s'agit d'une erreur (pour styliser différemment)
+   * @param duration Durée d'affichage en ms (par défaut 3000ms)
+   */
+  showBookmarkMessage(message: string, isError: boolean = false, duration: number = 3000): void {
+    this.bookmarkStatusMessage = message;
+    
+    // Efface le timeout précédent s'il existe
+    if (this.bookmarkMessageTimeout) {
+      clearTimeout(this.bookmarkMessageTimeout);
+    }
+    
+    // Définit un nouveau timeout pour effacer le message
+    this.bookmarkMessageTimeout = setTimeout(() => {
+      this.bookmarkStatusMessage = '';
+    }, duration);
   }
 }

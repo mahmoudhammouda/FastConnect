@@ -428,3 +428,47 @@
     position: relative;
   }
 }
+
+// Styles pour la fonctionnalité Bookmark
+.active-bookmark {
+  background-color: rgba(59, 130, 246, 0.1); // Bleu très léger
+}
+
+// Animation du message de bookmark
+.bookmark-message, .bookmark-message-desktop {
+  animation: fadeInOut 3s ease-in-out;
+  
+  &.text-green-600 {
+    background-color: rgba(16, 185, 129, 0.05); // Fond vert très léger
+  }
+  
+  &.text-red-600 {
+    background-color: rgba(239, 68, 68, 0.05); // Fond rouge très léger
+  }
+}
+
+// Style spécifique pour le message desktop
+.bookmark-message-desktop {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  opacity: 0.95;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+}
