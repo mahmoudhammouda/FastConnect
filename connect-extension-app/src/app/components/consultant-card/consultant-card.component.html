@@ -220,7 +220,7 @@
 </div>
 
 <!-- Version mobile avec design amélioré similaire au desktop -->
-<div class="mobile-card-modern block md:hidden bg-white shadow-sm rounded-md mb-3">
+<div class="mobile-card-modern block md:hidden bg-white shadow rounded-md mb-3 overflow-hidden">
   <!-- En-tête avec style similaire au desktop -->
   <div class="mobile-header relative">
     <!-- Première ligne: Status, ID, disponibilité et menu à 3 points -->
@@ -295,7 +295,7 @@
     </div>
     
     <!-- Deuxième ligne: Rôle et disponibilité (comme en desktop) -->
-    <div class="px-3 py-2.5">
+    <div class="px-3 py-2.5 bg-white">
       <!-- Rôle avec indicateur de disponibilité -->
       <div class="flex items-center mb-2">
         <div class="relative">
@@ -330,13 +330,13 @@
           <span class="text-xs font-medium text-blue-700">{{ getExperienceLabel(consultant.experience) }}</span>
         </div>
         
-        <!-- Compétences sur la même ligne -->
+        <!-- Compétences sur la même ligne -->  
         <div *ngFor="let skill of consultant.skills | slice:0:3" 
-             class="text-xs px-2 py-0.5 bg-gray-50 text-gray-600 rounded-md">
+             class="text-xs px-2 py-0.5 bg-gray-100 text-gray-700 rounded-full transition-all duration-300 hover:bg-gray-200">
           {{ skill }}
         </div>
         <div *ngIf="consultant.skills.length > 3" 
-             class="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded-md">
+             class="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full transition-all duration-300 hover:bg-blue-200">
           +{{ consultant.skills.length - 3 }}
         </div>
       </div>
@@ -349,17 +349,17 @@
   </div>
   
   <!-- Contenu principal avec design épuré et moderne -->
-  <div class="mobile-content px-3 py-0">
+  <div class="mobile-content px-0 py-0">
     
-    <!-- Section message avec style carte et ombre légère -->
-    <div class="message-container relative bg-white rounded-lg border border-gray-100 p-3 shadow-sm mb-3 overflow-hidden">
+    <!-- Section message avec style carte similaire au desktop -->
+    <div class="message-container relative bg-gray-50 border-t border-gray-100 p-3 mb-0 overflow-hidden">
       <!-- Titre et bouton de contrôle -->
       <div class="flex justify-between items-center mb-2">
-        <p class="text-xs uppercase font-medium tracking-wider text-gray-400">Message du consultant</p>
+        <p class="text-xs font-medium text-gray-700">Message du consultant</p>
         <!-- Bouton Voir plus directement dans le message -->
         <button *ngIf="isMessageLong(consultant.message)"
                (click)="onToggleMessageExpansion(consultant.id, $event)"
-               class="text-xs font-medium text-blue-600 hover:text-blue-800 focus:outline-none z-10">
+               class="text-xs font-bold text-blue-600 hover:text-blue-800 focus:outline-none z-10 hover:underline">
           {{ messageExpanded ? 'Voir moins' : 'Voir plus' }}
         </button>
       </div>
@@ -380,13 +380,13 @@
     </div>
   
   <!-- Section détails dépliable améliorée (similaire au desktop) -->
-  <div *ngIf="detailsExpanded" class="details-section px-3 py-3 border-t border-gray-100 bg-gray-50/50">
+  <div *ngIf="detailsExpanded" class="details-section px-3 py-3 border-t border-gray-100 bg-gray-50">
     <!-- Toutes les compétences -->
     <div class="mb-3">
       <h4 class="text-xs font-semibold text-gray-700 mb-1.5">Toutes les compétences</h4>
       <div class="flex flex-wrap gap-1.5">
         <span *ngFor="let skill of consultant.skills" 
-              class="skill-chip text-xs px-2 py-0.5 rounded-full bg-white text-gray-700 border border-gray-200">
+              class="skill-chip text-xs px-2 py-0.5 rounded-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 transition-all duration-300">
           {{ skill }}
         </span>
       </div>
@@ -409,11 +409,11 @@
   </div>
   
   <!-- Bouton Détails amélioré -->
-  <div class="action-bar flex items-center justify-between px-3 py-3 border-t border-gray-100 bg-white">
+  <div class="action-bar flex items-center justify-between px-3 py-3 border-t border-gray-100 bg-gray-50">
     <!-- Bouton Détails amélioré -->
     <div class="primary-actions">
       <button (click)="onToggleDetailsExpansion(consultant.id, $event)"
-             class="action-button flex items-center text-xs font-medium px-3 py-2 rounded-md border border-blue-100 bg-blue-50 text-blue-600 hover:bg-blue-100">
+             class="action-button flex items-center text-xs font-bold px-3 py-2 rounded-md border border-blue-300 bg-blue-50 text-blue-600 hover:bg-blue-100">
         <span class="material-icons text-sm mr-1.5">{{ detailsExpanded ? 'expand_less' : 'expand_more' }}</span>
         {{ detailsExpanded ? 'Masquer les détails' : 'Voir tous les détails' }}
       </button>
