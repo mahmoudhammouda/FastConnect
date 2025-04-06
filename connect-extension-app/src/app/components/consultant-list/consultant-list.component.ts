@@ -8,12 +8,13 @@ import { ConsultantService } from '../../services/consultant.service';
 @Component({
   selector: 'app-consultant-list',
   templateUrl: './consultant-list.component.html',
-  styleUrls: ['./consultant-list.component.css'],
+  styleUrls: ['./consultant-list.component.scss'],
   standalone: true,
   imports: [CommonModule, FormsModule, ConsultantCardComponent]
 })
 export class ConsultantListComponent implements OnInit, OnDestroy {
   @ViewChild('consultantsList', { static: false }) consultantsList?: ElementRef;
+  @ViewChild('consultantsListMobile', { static: false }) consultantsListMobile?: ElementRef;
   
   // Données principales
   allConsultants: ConsultantWithTags[] = [];
@@ -21,7 +22,7 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
   filteredConsultants: ConsultantWithTags[] = [];
   
   // Paramètre global pour contrôler l'affichage des détails
-  showDetailsDefault: boolean = true; // Contrôle si les détails sont affichés par défaut
+  showDetailsDefault: boolean = false; // Contrôle si les détails sont affichés par défaut
   
   // Paramètres de pagination
   currentPage: number = 1;
@@ -37,10 +38,21 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
   selectedAvailability: string = 'all';
   selectedExperience: string = 'all';
   selectedLocation: string = 'all';
+  selectedSortOrder: string = 'relevance'; // Tri par défaut
   
   // Options disponibles pour les filtres
   availableSkills: string[] = [];
   availableLocations: string[] = [];
+  
+  // Options de tri
+  sortOptions = [
+    { value: 'relevance', label: 'Pertinence' },
+    { value: 'last_updated', label: 'Dernière mise à jour' },
+    { value: 'availability', label: 'Disponibilité' }
+  ];
+  
+  // État du dropdown de tri
+  sortDropdownOpen: boolean = false;
   experienceOptions = [
     { value: 'less_than_3', label: 'Moins de 3 ans' },
     { value: 'between_3_and_10', label: 'Entre 3 et 10 ans' },
@@ -80,6 +92,7 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
       });
       this.skillsDropdownOpen = false;
       this.configDropdownOpen = false;
+      this.sortDropdownOpen = false;
     };
     document.addEventListener('click', this.documentClickListener);
     
@@ -91,6 +104,50 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
         });
       });
     }, 500);
+    
+    // Écouter les événements de recherche et filtrage provenant de l'UI LinkedIn-style
+    window.addEventListener('fastconnect-search-updated', this.handleSearchUpdate.bind(this));
+    window.addEventListener('fastconnect-filters-updated', this.handleFiltersUpdate.bind(this));
+  }
+  
+  /**
+   * Gère les mises à jour de recherche provenant de la barre de recherche principale
+   */
+  handleSearchUpdate(): void {
+    try {
+      const searchParamsStr = localStorage.getItem('fastconnect-search-params');
+      if (searchParamsStr) {
+        const searchParams = JSON.parse(searchParamsStr);
+        this.searchText = searchParams.searchText || '';
+        
+        // Appliquer les filtres avec la nouvelle valeur de recherche
+        this.applyFilters();
+      }
+    } catch (error) {
+      console.error('Erreur lors de la gestion des paramètres de recherche:', error);
+    }
+  }
+  
+  /**
+   * Gère les mises à jour des filtres avancés
+   */
+  handleFiltersUpdate(): void {
+    try {
+      const filterParamsStr = localStorage.getItem('fastconnect-filter-params');
+      if (filterParamsStr) {
+        const filterParams = JSON.parse(filterParamsStr);
+        this.searchText = filterParams.searchText || '';
+        this.selectedExperience = filterParams.selectedExperience || 'all';
+        this.selectedAvailability = filterParams.selectedAvailability || 'all';
+        this.selectedLocation = filterParams.selectedLocation || 'all';
+        this.selectedSkills = filterParams.selectedSkills || []; // Récupérer les compétences sélectionnées
+        
+        // Appliquer les filtres avec les nouvelles valeurs
+        this.applyFilters();
+      }
+    } catch (error) {
+      console.error('Erreur lors de la gestion des paramètres de filtrage:', error);
+    }
   }
   
   ngOnDestroy(): void {
@@ -98,6 +155,10 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
     if (this.documentClickListener) {
       document.removeEventListener('click', this.documentClickListener);
     }
+    
+    // Supprimer les écouteurs d'événements personnalisés
+    window.removeEventListener('fastconnect-search-updated', this.handleSearchUpdate.bind(this));
+    window.removeEventListener('fastconnect-filters-updated', this.handleFiltersUpdate.bind(this));
   }
   
   /**
@@ -105,9 +166,17 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
    * Cette méthode est appelée via (scroll) sur le conteneur défilant
    */
   onScroll(event: Event): void {
-    if (!this.consultantsList) return;
+    let element: HTMLElement | null = null;
     
-    const element = this.consultantsList.nativeElement;
+    // Déterminer quel conteneur est actif selon la taille d'écran
+    if (this.consultantsList && window.innerWidth >= 768) {
+      element = this.consultantsList.nativeElement;
+    } else if (this.consultantsListMobile && window.innerWidth < 768) {
+      element = this.consultantsListMobile.nativeElement;
+    }
+    
+    if (!element) return;
+    
     const scrollPosition = element.scrollTop + element.clientHeight;
     
     // Si nous avons atteint le bas du conteneur (avec une marge de 100px)
@@ -132,6 +201,15 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
         next: (data) => {
           console.log(`[ConsultantListComponent] Consultants initiaux reçus: ${data.length} consultants`);
           this.consultants = data;
+          
+          // Initialiser les messages comme étant affichés par défaut
+          this.consultants.forEach(consultant => {
+            // Initialiser le message principal
+            this.expandedMessages[consultant.id] = this.showDetailsDefault;
+            // Initialiser le message détaillé
+            this.expandedMessages[consultant.id + '-message'] = this.showDetailsDefault;
+          });
+          
           console.log('[ConsultantListComponent] Application des filtres');
           this.applyFilters();
           console.log(`[ConsultantListComponent] Après filtrage: ${this.filteredConsultants.length} consultants affichés`);
@@ -139,7 +217,7 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('[ConsultantListComponent] Erreur lors du chargement des consultants:', error);
-          this.errorMessage = 'Impossible de charger les consultants. Veuillez réessayer plus tard.';
+          this.errorMessage = 'erreur_chargement';
           this.isLoading = false;
         }
       });
@@ -169,6 +247,14 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
             return;
           }
           
+          // Initialiser les messages comme étant affichés par défaut pour les nouveaux consultants
+          newData.forEach(consultant => {
+            // Initialiser le message principal
+            this.expandedMessages[consultant.id] = this.showDetailsDefault;
+            // Initialiser le message détaillé
+            this.expandedMessages[consultant.id + '-message'] = this.showDetailsDefault;
+          });
+          
           // Ajouter les nouvelles données aux consultants existants
           this.consultants = [...this.consultants, ...newData];
           
@@ -184,7 +270,7 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
         error => {
           console.error('Error fetching more consultants:', error);
           this.isLoadingMore = false;
-          this.errorMessage = 'Erreur lors du chargement de plus de consultants. Veuillez réessayer.';
+          this.errorMessage = 'erreur_chargement';
         }
       );
   }
@@ -259,6 +345,11 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
     );
     
     console.log(`Après filtrage, taille totale de la liste: ${this.filteredConsultants.length}`);
+    
+    // Appliquer le tri si nécessaire (sauf pour 'relevance' qui est l'ordre par défaut)
+    if (this.selectedSortOrder !== 'relevance') {
+      this.applySorting();
+    }
   }
   
   // Méthodes pour les filtres
@@ -358,18 +449,32 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
       // Si c'est un MouseEvent
       event.stopPropagation();
     }
+    
+    // Met à jour l'état d'expansion du message
     this.expandedMessages[id] = !this.expandedMessages[id];
-    console.log("Message expansion toggled for ID:", id, "New state:", this.expandedMessages[id]);
+    
+    // Pour la cohérence, on met également à jour l'état secondaire du message
+    this.expandedMessages[id + '-message'] = this.expandedMessages[id];
+    
+    console.log("[ConsultantListComponent] Main message expansion toggled to " + this.expandedMessages[id] + " for consultant " + id);
   }
   
   toggleExpandMessage(id: string, event: any): void {
     if (event.expanded !== undefined) {
       // Si c'est un objet avec expanded, c'est un événement de notre composant
       this.expandedMessages[id + '-message'] = event.expanded;
+      // Pour la cohérence, met également à jour l'état principal du message
+      this.expandedMessages[id] = event.expanded;
     } else if (event && event.stopPropagation) {
       // Si c'est un MouseEvent
       event.stopPropagation();
+      
+      // Inverse l'état
       this.expandedMessages[id + '-message'] = !this.expandedMessages[id + '-message'];
+      // Pour la cohérence, met également à jour l'état principal du message
+      this.expandedMessages[id] = this.expandedMessages[id + '-message'];
+      
+      console.log("[ConsultantListComponent] Message expansion toggled to " + this.expandedMessages[id] + " for consultant " + id);
     }
   }
   
@@ -400,10 +505,190 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
     return 3;
   }
   
-  @HostListener('document:click')
-  closeDropdowns(): void {
+  /**
+   * Ouvre ou ferme le dropdown de tri
+   * @param event Événement de souris
+   */
+  toggleSortDropdown(event: MouseEvent): void {
+    event.stopPropagation();
+    this.sortDropdownOpen = !this.sortDropdownOpen;
+  }
+  
+  /**
+   * Sélectionne une option de tri et applique les filtres
+   * @param sortValue Valeur de l'option de tri
+   * @param event L'événement de clic
+   */
+  selectSortOption(sortValue: string, event: MouseEvent): void {
+    event.stopPropagation();
+    if (this.selectedSortOrder === sortValue) return;
+    
+    this.selectedSortOrder = sortValue;
+    this.applyFilters(); // Applique les filtres et le tri
+    this.sortDropdownOpen = false;
+  }
+  
+  /**
+   * Applique le tri aux consultants filtrés
+   */
+  applySorting(): void {
+    if (!this.filteredConsultants.length) return;
+    
+    switch (this.selectedSortOrder) {
+      case 'relevance':
+        // Le tri par pertinence est l'ordre par défaut (aucun tri particulier)
+        // On réapplique simplement les filtres pour réinitialiser l'ordre
+        this.applyFilters();
+        break;
+      
+      case 'last_updated':
+        // Comme nous n'avons pas de champ updatedAt, nous utilisons l'identifiant
+        // qui est généralement incrémental et peut servir de proxy pour la date de création/mise à jour
+        this.filteredConsultants.sort((a, b) => {
+          // Comparer par ID (supposant que les ID plus élevés sont plus récents)
+          // Filtrage des caractères non numériques si l'ID contient des lettres
+          const idA = parseInt(a.id.replace(/\D/g, ''), 10) || 0;
+          const idB = parseInt(b.id.replace(/\D/g, ''), 10) || 0;
+          return idB - idA; // Ordre décroissant
+        });
+        break;
+      
+      case 'availability':
+        // Trier par disponibilité (d'abord les consultants disponibles immédiatement)
+        this.filteredConsultants.sort((a, b) => {
+          // availability est déjà un nombre selon le modèle
+          return a.availability - b.availability;
+        });
+        break;
+    }
+  }
+  
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    // Fermer tous les dropdowns si on clique ailleurs
     Object.keys(this.dropdownOpen).forEach(id => {
       this.dropdownOpen[id] = false;
     });
+    this.sortDropdownOpen = false;
+  }
+  
+  // Méthodes de tri déjà définies plus haut
+  
+  /**
+   * Retourne le libellé de l'option de tri actuellement sélectionnée
+   * @returns Le libellé de l'option de tri
+   */
+  getSortLabel(): string {
+    const option = this.sortOptions.find(opt => opt.value === this.selectedSortOrder);
+    return option ? option.label : 'Pertinence';
+  }
+  
+  /**
+   * Vérifie si un consultant a sa carte de message étendue
+   * @param id Identifiant du consultant
+   * @param suffix Suffixe à ajouter à l'identifiant ('-message' ou '')
+   * @returns true si le message est étendu
+   */
+  isExpanded(id: string, suffix: string): boolean {
+    return !!this.expandedMessages[id + suffix];
+  }
+  
+  /**
+   * Vérifie si les détails d'un consultant sont étendus
+   * @param id Identifiant du consultant
+   * @returns true si les détails sont étendus
+   */
+  isDetailsExpanded(id: string): boolean {
+    return !!this.expandedDetails[id];
+  }
+  
+  /**
+   * Vérifie si le dropdown d'un consultant est ouvert
+   * @param id Identifiant du consultant
+   * @returns true si le dropdown est ouvert
+   */
+  isDropdownOpen(id: string): boolean {
+    return !!this.dropdownOpen[id];
+  }
+  
+  /**
+   * Gère l'expansion du message d'un consultant
+   * @param event Événement émis par le composant
+   * @param id Identifiant du consultant
+   */
+  handleToggleExpansion(event: any, id: string): void {
+    if (event.expanded !== undefined) {
+      // Mise à jour directe avec la valeur expanded de l'événement
+      this.expandedMessages[id + '-message'] = event.expanded;
+      // Synchroniser les deux états d'expansion
+      this.expandedMessages[id] = event.expanded;
+      console.log(`[ConsultantListComponent] Message expansion set to ${event.expanded} for consultant ${id}`);
+    } else if (event && event.stopPropagation) {
+      // C'est un événement de clic direct
+      event.stopPropagation();
+      this.expandedMessages[id + '-message'] = !this.expandedMessages[id + '-message'];
+      // Synchroniser les deux états d'expansion
+      this.expandedMessages[id] = this.expandedMessages[id + '-message'];
+      console.log(`[ConsultantListComponent] Message expansion toggled to ${this.expandedMessages[id + '-message']} for consultant ${id}`);
+    }
+  }
+  
+  /**
+   * Gère l'expansion du message principal d'un consultant
+   * @param event Événement émis par le composant
+   * @param id Identifiant du consultant
+   */
+  handleToggleMessageExpansion(event: any, id: string): void {
+    // S'assurer que la propagation de l'événement est arrêtée
+    if (event.event && event.event.stopPropagation) {
+      event.event.stopPropagation();
+    } else if (event && event.stopPropagation) {
+      event.stopPropagation();
+    }
+    
+    // Basculer l'état d'expansion du message
+    this.expandedMessages[id] = !this.expandedMessages[id];
+    
+    // Synchroniser les deux états d'expansion pour assurer la cohérence
+    this.expandedMessages[id + '-message'] = this.expandedMessages[id];
+    
+    console.log(`[ConsultantListComponent] Main message expansion toggled to ${this.expandedMessages[id]} for consultant ${id}`);
+  }
+  
+  /**
+   * Gère l'expansion des détails d'un consultant
+   * @param event Événement émis par le composant
+   * @param id Identifiant du consultant
+   */
+  handleToggleDetailsExpansion(event: any, id: string): void {
+    if (event.event && event.event.stopPropagation) {
+      event.event.stopPropagation();
+    } else if (event && event.stopPropagation) {
+      event.stopPropagation();
+    }
+    this.expandedDetails[id] = !this.expandedDetails[id];
+  }
+  
+  /**
+   * Gère l'ouverture/fermeture du dropdown d'un consultant
+   * @param event Événement émis par le composant
+   * @param id Identifiant du consultant
+   */
+  handleToggleDropdown(event: any, id: string): void {
+    if (event.event && event.event.stopPropagation) {
+      event.event.stopPropagation();
+    } else if (event && event.stopPropagation) {
+      event.stopPropagation();
+    }
+    
+    // Fermer tous les autres dropdowns
+    Object.keys(this.dropdownOpen).forEach(key => {
+      if (key !== id) {
+        this.dropdownOpen[key] = false;
+      }
+    });
+    
+    // Basculer l'état du dropdown actuel
+    this.dropdownOpen[id] = !this.dropdownOpen[id];
   }
 }

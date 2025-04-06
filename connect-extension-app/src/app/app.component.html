@@ -26,22 +26,45 @@
   </div>
 
   <div class="w-full max-w-3xl mx-auto flex flex-col h-full">
-    <!-- Header Section en position fixe -->
-    <div class="bg-gray-50 p-4 shadow-md z-40 mt-8">
-      <div class="flex items-center justify-between">
-        <h1 class="text-xl font-bold">
-          <a routerLink="/" class="hover:text-indigo-600 transition duration-150">
-            {{ title }}
-          </a>
-        </h1>
+    <!-- Header Style LinkedIn - sans nom d'application - optimisé pour mobile -->
+    <div class="bg-white p-2 shadow-sm z-40 mt-8 sticky top-0">
+      <div class="flex items-center justify-between space-x-2 px-1">
+        <!-- Barre de recherche style LinkedIn (sans padding latéral) -->
+        <div class="relative flex-grow">
+          <input 
+            type="text" 
+            [(ngModel)]="searchText"
+            (keyup)="onSearchTextChange()"
+            placeholder="Rechercher un consultant..." 
+            class="w-full pl-8 pr-2 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm bg-gray-50"
+          >
+          <div class="absolute inset-y-0 left-2 flex items-center pointer-events-none">
+            <svg class="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+            </svg>
+          </div>
+        </div>
         
+        <!-- Bouton de filtres avancés -->
+        <button 
+          (click)="toggleFilterPanel()"
+          class="flex items-center justify-center gap-1 px-2 py-1.5 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors duration-150 h-8">
+          <svg class="h-4 w-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+          </svg>
+          <span class="text-xs text-gray-600 hidden md:inline">Filtres avancés</span>
+        </button>
+        
+        <!-- Bouton Profil / Connexion -->
         <div class="flex items-center">
           <!-- User not authenticated -->
-          <div *ngIf="!isAuthenticated" class="flex items-center space-x-4">
+          <div *ngIf="!isAuthenticated">
             <button 
               (click)="openLoginModal()" 
-              class="px-3 py-1.5 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-150 text-sm">
-              Connexion
+              class="rounded-full p-1 bg-white hover:bg-gray-50 border border-gray-300 flex items-center justify-center w-8 h-8">
+              <svg class="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              </svg>
             </button>
           </div>
           
@@ -49,23 +72,20 @@
           <div *ngIf="isAuthenticated" class="relative">
             <button 
               (click)="toggleMenu()" 
-              class="flex items-center text-sm font-medium text-gray-700 hover:text-indigo-600 focus:outline-none transition duration-150"
+              class="rounded-full p-0 flex items-center justify-center overflow-hidden w-8 h-8 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-150 focus:outline-none"
               aria-expanded="false"
             >
-              <span class="hidden md:inline mr-1">{{ currentUser?.firstName || currentUser?.username }}</span>
-              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-              </svg>
+              {{ getInitials() }}
             </button>
             
             <!-- Dropdown Menu -->
             <div 
               *ngIf="menuOpen" 
-              class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 ring-1 ring-black ring-opacity-5"
+              class="absolute right-0 mt-2 w-40 md:w-48 bg-white rounded-md shadow-lg py-1 z-50 ring-1 ring-black ring-opacity-5"
             >
               <a 
                 routerLink="/profile" 
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
+                class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
                 (click)="toggleMenu()"
               >
                 Mon profil
@@ -75,7 +95,7 @@
               <a 
                 *ngIf="currentUser?.role === 'admin'" 
                 routerLink="/admin" 
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
+                class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
                 (click)="toggleMenu()"
               >
                 Administration
@@ -84,7 +104,7 @@
               <a 
                 *ngIf="currentUser?.role === 'consultant'" 
                 routerLink="/consultant-profile" 
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
+                class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
                 (click)="toggleMenu()"
               >
                 Mon profil consultant
@@ -93,7 +113,7 @@
               <div class="border-t border-gray-100 my-1"></div>
               <button 
                 (click)="logout()" 
-                class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition duration-150"
+                class="block w-full text-left px-3 md:px-4 py-2 text-xs md:text-sm text-red-600 hover:bg-gray-100 transition duration-150"
               >
                 Déconnexion
               </button>
@@ -102,12 +122,174 @@
         </div>
       </div>
     </div>
-
-    <!-- Route principale (consultants ou autre contenu) -->
-    <router-outlet></router-outlet>
     
-    <!-- Afficher la liste des consultants sur la route principale directement si nécessaire -->
-    <!-- <app-consultant-list *ngIf="currentRoute === '/' || currentRoute === '/consultants'"></app-consultant-list> -->
+    <!-- Panneau de filtres avancés - collapsable depuis la navbar -->
+    <div 
+      [ngClass]="{'filter-panel-show': showFilterPanel, 'filter-panel-hide': !showFilterPanel}"
+      class="w-full bg-white shadow-md filter-panel py-4 px-4 overflow-hidden border-t md:border-t border-gray-200">
+      <div class="space-y-4 max-w-3xl mx-auto">
+        <div class="flex justify-between items-center">
+          <h3 class="font-medium text-sm text-gray-700">Filtres avancés</h3>
+          <button 
+            (click)="toggleFilterPanel()" 
+            class="text-gray-400 hover:text-gray-600">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Filtres - Ligne unique pour desktop/tablette/extension, vertical pour mobile -->
+        <!-- Version desktop: affichage sur une ligne (4 colonnes) -->
+        <div class="hidden md:flex md:flex-row md:gap-3 md:items-end">
+          <div class="flex-1 min-w-0">
+            <label class="block text-xs font-medium text-gray-600 mb-1.5">Expérience</label>
+            <select 
+              [(ngModel)]="selectedExperience"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <option value="all">Tout niveau</option>
+              <option *ngFor="let exp of experienceOptions" [value]="exp.value">{{ exp.label }}</option>
+            </select>
+          </div>
+          
+          <div class="flex-1 min-w-0">
+            <label class="block text-xs font-medium text-gray-600 mb-1.5">Disponibilité</label>
+            <select 
+              [(ngModel)]="selectedAvailability"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <option value="all">Toutes</option>
+              <option *ngFor="let avail of availabilityOptions" [value]="avail.value">{{ avail.label }}</option>
+            </select>
+          </div>
+          
+          <div class="flex-1 min-w-0">
+            <label class="block text-xs font-medium text-gray-600 mb-1.5">Localisation</label>
+            <select 
+              [(ngModel)]="selectedLocation"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <option value="all">Toutes</option>
+              <option *ngFor="let location of availableLocations" [value]="location">{{ location }}</option>
+            </select>
+          </div>
+          
+          <div class="flex-1 min-w-0 relative">
+            <label class="block text-xs font-medium text-gray-600 mb-1.5">Compétences</label>
+            <div 
+              (click)="toggleSkillsDropdown($event)"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer flex justify-between items-center">
+              <span>{{ selectedSkills.length ? selectedSkills.length + ' compétence(s)' : 'Compétences' }}</span>
+              <svg class="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+            <!-- Dropdown Panel for Skills -->
+            <div 
+              *ngIf="skillsDropdownOpen"
+              class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto skill-dropdown-desktop">
+              <div class="p-2">
+                <div *ngFor="let skill of availableSkills" class="flex items-center py-1">
+                  <input 
+                    type="checkbox" 
+                    [id]="'skill-' + skill"
+                    [checked]="isSkillSelected(skill)"
+                    (change)="toggleSkill(skill); $event.stopPropagation()"
+                    (click)="$event.stopPropagation()"
+                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                  <label 
+                    [for]="'skill-' + skill" 
+                    class="ml-2 text-sm text-gray-700 cursor-pointer" 
+                    (click)="$event.stopPropagation()">{{ skill }}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Version mobile: affichage vertical (1 colonne) -->
+        <div class="grid grid-cols-1 gap-4 md:hidden">
+          <div class="mb-2">
+            <label class="block text-xs font-medium text-gray-600 mb-1.5">Expérience</label>
+            <select 
+              [(ngModel)]="selectedExperience"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <option value="all">Tout niveau</option>
+              <option *ngFor="let exp of experienceOptions" [value]="exp.value">{{ exp.label }}</option>
+            </select>
+          </div>
+          
+          <div class="mb-2">
+            <label class="block text-xs font-medium text-gray-600 mb-1.5">Disponibilité</label>
+            <select 
+              [(ngModel)]="selectedAvailability"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <option value="all">Toutes</option>
+              <option *ngFor="let avail of availabilityOptions" [value]="avail.value">{{ avail.label }}</option>
+            </select>
+          </div>
+          
+          <div class="mb-2">
+            <label class="block text-xs font-medium text-gray-600 mb-1.5">Localisation</label>
+            <select 
+              [(ngModel)]="selectedLocation"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <option value="all">Toutes</option>
+              <option *ngFor="let location of availableLocations" [value]="location">{{ location }}</option>
+            </select>
+          </div>
+          
+          <div class="mb-2 relative">
+            <label class="block text-xs font-medium text-gray-600 mb-1.5">Compétences</label>
+            <div 
+              (click)="toggleMobileSkillsDropdown($event)"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer flex justify-between items-center">
+              <span>{{ selectedSkills.length ? selectedSkills.length + ' compétence(s)' : 'Compétences' }}</span>
+              <svg class="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </div>
+            <!-- Dropdown Panel for Skills - Mobile -->
+            <div 
+              *ngIf="mobileSkillsDropdownOpen"
+              class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto skill-dropdown-mobile">
+              <div class="p-2">
+                <div *ngFor="let skill of availableSkills" class="flex items-center py-1">
+                  <input 
+                    type="checkbox" 
+                    [id]="'mobile-skill-' + skill"
+                    [checked]="isSkillSelected(skill)"
+                    (change)="toggleSkill(skill); $event.stopPropagation()"
+                    (click)="$event.stopPropagation()"
+                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                  <label 
+                    [for]="'mobile-skill-' + skill" 
+                    class="ml-2 text-sm text-gray-700 cursor-pointer"
+                    (click)="$event.stopPropagation()">{{ skill }}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="pt-3 flex justify-end space-x-3">
+          <button 
+            (click)="resetAllFilters()"
+            class="px-4 py-2 text-xs text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-150">
+            Réinitialiser
+          </button>
+          <button 
+            (click)="applyAdvancedFilters()"
+            class="px-4 py-2 text-xs text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-150">
+            Appliquer
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Espace pour le mode mobile lorsque le panneau de filtres est ouvert -->
+    <div [ngClass]="{'pt-0': !showFilterPanel, 'pt-0 md:pt-0': showFilterPanel, 'pt-[420px]': showFilterPanel && isMobileView()}" class="transition-all duration-300 ease-in-out">
+      <!-- Route principale (consultants ou autre contenu) -->
+      <router-outlet></router-outlet>
+    </div>
   </div>
   
   <!-- Login Modal Component -->

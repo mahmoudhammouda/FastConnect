@@ -2,6 +2,41 @@
 
 Ce document recense les modifications significatives apportées au projet FastConnect, avec les détails des commits, branches, et explications des changements.
 
+## 2025-04-06
+
+### Commits: "Amélioration du design mobile avec optimisation de l'UI/UX des cartes consultant et correction du tri mobile" et "Amélioration des couleurs en mode mobile pour correspondre au mode desktop"
+
+**Branche**: `feature/enhance_consultant_page`
+
+**Description**: Refonte complète de l'interface mobile pour améliorer l'expérience utilisateur et assurer la cohérence visuelle avec la version desktop.
+
+**Modifications**:
+1. **Consultant Card Component (Mobile Design)**:
+   - Refonte de la mise en page mobile pour ressembler davantage à la version desktop
+   - Ajout d'un effet d'overlay pour les messages tronqués (similaire à la version desktop)
+   - Optimisation de la disposition pour afficher l'indicateur de séniorité et les mots-clés associés ensemble
+   - Suppression des sections redondantes pour les compétences afin d'éviter les doublons
+   - Implémentation d'un bouton "Voir plus" pour développer le contenu du message, remplaçant l'ancien bouton "Lire message"
+   - Harmonisation des couleurs avec la version desktop pour une meilleure cohérence visuelle
+
+2. **Consultant List Component**:
+   - Correction de la fonctionnalité du menu déroulant de tri en vue mobile
+   - Ajout de méthodes pour gérer les interactions avec le menu déroulant (basculer et sélectionner les options de tri)
+   - Mise en place d'une fermeture automatique du menu déroulant lors d'un clic à l'extérieur
+
+**Problèmes résolus**:
+- Incohérence visuelle entre les versions mobile et desktop
+- Menu de tri non fonctionnel en mode mobile
+- Duplication des fonctions dans le composant consultant-list
+- Mauvaise gestion de l'affichage des messages longs sur mobile
+- Contraste insuffisant et problèmes d'accessibilité sur certains éléments
+
+**Implications techniques**:
+- Utilisation optimisée des classes Tailwind CSS pour le responsive design
+- Correction de la duplication de code dans les méthodes Javascript
+- Harmonisation des schémas de couleurs entre les différentes vues
+- Amélioration de l'accessibilité par un meilleur contraste des textes
+
 ## 2025-04-03
 
 ### Validation: "Test de stabilité des workflows Replit et communication API"

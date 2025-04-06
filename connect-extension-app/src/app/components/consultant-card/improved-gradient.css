@@ -37,6 +37,7 @@
   height: 60px; /* Hauteur augmentée pour un meilleur effet de gradient */
   background: linear-gradient(to bottom, rgba(249, 250, 251, 0) 0%, rgba(249, 250, 251, 0.85) 40%, rgba(249, 250, 251, 1) 100%);
   cursor: pointer;
+  border-bottom: 2px solid rgba(59, 130, 246, 0.4); /* Bordure plus visible */
   transition: all 0.2s ease-in-out;
   pointer-events: auto;
   z-index: 5; /* S'assurer que le gradient est au-dessus du texte */
@@ -58,6 +59,7 @@
 
 .bg-gradient-overlay:hover {
   background: linear-gradient(to bottom, rgba(249, 250, 251, 0) 0%, rgba(219, 234, 254, 0.8) 50%, rgba(219, 234, 254, 0.95) 100%);
+  border-bottom: 2px solid rgba(59, 130, 246, 0.7); /* Bordure plus visible au survol */
 }
 
 .bg-gradient-overlay:hover::after {
@@ -188,6 +190,7 @@ div[class*="bg-gray-50"] {
   height: 50px; /* Cohérent avec desktop */
   background: linear-gradient(to bottom, rgba(249, 250, 251, 0) 0%, rgba(249, 250, 251, 0.85) 40%, rgba(249, 250, 251, 1) 100%);
   cursor: pointer;
+  border-bottom: 2px solid rgba(59, 130, 246, 0.4); /* Bordure comme desktop */
   transition: all 0.2s ease-in-out;
   pointer-events: auto;
   z-index: 5;
@@ -209,6 +212,7 @@ div[class*="bg-gray-50"] {
 
 .bg-gradient-overlay-mobile:hover {
   background: linear-gradient(to bottom, rgba(249, 250, 251, 0) 0%, rgba(219, 234, 254, 0.8) 50%, rgba(219, 234, 254, 0.95) 100%);
+  border-bottom: 2px solid rgba(59, 130, 246, 0.7); /* Cohérent avec desktop */
 }
 
 .bg-gradient-overlay-mobile:hover::after {

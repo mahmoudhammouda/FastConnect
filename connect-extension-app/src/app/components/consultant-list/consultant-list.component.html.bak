@@ -1,0 +1,186 @@
+<!-- Sort Control - Desktop -->
+<div class="flex items-center justify-end mx-4 mt-3 hidden md:flex">
+  <div class="relative">
+    <span class="text-gray-600 mr-2 text-sm">Trier par</span>
+    <button (click)="toggleSortDropdown($event)" class="bg-white text-gray-700 font-semibold py-2 px-4 rounded shadow-sm flex items-center justify-between border border-gray-300 hover:bg-gray-50 transition-colors w-40">
+      {{ sortOptions.find(option => option.value === selectedSortOrder)?.label || 'Pertinence' }}
+      <svg class="h-4 w-4 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+      </svg>
+    </button>
+    
+    <!-- Sort Dropdown Menu - Desktop -->
+    <div *ngIf="sortDropdownOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1 border border-gray-200">
+      <div *ngFor="let option of sortOptions" 
+          (click)="changeSortOrder(option.value)" 
+          class="px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer flex items-center">
+        <!-- Checkmark for selected option -->
+        <span *ngIf="selectedSortOrder === option.value" class="mr-2 text-blue-600">
+          <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+        </span>
+        <span *ngIf="selectedSortOrder !== option.value" class="mr-2 w-4"></span>
+        {{ option.label }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sort Control - Mobile -->
+<div class="flex items-center justify-end mx-3 mt-3 block md:hidden">
+  <div class="relative">
+    <span class="text-gray-600 mr-2 text-xs">Trier par</span>
+    <button (click)="toggleSortDropdown($event)" class="bg-white text-gray-700 font-medium py-1.5 px-3 rounded shadow-sm flex items-center justify-between border border-gray-300 hover:bg-gray-50 transition-colors w-36 text-sm">
+      {{ sortOptions.find(option => option.value === selectedSortOrder)?.label || 'Pertinence' }}
+      <svg class="h-3 w-3 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+      </svg>
+    </button>
+    
+    <!-- Sort Dropdown Menu - Mobile -->
+    <div *ngIf="sortDropdownOpen" class="absolute right-0 mt-1 w-44 bg-white rounded-md shadow-lg z-10 py-1 border border-gray-200">
+      <div *ngFor="let option of sortOptions" 
+          (click)="changeSortOrder(option.value)" 
+          class="px-3 py-2 text-xs text-gray-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer flex items-center">
+        <!-- Checkmark for selected option -->
+        <span *ngIf="selectedSortOrder === option.value" class="mr-2 text-blue-600">
+          <svg class="h-3 w-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+        </span>
+        <span *ngIf="selectedSortOrder !== option.value" class="mr-2 w-3"></span>
+        {{ option.label }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Selected Skills Pills (only display, the filtering happens in app.component.html) -->
+<div *ngIf="selectedSkills.length > 0" class="flex flex-wrap mt-3 mx-4 bg-white shadow-sm rounded-md p-2">
+  <div *ngFor="let skill of selectedSkills" 
+      class="filter-pill">
+    {{ skill }}
+    <button (click)="toggleSkillFilter(skill)" class="ml-1 focus:outline-none">
+      <svg class="h-3 w-3 close-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<!-- Section défilante pour les consultants - Desktop -->
+<div #consultantsList class="flex-1 overflow-y-auto p-4 h-full hidden md:block" (scroll)="onScroll($event)" style="min-height: 70vh; height: calc(100vh - 200px);">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex justify-center items-center p-10">
+    <div class="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full" role="status">
+      <span class="sr-only">Chargement...</span>
+    </div>
+  </div>
+  
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="bg-white border border-gray-200 rounded-lg p-6 text-center flex flex-col items-center justify-center shadow-sm mb-4">
+    <svg class="w-16 h-16 text-blue-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 15h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <p class="text-lg font-semibold text-gray-700 mb-2">Oups ! Un problème est survenu</p>
+    <p class="text-gray-500 mb-4">Impossible de charger les consultants.</p>
+    <button (click)="loadInitialConsultants()" class="px-5 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-300">
+      Réessayer
+    </button>
+  </div>
+  
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !errorMessage && filteredConsultants.length === 0" class="text-center p-10 bg-gray-50 rounded-lg">
+    <p class="text-gray-500">Aucun consultant trouvé</p>
+  </div>
+  
+  <!-- Consultants List - Desktop -->
+  <div *ngIf="!isLoading && filteredConsultants.length > 0" class="space-y-4 mx-auto px-2 py-1">
+    <app-consultant-card 
+      *ngFor="let consultant of filteredConsultants"
+      [consultant]="consultant" 
+      [expanded]="expandedMessages[consultant.id + '-message']" 
+      [messageExpanded]="expandedMessages[consultant.id]"
+      [detailsExpanded]="expandedDetails[consultant.id]"
+      [dropdownOpen]="dropdownOpen[consultant.id]"
+      (toggleExpansion)="toggleExpandMessage(consultant.id, $event)"
+      (toggleMessageExpansion)="toggleMessageExpansion(consultant.id, $event)"
+      (toggleDetailsExpansion)="toggleDetailsExpansion(consultant.id, $event)"
+      (toggleDropdown)="toggleDropdown(consultant.id, $event)"
+      (linkedinClick)="openLinkedIn(consultant.linkedinUrl)"
+      (phoneClick)="showPhone(consultant.phone)"
+      (emailClick)="sendEmail(consultant.email)">
+    </app-consultant-card>
+  </div>
+  
+  <!-- Loading More Indicator -->
+  <div *ngIf="isLoadingMore" class="flex justify-center items-center p-6">
+    <div class="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full" role="status">
+      <span class="sr-only">Chargement...</span>
+    </div>
+  </div>
+  
+  <!-- End of Results -->
+  <div *ngIf="!isLoading && !isLoadingMore && !hasMoreData && filteredConsultants.length > 0" class="text-center p-6">
+    <p class="text-gray-500 text-sm">Fin des résultats</p>
+  </div>
+</div>
+
+<!-- Section défilante pour les consultants - Mobile avec scrollbar masquée -->
+<div #consultantsListMobile class="mobile-scrollable-container flex-1 py-2 px-0 h-full block md:hidden" (scroll)="onScroll($event)" style="min-height: 70vh; height: calc(100vh - 200px);">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex justify-center items-center p-6">
+    <div class="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full" role="status">
+      <span class="sr-only">Chargement...</span>
+    </div>
+  </div>
+  
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="bg-white border border-gray-200 rounded-lg p-4 text-center flex flex-col items-center justify-center shadow-sm mb-3 mx-2">
+    <svg class="w-12 h-12 text-blue-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 15h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <p class="text-base font-semibold text-gray-700 mb-1">Oups !</p>
+    <p class="text-gray-500 text-sm mb-3">Un problème est survenu lors du chargement des consultants</p>
+    <button (click)="loadInitialConsultants()" class="px-4 py-1.5 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-300">
+      Réessayer
+    </button>
+  </div>
+  
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !errorMessage && filteredConsultants.length === 0" class="text-center p-6 bg-gray-50 rounded-lg mx-2">
+    <p class="text-gray-500 text-sm">Aucun consultant trouvé</p>
+  </div>
+  
+  <!-- Consultants List - Mobile -->
+  <div *ngIf="!isLoading && filteredConsultants.length > 0" class="space-y-3 mobile-full-width">
+    <app-consultant-card 
+      *ngFor="let consultant of filteredConsultants"
+      [consultant]="consultant"
+      [expanded]="expandedMessages[consultant.id + '-message']"
+      [messageExpanded]="expandedMessages[consultant.id]"
+      [detailsExpanded]="expandedDetails[consultant.id]"
+      [dropdownOpen]="dropdownOpen[consultant.id]"
+      (toggleExpansion)="toggleExpandMessage(consultant.id, $event)"
+      (toggleMessageExpansion)="toggleMessageExpansion(consultant.id, $event)"
+      (toggleDetailsExpansion)="toggleDetailsExpansion(consultant.id, $event)"
+      (toggleDropdown)="toggleDropdown(consultant.id, $event)"
+      (linkedinClick)="openLinkedIn(consultant.linkedinUrl)"
+      (phoneClick)="showPhone(consultant.phone)"
+      (emailClick)="sendEmail(consultant.email)">
+    </app-consultant-card>
+  </div>
+  
+  <!-- Loading More Indicator - Mobile -->
+  <div *ngIf="isLoadingMore" class="flex justify-center items-center p-4">
+    <div class="animate-spin h-6 w-6 border-3 border-blue-500 border-t-transparent rounded-full" role="status">
+      <span class="sr-only">Chargement...</span>
+    </div>
+  </div>
+  
+  <!-- End of Results - Mobile -->
+  <div *ngIf="!isLoading && !isLoadingMore && !hasMoreData && filteredConsultants.length > 0" class="text-center p-4">
+    <p class="text-gray-500 text-xs">Fin des résultats</p>
+  </div>
+</div>

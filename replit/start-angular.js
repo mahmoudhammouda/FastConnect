@@ -48,8 +48,11 @@ if (!fs.existsSync(angularAppPath)) {
   process.exit(1);
 }
 
+// Chemin du fichier de configuration proxy spécifique à Replit
+const proxyConfigPath = path.join(__dirname, 'proxy.conf.replit.json');
+
 // Commande pour démarrer l'application Angular avec la configuration Replit
-const command = `cd ${angularAppPath} && npx ng serve --configuration=replit --host 0.0.0.0 --port 5000 --disable-host-check --proxy-config proxy.conf.json`;
+const command = `cd ${angularAppPath} && npx ng serve --configuration=replit --host 0.0.0.0 --port 5000 --disable-host-check --proxy-config ${proxyConfigPath}`;
 
 logMessage("🚀 Démarrage de l'application Angular avec configuration Replit...", 'cyan');
 logMessage(`Commande exécutée : ${command}`, 'blue');

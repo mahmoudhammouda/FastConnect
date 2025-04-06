@@ -27,9 +27,10 @@ Extension Chrome et application web pour la découverte intelligente de consulta
 ✅ Logging avancé des requêtes API et des réponses
 ✅ Composant de débogage pour faciliter le diagnostic
 ✅ Récupération et affichage de la liste des consultants depuis l'API
+✅ Optimisation de l'affichage sur mobile (responsive design, interface améliorée)
+✅ Fonctionnalité de tri et filtrage des consultants en mode mobile
 🚧 En cours : Authentification avec Google et LinkedIn OAuth
 🚧 En cours : Développement des fonctionnalités de filtrage avancées
-🚧 En cours : Optimisation de l'affichage sur mobile
 
 ## Prérequis
 
@@ -632,6 +633,13 @@ Le projet a été restructuré pour utiliser une architecture complètement sép
 - S'assurer que le backend utilise `--urls=http://0.0.0.0:8000` pour être accessible
 - Utiliser la configuration Replit avec `--proxy-config proxy.conf.json`
 - Redémarrer les workflows si des modifications ont été apportées aux fichiers de configuration
+
+### Problème : Interface mobile non optimisée ou incohérente
+**Symptôme** : Affichage incorrect sur mobile, tri non fonctionnel ou incohérence de design avec la version desktop  
+**Solution** :
+- Vérifier les classes CSS responsives dans les templates HTML (`md:hidden`, `block md:hidden`, etc.)
+- S'assurer que les méthodes de tri dans le composant consultant-list sont correctement liées aux événements
+- Utiliser les mêmes schémas de couleurs et styles que la version desktop pour la cohérence visuelle
 
 ### Problème : Application blanche ou erreurs 404 au démarrage
 **Symptôme** : L'application affiche une page blanche ou les requêtes API retournent 404  

@@ -3,13 +3,18 @@ using ConnectExtension.Backend.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ConnectExtension.Backend
 {
@@ -114,18 +119,23 @@ namespace ConnectExtension.Backend
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                
-                // Enable Swagger UI in development
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FastConnect API v1"));
             }
+                
+            // Enable Swagger UI in all environments
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "FastConnect API v1"));
 
             // Middleware de logging des requêtes/réponses
             app.UseRequestResponseLogging();
             
-            // Note: Nous n'utilisons plus app.UseStaticFiles() car l'API et l'application Angular sont séparées
-            
+            // Routes et middleware
             app.UseRouting();
+            
+            // Activation des fichiers statiques pour servir l'application Angular via .NET Core
+            // Mode indépendant : nous ne servons plus les fichiers statiques du frontend
+            // Les commentaires suivants sont laissés pour référence
+            // app.UseDefaultFiles();
+            // app.UseStaticFiles();
             
             // Use CORS policy
             app.UseCors("AllowChromeExtension");
@@ -138,7 +148,9 @@ namespace ConnectExtension.Backend
             {
                 endpoints.MapControllers();
                 
-                // Note: Nous avons retiré le fallback vers index.html car l'API et l'application Angular sont séparées
+                // En mode indépendant, nous ne gérons pas le fallback des routes Angular
+                // Les commentaires suivants sont laissés pour référence
+                // endpoints.MapFallbackToFile("index.html");
             });
             
             logger.LogInformation("Routes et middlewares configurés");

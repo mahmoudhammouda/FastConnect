@@ -1,0 +1,430 @@
+// Styles pour consultants-card.component
+// Nouveau design épuré et élégant pour la liste des consultants
+
+// Animations et effets avancés
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes pulse-border {
+  0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+  70% { box-shadow: 0 0 0 5px rgba(59, 130, 246, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}
+
+// Gradients et effets
+.text-gradient {
+  background: linear-gradient(90deg, #3b82f6, #60a5fa, #93c5fd);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient 3s ease infinite;
+}
+
+.animate-gradient {
+  animation: gradient 3s ease infinite;
+}
+
+// Badges améliorés
+.skill-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #4b5563;
+  background-color: #f3f4f6;
+  transition: all 0.2s ease-in-out;
+  
+  &:hover {
+    background-color: #e5e7eb;
+    transform: translateY(-1px);
+  }
+}
+
+.location-item {
+  font-weight: 500;
+  color: #4b5563;
+  transition: color 0.2s ease;
+  
+  &:hover {
+    color: #1e40af;
+  }
+}
+
+// Badges d'expertise et de secteur
+.badge-expertise {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.675rem;
+  font-weight: 500;
+  color: #7c3aed;
+  background-color: #ede9fe;
+  border: 1px solid #ddd6fe;
+}
+
+.badge-sector {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.675rem;
+  font-weight: 500;
+  color: #0891b2;
+  background-color: #ecfeff;
+  border: 1px solid #cffafe;
+}
+
+// Boutons d'action améliorés
+// Styles améliorés pour les cartes consultants - séparation visuelle renforcée
+.bg-white {
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.03),
+    0 -1px 0 0 rgba(255, 255, 255, 0.6) inset;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: rgba(196, 210, 229, 1);
+    box-shadow: 
+      0 10px 15px -3px rgba(0, 0, 0, 0.08), 
+      0 4px 6px -2px rgba(0, 0, 0, 0.05),
+      0 -1px 0 0 rgba(255, 255, 255, 0.8) inset;
+  }
+}
+
+// Effet de séparation des sections internes
+.border-t {
+  border-top-width: 1px;
+  border-color: rgba(226, 232, 240, 0.8);
+}
+
+// Style des boutons d'action pour le mobile
+.mobile-action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0.5rem;
+  
+  // Style spécifique pour le bouton à 3 points
+  .material-icons {
+    transition: transform 0.2s ease;
+  }
+  
+  button:hover .material-icons {
+    transform: scale(1.1);
+  }
+  
+  // Style du menu déroulant
+  .origin-top-right {
+    transform-origin: top right;
+    animation: dropdownAppear 0.2s ease forwards;
+    box-shadow: 
+      0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+      0 2px 4px -1px rgba(0, 0, 0, 0.06),
+      0 0 0 1px rgba(0, 0, 0, 0.03);
+    
+    a {
+      transition: background-color 0.15s ease, color 0.15s ease;
+      position: relative;
+      
+      // Effet de survol amélioré
+      &:hover {
+        i {
+          transform: translateX(2px);
+        }
+      }
+      
+      i {
+        transition: transform 0.2s ease;
+      }
+    }
+  }
+}
+
+// Animation d'apparition du menu déroulant
+@keyframes dropdownAppear {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  transition: all 0.2s ease-in-out;
+  color: white;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.linkedin-btn {
+  background-color: #0077b5;
+  
+  &:hover {
+    background-color: #0369a1;
+  }
+}
+
+.phone-btn {
+  background-color: #16a34a;
+  
+  &:hover {
+    background-color: #15803d;
+  }
+}
+
+.email-btn {
+  background-color: #dc2626;
+  
+  &:hover {
+    background-color: #b91c1c;
+  }
+}
+
+.disabled-btn {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+  background-color: #9ca3af;
+  
+  &:hover {
+    transform: none !important;
+    box-shadow: none !important;
+    background-color: #9ca3af;
+  }
+}
+
+// Styles améliorés pour la version mobile et extension
+// Design mobile nouvelle génération - style moderne et épuré
+@media (max-width: 768px) {
+  // Style général des conteneurs
+  .consultants-container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    background-color: #f8fafc;
+  }
+  
+  // Design de base - carte moderne
+  .mobile-card-modern {
+    margin-bottom: 12px;
+    border-radius: 0;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    
+    // Effet de hover subtil
+    &:active {
+      background-color: rgba(248, 250, 252, 0.8);
+    }
+    
+    // Design de l'en-tête
+    .mobile-header {
+      position: relative;
+      border-bottom: 1px solid rgba(241, 245, 249, 0.9);
+      
+      // Animation de la barre supérieure
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
+      }
+    }
+    
+    // Styles des badges et puces
+    .skill-chip {
+      transition: all 0.2s ease;
+      background: rgba(249, 250, 251, 0.8);
+      
+      &:hover {
+        background: rgba(243, 244, 246, 1);
+        transform: translateY(-1px);
+      }
+    }
+    
+    // Section message avec design moderne
+    .message-section {
+      background-color: rgba(249, 250, 251, 0.8);
+      border-color: rgba(229, 231, 235, 0.5);
+      border-radius: 8px;
+      
+      // Style du contenu du message
+      .message-content {
+        line-height: 1.5;
+        
+        &.truncated {
+          max-height: 4.5rem;
+          overflow: hidden;
+        }
+      }
+      
+      // Style du bouton d'expansion
+      button {
+        color: #3b82f6;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          color: #2563eb;
+          text-decoration: underline;
+        }
+        
+        &:active {
+          transform: translateY(1px);
+        }
+      }
+    }
+    
+    // Barre d'actions avec design moderne
+    .action-bar {
+      border-top: 1px solid rgba(241, 245, 249, 0.8);
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      
+      // Styles des boutons d'action
+      .action-button {
+        transition: all 0.2s ease;
+        
+        &:active {
+          transform: scale(0.95);
+        }
+      }
+      
+      // Boutons de contact 
+      .contact-actions {
+        .action-button {
+          background-color: rgba(249, 250, 251, 0.8);
+          
+          i {
+            transition: transform 0.2s ease;
+          }
+          
+          &:hover:not([disabled]) i {
+            transform: scale(1.1);
+          }
+        }
+      }
+    }
+    
+    // Section détails avec style moderne
+    .details-section {
+      background-color: rgba(249, 250, 251, 0.6);
+      border-top: 1px solid rgba(241, 245, 249, 0.8);
+      border-bottom: 1px solid rgba(241, 245, 249, 0.8);
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+  }
+  
+  // Animation pour l'apparition des détails
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  // Optimisations des espaces
+  .space-y-0 > * + * {
+    margin-top: 0 !important;
+  }
+  
+  // Séparateurs entre les cartes
+  .mobile-card-modern:not(:last-child) {
+    border-bottom: 1px solid rgba(241, 245, 249, 0.8);
+  }
+}
+
+// Version desktop des cartes consultant
+@media (min-width: 769px) {
+  .consultant-card-mobile, .mobile-consultant-card {
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 
+      0 4px 8px -2px rgba(0, 0, 0, 0.06),
+      0 2px 4px -1px rgba(0, 0, 0, 0.03),
+      0 -1px 0 0 rgba(255, 255, 255, 0.6) inset;
+    
+    &:hover {
+      transform: translateY(-3px);
+      border-color: rgba(196, 210, 229, 1);
+      box-shadow: 
+        0 10px 15px -3px rgba(0, 0, 0, 0.08), 
+        0 4px 6px -2px rgba(0, 0, 0, 0.05),
+        0 -1px 0 0 rgba(255, 255, 255, 0.8) inset;
+    }
+  }
+}
+
+// Styles pour les sections de détails
+.details-section {
+  border-top: 1px solid #e5e7eb;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  
+  h3 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #4b5563;
+    margin-bottom: 0.25rem;
+  }
+}
+
+// Effet de gradient pour les messages tronqués
+.bg-gradient-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2rem;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+  pointer-events: none;
+}
+
+.bg-gradient-overlay-mobile {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1.5rem;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+  cursor: pointer;
+}
+
+// Styles pour les messages
+.consultantMessage {
+  font-size: 0.875rem;
+  color: #4b5563;
+  line-height: 1.4;
+  
+  &.truncated {
+    max-height: 3.5rem;
+    overflow: hidden;
+    position: relative;
+  }
+}
