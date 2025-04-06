@@ -8,7 +8,7 @@ import { ConsultantService } from '../../services/consultant.service';
 @Component({
   selector: 'app-consultant-list',
   templateUrl: './consultant-list.component.html',
-  styleUrls: ['./consultant-list.component.css'],
+  styleUrls: ['./consultant-list.component.scss'],
   standalone: true,
   imports: [CommonModule, FormsModule, ConsultantCardComponent]
 })
@@ -515,14 +515,16 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
   }
   
   /**
-   * Change l'ordre de tri des consultants
-   * @param sortOrder Nouvel ordre de tri
+   * Sélectionne une option de tri et applique les filtres
+   * @param sortValue Valeur de l'option de tri
+   * @param event L'événement de clic
    */
-  changeSortOrder(sortOrder: string): void {
-    if (this.selectedSortOrder === sortOrder) return;
+  selectSortOption(sortValue: string, event: MouseEvent): void {
+    event.stopPropagation();
+    if (this.selectedSortOrder === sortValue) return;
     
-    this.selectedSortOrder = sortOrder;
-    this.applySorting();
+    this.selectedSortOrder = sortValue;
+    this.applyFilters(); // Applique les filtres et le tri
     this.sortDropdownOpen = false;
   }
   
@@ -561,13 +563,16 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
     }
   }
   
-  @HostListener('document:click')
-  closeDropdowns(): void {
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    // Fermer tous les dropdowns si on clique ailleurs
     Object.keys(this.dropdownOpen).forEach(id => {
       this.dropdownOpen[id] = false;
     });
     this.sortDropdownOpen = false;
   }
+  
+  // Méthodes de tri déjà définies plus haut
   
   /**
    * Retourne le libellé de l'option de tri actuellement sélectionnée

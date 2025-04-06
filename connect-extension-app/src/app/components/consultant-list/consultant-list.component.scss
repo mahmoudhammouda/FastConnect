@@ -1,0 +1,288 @@
+// Styles pour consultant-list.component
+// Design élégant et moderne pour la liste des consultants
+
+// Conteneur principal avec effet de fond amélioré et bordure décorative
+.consultants-container {
+  background-color: #f8fafc;
+  background-image: 
+    linear-gradient(0deg, rgba(241, 245, 249, 0.5) 0%, rgba(248, 250, 252, 0.8) 100%),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.03) 0%, rgba(59, 130, 246, 0.02) 100%);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.05),
+    0 4px 12px rgba(0, 0, 0, 0.02);
+  
+  @media (min-width: 768px) {
+    min-height: 70vh;
+  }
+}
+
+// En-tête avec style moderne
+.consultants-header {
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+  border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+  
+  h2 {
+    font-weight: 600;
+    color: #1e40af;
+  }
+}
+
+// Animation du loader
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.loading-container {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  .loader-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #3b82f6;
+    margin: 0 4px;
+    display: inline-block;
+    animation: bounce 1.2s infinite ease-in-out;
+    
+    &:nth-child(2) {
+      animation-delay: 0.2s;
+      background-color: #60a5fa;
+    }
+    
+    &:nth-child(3) {
+      animation-delay: 0.4s;
+      background-color: #93c5fd;
+    }
+  }
+}
+
+// Styles de la barre de scrolling
+.scrollbar-custom::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 6px;
+}
+
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 6px;
+  
+  &:hover {
+    background-color: #94a3b8;
+  }
+}
+
+// Section de filtres avec design élégant
+.filters-section {
+  background-color: white;
+  border-bottom: 1px solid #e2e8f0;
+  
+  .filter-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #334155;
+  }
+  
+  .filter-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    color: #3b82f6;
+    background-color: #eff6ff;
+    border: 1px solid #dbeafe;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    
+    &:hover {
+      background-color: #dbeafe;
+      border-color: #bfdbfe;
+    }
+    
+    &.active {
+      background-color: #3b82f6;
+      border-color: #2563eb;
+      color: white;
+    }
+    
+    .filter-count {
+      background-color: white;
+      color: #3b82f6;
+      font-size: 0.625rem;
+      border-radius: 999px;
+      padding: 0.125rem 0.375rem;
+      margin-left: 0.375rem;
+    }
+  }
+}
+
+// Conteneur des cartes consultants avec espacement amélioré
+.consultants-list {
+  display: grid;
+  grid-gap: 1.5rem;
+  padding: 1.5rem;
+  
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+  
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
+  }
+  
+  // Style spécifique pour chaque app-consultant-card avec séparation visuelle renforcée
+  app-consultant-card {
+    margin-bottom: 1.5rem;
+    display: block;
+    position: relative;
+    
+    // Ligne séparatrice décorative sous chaque carte
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -0.75rem;
+      left: 5%;
+      width: 90%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(203, 213, 225, 0.8), transparent);
+    }
+    
+    // Effet d'élévation avec ombre portée au survol
+    &:hover {
+      transform: translateY(-3px);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+  }
+}
+
+// Message d'erreur avec style attentionné
+.error-message {
+  border-radius: 0.5rem;
+  background-color: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: #fecaca;
+  }
+  
+  .retry-button {
+    background-color: #ef4444;
+    color: white;
+    border-radius: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background-color: #dc2626;
+    }
+  }
+}
+
+// Indicator de fin de liste
+.end-of-list {
+  padding: 1.5rem;
+  text-align: center;
+  color: #64748b;
+  font-size: 0.875rem;
+  background: linear-gradient(180deg, transparent, rgba(241, 245, 249, 0.8));
+}
+
+// Animation d'apparition en fondu
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// Appliqué aux consultants pendant qu'ils se chargent
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+// Corrections scrolling mobile et animations
+@media (max-width: 768px) {
+  // Correction scrolling mobile
+  .consultants-container {
+    height: 100% !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch; // Pour meilleur scrolling sur iOS
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  // Assurer que la liste prend tout l'espace disponible
+  .space-y-0 {
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  // Fixer l'en-tête
+  .consultants-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+}
+
+// Animations spécifiques pour le mobile extension et mobile
+@media screen and (max-width: 600px) {
+  .consultants-container {
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    box-shadow: 
+      0 2px 4px rgba(0, 0, 0, 0.04),
+      0 1px 2px rgba(0, 0, 0, 0.02);
+  }
+  
+  .consultants-list {
+    grid-gap: 1rem;
+    padding: 0.75rem;
+  }
+  
+  // Augmenter l'espacement entre les cartes en mode mobile
+  .space-y-6 > * {
+    margin-bottom: 1.25rem;
+    position: relative;
+    
+    // Séparateur visuel entre les cartes en mode mobile
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -0.75rem;
+      left: 2%;
+      width: 96%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(203, 213, 225, 0.6), transparent);
+    }
+  }
+}
+
+// Style spécifique pour le mode extension (hauteur réduite)
+@media screen and (max-height: 600px) {
+  .consultants-container {
+    min-height: auto;
+    max-height: 450px;
+    overflow-y: auto;
+  }
+  
+  // Optimisation de l'espace vertical en mode extension
+  .space-y-6 > * {
+    margin-bottom: 1rem;
+  }
+}
