@@ -214,6 +214,7 @@
   <div *ngIf="alerts.length > 0">
     <div *ngFor="let alert of alerts" 
          [class.selected]="selectedAlertId === alert.id"
+         [class.has-new-consultants]="hasNewConsultants(alert.id)"
          class="alert-item relative">
       <div class="alert-header" (click)="selectAlert(alert.id)">
         <!-- Contenu principal de l'alerte -->
