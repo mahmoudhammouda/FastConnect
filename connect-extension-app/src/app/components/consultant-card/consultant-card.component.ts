@@ -404,42 +404,15 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
   
   /**
    * Calcule la position optimale pour la dropdown des favoris
-   * Veille à ce que la dropdown reste dans les limites du conteneur de la carte
+   * Position modifiée pour toujours afficher la dropdown au-dessus du bouton bookmark
    * @param buttonElement L'élément bouton qui a déclenché la dropdown
    */
   calculateBookmarkDropdownPosition(buttonElement: Element): void {
-    // Récupération de l'élément parent pour contraindre la dropdown
-    const consultantCard = this.findConsultantCardContainer(buttonElement);
-    const rect = buttonElement.getBoundingClientRect();
-    const viewportHeight = window.innerHeight;
+    // Forcer l'affichage en haut (au-dessus du bouton bookmark)
+    this.bookmarkDropdownPosition = 'top';
     
-    // Si nous avons trouvé le conteneur de la carte
-    if (consultantCard) {
-      const cardRect = consultantCard.getBoundingClientRect();
-      
-      // Vérifier l'espace disponible en dessous du bouton jusqu'au bas de la carte
-      const spaceInCardBelow = cardRect.bottom - rect.bottom - 10; // 10px de marge
-      
-      // Hauteur de la dropdown avec max 4 éléments (160px) + en-tête (48px) + pied (48px)
-      const dropdownHeight = 160 + 48 + 48; // ~256px total
-      
-      // Placer au-dessus si pas assez d'espace en dessous dans la carte
-      if (spaceInCardBelow < dropdownHeight) {
-        this.bookmarkDropdownPosition = 'top';
-      } else {
-        this.bookmarkDropdownPosition = 'bottom';
-      }
-    } else {
-      // Calcul standard en fonction de l'espace dans la fenêtre
-      const spaceBelow = viewportHeight - rect.bottom - 10; // -10px de marge
-      
-      // Décider si on affiche au-dessus ou en dessous
-      if (spaceBelow >= 256 || spaceBelow > rect.top) {
-        this.bookmarkDropdownPosition = 'bottom';
-      } else {
-        this.bookmarkDropdownPosition = 'top';
-      }
-    }
+    // Log pour débogage
+    console.log("[ConsultantCard] Dropdown bookmark positionnée au-dessus du bouton");
   }
   
   /**
