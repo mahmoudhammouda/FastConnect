@@ -47,6 +47,12 @@ export class AlertListComponent implements OnInit, OnDestroy {
   locationOptions: string[] = ['Paris', 'Lyon', 'Marseille', 'Bordeaux', 'Lille', 'Remote'];
   skillOptions: string[] = ['JavaScript', 'Python', 'Java', 'C#', 'React', 'Angular', 'Vue.js', 'Node.js', 'Express', 'Django', 'Flask', 'Spring', 'ASP.NET', 'Machine Learning', 'Deep Learning', 'NLP', 'Computer Vision', 'Data Science', 'TensorFlow', 'PyTorch', 'SQL', 'NoSQL', 'MongoDB', 'PostgreSQL', 'DevOps', 'Docker', 'Kubernetes', 'AWS', 'Azure', 'GCP'];
   
+  // Valeurs des sélecteurs pour le nouveau format de filtres
+  selectedExperience: string = '';
+  selectedAvailability: string = '';
+  selectedLocation: string = '';
+  selectedSkill: string = '';
+  
   // États pour les dropdowns personnalisés
   experienceDropdownOpen: boolean = false;
   locationDropdownOpen: boolean = false;
@@ -352,6 +358,66 @@ export class AlertListComponent implements OnInit, OnDestroy {
     this.filteredSkillOptions = this.skillOptions.filter(
       skill => skill.toLowerCase().includes(searchText)
     );
+  }
+  
+  /**
+   * Met à jour le filtre d'expérience quand le menu déroulant change
+   */
+  updateExperienceFilter(): void {
+    if (this.selectedExperience) {
+      // Si une nouvelle valeur est sélectionnée, l'ajouter si elle n'existe pas déjà
+      if (!this.tempExperience.includes(this.selectedExperience)) {
+        this.tempExperience = [this.selectedExperience];
+      }
+    } else {
+      // Si "Tout niveau" est sélectionné, effacer la sélection
+      this.tempExperience = [];
+    }
+  }
+  
+  /**
+   * Met à jour le filtre de disponibilité quand le menu déroulant change
+   */
+  updateAvailabilityFilter(): void {
+    if (this.selectedAvailability) {
+      // Si une nouvelle valeur est sélectionnée, l'ajouter si elle n'existe pas déjà
+      if (!this.tempAvailability.includes(this.selectedAvailability)) {
+        this.tempAvailability = [this.selectedAvailability];
+      }
+    } else {
+      // Si "Toutes" est sélectionné, effacer la sélection
+      this.tempAvailability = [];
+    }
+  }
+  
+  /**
+   * Met à jour le filtre de localisation quand le menu déroulant change
+   */
+  updateLocationFilter(): void {
+    if (this.selectedLocation) {
+      // Si une nouvelle valeur est sélectionnée, l'ajouter si elle n'existe pas déjà
+      if (!this.tempLocation.includes(this.selectedLocation)) {
+        this.tempLocation = [this.selectedLocation];
+      }
+    } else {
+      // Si "Toutes" est sélectionné, effacer la sélection
+      this.tempLocation = [];
+    }
+  }
+  
+  /**
+   * Met à jour le filtre de compétences quand le menu déroulant change
+   */
+  updateSkillFilter(): void {
+    if (this.selectedSkill) {
+      // Si une nouvelle valeur est sélectionnée, l'ajouter si elle n'existe pas déjà
+      if (!this.tempSkills.includes(this.selectedSkill)) {
+        this.tempSkills = [this.selectedSkill];
+      }
+    } else {
+      // Si "Compétences" est sélectionné, effacer la sélection
+      this.tempSkills = [];
+    }
   }
   
   /**
