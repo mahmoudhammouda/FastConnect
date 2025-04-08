@@ -326,29 +326,31 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
         const dropdown = document.querySelector('.bookmark-dropdown') as HTMLElement;
         
         if (dropdown) {
-          // Positionne la dropdown alignée avec le bouton signet
-          const dropdownWidth = dropdown.offsetWidth;
-          
-          // Alignement à droite avec le bouton (le bouton signet est à droite)
+          // IMPORTANT: Positionnement vertical toujours en-dessous du bouton
           dropdown.style.top = `${buttonRect.bottom + 5}px`; // +5px pour un petit espace
           
-          // Calculer la position horizontale pour aligner la dropdown avec le bouton (centrée par rapport au bouton)
-          // Nous voulons que la dropdown soit positionnée au-dessus du bouton signet
-          const buttonCenter = buttonRect.left + buttonRect.width / 2;
-          const leftPosition = Math.max(0, buttonCenter - (dropdownWidth / 2));
+          // Aligner précisément le coin supérieur droit de la dropdown sous le coin inférieur droit du bouton
+          dropdown.style.left = `${buttonRect.right}px`;
+          dropdown.style.transform = 'translateX(-100%)'; // Décaler la dropdown de sa propre largeur vers la gauche
           
-          // Assurons-nous que la dropdown ne dépasse pas le bord droit de l'écran
-          const windowWidth = window.innerWidth;
-          const rightEdgeOfDropdown = leftPosition + dropdownWidth;
-          const finalLeftPosition = rightEdgeOfDropdown > windowWidth 
-              ? Math.max(0, windowWidth - dropdownWidth - 10) // 10px de marge
-              : leftPosition;
+          // Forcer l'affichage vers le bas en vérifiant que la dropdown ne dépasse pas le haut de l'écran
+          const dropdownRect = dropdown.getBoundingClientRect();
+          if (dropdownRect.top < 10) { // Si la dropdown est trop haute (près du haut de l'écran)
+            dropdown.style.top = '10px'; // La placer avec une marge minimale en haut
+          }
           
-          dropdown.style.left = `${finalLeftPosition}px`;
+          // Assurons-nous que la dropdown ne sort pas de l'écran à gauche
+          if (buttonRect.right - dropdown.offsetWidth < 10) {
+            dropdown.style.left = '10px'; // Marge minimale à gauche
+          }
+          
+          // S'assurer que la dropdown ne sort pas de l'écran à droite
+          const maxWidth = window.innerWidth - 20; // 20px de marge totale
+          dropdown.style.maxWidth = `${maxWidth}px`;
           
           // Log pour débogage
           console.log("[ConsultantCard] Dropdown bookmark repositionnée", 
-            { top: dropdown.style.top, left: dropdown.style.left, buttonCenter, dropdownWidth, finalLeftPosition });
+            { top: dropdown.style.top, left: dropdown.style.left, buttonRight: buttonRect.right });
         }
       }, 0);
     }

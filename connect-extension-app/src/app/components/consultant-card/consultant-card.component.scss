@@ -463,7 +463,8 @@
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(226, 232, 240, 0.9);
   border-radius: 0.5rem;
-  animation: fadeIn 0.2s ease-out forwards;
+  transform-origin: top right; // Force l'animation à partir du coin supérieur droit
+  animation: fadeInDownFromTop 0.2s ease-out forwards; // Animation spécifique pour apparaître depuis le haut
   
   // Container pour les éléments de liste
   .bookmark-list-container {
@@ -497,6 +498,18 @@
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+// Animation spécifique pour faire apparaître depuis le haut vers le bas
+@keyframes fadeInDownFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) translateX(-100%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(-100%) scale(1);
   }
 }
 
