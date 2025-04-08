@@ -109,7 +109,7 @@
             
             <!-- Dropdown pour les favoris (desktop) -->
             <div *ngIf="bookmarkDropdownOpen === consultant.id" 
-                 class="bookmark-dropdown dropdown-top"
+                 class="bookmark-dropdown dropdown-bottom"
                  (click)="$event.stopPropagation()">
                  
               <!-- En-tête de la dropdown -->
@@ -368,7 +368,7 @@
         
         <!-- Dropdown pour les favoris -->
         <div *ngIf="bookmarkDropdownOpen === consultant.id" 
-             class="bookmark-dropdown dropdown-top"
+             class="bookmark-dropdown dropdown-bottom"
              (click)="$event.stopPropagation()">
              
           <!-- En-tête de la dropdown -->

@@ -288,16 +288,18 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
       this.isCreatingNewList = false;
       this.newListName = '';
     } else {
-      // Calcul de la position optimale (au-dessus ou en-dessous)
-      const buttonElement = event.currentTarget as Element;
-      this.calculateBookmarkDropdownPosition(buttonElement);
-      
       // Ouvrir pour ce consultant
       this.bookmarkDropdownOpen = consultantId;
       
       // Ferme les autres menus pour éviter les conflits d'interface
       this.mobileActionsOpen = null; // Ferme le menu d'actions mobile
       this.activeDropdownId = null; // Ferme le menu des 3 points desktop
+      
+      // Force la position de la dropdown en dessous du bouton
+      this.bookmarkDropdownPosition = 'bottom';
+      
+      // Log pour débogage
+      console.log("[ConsultantCard] Dropdown bookmark positionnée en dessous du bouton via CSS");
     }
   }
   
@@ -404,15 +406,15 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
   
   /**
    * Calcule la position optimale pour la dropdown des favoris
-   * Position modifiée pour toujours afficher la dropdown au-dessus du bouton bookmark
+   * Position modifiée pour toujours afficher la dropdown en dessous du bouton bookmark
    * @param buttonElement L'élément bouton qui a déclenché la dropdown
    */
   calculateBookmarkDropdownPosition(buttonElement: Element): void {
-    // Forcer l'affichage en haut (au-dessus du bouton bookmark)
-    this.bookmarkDropdownPosition = 'top';
+    // Forcer l'affichage en bas (en dessous du bouton bookmark)
+    this.bookmarkDropdownPosition = 'bottom';
     
     // Log pour débogage
-    console.log("[ConsultantCard] Dropdown bookmark positionnée au-dessus du bouton");
+    console.log("[ConsultantCard] Dropdown bookmark positionnée en dessous du bouton");
   }
   
   /**
