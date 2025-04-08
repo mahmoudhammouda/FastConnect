@@ -1,28 +1,51 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ConsultantWithTags, ExperienceLevel } from '../../models/consultant.model';
+import { BookmarkList, BookmarkState } from '../../models/bookmark.model';
+import { BookmarkService } from '../../services/bookmark.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-consultant-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './consultant-card.component.html',
   styleUrls: ['./consultant-card.component.scss'],
   schemas: [NO_ERRORS_SCHEMA]
 })
-export class ConsultantCardComponent {
+export class ConsultantCardComponent implements OnInit, OnDestroy {
+  // Propriétés pour les dropdowns et onglets
   @Input() consultant!: ConsultantWithTags;
+  @Input() consultantsList: ConsultantWithTags[] = [];
+  @Input() viewMode: 'desktop' | 'mobile' = 'desktop';
+  @Input() index!: number;
   @Input() expanded: boolean = false;
   @Input() messageExpanded: boolean = false;
   @Input() detailsExpanded: boolean = false; // Propriété pour l'affichage des détails
   @Input() dropdownOpen: boolean = false; // Propriété pour la compatibilité avec le composant parent
+  
+  // Propriétés pour le positionnement intelligent des dropdowns
+  dropdownPosition: 'top' | 'bottom' = 'bottom';
   
   // Propriété pour gérer l'ouverture du menu d'actions sur mobile
   mobileActionsOpen: string | null = null;
   
   // Propriété pour gérer l'ouverture du menu déroulant en mode desktop (usage interne)
   activeDropdownId: string | null = null;
+  
+  // Propriétés pour gérer les favoris
+  bookmarkDropdownOpen: string | null = null;
+  bookmarkSubscription!: Subscription;
+  bookmarkLists: BookmarkList[] = [];
+  isCreatingNewList = false;
+  bookmarkDropdownPosition: 'top' | 'bottom' = 'bottom';
+  newListName: string = '';
+  
+  bookmarkMessageTimeout: any;
+  // Pour savoir si un consultant est déjà dans au moins une liste de favoris
+  isBookmarked: boolean = false;
 
   @Output() linkedinClick = new EventEmitter<string>();
   @Output() phoneClick = new EventEmitter<string | null>();
@@ -31,6 +54,8 @@ export class ConsultantCardComponent {
   @Output() toggleDropdown = new EventEmitter<{id: string, event: MouseEvent}>();
   @Output() toggleMessageExpansion = new EventEmitter<{id: string, event: MouseEvent}>();
   @Output() toggleDetailsExpansion = new EventEmitter<{id: string, event: MouseEvent}>(); // Nouvel événement pour afficher/masquer les détails
+  
+  constructor(public bookmarkService: BookmarkService) {}
 
   /**
    * Get the experience level as 1-3 bars
@@ -132,12 +157,17 @@ export class ConsultantCardComponent {
    */
   toggleMobileActions(event: MouseEvent, consultantId: string): void {
     event.stopPropagation();
+    
     if (this.mobileActionsOpen === consultantId) {
       this.mobileActionsOpen = null;
     } else {
+      // Détermine la position optimale de la dropdown
+      const buttonElement = (event.currentTarget as Element);
+      this.dropdownPosition = this.calculateDropdownPosition(buttonElement, 200);
+      
       this.mobileActionsOpen = consultantId;
-      // Fermer le dropdown desktop si ouvert
-      this.activeDropdownId = null;
+      this.bookmarkDropdownOpen = null; // Fermer le dropdown de favoris s'il est ouvert
+      this.isCreatingNewList = false; // Réinitialiser la création de liste
     }
   }
   
@@ -147,15 +177,23 @@ export class ConsultantCardComponent {
    * @param event L'événement de clic
    */
   onToggleDropdown(consultantId: string, event: MouseEvent): void {
+    // Empêche la propagation pour éviter que le clic ne ferme immédiatement le menu
     event.stopPropagation();
+    
     if (this.activeDropdownId === consultantId) {
+      // Fermeture du menu s'il est déjà ouvert
       this.activeDropdownId = null;
     } else {
+      // Détermine la position optimale de la dropdown
+      const buttonElement = (event.currentTarget as Element);
+      this.dropdownPosition = this.calculateDropdownPosition(buttonElement, 150); // Menu des actions est plus petit
+
+      // Ouverture du menu et fermeture des autres menus
       this.activeDropdownId = consultantId;
-      // Fermer le menu mobile si ouvert
-      this.mobileActionsOpen = null;
+      this.bookmarkDropdownOpen = null; // Ferme les dropdowns de bookmark
+      this.isCreatingNewList = false;
     }
-    // Émettre l'événement pour informer le composant parent
+    
     this.toggleDropdown.emit({id: consultantId, event});
   }
 
@@ -177,5 +215,285 @@ export class ConsultantCardComponent {
   isDropdownOpen(consultantId: string): boolean {
     // Utilise soit l'entrée du composant parent soit notre état interne
     return !!this.dropdownOpen || this.activeDropdownId === consultantId;
+  }
+  
+  /**
+   * Initialisation du composant : souscription aux favoris
+   */
+  // Gestionnaire de clic global pour fermer la dropdown quand on clique ailleurs
+  private handleDocumentClick = (event: MouseEvent) => {
+    // Ne rien faire si aucune dropdown n'est ouverte
+    if (!this.bookmarkDropdownOpen) return;
+    
+    // Vérifie si le clic est en dehors de la dropdown
+    const clickTarget = event.target as HTMLElement;
+    const isClickInsideDropdown = clickTarget.closest('.bookmark-dropdown') !== null;
+    const isClickOnBookmarkButton = clickTarget.closest('[aria-haspopup="true"]') !== null;
+    
+    if (!isClickInsideDropdown && !isClickOnBookmarkButton) {
+      // Ferme la dropdown si le clic est en dehors
+      this.bookmarkDropdownOpen = null;
+      this.isCreatingNewList = false;
+      this.newListName = '';
+    }
+  }
+  
+  ngOnInit(): void {
+    this.bookmarkSubscription = this.bookmarkService.getBookmarkState().subscribe(state => {
+      this.bookmarkLists = state.lists;
+      this.updateBookmarkStatus();
+    });
+    
+    // Ajoute un gestionnaire de clic global pour fermer la dropdown quand on clique ailleurs
+    document.addEventListener('click', this.handleDocumentClick);
+  }
+  
+  /**
+   * Nettoyage lors de la destruction du composant
+   */
+  ngOnDestroy(): void {
+    if (this.bookmarkSubscription) {
+      this.bookmarkSubscription.unsubscribe();
+    }
+    if (this.bookmarkMessageTimeout) {
+      clearTimeout(this.bookmarkMessageTimeout);
+    }
+    
+    // Supprime le gestionnaire de clic global
+    document.removeEventListener('click', this.handleDocumentClick);
+  }
+  
+  /**
+   * Met à jour le statut de favori pour le consultant actuel
+   */
+  updateBookmarkStatus(): void {
+    if (this.consultant) {
+      this.isBookmarked = this.bookmarkService.isConsultantBookmarked(this.consultant.id);
+    }
+  }
+  
+  /**
+   * Calcule la position optimale d'une dropdown (haut ou bas) en fonction de l'espace disponible
+   * @param buttonElement L'élément bouton qui a déclenché la dropdown
+   * @param dropdownHeight Estimation de la hauteur de la dropdown en pixels (par défaut 300px)
+   * @returns 'top' si la dropdown doit s'afficher vers le haut, 'bottom' sinon
+   */
+  calculateDropdownPosition(buttonElement: Element, dropdownHeight: number = 300): 'top' | 'bottom' {
+    // Récupère la position du bouton par rapport à la fenêtre
+    const buttonRect = buttonElement.getBoundingClientRect();
+    
+    // Calcule l'espace disponible en dessous du bouton
+    const spaceBelow = window.innerHeight - buttonRect.bottom;
+    
+    // Si l'espace en dessous est insuffisant et l'espace au-dessus est suffisant
+    // positionne la dropdown vers le haut
+    if (spaceBelow < dropdownHeight && buttonRect.top > dropdownHeight) {
+      return 'top';
+    }
+    
+    // Par défaut, positionne vers le bas
+    return 'bottom';
+  }
+  
+  /**
+   * Bascule l'ouverture/fermeture du dropdown de favoris
+   * @param event L'événement de clic
+   * @param consultantId ID du consultant
+   */
+  toggleBookmarkDropdown(event: MouseEvent, consultantId: string): void {
+    event.stopPropagation();
+    
+    // Mise à jour de la liste des favoris
+    this.bookmarkLists = this.bookmarkService.getBookmarkLists();
+    
+    // Détermine si la dropdown doit être ouverte ou fermée
+    if (this.bookmarkDropdownOpen === consultantId) {
+      this.bookmarkDropdownOpen = null; // Fermer si déjà ouvert
+      this.isCreatingNewList = false;
+      this.newListName = '';
+    } else {
+      // Ouvrir pour ce consultant
+      this.bookmarkDropdownOpen = consultantId;
+      
+      // Ferme les autres menus pour éviter les conflits d'interface
+      this.mobileActionsOpen = null; // Ferme le menu d'actions mobile
+      this.activeDropdownId = null; // Ferme le menu des 3 points desktop
+      
+      // Calcule et applique la position exacte de la dropdown
+      setTimeout(() => {
+        const buttonElement = event.currentTarget as HTMLElement;
+        const buttonRect = buttonElement.getBoundingClientRect();
+        const dropdown = document.querySelector('.bookmark-dropdown') as HTMLElement;
+        
+        if (dropdown) {
+          // IMPORTANT: Positionnement vertical toujours en-dessous du bouton
+          dropdown.style.top = `${buttonRect.bottom + 5}px`; // +5px pour un petit espace
+          
+          // Aligner précisément le coin supérieur droit de la dropdown sous le coin inférieur droit du bouton
+          dropdown.style.left = `${buttonRect.right}px`;
+          dropdown.style.transform = 'translateX(-100%)'; // Décaler la dropdown de sa propre largeur vers la gauche
+          
+          // Forcer l'affichage vers le bas en vérifiant que la dropdown ne dépasse pas le haut de l'écran
+          const dropdownRect = dropdown.getBoundingClientRect();
+          if (dropdownRect.top < 10) { // Si la dropdown est trop haute (près du haut de l'écran)
+            dropdown.style.top = '10px'; // La placer avec une marge minimale en haut
+          }
+          
+          // Assurons-nous que la dropdown ne sort pas de l'écran à gauche
+          if (buttonRect.right - dropdown.offsetWidth < 10) {
+            dropdown.style.left = '10px'; // Marge minimale à gauche
+          }
+          
+          // S'assurer que la dropdown ne sort pas de l'écran à droite
+          const maxWidth = window.innerWidth - 20; // 20px de marge totale
+          dropdown.style.maxWidth = `${maxWidth}px`;
+          
+          // Log pour débogage
+          console.log("[ConsultantCard] Dropdown bookmark repositionnée", 
+            { top: dropdown.style.top, left: dropdown.style.left, buttonRight: buttonRect.right });
+        }
+      }, 0);
+    }
+  }
+  
+  /**
+   * Gestion de l'ajout ou du retrait d'un consultant d'une liste en fonction de l'état de la case à cocher
+   * @param listId ID de la liste de favoris
+   * @param event L'événement de changement de la case à cocher
+   */
+  toggleBookmarkList(listId: string, event: Event): void {
+    event.stopPropagation();
+    const checkbox = event.target as HTMLInputElement;
+    const isChecked = checkbox.checked;
+    
+    if (isChecked) {
+      // Ajouter le consultant à la liste sans afficher de notification
+      this.bookmarkService.addConsultantToList(listId, this.consultant.id);
+    } else {
+      // Retirer le consultant de la liste sans afficher de notification
+      this.bookmarkService.removeConsultantFromList(listId, this.consultant.id);
+    }
+  }
+  
+  /**
+   * Ajoute le consultant actuel à une liste de favoris existante (méthode maintenue pour compatibilité)
+   * @param listId ID de la liste de favoris
+   * @param event L'événement de clic
+   * @deprecated Utiliser toggleBookmarkList à la place
+   */
+  addToBookmarkList(listId: string, event: MouseEvent): void {
+    event.stopPropagation();
+    
+    // Ajouter sans notification
+    this.bookmarkService.addConsultantToList(listId, this.consultant.id);
+    
+    this.bookmarkDropdownOpen = null;
+  }
+  
+  /**
+   * Commence la création d'une nouvelle liste de favoris
+   * @param event L'événement de clic
+   */
+  startCreatingNewList(event: MouseEvent): void {
+    event.stopPropagation();
+    this.isCreatingNewList = true;
+    this.newListName = '';
+    // Focus sur le champ de texte avec un petit délai pour laisser le DOM se mettre à jour
+    setTimeout(() => {
+      const input = document.getElementById('new-list-input');
+      if (input) {
+        input.focus();
+      }
+    }, 50);
+  }
+  
+  /**
+   * Crée une nouvelle liste de favoris
+   * @param event L'événement de soumission
+   */
+  createNewBookmarkList(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    if (!this.newListName || this.newListName.trim() === '') {
+      return;
+    }
+    
+    // Créer la liste et ajouter le consultant sans notification
+    this.bookmarkService.createBookmarkList(this.newListName.trim(), this.consultant.id);
+    
+    this.isCreatingNewList = false;
+    this.newListName = '';
+    this.bookmarkDropdownOpen = null;
+  }
+  
+  /**
+   * Annule la création d'une nouvelle liste
+   * @param event L'événement de clic
+   */
+  cancelNewList(event: MouseEvent): void {
+    event.stopPropagation();
+    this.isCreatingNewList = false;
+    this.newListName = '';
+  }
+  
+  /**
+   * Affiche un message temporaire de statut de l'opération de bookmark
+   * @param message Le message à afficher
+   * @param isError Indique s'il s'agit d'une erreur (pour styliser différemment)
+   * @param duration Durée d'affichage en ms (par défaut 3000ms)
+   */
+  showBookmarkMessage(message: string, isError: boolean = false, duration: number = 3000): void {
+    // Notification désactivée selon demande
+    
+    // Efface le timeout précédent s'il existe
+    if (this.bookmarkMessageTimeout) {
+      clearTimeout(this.bookmarkMessageTimeout);
+    }
+    
+    // Définit un nouveau timeout pour effacer le message
+    this.bookmarkMessageTimeout = setTimeout(() => {
+      // Pas d'action nécessaire
+    }, duration);
+  }
+  
+  /**
+   * Calcule la position optimale pour la dropdown des favoris
+   * Position modifiée pour toujours afficher la dropdown en dessous du bouton bookmark
+   * @param buttonElement L'élément bouton qui a déclenché la dropdown
+   */
+  calculateBookmarkDropdownPosition(buttonElement: Element): void {
+    // Forcer l'affichage en bas (en dessous du bouton bookmark)
+    this.bookmarkDropdownPosition = 'bottom';
+    
+    // Log pour débogage
+    console.log("[ConsultantCard] Dropdown bookmark positionnée en dessous du bouton");
+  }
+  
+  /**
+   * Trouve le conteneur parent de la carte consultant
+   * @param element L'élément à partir duquel chercher
+   * @returns L'élément conteneur de la carte ou null
+   */
+  private findConsultantCardContainer(element: Element): Element | null {
+    // Parcourir les parents jusqu'à trouver la carte consultant (max 10 niveaux)
+    let currentElement: Element | null = element;
+    let depth = 0;
+    const maxDepth = 10;
+    
+    while (currentElement && depth < maxDepth) {
+      // Vérifier si c'est une carte consultant (par classe ou attribut)
+      if (currentElement.classList.contains('consultant-card') || 
+          currentElement.hasAttribute('data-consultant-card')) {
+        return currentElement;
+      }
+      
+      // Remonter au parent
+      currentElement = currentElement.parentElement;
+      depth++;
+    }
+    
+    // Pas trouvé
+    return null;
   }
 }

@@ -428,3 +428,134 @@
     position: relative;
   }
 }
+
+// Styles pour la fonctionnalité Bookmark
+.active-bookmark {
+  background-color: rgba(59, 130, 246, 0.1); // Bleu très léger
+}
+
+// Animation du message de bookmark
+.bookmark-message, .bookmark-message-desktop {
+  animation: fadeInOut 3s ease-in-out;
+  
+  &.text-green-600 {
+    background-color: rgba(16, 185, 129, 0.05); // Fond vert très léger
+  }
+  
+  &.text-red-600 {
+    background-color: rgba(239, 68, 68, 0.05); // Fond rouge très léger
+  }
+}
+
+// Style spécifique pour le message desktop
+.bookmark-message-desktop {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  opacity: 0.95;
+}
+
+// Style pour la dropdown des bookmarks
+.bookmark-dropdown {
+  position: fixed; // Utilisation de fixed pour sortir du flux du document et afficher par-dessus tout
+  z-index: 9999; // Valeur élevée pour s'assurer que la dropdown est au-dessus de tous les autres éléments
+  width: 16rem; // 256px - équivalent à w-64 en Tailwind
+  background-color: white;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 0.5rem;
+  transform-origin: top right; // Force l'animation à partir du coin supérieur droit
+  animation: fadeInDownFromTop 0.2s ease-out forwards; // Animation spécifique pour apparaître depuis le haut
+  
+  // Container pour les éléments de liste
+  .bookmark-list-container {
+    max-height: 160px; // Hauteur pour 4 éléments (environ 40px par élément)
+    overflow-y: auto; // Activer le défilement vertical si le contenu dépasse
+    scrollbar-width: thin; // Style de scrollbar plus fin pour Firefox
+    
+    // Style de scrollbar pour Chrome/Safari
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #c4c4c4;
+      border-radius: 3px;
+    }
+  }
+}
+
+// Animation de fondu pour les dropdowns
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// Animation spécifique pour faire apparaître depuis le haut vers le bas
+@keyframes fadeInDownFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) translateX(-100%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(-100%) scale(1);
+  }
+}
+
+// Style pour l'icône bookmark lorsqu'elle est activée
+.bookmark-icon.text-purple-600 {
+  transform: scale(1.1);
+}
+
+// Styles pour l'icône bookmark
+.bookmark-icon {
+  // L'élément span.material-icons qui change de couleur
+  transition: color 0.2s ease, transform 0.3s ease;
+  
+  &.text-purple-600 {
+    transform: scale(1.1); // Légère augmentation de taille quand actif
+  }
+}
+
+// Ajustement de taille des icônes sur les différentes vues
+@media (min-width: 768px) { // Desktop
+  .w-9.h-9 .material-icons {
+    font-size: 20px; // Taille standard sur desktop
+  }
+}
+
+@media (max-width: 767px) { // Mobile
+  .w-8.h-8 .material-icons {
+    font-size: 18px; // Légèrement plus petit sur mobile
+  }
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+}
