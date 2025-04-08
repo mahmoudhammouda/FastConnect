@@ -216,8 +216,11 @@
   &.show {
     display: block;
     animation: fadeIn 0.2s ease;
-    position: absolute;
+    position: fixed !important; /* Utilise fixed au lieu de absolute pour s'assurer d'être au-dessus de tout */
     overflow: visible;
+    max-height: 80vh; /* Limite la hauteur à 80% de la hauteur de la fenêtre */
+    width: auto; /* Ajuste la largeur automatiquement */
+    min-width: 200px; /* Largeur minimale */
   }
 }
 

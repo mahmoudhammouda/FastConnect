@@ -93,6 +93,42 @@ export class AlertListComponent implements OnInit, OnDestroy {
   private addDropdownListeners(): void {
     // Utilisation de HostListener pour gérer les clics document
     document.addEventListener('click', this.closeDropdownsOnClickOutside.bind(this));
+    
+    // Ajouter un écouteur pour le redimensionnement de la fenêtre
+    window.addEventListener('resize', this.handleWindowResize.bind(this));
+  }
+  
+  /**
+   * Gère le redimensionnement de la fenêtre
+   */
+  private handleWindowResize(): void {
+    // Repositionner les menus déroulants ouverts
+    if (this.experienceDropdownOpen) {
+      const dropdown = this.elementRef.nativeElement.querySelector('.custom-dropdown.experience');
+      const trigger = dropdown.querySelector('.dropdown-toggle');
+      const menu = dropdown.querySelector('.dropdown-menu');
+      if (trigger && menu) {
+        this.positionDropdownMenu(trigger, menu);
+      }
+    }
+    
+    if (this.locationDropdownOpen) {
+      const dropdown = this.elementRef.nativeElement.querySelector('.custom-dropdown.location');
+      const trigger = dropdown.querySelector('.dropdown-toggle');
+      const menu = dropdown.querySelector('.dropdown-menu');
+      if (trigger && menu) {
+        this.positionDropdownMenu(trigger, menu);
+      }
+    }
+    
+    if (this.skillsDropdownOpen) {
+      const dropdown = this.elementRef.nativeElement.querySelector('.custom-dropdown.skills');
+      const trigger = dropdown.querySelector('.dropdown-toggle');
+      const menu = dropdown.querySelector('.dropdown-menu');
+      if (trigger && menu) {
+        this.positionDropdownMenu(trigger, menu);
+      }
+    }
   }
   
   /**
@@ -116,6 +152,35 @@ export class AlertListComponent implements OnInit, OnDestroy {
     
     // Supprimer les écouteurs d'événements
     document.removeEventListener('click', this.closeDropdownsOnClickOutside.bind(this));
+    window.removeEventListener('resize', this.handleWindowResize.bind(this));
+  }
+  
+  /**
+   * Positionne le menu déroulant par rapport à son déclencheur
+   * @param trigger Élément déclencheur
+   * @param menu Menu déroulant à positionner
+   */
+  positionDropdownMenu(trigger: HTMLElement, menu: HTMLElement): void {
+    if (!trigger || !menu) return;
+    
+    // Obtenir les dimensions et la position du déclencheur
+    const triggerRect = trigger.getBoundingClientRect();
+    
+    // Définir la position du menu
+    menu.style.position = 'fixed';
+    menu.style.width = `${triggerRect.width}px`;
+    menu.style.top = `${triggerRect.bottom + window.scrollY + 5}px`; // Un peu d'espace
+    menu.style.left = `${triggerRect.left + window.scrollX}px`;
+    
+    // Vérifier si le menu dépasse en bas de l'écran
+    const menuHeight = menu.offsetHeight;
+    const viewportHeight = window.innerHeight;
+    const spaceBelow = viewportHeight - triggerRect.bottom;
+    
+    // Si l'espace en dessous est insuffisant, positionner au-dessus
+    if (menuHeight > spaceBelow) {
+      menu.style.top = `${triggerRect.top + window.scrollY - menuHeight - 5}px`;
+    }
   }
   
   /**
@@ -124,11 +189,19 @@ export class AlertListComponent implements OnInit, OnDestroy {
   toggleExperienceDropdown(event: Event): void {
     event.stopPropagation();
     this.experienceDropdownOpen = !this.experienceDropdownOpen;
+    
     if (this.experienceDropdownOpen) {
       this.locationDropdownOpen = false;
       this.skillsDropdownOpen = false;
       this.experienceSearchText = '';
       this.filteredExperienceOptions = [...this.experienceOptions];
+      
+      // Positionner le menu après qu'il soit rendu (setTimeout)
+      setTimeout(() => {
+        const trigger = event.currentTarget as HTMLElement;
+        const menu = trigger.nextElementSibling as HTMLElement;
+        this.positionDropdownMenu(trigger, menu);
+      });
     }
   }
   
@@ -138,11 +211,19 @@ export class AlertListComponent implements OnInit, OnDestroy {
   toggleLocationDropdown(event: Event): void {
     event.stopPropagation();
     this.locationDropdownOpen = !this.locationDropdownOpen;
+    
     if (this.locationDropdownOpen) {
       this.experienceDropdownOpen = false;
       this.skillsDropdownOpen = false;
       this.locationSearchText = '';
       this.filteredLocationOptions = [...this.locationOptions];
+      
+      // Positionner le menu après qu'il soit rendu (setTimeout)
+      setTimeout(() => {
+        const trigger = event.currentTarget as HTMLElement;
+        const menu = trigger.nextElementSibling as HTMLElement;
+        this.positionDropdownMenu(trigger, menu);
+      });
     }
   }
   
@@ -152,11 +233,19 @@ export class AlertListComponent implements OnInit, OnDestroy {
   toggleSkillsDropdown(event: Event): void {
     event.stopPropagation();
     this.skillsDropdownOpen = !this.skillsDropdownOpen;
+    
     if (this.skillsDropdownOpen) {
       this.experienceDropdownOpen = false;
       this.locationDropdownOpen = false;
       this.skillsSearchText = '';
       this.filteredSkillOptions = [...this.skillOptions];
+      
+      // Positionner le menu après qu'il soit rendu (setTimeout)
+      setTimeout(() => {
+        const trigger = event.currentTarget as HTMLElement;
+        const menu = trigger.nextElementSibling as HTMLElement;
+        this.positionDropdownMenu(trigger, menu);
+      });
     }
   }
   
