@@ -69,28 +69,88 @@
       
       <!-- Critères - Rangée 2 -->
       <div class="form-row">
-        <!-- Localisation -->
+        <!-- Localisation - Custom Dropdown -->
         <div class="form-col">
           <label class="block text-xs font-medium text-gray-600 mb-1">Localisation</label>
-          <select 
-            [(ngModel)]="tempLocation"
-            (change)="updateSelection('location', $event)"
-            multiple
-            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
-            <option *ngFor="let loc of locationOptions" [value]="loc">{{ loc }}</option>
-          </select>
+          <div class="custom-dropdown">
+            <button 
+              type="button"
+              class="dropdown-toggle" 
+              [class.active]="locationDropdownOpen"
+              (click)="toggleLocationDropdown($event)">
+              <span>{{ getLocationDisplayText() }}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            
+            <div class="dropdown-menu" [class.show]="locationDropdownOpen">
+              <div class="px-3 pt-2">
+                <input 
+                  type="text" 
+                  class="search-input"
+                  placeholder="Rechercher une localisation..."
+                  (input)="filterLocationOptions($event)"
+                  (click)="stopPropagation($event)">
+              </div>
+              
+              <div *ngFor="let location of filteredLocationOptions" 
+                   class="dropdown-item" 
+                   (click)="toggleLocationOption(location, $event)">
+                <input 
+                  type="checkbox" 
+                  [checked]="tempLocation.includes(location)" 
+                  (click)="stopPropagation($event)">
+                <span>{{ location }}</span>
+              </div>
+              
+              <div *ngIf="filteredLocationOptions.length === 0" class="p-3 text-center text-gray-500 text-sm">
+                Aucun résultat pour "{{ locationSearchText }}"
+              </div>
+            </div>
+          </div>
         </div>
         
-        <!-- Compétences -->
+        <!-- Compétences - Custom Dropdown -->
         <div class="form-col">
           <label class="block text-xs font-medium text-gray-600 mb-1">Compétences</label>
-          <select 
-            [(ngModel)]="tempSkills"
-            (change)="updateSelection('skills', $event)"
-            multiple
-            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
-            <option *ngFor="let skill of skillOptions" [value]="skill">{{ skill }}</option>
-          </select>
+          <div class="custom-dropdown">
+            <button 
+              type="button"
+              class="dropdown-toggle" 
+              [class.active]="skillsDropdownOpen"
+              (click)="toggleSkillsDropdown($event)">
+              <span>{{ getSkillsDisplayText() }}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            
+            <div class="dropdown-menu" [class.show]="skillsDropdownOpen">
+              <div class="px-3 pt-2">
+                <input 
+                  type="text" 
+                  class="search-input"
+                  placeholder="Rechercher une compétence..."
+                  (input)="filterSkillOptions($event)"
+                  (click)="stopPropagation($event)">
+              </div>
+              
+              <div *ngFor="let skill of filteredSkillOptions" 
+                   class="dropdown-item" 
+                   (click)="toggleSkillOption(skill, $event)">
+                <input 
+                  type="checkbox" 
+                  [checked]="tempSkills.includes(skill)" 
+                  (click)="stopPropagation($event)">
+                <span>{{ skill }}</span>
+              </div>
+              
+              <div *ngIf="filteredSkillOptions.length === 0" class="p-3 text-center text-gray-500 text-sm">
+                Aucun résultat pour "{{ skillsSearchText }}"
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       
@@ -233,32 +293,88 @@
         
         <!-- Critères - Rangée 2 -->
         <div class="form-row">
-          <!-- Localisation -->
+          <!-- Localisation - Custom Dropdown -->
           <div class="form-col">
             <label class="block text-xs font-medium text-gray-600 mb-1">Localisation</label>
-            <div class="option-grid">
-              <label *ngFor="let loc of locationOptions" class="option-item" [class.selected]="tempLocation.includes(loc)">
-                <input 
-                  type="checkbox" 
-                  [value]="loc" 
-                  [checked]="tempLocation.includes(loc)"
-                  (change)="toggleOption('location', loc)"
-                  class="mr-2">
-                {{ loc }}
-              </label>
+            <div class="custom-dropdown">
+              <button 
+                type="button"
+                class="dropdown-toggle" 
+                [class.active]="locationDropdownOpen"
+                (click)="toggleLocationDropdown($event)">
+                <span>{{ getLocationDisplayText() }}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              <div class="dropdown-menu" [class.show]="locationDropdownOpen">
+                <div class="px-3 pt-2">
+                  <input 
+                    type="text" 
+                    class="search-input"
+                    placeholder="Rechercher une localisation..."
+                    (input)="filterLocationOptions($event)"
+                    (click)="stopPropagation($event)">
+                </div>
+                
+                <div *ngFor="let location of filteredLocationOptions" 
+                    class="dropdown-item" 
+                    (click)="toggleLocationOption(location, $event)">
+                  <input 
+                    type="checkbox" 
+                    [checked]="tempLocation.includes(location)" 
+                    (click)="stopPropagation($event)">
+                  <span>{{ location }}</span>
+                </div>
+                
+                <div *ngIf="filteredLocationOptions.length === 0" class="p-3 text-center text-gray-500 text-sm">
+                  Aucun résultat pour "{{ locationSearchText }}"
+                </div>
+              </div>
             </div>
           </div>
           
-          <!-- Compétences - Utilisez un select multiple car il y a beaucoup d'options -->
+          <!-- Compétences - Custom Dropdown -->
           <div class="form-col">
             <label class="block text-xs font-medium text-gray-600 mb-1">Compétences</label>
-            <select 
-              [(ngModel)]="tempSkills"
-              (change)="updateSelection('skills', $event)"
-              multiple
-              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
-              <option *ngFor="let skill of skillOptions" [value]="skill">{{ skill }}</option>
-            </select>
+            <div class="custom-dropdown">
+              <button 
+                type="button"
+                class="dropdown-toggle" 
+                [class.active]="skillsDropdownOpen"
+                (click)="toggleSkillsDropdown($event)">
+                <span>{{ getSkillsDisplayText() }}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              <div class="dropdown-menu" [class.show]="skillsDropdownOpen">
+                <div class="px-3 pt-2">
+                  <input 
+                    type="text" 
+                    class="search-input"
+                    placeholder="Rechercher une compétence..."
+                    (input)="filterSkillOptions($event)"
+                    (click)="stopPropagation($event)">
+                </div>
+                
+                <div *ngFor="let skill of filteredSkillOptions" 
+                    class="dropdown-item" 
+                    (click)="toggleSkillOption(skill, $event)">
+                  <input 
+                    type="checkbox" 
+                    [checked]="tempSkills.includes(skill)" 
+                    (click)="stopPropagation($event)">
+                  <span>{{ skill }}</span>
+                </div>
+                
+                <div *ngIf="filteredSkillOptions.length === 0" class="p-3 text-center text-gray-500 text-sm">
+                  Aucun résultat pour "{{ skillsSearchText }}"
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -47,12 +47,23 @@ export class AlertListComponent implements OnInit, OnDestroy {
   locationOptions: string[] = ['Paris', 'Lyon', 'Marseille', 'Bordeaux', 'Lille', 'Remote'];
   skillOptions: string[] = ['JavaScript', 'Python', 'Java', 'C#', 'React', 'Angular', 'Vue.js', 'Node.js', 'Express', 'Django', 'Flask', 'Spring', 'ASP.NET', 'Machine Learning', 'Deep Learning', 'NLP', 'Computer Vision', 'Data Science', 'TensorFlow', 'PyTorch', 'SQL', 'NoSQL', 'MongoDB', 'PostgreSQL', 'DevOps', 'Docker', 'Kubernetes', 'AWS', 'Azure', 'GCP'];
   
+  // États pour les dropdowns personnalisés
+  locationDropdownOpen: boolean = false;
+  skillsDropdownOpen: boolean = false;
+  locationSearchText: string = '';
+  skillsSearchText: string = '';
+  
+  // Listes filtrées pour la recherche
+  filteredLocationOptions: string[] = [];
+  filteredSkillOptions: string[] = [];
+  
   // Subscription
   private subscription: Subscription = new Subscription();
   
   constructor(
     private alertService: AlertService,
-    private router: Router
+    private router: Router,
+    private elementRef: ElementRef
   ) {}
   
   ngOnInit(): void {
@@ -63,11 +74,137 @@ export class AlertListComponent implements OnInit, OnDestroy {
         this.selectedAlertId = state.selectedAlertId;
       })
     );
+    
+    // Initialiser les listes filtrées
+    this.filteredLocationOptions = [...this.locationOptions];
+    this.filteredSkillOptions = [...this.skillOptions];
+    
+    // Gestion des clics à l'extérieur des dropdowns pour les fermer
+    this.addDropdownListeners();
+  }
+  
+  /**
+   * Ajoute des écouteurs d'événements pour gérer les clics en dehors des dropdowns
+   */
+  private addDropdownListeners(): void {
+    // Utilisation de HostListener pour gérer les clics document
+    document.addEventListener('click', this.closeDropdownsOnClickOutside.bind(this));
+  }
+  
+  /**
+   * Ferme les dropdowns si on clique en dehors
+   */
+  private closeDropdownsOnClickOutside(event: MouseEvent): void {
+    if (this.locationDropdownOpen || this.skillsDropdownOpen) {
+      const target = event.target as HTMLElement;
+      if (!this.elementRef.nativeElement.contains(target) || 
+          !target.closest('.custom-dropdown')) {
+        this.locationDropdownOpen = false;
+        this.skillsDropdownOpen = false;
+      }
+    }
   }
   
   ngOnDestroy(): void {
     // Nettoyer les abonnements
     this.subscription.unsubscribe();
+    
+    // Supprimer les écouteurs d'événements
+    document.removeEventListener('click', this.closeDropdownsOnClickOutside.bind(this));
+  }
+  
+  /**
+   * Ouvre ou ferme le dropdown de localisation
+   */
+  toggleLocationDropdown(event: Event): void {
+    event.stopPropagation();
+    this.locationDropdownOpen = !this.locationDropdownOpen;
+    if (this.locationDropdownOpen) {
+      this.skillsDropdownOpen = false;  // Ferme l'autre dropdown
+      this.locationSearchText = '';
+      this.filteredLocationOptions = [...this.locationOptions];
+    }
+  }
+  
+  /**
+   * Ouvre ou ferme le dropdown de compétences
+   */
+  toggleSkillsDropdown(event: Event): void {
+    event.stopPropagation();
+    this.skillsDropdownOpen = !this.skillsDropdownOpen;
+    if (this.skillsDropdownOpen) {
+      this.locationDropdownOpen = false;  // Ferme l'autre dropdown
+      this.skillsSearchText = '';
+      this.filteredSkillOptions = [...this.skillOptions];
+    }
+  }
+  
+  /**
+   * Filtre les options de localisation selon le texte de recherche
+   */
+  filterLocationOptions(event: Event): void {
+    const searchText = (event.target as HTMLInputElement).value.toLowerCase();
+    this.locationSearchText = searchText;
+    this.filteredLocationOptions = this.locationOptions.filter(
+      loc => loc.toLowerCase().includes(searchText)
+    );
+  }
+  
+  /**
+   * Filtre les options de compétences selon le texte de recherche
+   */
+  filterSkillOptions(event: Event): void {
+    const searchText = (event.target as HTMLInputElement).value.toLowerCase();
+    this.skillsSearchText = searchText;
+    this.filteredSkillOptions = this.skillOptions.filter(
+      skill => skill.toLowerCase().includes(searchText)
+    );
+  }
+  
+  /**
+   * Bascule la sélection d'une option de localisation
+   */
+  toggleLocationOption(location: string, event: Event): void {
+    event.stopPropagation();
+    const index = this.tempLocation.indexOf(location);
+    if (index === -1) {
+      this.tempLocation.push(location);
+    } else {
+      this.tempLocation.splice(index, 1);
+    }
+    this.updateSelection('location', null);
+  }
+  
+  /**
+   * Bascule la sélection d'une option de compétence
+   */
+  toggleSkillOption(skill: string, event: Event): void {
+    event.stopPropagation();
+    const index = this.tempSkills.indexOf(skill);
+    if (index === -1) {
+      this.tempSkills.push(skill);
+    } else {
+      this.tempSkills.splice(index, 1);
+    }
+    this.updateSelection('skills', null);
+  }
+  
+  /**
+   * Obtient le texte à afficher dans le bouton de dropdown de localisation
+   */
+  getLocationDisplayText(): string {
+    return this.tempLocation.length > 0 
+      ? `${this.tempLocation.length} localisation${this.tempLocation.length > 1 ? 's' : ''} sélectionnée${this.tempLocation.length > 1 ? 's' : ''}`
+      : 'Sélectionner des localisations';
+  }
+  
+  /**
+   * Obtient le texte à afficher dans le bouton de dropdown de compétences
+   */
+  getSkillsDisplayText(): string {
+    return this.tempSkills.length > 0
+      ? `${this.tempSkills.length} compétence${this.tempSkills.length > 1 ? 's' : ''} sélectionnée${this.tempSkills.length > 1 ? 's' : ''}`
+      : 'Sélectionner des compétences';
   }
   
   /**

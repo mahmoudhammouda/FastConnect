@@ -1,6 +1,8 @@
+/* Styles pour les listes de favoris */
 .bookmark-lists-container {
   max-height: 80vh;
   overflow-y: auto;
+  padding: 1rem;
   
   /* Style pour la barre de défilement */
   &::-webkit-scrollbar {
@@ -19,5 +21,156 @@
   
   &::-webkit-scrollbar-thumb:hover {
     background: #555;
+  }
+}
+
+.bookmark-item {
+  margin-bottom: 0.75rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  &.selected {
+    border-left: 4px solid #3b82f6;
+  }
+}
+
+.bookmark-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  cursor: pointer;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.bookmark-description {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+/* Formulaire de création/édition de liste - Style collapsable */
+.bookmark-form-collapsable {
+  width: 100%;
+  margin-bottom: 1rem;
+  transform-origin: top;
+  animation: slideDown 0.3s ease-out forwards;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  
+  &.exit {
+    animation: slideUp 0.3s ease-in forwards;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: scaleY(0);
+    max-height: 0;
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1);
+    max-height: 800px;
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: scaleY(1);
+    max-height: 800px;
+    opacity: 1;
+  }
+  to {
+    transform: scaleY(0);
+    max-height: 0;
+    opacity: 0;
+  }
+}
+
+/* Badge pour les nouveaux consultants */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  border-radius: 9999px;
+  color: white;
+  
+  &.badge-red {
+    background-color: #ef4444;
+  }
+}
+
+/* Position du badge */
+.badge-container {
+  position: relative;
+}
+
+.badge-notification {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+}
+
+/* Utilitaires */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  outline: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  
+  &:focus {
+    outline: none;
+  }
+  
+  &.button-primary {
+    background-color: #3b82f6;
+    color: white;
+    
+    &:hover {
+      background-color: #2563eb;
+    }
+  }
+  
+  &.button-secondary {
+    background-color: #f3f4f6;
+    color: #1f2937;
+    
+    &:hover {
+      background-color: #e5e7eb;
+    }
+  }
+}
+
+.button-icon {
+  padding: 0.375rem;
+  border-radius: 9999px;
+  outline: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  
+  &:focus {
+    outline: none;
   }
 }
