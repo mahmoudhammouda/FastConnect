@@ -35,6 +35,12 @@ export class AlertListComponent implements OnInit, OnDestroy {
     skills: [] as string[]
   };
   
+  // Variables temporaires pour les sélections multiples
+  tempExperience: string[] = [];
+  tempAvailability: string[] = [];
+  tempLocation: string[] = []; 
+  tempSkills: string[] = [];
+  
   // Options pour les champs de sélection
   experienceOptions: string[] = ['Moins de 3 ans', '3-5 ans', '5-10 ans', '10+ ans'];
   availabilityOptions: string[] = ['Disponible maintenant', 'Disponible dans 15 jours', 'Disponible dans 30 jours', 'Disponible dans 60 jours'];
@@ -90,6 +96,12 @@ export class AlertListComponent implements OnInit, OnDestroy {
       location: [],
       skills: []
     };
+    
+    // Réinitialiser également les variables temporaires
+    this.tempExperience = [];
+    this.tempAvailability = [];
+    this.tempLocation = [];
+    this.tempSkills = [];
   }
   
   /**
@@ -135,6 +147,12 @@ export class AlertListComponent implements OnInit, OnDestroy {
       location: [...alert.criteria.location],
       skills: [...alert.criteria.skills]
     };
+    
+    // Initialiser les variables temporaires pour les select multiples
+    this.tempExperience = [...alert.criteria.experience];
+    this.tempAvailability = [...alert.criteria.availability];
+    this.tempLocation = [...alert.criteria.location];
+    this.tempSkills = [...alert.criteria.skills];
     
     this.editingAlertId = alert.id;
     this.showNewAlertForm = true;
@@ -244,6 +262,28 @@ export class AlertListComponent implements OnInit, OnDestroy {
       array.push(value);
     } else {
       array.splice(index, 1);
+    }
+  }
+  
+  /**
+   * Met à jour les tableaux de sélection depuis les select multiple
+   * @param type Type de critère à mettre à jour
+   * @param event Événement de changement
+   */
+  updateSelection(type: string, event: any): void {
+    switch(type) {
+      case 'experience':
+        this.newAlertForm.experience = [...this.tempExperience];
+        break;
+      case 'availability':
+        this.newAlertForm.availability = [...this.tempAvailability];
+        break;
+      case 'location':
+        this.newAlertForm.location = [...this.tempLocation];
+        break;
+      case 'skills':
+        this.newAlertForm.skills = [...this.tempSkills];
+        break;
     }
   }
   
