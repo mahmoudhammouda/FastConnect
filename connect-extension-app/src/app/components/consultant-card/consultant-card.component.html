@@ -109,9 +109,7 @@
             
             <!-- Dropdown pour les favoris (desktop) -->
             <div *ngIf="bookmarkDropdownOpen === consultant.id" 
-                 class="bookmark-dropdown"
-                 [class.dropdown-bottom]="bookmarkDropdownPosition === 'bottom'"
-                 [class.dropdown-top]="bookmarkDropdownPosition === 'top'"
+                 class="bookmark-dropdown dropdown-top"
                  (click)="$event.stopPropagation()">
                  
               <!-- En-tête de la dropdown -->
@@ -370,9 +368,7 @@
         
         <!-- Dropdown pour les favoris -->
         <div *ngIf="bookmarkDropdownOpen === consultant.id" 
-             class="bookmark-dropdown"
-             [class.dropdown-bottom]="bookmarkDropdownPosition === 'bottom'"
-             [class.dropdown-top]="bookmarkDropdownPosition === 'top'"
+             class="bookmark-dropdown dropdown-top"
              (click)="$event.stopPropagation()">
              
           <!-- En-tête de la dropdown -->
