@@ -213,10 +213,48 @@ export class BookmarkListsComponent implements OnInit, OnDestroy {
   viewConsultants(listId: string, event: Event): void {
     event.stopPropagation();
     
+    // Réinitialiser le compteur de nouveaux consultants
+    this.bookmarkService.resetNewConsultantCount(listId);
+    
     // Sélectionner la liste
     this.bookmarkService.selectList(listId);
     
     // Naviguer vers la page des consultants
     this.router.navigate(['/']);
+  }
+  
+  /**
+   * Active ou désactive les notifications pour une liste
+   * @param listId Identifiant de la liste
+   * @param event Événement de clic
+   */
+  toggleNotifications(listId: string, event: Event): void {
+    event.stopPropagation();
+    
+    const list = this.bookmarkLists.find(l => l.id === listId);
+    if (!list) return;
+    
+    // Inverser l'état des notifications
+    this.bookmarkService.toggleNotifications(listId, !list.notificationsEnabled);
+  }
+  
+  /**
+   * Vérifie si une liste a de nouveaux consultants
+   * @param listId Identifiant de la liste
+   * @returns Vrai si la liste a de nouveaux consultants, faux sinon
+   */
+  hasNewConsultants(listId: string): boolean {
+    const list = this.bookmarkLists.find(l => l.id === listId);
+    return list ? list.newConsultantCount > 0 : false;
+  }
+  
+  /**
+   * Obtient le nombre de nouveaux consultants dans une liste
+   * @param listId Identifiant de la liste
+   * @returns Nombre de nouveaux consultants
+   */
+  getNewConsultantCount(listId: string): number {
+    const list = this.bookmarkLists.find(l => l.id === listId);
+    return list ? list.newConsultantCount : 0;
   }
 }

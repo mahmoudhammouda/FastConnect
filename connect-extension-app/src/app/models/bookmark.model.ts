@@ -7,6 +7,9 @@ export interface BookmarkList {
   consultantIds: string[];
   createdAt: Date;
   updatedAt: Date;
+  notificationsEnabled: boolean;
+  newConsultantCount: number;
+  lastViewedAt: Date | null;
 }
 
 /**

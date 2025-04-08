@@ -100,7 +100,10 @@ export class BookmarkService {
       name: name,
       consultantIds: initialConsultantId ? [initialConsultantId] : [],
       createdAt: new Date(),
-      updatedAt: new Date()
+      updatedAt: new Date(),
+      notificationsEnabled: false,
+      newConsultantCount: 0,
+      lastViewedAt: null
     };
     
     const currentState = this.getCurrentState();
@@ -205,9 +208,12 @@ export class BookmarkService {
     }
     
     const updatedLists = [...currentState.lists];
+    const newConsultantCount = list.notificationsEnabled ? list.newConsultantCount + 1 : list.newConsultantCount;
+    
     updatedLists[listIndex] = {
       ...list,
       consultantIds: [...list.consultantIds, consultantId],
+      newConsultantCount: newConsultantCount,
       updatedAt: new Date()
     };
     
@@ -220,6 +226,9 @@ export class BookmarkService {
     this.saveToStorage();
     
     console.log(`[BookmarkService] Consultant ${consultantId} ajouté à la liste ${listId}`);
+    if (list.notificationsEnabled) {
+      console.log(`[BookmarkService] Compteur de nouveaux consultants incrémenté pour la liste ${listId}`);
+    }
     return true;
   }
   
@@ -321,7 +330,11 @@ export class BookmarkService {
         const listsWithDates = parsedState.lists.map((list: any) => ({
           ...list,
           createdAt: new Date(list.createdAt),
-          updatedAt: new Date(list.updatedAt)
+          updatedAt: new Date(list.updatedAt),
+          lastViewedAt: list.lastViewedAt ? new Date(list.lastViewedAt) : null,
+          // Ajouter les nouvelles propriétés si elles n'existent pas
+          notificationsEnabled: list.notificationsEnabled !== undefined ? list.notificationsEnabled : false,
+          newConsultantCount: list.newConsultantCount !== undefined ? list.newConsultantCount : 0
         }));
         
         const loadedState: BookmarkState = {
@@ -341,6 +354,142 @@ export class BookmarkService {
     }
   }
   
+  /**
+   * Active ou désactive les notifications pour une liste
+   * @param listId Identifiant de la liste
+   * @param enabled Nouvel état des notifications (true = activées, false = désactivées)
+   * @returns true si l'opération a réussi, false sinon
+   */
+  toggleNotifications(listId: string, enabled: boolean): boolean {
+    const currentState = this.getCurrentState();
+    const listIndex = currentState.lists.findIndex(list => list.id === listId);
+    
+    if (listIndex === -1) {
+      console.warn(`[BookmarkService] Tentative de modifier les notifications d'une liste inexistante: ${listId}`);
+      return false;
+    }
+    
+    const list = currentState.lists[listIndex];
+    
+    // Si l'état est déjà celui demandé, ne rien faire
+    if (list.notificationsEnabled === enabled) {
+      return true;
+    }
+    
+    const updatedLists = [...currentState.lists];
+    updatedLists[listIndex] = {
+      ...list,
+      notificationsEnabled: enabled,
+      updatedAt: new Date()
+    };
+    
+    const newState: BookmarkState = {
+      ...currentState,
+      lists: updatedLists
+    };
+    
+    this.bookmarkState.next(newState);
+    this.saveToStorage();
+    
+    console.log(`[BookmarkService] Notifications ${enabled ? 'activées' : 'désactivées'} pour la liste ${listId}`);
+    return true;
+  }
+  
+  /**
+   * Incrémente le compteur de nouveaux consultants pour une liste
+   * @param listId Identifiant de la liste
+   * @returns true si l'opération a réussi, false sinon
+   */
+  incrementNewConsultantCount(listId: string): boolean {
+    const currentState = this.getCurrentState();
+    const listIndex = currentState.lists.findIndex(list => list.id === listId);
+    
+    if (listIndex === -1) {
+      console.warn(`[BookmarkService] Tentative d'incrémenter le compteur d'une liste inexistante: ${listId}`);
+      return false;
+    }
+    
+    const list = currentState.lists[listIndex];
+    
+    // N'incrémenter que si les notifications sont activées
+    if (!list.notificationsEnabled) {
+      return false;
+    }
+    
+    const updatedLists = [...currentState.lists];
+    updatedLists[listIndex] = {
+      ...list,
+      newConsultantCount: list.newConsultantCount + 1,
+      updatedAt: new Date()
+    };
+    
+    const newState: BookmarkState = {
+      ...currentState,
+      lists: updatedLists
+    };
+    
+    this.bookmarkState.next(newState);
+    this.saveToStorage();
+    
+    console.log(`[BookmarkService] Compteur de nouveaux consultants incrémenté pour la liste ${listId}`);
+    return true;
+  }
+  
+  /**
+   * Réinitialise le compteur de nouveaux consultants pour une liste
+   * et met à jour la date de dernière consultation
+   * @param listId Identifiant de la liste
+   * @returns true si l'opération a réussi, false sinon
+   */
+  resetNewConsultantCount(listId: string): boolean {
+    const currentState = this.getCurrentState();
+    const listIndex = currentState.lists.findIndex(list => list.id === listId);
+    
+    if (listIndex === -1) {
+      console.warn(`[BookmarkService] Tentative de réinitialiser le compteur d'une liste inexistante: ${listId}`);
+      return false;
+    }
+    
+    const list = currentState.lists[listIndex];
+    
+    // Si le compteur est déjà à 0, mettre à jour uniquement la date de dernière consultation
+    if (list.newConsultantCount === 0) {
+      const updatedLists = [...currentState.lists];
+      updatedLists[listIndex] = {
+        ...list,
+        lastViewedAt: new Date()
+      };
+      
+      const newState: BookmarkState = {
+        ...currentState,
+        lists: updatedLists
+      };
+      
+      this.bookmarkState.next(newState);
+      this.saveToStorage();
+      
+      return true;
+    }
+    
+    const updatedLists = [...currentState.lists];
+    updatedLists[listIndex] = {
+      ...list,
+      newConsultantCount: 0,
+      lastViewedAt: new Date()
+    };
+    
+    const newState: BookmarkState = {
+      ...currentState,
+      lists: updatedLists
+    };
+    
+    this.bookmarkState.next(newState);
+    this.saveToStorage();
+    
+    console.log(`[BookmarkService] Compteur de nouveaux consultants réinitialisé pour la liste ${listId}`);
+    return true;
+  }
+
   /**
    * Réinitialise toutes les listes de favoris (pour le débogage)
    */
