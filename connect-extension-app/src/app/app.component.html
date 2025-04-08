@@ -109,6 +109,18 @@
               >
                 Mon profil consultant
               </a>
+
+              <!-- Lien vers les favoris -->
+              <a 
+                routerLink="/bookmarks" 
+                class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
+                (click)="toggleMenu()"
+              >
+                <div class="flex items-center">
+                  <span class="material-icons text-purple-600 mr-2 text-sm">bookmark</span>
+                  Mes listes de favoris
+                </div>
+              </a>
               
               <div class="border-t border-gray-100 my-1"></div>
               <button 
