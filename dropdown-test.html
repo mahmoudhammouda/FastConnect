@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test des Dropdowns</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .dropdown-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .dropdown-toggle {
+      padding: 10px;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      width: 200px;
+    }
+    .dropdown-menu {
+      position: absolute;
+      background-color: white;
+      border: 1px solid #ccc;
+      width: 200px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 10000;
+      display: none;
+    }
+    .dropdown-menu.show {
+      display: block;
+    }
+    .dropdown-item {
+      padding: 8px 10px;
+      cursor: pointer;
+    }
+    .dropdown-item:hover {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Test des Menus Déroulants Position:absolute</h1>
+  
+  <div class="dropdown-container" id="dropdown1">
+    <button class="dropdown-toggle">Expérience</button>
+    <div class="dropdown-menu">
+      <div class="dropdown-item">Moins de 3 ans</div>
+      <div class="dropdown-item">3-5 ans</div>
+      <div class="dropdown-item">5-10 ans</div>
+      <div class="dropdown-item">10+ ans</div>
+    </div>
+  </div>
+  
+  <div class="dropdown-container" id="dropdown2">
+    <button class="dropdown-toggle">Localisation</button>
+    <div class="dropdown-menu">
+      <div class="dropdown-item">Paris</div>
+      <div class="dropdown-item">Lyon</div>
+      <div class="dropdown-item">Marseille</div>
+      <div class="dropdown-item">Bordeaux</div>
+      <div class="dropdown-item">Lille</div>
+      <div class="dropdown-item">Remote</div>
+    </div>
+  </div>
+  
+  <div class="dropdown-container" id="dropdown3">
+    <button class="dropdown-toggle">Compétences</button>
+    <div class="dropdown-menu">
+      <div class="dropdown-item">JavaScript</div>
+      <div class="dropdown-item">Python</div>
+      <div class="dropdown-item">Java</div>
+      <div class="dropdown-item">C#</div>
+      <div class="dropdown-item">React</div>
+      <div class="dropdown-item">Angular</div>
+      <div class="dropdown-item">Vue.js</div>
+      <div class="dropdown-item">Node.js</div>
+    </div>
+  </div>
+  
+  <script>
+    // Position les menus déroulants lors du clic sur les boutons
+    document.querySelectorAll('.dropdown-toggle').forEach(toggle => {
+      toggle.addEventListener('click', function(event) {
+        const container = this.parentElement;
+        const menu = container.querySelector('.dropdown-menu');
+        
+        // Fermer tous les autres menus
+        document.querySelectorAll('.dropdown-menu.show').forEach(openMenu => {
+          if (openMenu !== menu) {
+            openMenu.classList.remove('show');
+          }
+        });
+        
+        // Basculer l'affichage du menu actuel
+        menu.classList.toggle('show');
+        
+        if (menu.classList.contains('show')) {
+          // Utiliser positioning absolute relatif au parent
+          menu.style.position = 'absolute';
+          menu.style.left = '0';
+          menu.style.top = '100%';
+          menu.style.marginTop = '5px';
+          
+          console.log('Menu positionné:', {
+            position: menu.style.position,
+            left: menu.style.left,
+            top: menu.style.top,
+            marginTop: menu.style.marginTop
+          });
+        }
+      });
+    });
+    
+    // Fermer les menus si on clique ailleurs
+    document.addEventListener('click', function(event) {
+      if (!event.target.closest('.dropdown-container')) {
+        document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+          menu.classList.remove('show');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

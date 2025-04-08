@@ -217,7 +217,7 @@
 }
 
 .dropdown-menu {
-  position: fixed !important; /* Toujours fixed pour être au-dessus de tout */
+  position: absolute; /* Position absolue au lieu de fixed */
   z-index: 10000 !important; /* Z-index extrêmement élevé */
   width: 100%;
   max-height: 250px;
@@ -242,7 +242,7 @@
   &.location-menu,
   &.skills-menu {
     z-index: 10000 !important; /* Z-index extrêmement élevé pour ces menus spécifiques */
-    position: fixed !important; /* Toujours en position fixed */
+    position: absolute; /* Position absolue au lieu de fixed */
     background-color: white; 
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Ombre très prononcée */
     border-radius: 0.5rem;

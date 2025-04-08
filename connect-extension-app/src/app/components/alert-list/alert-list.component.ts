@@ -206,24 +206,25 @@ export class AlertListComponent implements OnInit, OnDestroy {
         const menu = dropdown.querySelector('.dropdown-menu.experience-menu');
         
         if (trigger && menu) {
-          // Obtenir les coordonnées exactes du bouton déclencheur
+          // Obtenir les coordonnées exactes du bouton déclencheur pour référence
           const rect = trigger.getBoundingClientRect();
           
-          // Positionner précisément le menu directement sous le bouton
-          menu.style.position = 'fixed';
-          menu.style.width = `${rect.width}px`;
-          menu.style.left = `${rect.left}px`;
-          menu.style.top = `${rect.bottom + 5}px`;
+          // Positionner le menu en utilisant position absolute
+          menu.style.position = 'absolute';
+          menu.style.width = `${trigger.offsetWidth}px`;
+          menu.style.left = '0'; // Aligné à gauche du parent
+          menu.style.top = '100%'; // Juste en dessous du parent
+          menu.style.marginTop = '5px'; // Petit espace entre le bouton et le menu
           menu.style.zIndex = '10000';
           menu.style.display = 'block';
           
           // Ajouter un log visuel pour le débogage
           console.log('Position du menu d\'expérience:', {
-            triggerLeft: rect.left,
-            triggerBottom: rect.bottom,
-            menuLeft: menu.style.left,
-            menuTop: menu.style.top,
-            menuWidth: menu.style.width
+            width: menu.style.width,
+            position: menu.style.position,
+            left: menu.style.left,
+            top: menu.style.top,
+            marginTop: menu.style.marginTop
           });
         }
       }, 0);
@@ -250,24 +251,25 @@ export class AlertListComponent implements OnInit, OnDestroy {
         const menu = dropdown.querySelector('.dropdown-menu.location-menu');
         
         if (trigger && menu) {
-          // Obtenir les coordonnées exactes du bouton déclencheur
+          // Obtenir les coordonnées exactes du bouton déclencheur pour référence
           const rect = trigger.getBoundingClientRect();
           
-          // Positionner précisément le menu directement sous le bouton
-          menu.style.position = 'fixed';
-          menu.style.width = `${rect.width}px`;
-          menu.style.left = `${rect.left}px`;
-          menu.style.top = `${rect.bottom + 5}px`;
+          // Positionner le menu en utilisant position absolute
+          menu.style.position = 'absolute';
+          menu.style.width = `${trigger.offsetWidth}px`;
+          menu.style.left = '0'; // Aligné à gauche du parent
+          menu.style.top = '100%'; // Juste en dessous du parent
+          menu.style.marginTop = '5px'; // Petit espace entre le bouton et le menu
           menu.style.zIndex = '10000';
           menu.style.display = 'block';
           
           // Ajouter un log visuel pour le débogage
           console.log('Position du menu de localisation:', {
-            triggerLeft: rect.left,
-            triggerBottom: rect.bottom,
-            menuLeft: menu.style.left,
-            menuTop: menu.style.top,
-            menuWidth: menu.style.width
+            width: menu.style.width,
+            position: menu.style.position,
+            left: menu.style.left,
+            top: menu.style.top,
+            marginTop: menu.style.marginTop
           });
         }
       }, 0);
@@ -294,24 +296,25 @@ export class AlertListComponent implements OnInit, OnDestroy {
         const menu = dropdown.querySelector('.dropdown-menu.skills-menu');
         
         if (trigger && menu) {
-          // Obtenir les coordonnées exactes du bouton déclencheur
+          // Obtenir les coordonnées exactes du bouton déclencheur pour référence
           const rect = trigger.getBoundingClientRect();
           
-          // Positionner précisément le menu directement sous le bouton
-          menu.style.position = 'fixed';
-          menu.style.width = `${rect.width}px`;
-          menu.style.left = `${rect.left}px`;
-          menu.style.top = `${rect.bottom + 5}px`;
+          // Positionner le menu en utilisant position absolute
+          menu.style.position = 'absolute';
+          menu.style.width = `${trigger.offsetWidth}px`;
+          menu.style.left = '0'; // Aligné à gauche du parent
+          menu.style.top = '100%'; // Juste en dessous du parent
+          menu.style.marginTop = '5px'; // Petit espace entre le bouton et le menu
           menu.style.zIndex = '10000';
           menu.style.display = 'block';
           
           // Ajouter un log visuel pour le débogage
           console.log('Position du menu de compétences:', {
-            triggerLeft: rect.left,
-            triggerBottom: rect.bottom,
-            menuLeft: menu.style.left,
-            menuTop: menu.style.top,
-            menuWidth: menu.style.width
+            width: menu.style.width,
+            position: menu.style.position,
+            left: menu.style.left,
+            top: menu.style.top,
+            marginTop: menu.style.marginTop
           });
         }
       }, 0);
