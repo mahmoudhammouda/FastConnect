@@ -159,8 +159,10 @@ export class AlertListComponent implements OnInit, OnDestroy {
    * Positionne le menu déroulant par rapport à son déclencheur
    * @param trigger Élément déclencheur
    * @param menu Menu déroulant à positionner
+   * @param dropdown Conteneur du dropdown (optionnel)
+   * @param menuHeight Hauteur du menu (optionnel)
    */
-  positionDropdownMenu(trigger: HTMLElement, menu: HTMLElement): void {
+  positionDropdownMenu(trigger: HTMLElement, menu: HTMLElement, dropdown?: HTMLElement, menuHeight?: number): void {
     if (!trigger || !menu) return;
     
     // Obtenir les dimensions et la position du déclencheur
@@ -171,15 +173,16 @@ export class AlertListComponent implements OnInit, OnDestroy {
     menu.style.width = `${triggerRect.width}px`;
     menu.style.top = `${triggerRect.bottom + window.scrollY + 5}px`; // Un peu d'espace
     menu.style.left = `${triggerRect.left + window.scrollX}px`;
+    menu.style.zIndex = '10000'; // Assurer un z-index élevé pour être au-dessus de tout
     
-    // Vérifier si le menu dépasse en bas de l'écran
-    const menuHeight = menu.offsetHeight;
+    // Utiliser la hauteur fournie ou calculer la hauteur
+    const actualMenuHeight = menuHeight || menu.offsetHeight;
     const viewportHeight = window.innerHeight;
     const spaceBelow = viewportHeight - triggerRect.bottom;
     
     // Si l'espace en dessous est insuffisant, positionner au-dessus
-    if (menuHeight > spaceBelow) {
-      menu.style.top = `${triggerRect.top + window.scrollY - menuHeight - 5}px`;
+    if (actualMenuHeight > spaceBelow) {
+      menu.style.top = `${triggerRect.top + window.scrollY - actualMenuHeight - 5}px`;
     }
   }
   
@@ -198,9 +201,25 @@ export class AlertListComponent implements OnInit, OnDestroy {
       
       // Positionner le menu après qu'il soit rendu (setTimeout)
       setTimeout(() => {
-        const trigger = event.currentTarget as HTMLElement;
-        const menu = trigger.nextElementSibling as HTMLElement;
-        this.positionDropdownMenu(trigger, menu);
+        const dropdown = this.elementRef.nativeElement.querySelector('.custom-dropdown.experience');
+        const trigger = dropdown.querySelector('.dropdown-toggle');
+        const menu = dropdown.querySelector('.dropdown-menu.experience-menu');
+        
+        if (trigger && menu) {
+          // Rendre le menu absolu par défaut pour calculer sa hauteur
+          menu.style.position = 'absolute';
+          menu.style.visibility = 'hidden';
+          menu.style.display = 'block';
+          
+          // Calculer la hauteur du menu et positionner
+          const menuHeight = menu.offsetHeight;
+          
+          // Repositionner le menu
+          this.positionDropdownMenu(trigger, menu, dropdown, menuHeight);
+          
+          // Rendre le menu visible
+          menu.style.visibility = 'visible';
+        }
       });
     }
   }
@@ -220,9 +239,25 @@ export class AlertListComponent implements OnInit, OnDestroy {
       
       // Positionner le menu après qu'il soit rendu (setTimeout)
       setTimeout(() => {
-        const trigger = event.currentTarget as HTMLElement;
-        const menu = trigger.nextElementSibling as HTMLElement;
-        this.positionDropdownMenu(trigger, menu);
+        const dropdown = this.elementRef.nativeElement.querySelector('.custom-dropdown.location');
+        const trigger = dropdown.querySelector('.dropdown-toggle');
+        const menu = dropdown.querySelector('.dropdown-menu.location-menu');
+        
+        if (trigger && menu) {
+          // Rendre le menu absolu par défaut pour calculer sa hauteur
+          menu.style.position = 'absolute';
+          menu.style.visibility = 'hidden';
+          menu.style.display = 'block';
+          
+          // Calculer la hauteur du menu et positionner
+          const menuHeight = menu.offsetHeight;
+          
+          // Repositionner le menu
+          this.positionDropdownMenu(trigger, menu, dropdown, menuHeight);
+          
+          // Rendre le menu visible
+          menu.style.visibility = 'visible';
+        }
       });
     }
   }
@@ -242,9 +277,25 @@ export class AlertListComponent implements OnInit, OnDestroy {
       
       // Positionner le menu après qu'il soit rendu (setTimeout)
       setTimeout(() => {
-        const trigger = event.currentTarget as HTMLElement;
-        const menu = trigger.nextElementSibling as HTMLElement;
-        this.positionDropdownMenu(trigger, menu);
+        const dropdown = this.elementRef.nativeElement.querySelector('.custom-dropdown.skills');
+        const trigger = dropdown.querySelector('.dropdown-toggle');
+        const menu = dropdown.querySelector('.dropdown-menu.skills-menu');
+        
+        if (trigger && menu) {
+          // Rendre le menu absolu par défaut pour calculer sa hauteur
+          menu.style.position = 'absolute';
+          menu.style.visibility = 'hidden';
+          menu.style.display = 'block';
+          
+          // Calculer la hauteur du menu et positionner
+          const menuHeight = menu.offsetHeight;
+          
+          // Repositionner le menu
+          this.positionDropdownMenu(trigger, menu, dropdown, menuHeight);
+          
+          // Rendre le menu visible
+          menu.style.visibility = 'visible';
+        }
       });
     }
   }

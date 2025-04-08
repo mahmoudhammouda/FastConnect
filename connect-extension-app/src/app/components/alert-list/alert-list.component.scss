@@ -1,8 +1,14 @@
 /* Règle globale pour s'assurer que les listes déroulantes sont toujours au premier plan */
 :root {
-  --dropdown-z-index: 1000; /* Z-index très élevé pour les listes déroulantes */
-  --dropdown-container-z-index: 999; /* Z-index pour les conteneurs de listes déroulantes */
+  --dropdown-z-index: 10000; /* Z-index très élevé pour les listes déroulantes */
+  --dropdown-container-z-index: 9999; /* Z-index pour les conteneurs de listes déroulantes */
   --content-z-index: 1; /* Z-index bas pour le contenu standard */
+}
+
+/* Règle globale pour garantir que tous les menus dropdown sont au-dessus de tout */
+.dropdown-menu.show {
+  z-index: 10000 !important; /* Force le z-index à être très élevé */
+  position: fixed !important; /* Force la position à être fixed pour être au-dessus de tout */
 }
 
 /* Styles pour les alertes */
@@ -163,6 +169,19 @@
   /* Propriétés ajoutées pour assurer la visibilité du dropdown */
   z-index: var(--dropdown-container-z-index); /* Utilise la variable CSS pour le z-index */
   isolation: isolate; /* Pour créer un nouveau contexte d'empilement */
+  
+  /* Styles spécifiques pour chaque type de dropdown */
+  &.experience {
+    z-index: calc(var(--dropdown-container-z-index) + 2);
+  }
+  
+  &.location {
+    z-index: calc(var(--dropdown-container-z-index) + 1);
+  }
+  
+  &.skills {
+    z-index: var(--dropdown-container-z-index);
+  }
 }
 
 .dropdown-toggle {
@@ -221,6 +240,16 @@
     max-height: 80vh; /* Limite la hauteur à 80% de la hauteur de la fenêtre */
     width: auto; /* Ajuste la largeur automatiquement */
     min-width: 200px; /* Largeur minimale */
+  }
+
+  /* Styles spécifiques pour chaque type de dropdown */
+  &.experience-menu,
+  &.location-menu,
+  &.skills-menu {
+    z-index: var(--dropdown-z-index); /* S'assurer que ces menus ont un z-index élevé */
+    position: fixed !important; /* Toujours en position fixed pour être au-dessus de tout */
+    background-color: white; /* S'assurer que le fond est blanc pour masquer le contenu en dessous */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Ombre plus prononcée pour se démarquer */
   }
 }
 
