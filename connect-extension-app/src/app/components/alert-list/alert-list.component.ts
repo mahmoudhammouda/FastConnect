@@ -172,7 +172,7 @@ export class AlertListComponent implements OnInit, OnDestroy {
     menu.style.position = 'fixed';
     menu.style.width = `${triggerRect.width}px`;
     menu.style.top = `${triggerRect.bottom + window.scrollY + 5}px`; // Un peu d'espace
-    menu.style.left = `${triggerRect.left + window.scrollX}px`;
+    menu.style.left = `${triggerRect.left}px`;
     menu.style.zIndex = '10000'; // Assurer un z-index élevé pour être au-dessus de tout
     
     // Utiliser la hauteur fournie ou calculer la hauteur
@@ -182,7 +182,7 @@ export class AlertListComponent implements OnInit, OnDestroy {
     
     // Si l'espace en dessous est insuffisant, positionner au-dessus
     if (actualMenuHeight > spaceBelow) {
-      menu.style.top = `${triggerRect.top + window.scrollY - actualMenuHeight - 5}px`;
+      menu.style.top = `${triggerRect.top - actualMenuHeight - 5}px`;
     }
   }
   
@@ -206,19 +206,13 @@ export class AlertListComponent implements OnInit, OnDestroy {
         const menu = dropdown.querySelector('.dropdown-menu.experience-menu');
         
         if (trigger && menu) {
-          // Rendre le menu absolu par défaut pour calculer sa hauteur
-          menu.style.position = 'absolute';
-          menu.style.visibility = 'hidden';
+          // Approche simplifiée pour positionner le menu dropdown
+          menu.style.position = 'fixed';
+          menu.style.width = `${trigger.offsetWidth}px`;
+          menu.style.left = `${trigger.getBoundingClientRect().left}px`;
+          menu.style.top = `${trigger.getBoundingClientRect().bottom + 5}px`;
+          menu.style.zIndex = '10000';
           menu.style.display = 'block';
-          
-          // Calculer la hauteur du menu et positionner
-          const menuHeight = menu.offsetHeight;
-          
-          // Repositionner le menu
-          this.positionDropdownMenu(trigger, menu, dropdown, menuHeight);
-          
-          // Rendre le menu visible
-          menu.style.visibility = 'visible';
         }
       });
     }
@@ -244,19 +238,13 @@ export class AlertListComponent implements OnInit, OnDestroy {
         const menu = dropdown.querySelector('.dropdown-menu.location-menu');
         
         if (trigger && menu) {
-          // Rendre le menu absolu par défaut pour calculer sa hauteur
-          menu.style.position = 'absolute';
-          menu.style.visibility = 'hidden';
+          // Approche simplifiée pour positionner le menu dropdown
+          menu.style.position = 'fixed';
+          menu.style.width = `${trigger.offsetWidth}px`;
+          menu.style.left = `${trigger.getBoundingClientRect().left}px`;
+          menu.style.top = `${trigger.getBoundingClientRect().bottom + 5}px`;
+          menu.style.zIndex = '10000';
           menu.style.display = 'block';
-          
-          // Calculer la hauteur du menu et positionner
-          const menuHeight = menu.offsetHeight;
-          
-          // Repositionner le menu
-          this.positionDropdownMenu(trigger, menu, dropdown, menuHeight);
-          
-          // Rendre le menu visible
-          menu.style.visibility = 'visible';
         }
       });
     }
@@ -282,19 +270,13 @@ export class AlertListComponent implements OnInit, OnDestroy {
         const menu = dropdown.querySelector('.dropdown-menu.skills-menu');
         
         if (trigger && menu) {
-          // Rendre le menu absolu par défaut pour calculer sa hauteur
-          menu.style.position = 'absolute';
-          menu.style.visibility = 'hidden';
+          // Approche simplifiée pour positionner le menu dropdown
+          menu.style.position = 'fixed';
+          menu.style.width = `${trigger.offsetWidth}px`;
+          menu.style.left = `${trigger.getBoundingClientRect().left}px`;
+          menu.style.top = `${trigger.getBoundingClientRect().bottom + 5}px`;
+          menu.style.zIndex = '10000';
           menu.style.display = 'block';
-          
-          // Calculer la hauteur du menu et positionner
-          const menuHeight = menu.offsetHeight;
-          
-          // Repositionner le menu
-          this.positionDropdownMenu(trigger, menu, dropdown, menuHeight);
-          
-          // Rendre le menu visible
-          menu.style.visibility = 'visible';
         }
       });
     }
