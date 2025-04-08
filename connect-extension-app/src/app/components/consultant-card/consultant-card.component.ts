@@ -332,16 +332,23 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
           // Alignement à droite avec le bouton (le bouton signet est à droite)
           dropdown.style.top = `${buttonRect.bottom + 5}px`; // +5px pour un petit espace
           
-          // Calculer la position horizontale pour que la dropdown soit alignée à droite avec le bouton
-          // Si nous sommes près du bord droit de l'écran, ajuster pour que la dropdown reste visible
-          const rightEdgePosition = buttonRect.right;
-          const leftPosition = Math.max(0, rightEdgePosition - dropdownWidth);
+          // Calculer la position horizontale pour aligner la dropdown avec le bouton (centrée par rapport au bouton)
+          // Nous voulons que la dropdown soit positionnée au-dessus du bouton signet
+          const buttonCenter = buttonRect.left + buttonRect.width / 2;
+          const leftPosition = Math.max(0, buttonCenter - (dropdownWidth / 2));
           
-          dropdown.style.left = `${leftPosition}px`;
+          // Assurons-nous que la dropdown ne dépasse pas le bord droit de l'écran
+          const windowWidth = window.innerWidth;
+          const rightEdgeOfDropdown = leftPosition + dropdownWidth;
+          const finalLeftPosition = rightEdgeOfDropdown > windowWidth 
+              ? Math.max(0, windowWidth - dropdownWidth - 10) // 10px de marge
+              : leftPosition;
+          
+          dropdown.style.left = `${finalLeftPosition}px`;
           
           // Log pour débogage
           console.log("[ConsultantCard] Dropdown bookmark repositionnée", 
-            { top: dropdown.style.top, left: dropdown.style.left, buttonRight: rightEdgePosition, dropdownWidth });
+            { top: dropdown.style.top, left: dropdown.style.left, buttonCenter, dropdownWidth, finalLeftPosition });
         }
       }, 0);
     }
