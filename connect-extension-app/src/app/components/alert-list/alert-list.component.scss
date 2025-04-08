@@ -1,3 +1,10 @@
+/* Règle globale pour s'assurer que les listes déroulantes sont toujours au premier plan */
+:root {
+  --dropdown-z-index: 1000; /* Z-index très élevé pour les listes déroulantes */
+  --dropdown-container-z-index: 999; /* Z-index pour les conteneurs de listes déroulantes */
+  --content-z-index: 1; /* Z-index bas pour le contenu standard */
+}
+
 /* Styles pour les alertes */
 .alerts-container {
   padding: 1rem;
@@ -7,6 +14,8 @@
   margin-bottom: 0.75rem;
   border-radius: 0.5rem;
   transition: all 0.3s ease;
+  position: relative; /* Ajouté pour créer un contexte de positionnement */
+  z-index: var(--content-z-index); /* Utilise la variable CSS pour le z-index */
   
   &:hover {
     transform: translateY(-2px);
@@ -28,6 +37,7 @@
   background-color: white;
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  z-index: var(--content-z-index); /* Utilise la variable CSS pour le z-index */
 }
 
 .alert-criteria {
@@ -107,7 +117,7 @@
   gap: 0.75rem;
   margin-bottom: 0.75rem;
   position: relative; /* Ajouté pour créer un contexte de positionnement */
-  z-index: 1; /* Z-index bas pour permettre aux dropdowns de s'afficher par-dessus */
+  z-index: var(--content-z-index); /* Utilise la variable CSS pour le z-index */
 }
 
 .form-col {
@@ -151,7 +161,7 @@
   width: 100%;
   font-size: 0.875rem;
   /* Propriétés ajoutées pour assurer la visibilité du dropdown */
-  z-index: 20; /* Z-index pour être au-dessus des autres éléments du formulaire */
+  z-index: var(--dropdown-container-z-index); /* Utilise la variable CSS pour le z-index */
   isolation: isolate; /* Pour créer un nouveau contexte d'empilement */
 }
 
@@ -191,7 +201,7 @@
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: 50; /* Z-index augmenté pour s'afficher au-dessus des autres éléments */
+  z-index: var(--dropdown-z-index); /* Utilise la variable CSS pour le z-index */
   width: 100%;
   max-height: 250px;
   overflow-y: auto;
@@ -206,7 +216,6 @@
   &.show {
     display: block;
     animation: fadeIn 0.2s ease;
-    /* Styles ajoutés pour s'assurer que le dropdown s'affiche correctement */
     position: absolute;
     overflow: visible;
   }
