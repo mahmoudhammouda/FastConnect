@@ -258,35 +258,45 @@
         
         <!-- Critères - Rangée 1 -->
         <div class="form-row">
-          <!-- Expérience -->
+          <!-- Expérience - Custom Dropdown -->
           <div class="form-col">
             <label class="block text-xs font-medium text-gray-600 mb-1">Expérience</label>
-            <div class="option-grid">
-              <label *ngFor="let exp of experienceOptions" class="option-item" [class.selected]="tempExperience.includes(exp)">
-                <input 
-                  type="checkbox" 
-                  [value]="exp" 
-                  [checked]="tempExperience.includes(exp)"
-                  (change)="toggleOption('experience', exp)"
-                  class="mr-2">
-                {{ exp }}
-              </label>
-            </div>
-          </div>
-          
-          <!-- Disponibilité -->
-          <div class="form-col">
-            <label class="block text-xs font-medium text-gray-600 mb-1">Disponibilité</label>
-            <div class="option-grid">
-              <label *ngFor="let avail of availabilityOptions" class="option-item" [class.selected]="tempAvailability.includes(avail)">
-                <input 
-                  type="checkbox" 
-                  [value]="avail" 
-                  [checked]="tempAvailability.includes(avail)"
-                  (change)="toggleOption('availability', avail)"
-                  class="mr-2">
-                {{ avail }}
-              </label>
+            <div class="custom-dropdown">
+              <button 
+                type="button"
+                class="dropdown-toggle" 
+                [class.active]="experienceDropdownOpen"
+                (click)="toggleExperienceDropdown($event)">
+                <span>{{ getExperienceDisplayText() }}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              <div class="dropdown-menu" [class.show]="experienceDropdownOpen">
+                <div class="px-3 pt-2">
+                  <input 
+                    type="text" 
+                    class="search-input"
+                    placeholder="Rechercher un niveau d'expérience..."
+                    (input)="filterExperienceOptions($event)"
+                    (click)="stopPropagation($event)">
+                </div>
+                
+                <div *ngFor="let experience of filteredExperienceOptions" 
+                     class="dropdown-item" 
+                     (click)="toggleExperienceOption(experience, $event)">
+                  <input 
+                    type="checkbox" 
+                    [checked]="tempExperience.includes(experience)" 
+                    (click)="stopPropagation($event)">
+                  <span>{{ experience }}</span>
+                </div>
+                
+                <div *ngIf="filteredExperienceOptions.length === 0" class="p-3 text-center text-gray-500 text-sm">
+                  Aucun résultat
+                </div>
+              </div>
             </div>
           </div>
         </div>

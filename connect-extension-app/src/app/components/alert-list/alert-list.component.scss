@@ -51,8 +51,9 @@
   margin-bottom: 1rem;
   transform-origin: top;
   animation: slideDown 0.3s ease-out forwards;
-  overflow: hidden;
+  overflow: visible; /* Modifié pour permettre aux dropdowns de s'afficher */
   border: 1px solid #e5e7eb;
+  position: relative; /* Ajouté pour créer un contexte de positionnement */
   
   &.exit {
     animation: slideUp 0.3s ease-in forwards;
@@ -105,6 +106,8 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-bottom: 0.75rem;
+  position: relative; /* Ajouté pour créer un contexte de positionnement */
+  z-index: 1; /* Z-index bas pour permettre aux dropdowns de s'afficher par-dessus */
 }
 
 .form-col {
@@ -147,6 +150,9 @@
   position: relative;
   width: 100%;
   font-size: 0.875rem;
+  /* Propriétés ajoutées pour assurer la visibilité du dropdown */
+  z-index: 20; /* Z-index pour être au-dessus des autres éléments du formulaire */
+  isolation: isolate; /* Pour créer un nouveau contexte d'empilement */
 }
 
 .dropdown-toggle {
@@ -185,7 +191,7 @@
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: 10;
+  z-index: 50; /* Z-index augmenté pour s'afficher au-dessus des autres éléments */
   width: 100%;
   max-height: 250px;
   overflow-y: auto;
@@ -200,6 +206,9 @@
   &.show {
     display: block;
     animation: fadeIn 0.2s ease;
+    /* Styles ajoutés pour s'assurer que le dropdown s'affiche correctement */
+    position: absolute;
+    overflow: visible;
   }
 }
 

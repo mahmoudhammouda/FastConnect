@@ -48,12 +48,15 @@ export class AlertListComponent implements OnInit, OnDestroy {
   skillOptions: string[] = ['JavaScript', 'Python', 'Java', 'C#', 'React', 'Angular', 'Vue.js', 'Node.js', 'Express', 'Django', 'Flask', 'Spring', 'ASP.NET', 'Machine Learning', 'Deep Learning', 'NLP', 'Computer Vision', 'Data Science', 'TensorFlow', 'PyTorch', 'SQL', 'NoSQL', 'MongoDB', 'PostgreSQL', 'DevOps', 'Docker', 'Kubernetes', 'AWS', 'Azure', 'GCP'];
   
   // États pour les dropdowns personnalisés
+  experienceDropdownOpen: boolean = false;
   locationDropdownOpen: boolean = false;
   skillsDropdownOpen: boolean = false;
+  experienceSearchText: string = '';
   locationSearchText: string = '';
   skillsSearchText: string = '';
   
   // Listes filtrées pour la recherche
+  filteredExperienceOptions: string[] = [];
   filteredLocationOptions: string[] = [];
   filteredSkillOptions: string[] = [];
   
@@ -76,6 +79,7 @@ export class AlertListComponent implements OnInit, OnDestroy {
     );
     
     // Initialiser les listes filtrées
+    this.filteredExperienceOptions = [...this.experienceOptions];
     this.filteredLocationOptions = [...this.locationOptions];
     this.filteredSkillOptions = [...this.skillOptions];
     
@@ -95,10 +99,11 @@ export class AlertListComponent implements OnInit, OnDestroy {
    * Ferme les dropdowns si on clique en dehors
    */
   private closeDropdownsOnClickOutside(event: MouseEvent): void {
-    if (this.locationDropdownOpen || this.skillsDropdownOpen) {
+    if (this.experienceDropdownOpen || this.locationDropdownOpen || this.skillsDropdownOpen) {
       const target = event.target as HTMLElement;
       if (!this.elementRef.nativeElement.contains(target) || 
           !target.closest('.custom-dropdown')) {
+        this.experienceDropdownOpen = false;
         this.locationDropdownOpen = false;
         this.skillsDropdownOpen = false;
       }
@@ -114,13 +119,28 @@ export class AlertListComponent implements OnInit, OnDestroy {
   }
   
   /**
+   * Ouvre ou ferme le dropdown d'expérience
+   */
+  toggleExperienceDropdown(event: Event): void {
+    event.stopPropagation();
+    this.experienceDropdownOpen = !this.experienceDropdownOpen;
+    if (this.experienceDropdownOpen) {
+      this.locationDropdownOpen = false;
+      this.skillsDropdownOpen = false;
+      this.experienceSearchText = '';
+      this.filteredExperienceOptions = [...this.experienceOptions];
+    }
+  }
+  
+  /**
    * Ouvre ou ferme le dropdown de localisation
    */
   toggleLocationDropdown(event: Event): void {
     event.stopPropagation();
     this.locationDropdownOpen = !this.locationDropdownOpen;
     if (this.locationDropdownOpen) {
-      this.skillsDropdownOpen = false;  // Ferme l'autre dropdown
+      this.experienceDropdownOpen = false;
+      this.skillsDropdownOpen = false;
       this.locationSearchText = '';
       this.filteredLocationOptions = [...this.locationOptions];
     }
@@ -133,10 +153,22 @@ export class AlertListComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     this.skillsDropdownOpen = !this.skillsDropdownOpen;
     if (this.skillsDropdownOpen) {
-      this.locationDropdownOpen = false;  // Ferme l'autre dropdown
+      this.experienceDropdownOpen = false;
+      this.locationDropdownOpen = false;
       this.skillsSearchText = '';
       this.filteredSkillOptions = [...this.skillOptions];
     }
+  }
+  
+  /**
+   * Filtre les options d'expérience selon le texte de recherche
+   */
+  filterExperienceOptions(event: Event): void {
+    const searchText = (event.target as HTMLInputElement).value.toLowerCase();
+    this.experienceSearchText = searchText;
+    this.filteredExperienceOptions = this.experienceOptions.filter(
+      exp => exp.toLowerCase().includes(searchText)
+    );
   }
   
   /**
@@ -159,6 +191,20 @@ export class AlertListComponent implements OnInit, OnDestroy {
     this.filteredSkillOptions = this.skillOptions.filter(
       skill => skill.toLowerCase().includes(searchText)
     );
+  }
+  
+  /**
+   * Bascule la sélection d'une option d'expérience
+   */
+  toggleExperienceOption(experience: string, event: Event): void {
+    event.stopPropagation();
+    const index = this.tempExperience.indexOf(experience);
+    if (index === -1) {
+      this.tempExperience.push(experience);
+    } else {
+      this.tempExperience.splice(index, 1);
+    }
+    this.updateSelection('experience', null);
   }
   
   /**
@@ -187,6 +233,15 @@ export class AlertListComponent implements OnInit, OnDestroy {
       this.tempSkills.splice(index, 1);
     }
     this.updateSelection('skills', null);
+  }
+  
+  /**
+   * Obtient le texte à afficher dans le bouton de dropdown d'expérience
+   */
+  getExperienceDisplayText(): string {
+    return this.tempExperience.length > 0 
+      ? `${this.tempExperience.length} niveau${this.tempExperience.length > 1 ? 'x' : ''} d'expérience sélectionné${this.tempExperience.length > 1 ? 's' : ''}`
+      : 'Sélectionner des niveaux d\'expérience';
   }
   
   /**
