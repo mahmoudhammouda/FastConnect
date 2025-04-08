@@ -83,6 +83,7 @@ export class AlertListComponent implements OnInit, OnDestroy {
    */
   hideCreateAlertForm(): void {
     this.showNewAlertForm = false;
+    this.editingAlertId = null;
   }
   
   /**
@@ -102,6 +103,9 @@ export class AlertListComponent implements OnInit, OnDestroy {
     this.tempAvailability = [];
     this.tempLocation = [];
     this.tempSkills = [];
+    
+    // Réinitialiser l'état d'édition
+    this.editingAlertId = null;
   }
   
   /**
@@ -113,19 +117,19 @@ export class AlertListComponent implements OnInit, OnDestroy {
       return;
     }
     
-    if (this.newAlertForm.experience.length === 0 && 
-        this.newAlertForm.availability.length === 0 && 
-        this.newAlertForm.location.length === 0 && 
-        this.newAlertForm.skills.length === 0) {
+    if (this.tempExperience.length === 0 && 
+        this.tempAvailability.length === 0 && 
+        this.tempLocation.length === 0 && 
+        this.tempSkills.length === 0) {
       alert('Veuillez sélectionner au moins un critère pour l\'alerte.');
       return;
     }
     
     const criteria: AlertCriteria = {
-      experience: this.newAlertForm.experience,
-      availability: this.newAlertForm.availability,
-      location: this.newAlertForm.location,
-      skills: this.newAlertForm.skills
+      experience: this.tempExperience,
+      availability: this.tempAvailability,
+      location: this.tempLocation,
+      skills: this.tempSkills
     };
     
     const alertId = this.alertService.createAlert(this.newAlertForm.name.trim(), criteria);
@@ -169,19 +173,19 @@ export class AlertListComponent implements OnInit, OnDestroy {
       return;
     }
     
-    if (this.newAlertForm.experience.length === 0 && 
-        this.newAlertForm.availability.length === 0 && 
-        this.newAlertForm.location.length === 0 && 
-        this.newAlertForm.skills.length === 0) {
+    if (this.tempExperience.length === 0 && 
+        this.tempAvailability.length === 0 && 
+        this.tempLocation.length === 0 && 
+        this.tempSkills.length === 0) {
       alert('Veuillez sélectionner au moins un critère pour l\'alerte.');
       return;
     }
     
     const criteria: AlertCriteria = {
-      experience: this.newAlertForm.experience,
-      availability: this.newAlertForm.availability,
-      location: this.newAlertForm.location,
-      skills: this.newAlertForm.skills
+      experience: this.tempExperience,
+      availability: this.tempAvailability,
+      location: this.tempLocation,
+      skills: this.tempSkills
     };
     
     this.alertService.updateAlert(this.editingAlertId, this.newAlertForm.name.trim(), criteria);
@@ -262,6 +266,41 @@ export class AlertListComponent implements OnInit, OnDestroy {
       array.push(value);
     } else {
       array.splice(index, 1);
+    }
+  }
+  
+  /**
+   * Gère les changements d'option dans les cases à cocher
+   */
+  toggleOption(type: string, value: string): void {
+    switch (type) {
+      case 'experience':
+        const expIndex = this.tempExperience.indexOf(value);
+        if (expIndex === -1) {
+          this.tempExperience.push(value);
+        } else {
+          this.tempExperience.splice(expIndex, 1);
+        }
+        this.updateSelection('experience', null);
+        break;
+      case 'availability':
+        const availIndex = this.tempAvailability.indexOf(value);
+        if (availIndex === -1) {
+          this.tempAvailability.push(value);
+        } else {
+          this.tempAvailability.splice(availIndex, 1);
+        }
+        this.updateSelection('availability', null);
+        break;
+      case 'location':
+        const locIndex = this.tempLocation.indexOf(value);
+        if (locIndex === -1) {
+          this.tempLocation.push(value);
+        } else {
+          this.tempLocation.splice(locIndex, 1);
+        }
+        this.updateSelection('location', null);
+        break;
     }
   }
   

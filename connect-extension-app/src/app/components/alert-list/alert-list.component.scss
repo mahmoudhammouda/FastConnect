@@ -120,6 +120,8 @@
   border-radius: 0.25rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
   
   &.selected {
     background-color: #dbeafe;
@@ -129,6 +131,15 @@
   &:hover {
     background-color: #f3f4f6;
   }
+}
+
+.option-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
 }
 
 /* Badge pour les nouveaux consultants */
