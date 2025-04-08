@@ -22,7 +22,9 @@
               "src/favicon.ico"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "src/app/components/consultant-card/consultant-card.component.scss",
+              "src/app/components/consultant-list/consultant-list.component.scss"
             ],
             "scripts": []
           },
@@ -118,17 +120,17 @@
             "port": 5000,
             "host": "0.0.0.0",
             "proxyConfig": "proxy.conf.json",
-            "buildTarget": "connect-extension-app:build"
+            "browserTarget": "connect-extension-app:build"
           },
           "configurations": {
             "production": {
-              "buildTarget": "connect-extension-app:build:production"
+              "browserTarget": "connect-extension-app:build:production"
             },
             "development": {
-              "buildTarget": "connect-extension-app:build:development"
+              "browserTarget": "connect-extension-app:build:development"
             },
             "replit": {
-              "buildTarget": "connect-extension-app:build:replit"
+              "browserTarget": "connect-extension-app:build:replit"
             }
           },
           "defaultConfiguration": "development"

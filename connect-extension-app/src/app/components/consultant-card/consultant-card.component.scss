@@ -454,6 +454,77 @@
   opacity: 0.95;
 }
 
+// Style pour la dropdown des bookmarks
+.bookmark-dropdown {
+  position: absolute;
+  right: 0;
+  z-index: 9999; // Valeur élevée pour s'assurer que la dropdown est au-dessus de tous les autres éléments
+  width: 16rem; // 256px - équivalent à w-64 en Tailwind
+  background-color: white;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 0.5rem;
+  
+  // Position selon le contexte
+  &.dropdown-bottom {
+    top: calc(100% + 0.5rem);
+  }
+  
+  &.dropdown-top {
+    bottom: calc(100% + 0.5rem);
+  }
+  
+  // Container pour les éléments de liste
+  .bookmark-list-container {
+    max-height: 160px; // Hauteur pour 4 éléments (environ 40px par élément)
+    overflow-y: auto; // Activer le défilement vertical si le contenu dépasse
+    scrollbar-width: thin; // Style de scrollbar plus fin pour Firefox
+    
+    // Style de scrollbar pour Chrome/Safari
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #c4c4c4;
+      border-radius: 3px;
+    }
+  }
+}
+
+// Style pour l'icône bookmark lorsqu'elle est activée
+.bookmark-icon.text-purple-600 {
+  transform: scale(1.1);
+}
+
+// Styles pour l'icône bookmark
+.bookmark-icon {
+  // L'élément span.material-icons qui change de couleur
+  transition: color 0.2s ease, transform 0.3s ease;
+  
+  &.text-purple-600 {
+    transform: scale(1.1); // Légère augmentation de taille quand actif
+  }
+}
+
+// Ajustement de taille des icônes sur les différentes vues
+@media (min-width: 768px) { // Desktop
+  .w-9.h-9 .material-icons {
+    font-size: 20px; // Taille standard sur desktop
+  }
+}
+
+@media (max-width: 767px) { // Mobile
+  .w-8.h-8 .material-icons {
+    font-size: 18px; // Légèrement plus petit sur mobile
+  }
+}
+
 @keyframes fadeInOut {
   0% {
     opacity: 0;
