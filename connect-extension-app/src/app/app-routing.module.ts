@@ -4,6 +4,7 @@ import { LoginComponent } from './components/auth/login/login.component';
 import { UserProfileComponent } from './components/user/profile/user-profile.component';
 import { ConsultantListComponent } from './components/consultant-list/consultant-list.component';
 import { BookmarkListsComponent } from './components/bookmark-lists/bookmark-lists.component';
+import { AlertListComponent } from './components/alert-list/alert-list.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AppDebugComponent } from './app.component.debug';
 
@@ -14,6 +15,9 @@ const routes: Routes = [
   
   // Gestion des favoris
   { path: 'bookmarks', component: BookmarkListsComponent },
+  
+  // Gestion des alertes automatiques
+  { path: 'alerts', component: AlertListComponent },
   
   // Routes d'authentification
   { path: 'login', component: LoginComponent },
