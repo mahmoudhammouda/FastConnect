@@ -2,6 +2,30 @@
 
 Ce document recense les modifications significatives apportées au projet FastConnect, avec les détails des commits, branches, et explications des changements.
 
+## 2025-04-08
+
+### Commit: "Fix: Optimisation du positionnement de la dropdown de favoris"
+
+**Branche**: `feature/ui_improvements`
+
+**Description**: Amélioration du positionnement des éléments d'interface utilisateur pour une meilleure expérience.
+
+**Modifications**:
+1. **Correctif du positionnement de la dropdown de favoris**:
+   - Alignement précis du coin supérieur droit de la dropdown sous le coin inférieur droit du bouton bookmark
+   - Utilisation de la propriété `left: buttonRect.right` pour positionner le bord droit de la dropdown sous le bouton
+   - Ajout de `transform: translateX(-100%)` pour décaler la dropdown de sa propre largeur vers la gauche
+   - Conservation des protections pour éviter que la dropdown ne sorte de l'écran
+
+**Problèmes résolus**:
+- Mauvais alignement de la dropdown des favoris par rapport au bouton bookmark
+- Positionnement incorrect sur certaines résolutions d'écran
+- Débordement potentiel de la dropdown sur petits écrans
+
+**Implications techniques**:
+- Utilisation optimisée des propriétés CSS de positionnement
+- Mise en œuvre d'une technique de positionnement plus robuste avec transform
+
 ## 2025-04-06
 
 ### Commits: "Amélioration du design mobile avec optimisation de l'UI/UX des cartes consultant et correction du tri mobile" et "Amélioration des couleurs en mode mobile pour correspondre au mode desktop"
