@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { BookmarkService } from '../../services/bookmark.service';
 import { BookmarkList } from '../../models/bookmark.model';
 import { Subscription } from 'rxjs';
@@ -33,7 +34,10 @@ export class BookmarkListsComponent implements OnInit, OnDestroy {
   // Subscription
   private subscription: Subscription = new Subscription();
   
-  constructor(private bookmarkService: BookmarkService) {}
+  constructor(
+    private bookmarkService: BookmarkService,
+    private router: Router
+  ) {}
   
   ngOnInit(): void {
     // S'abonner aux changements d'état des favoris
@@ -198,5 +202,21 @@ export class BookmarkListsComponent implements OnInit, OnDestroy {
    */
   stopPropagation(event: Event): void {
     event.stopPropagation();
+  }
+  
+  /**
+   * Affiche les consultants d'une liste de favoris
+   * Cette méthode sélectionne la liste et navigue vers la page des consultants
+   * @param listId Identifiant de la liste
+   * @param event Événement de clic
+   */
+  viewConsultants(listId: string, event: Event): void {
+    event.stopPropagation();
+    
+    // Sélectionner la liste
+    this.bookmarkService.selectList(listId);
+    
+    // Naviguer vers la page des consultants
+    this.router.navigate(['/']);
   }
 }
