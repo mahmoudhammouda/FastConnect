@@ -206,15 +206,27 @@ export class AlertListComponent implements OnInit, OnDestroy {
         const menu = dropdown.querySelector('.dropdown-menu.experience-menu');
         
         if (trigger && menu) {
-          // Approche simplifiée pour positionner le menu dropdown
+          // Obtenir les coordonnées exactes du bouton déclencheur
+          const rect = trigger.getBoundingClientRect();
+          
+          // Positionner précisément le menu directement sous le bouton
           menu.style.position = 'fixed';
-          menu.style.width = `${trigger.offsetWidth}px`;
-          menu.style.left = `${trigger.getBoundingClientRect().left}px`;
-          menu.style.top = `${trigger.getBoundingClientRect().bottom + 5}px`;
+          menu.style.width = `${rect.width}px`;
+          menu.style.left = `${rect.left}px`;
+          menu.style.top = `${rect.bottom + 5}px`;
           menu.style.zIndex = '10000';
           menu.style.display = 'block';
+          
+          // Ajouter un log visuel pour le débogage
+          console.log('Position du menu d\'expérience:', {
+            triggerLeft: rect.left,
+            triggerBottom: rect.bottom,
+            menuLeft: menu.style.left,
+            menuTop: menu.style.top,
+            menuWidth: menu.style.width
+          });
         }
-      });
+      }, 0);
     }
   }
   
@@ -238,15 +250,27 @@ export class AlertListComponent implements OnInit, OnDestroy {
         const menu = dropdown.querySelector('.dropdown-menu.location-menu');
         
         if (trigger && menu) {
-          // Approche simplifiée pour positionner le menu dropdown
+          // Obtenir les coordonnées exactes du bouton déclencheur
+          const rect = trigger.getBoundingClientRect();
+          
+          // Positionner précisément le menu directement sous le bouton
           menu.style.position = 'fixed';
-          menu.style.width = `${trigger.offsetWidth}px`;
-          menu.style.left = `${trigger.getBoundingClientRect().left}px`;
-          menu.style.top = `${trigger.getBoundingClientRect().bottom + 5}px`;
+          menu.style.width = `${rect.width}px`;
+          menu.style.left = `${rect.left}px`;
+          menu.style.top = `${rect.bottom + 5}px`;
           menu.style.zIndex = '10000';
           menu.style.display = 'block';
+          
+          // Ajouter un log visuel pour le débogage
+          console.log('Position du menu de localisation:', {
+            triggerLeft: rect.left,
+            triggerBottom: rect.bottom,
+            menuLeft: menu.style.left,
+            menuTop: menu.style.top,
+            menuWidth: menu.style.width
+          });
         }
-      });
+      }, 0);
     }
   }
   
@@ -270,15 +294,27 @@ export class AlertListComponent implements OnInit, OnDestroy {
         const menu = dropdown.querySelector('.dropdown-menu.skills-menu');
         
         if (trigger && menu) {
-          // Approche simplifiée pour positionner le menu dropdown
+          // Obtenir les coordonnées exactes du bouton déclencheur
+          const rect = trigger.getBoundingClientRect();
+          
+          // Positionner précisément le menu directement sous le bouton
           menu.style.position = 'fixed';
-          menu.style.width = `${trigger.offsetWidth}px`;
-          menu.style.left = `${trigger.getBoundingClientRect().left}px`;
-          menu.style.top = `${trigger.getBoundingClientRect().bottom + 5}px`;
+          menu.style.width = `${rect.width}px`;
+          menu.style.left = `${rect.left}px`;
+          menu.style.top = `${rect.bottom + 5}px`;
           menu.style.zIndex = '10000';
           menu.style.display = 'block';
+          
+          // Ajouter un log visuel pour le débogage
+          console.log('Position du menu de compétences:', {
+            triggerLeft: rect.left,
+            triggerBottom: rect.bottom,
+            menuLeft: menu.style.left,
+            menuTop: menu.style.top,
+            menuWidth: menu.style.width
+          });
         }
-      });
+      }, 0);
     }
   }
   
