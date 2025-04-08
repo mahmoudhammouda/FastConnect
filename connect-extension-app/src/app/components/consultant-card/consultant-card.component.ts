@@ -326,13 +326,22 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
         const dropdown = document.querySelector('.bookmark-dropdown') as HTMLElement;
         
         if (dropdown) {
-          // Positionne la dropdown en dessous du bouton
+          // Positionne la dropdown alignée avec le bouton signet
+          const dropdownWidth = dropdown.offsetWidth;
+          
+          // Alignement à droite avec le bouton (le bouton signet est à droite)
           dropdown.style.top = `${buttonRect.bottom + 5}px`; // +5px pour un petit espace
-          dropdown.style.left = `${buttonRect.left - dropdown.offsetWidth + buttonRect.width}px`;
+          
+          // Calculer la position horizontale pour que la dropdown soit alignée à droite avec le bouton
+          // Si nous sommes près du bord droit de l'écran, ajuster pour que la dropdown reste visible
+          const rightEdgePosition = buttonRect.right;
+          const leftPosition = Math.max(0, rightEdgePosition - dropdownWidth);
+          
+          dropdown.style.left = `${leftPosition}px`;
           
           // Log pour débogage
-          console.log("[ConsultantCard] Dropdown bookmark positionnée avec fixed coordinates", 
-            { top: dropdown.style.top, left: dropdown.style.left });
+          console.log("[ConsultantCard] Dropdown bookmark repositionnée", 
+            { top: dropdown.style.top, left: dropdown.style.left, buttonRight: rightEdgePosition, dropdownWidth });
         }
       }, 0);
     }
