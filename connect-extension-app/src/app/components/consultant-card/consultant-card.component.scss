@@ -456,7 +456,7 @@
 
 // Style pour la dropdown des bookmarks
 .bookmark-dropdown {
-  position: absolute; // Utilisé absolute pour un positionnement relatif au parent positionné
+  position: fixed; // Utilisation de fixed pour sortir du flux du document et afficher par-dessus tout
   z-index: 9999; // Valeur élevée pour s'assurer que la dropdown est au-dessus de tous les autres éléments
   width: 16rem; // 256px - équivalent à w-64 en Tailwind
   background-color: white;
@@ -464,14 +464,6 @@
   border: 1px solid rgba(226, 232, 240, 0.9);
   border-radius: 0.5rem;
   animation: fadeIn 0.2s ease-out forwards;
-  
-  // Styles spécifiques pour positionner la dropdown en dessous
-  &.dropdown-bottom {
-    top: 100%; // Place la dropdown en dessous du bouton (top: 100%)
-    right: 0;
-    margin-top: 4px; // Petit espace entre le bouton et la dropdown
-    transform-origin: top right; // Point d'origine pour l'animation
-  }
   
   // Container pour les éléments de liste
   .bookmark-list-container {

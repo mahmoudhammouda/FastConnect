@@ -220,11 +220,32 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
   /**
    * Initialisation du composant : souscription aux favoris
    */
+  // Gestionnaire de clic global pour fermer la dropdown quand on clique ailleurs
+  private handleDocumentClick = (event: MouseEvent) => {
+    // Ne rien faire si aucune dropdown n'est ouverte
+    if (!this.bookmarkDropdownOpen) return;
+    
+    // Vérifie si le clic est en dehors de la dropdown
+    const clickTarget = event.target as HTMLElement;
+    const isClickInsideDropdown = clickTarget.closest('.bookmark-dropdown') !== null;
+    const isClickOnBookmarkButton = clickTarget.closest('[aria-haspopup="true"]') !== null;
+    
+    if (!isClickInsideDropdown && !isClickOnBookmarkButton) {
+      // Ferme la dropdown si le clic est en dehors
+      this.bookmarkDropdownOpen = null;
+      this.isCreatingNewList = false;
+      this.newListName = '';
+    }
+  }
+  
   ngOnInit(): void {
     this.bookmarkSubscription = this.bookmarkService.getBookmarkState().subscribe(state => {
       this.bookmarkLists = state.lists;
       this.updateBookmarkStatus();
     });
+    
+    // Ajoute un gestionnaire de clic global pour fermer la dropdown quand on clique ailleurs
+    document.addEventListener('click', this.handleDocumentClick);
   }
   
   /**
@@ -237,6 +258,9 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
     if (this.bookmarkMessageTimeout) {
       clearTimeout(this.bookmarkMessageTimeout);
     }
+    
+    // Supprime le gestionnaire de clic global
+    document.removeEventListener('click', this.handleDocumentClick);
   }
   
   /**
@@ -295,11 +319,22 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
       this.mobileActionsOpen = null; // Ferme le menu d'actions mobile
       this.activeDropdownId = null; // Ferme le menu des 3 points desktop
       
-      // Force la position de la dropdown en dessous du bouton
-      this.bookmarkDropdownPosition = 'bottom';
-      
-      // Log pour débogage
-      console.log("[ConsultantCard] Dropdown bookmark positionnée en dessous du bouton via CSS");
+      // Calcule et applique la position exacte de la dropdown
+      setTimeout(() => {
+        const buttonElement = event.currentTarget as HTMLElement;
+        const buttonRect = buttonElement.getBoundingClientRect();
+        const dropdown = document.querySelector('.bookmark-dropdown') as HTMLElement;
+        
+        if (dropdown) {
+          // Positionne la dropdown en dessous du bouton
+          dropdown.style.top = `${buttonRect.bottom + 5}px`; // +5px pour un petit espace
+          dropdown.style.left = `${buttonRect.left - dropdown.offsetWidth + buttonRect.width}px`;
+          
+          // Log pour débogage
+          console.log("[ConsultantCard] Dropdown bookmark positionnée avec fixed coordinates", 
+            { top: dropdown.style.top, left: dropdown.style.left });
+        }
+      }, 0);
     }
   }
   
