@@ -55,14 +55,17 @@ export class AlertListComponent implements OnInit, OnDestroy {
   
   // États pour les dropdowns personnalisés
   experienceDropdownOpen: boolean = false;
+  availabilityDropdownOpen: boolean = false;
   locationDropdownOpen: boolean = false;
   skillsDropdownOpen: boolean = false;
   experienceSearchText: string = '';
+  availabilitySearchText: string = '';
   locationSearchText: string = '';
   skillsSearchText: string = '';
   
   // Listes filtrées pour la recherche
   filteredExperienceOptions: string[] = [];
+  filteredAvailabilityOptions: string[] = [];
   filteredLocationOptions: string[] = [];
   filteredSkillOptions: string[] = [];
   
@@ -86,6 +89,7 @@ export class AlertListComponent implements OnInit, OnDestroy {
     
     // Initialiser les listes filtrées
     this.filteredExperienceOptions = [...this.experienceOptions];
+    this.filteredAvailabilityOptions = [...this.availabilityOptions];
     this.filteredLocationOptions = [...this.locationOptions];
     this.filteredSkillOptions = [...this.skillOptions];
     
@@ -118,6 +122,15 @@ export class AlertListComponent implements OnInit, OnDestroy {
       }
     }
     
+    if (this.availabilityDropdownOpen) {
+      const dropdown = this.elementRef.nativeElement.querySelector('.custom-dropdown.availability');
+      const trigger = dropdown.querySelector('.dropdown-toggle');
+      const menu = dropdown.querySelector('.dropdown-menu');
+      if (trigger && menu) {
+        this.positionDropdownMenu(trigger, menu);
+      }
+    }
+    
     if (this.locationDropdownOpen) {
       const dropdown = this.elementRef.nativeElement.querySelector('.custom-dropdown.location');
       const trigger = dropdown.querySelector('.dropdown-toggle');
@@ -141,11 +154,12 @@ export class AlertListComponent implements OnInit, OnDestroy {
    * Ferme les dropdowns si on clique en dehors
    */
   private closeDropdownsOnClickOutside(event: MouseEvent): void {
-    if (this.experienceDropdownOpen || this.locationDropdownOpen || this.skillsDropdownOpen) {
+    if (this.experienceDropdownOpen || this.availabilityDropdownOpen || this.locationDropdownOpen || this.skillsDropdownOpen) {
       const target = event.target as HTMLElement;
       if (!this.elementRef.nativeElement.contains(target) || 
           !target.closest('.custom-dropdown')) {
         this.experienceDropdownOpen = false;
+        this.availabilityDropdownOpen = false;
         this.locationDropdownOpen = false;
         this.skillsDropdownOpen = false;
       }
@@ -238,6 +252,52 @@ export class AlertListComponent implements OnInit, OnDestroy {
   }
   
   /**
+   * Ouvre ou ferme le dropdown de disponibilité
+   */
+  toggleAvailabilityDropdown(event: Event): void {
+    event.stopPropagation();
+    this.availabilityDropdownOpen = !this.availabilityDropdownOpen;
+    
+    if (this.availabilityDropdownOpen) {
+      this.experienceDropdownOpen = false;
+      this.locationDropdownOpen = false;
+      this.skillsDropdownOpen = false;
+      this.availabilitySearchText = '';
+      this.filteredAvailabilityOptions = [...this.availabilityOptions];
+      
+      // Positionner le menu après qu'il soit rendu (setTimeout)
+      setTimeout(() => {
+        const dropdown = this.elementRef.nativeElement.querySelector('.custom-dropdown.availability');
+        const trigger = dropdown.querySelector('.dropdown-toggle');
+        const menu = dropdown.querySelector('.dropdown-menu.availability-menu');
+        
+        if (trigger && menu) {
+          // Obtenir les coordonnées exactes du bouton déclencheur pour référence
+          const rect = trigger.getBoundingClientRect();
+          
+          // Positionner le menu en utilisant position absolute
+          menu.style.position = 'absolute';
+          menu.style.width = `${trigger.offsetWidth}px`;
+          menu.style.left = '0'; // Aligné à gauche du parent
+          menu.style.top = '100%'; // Juste en dessous du parent
+          menu.style.marginTop = '5px'; // Petit espace entre le bouton et le menu
+          menu.style.zIndex = '10000';
+          menu.style.display = 'block';
+          
+          // Ajouter un log visuel pour le débogage
+          console.log('Position du menu de disponibilité:', {
+            width: menu.style.width,
+            position: menu.style.position,
+            left: menu.style.left,
+            top: menu.style.top,
+            marginTop: menu.style.marginTop
+          });
+        }
+      }, 0);
+    }
+  }
+  
+  /**
    * Ouvre ou ferme le dropdown de localisation
    */
   toggleLocationDropdown(event: Event): void {
@@ -246,6 +306,7 @@ export class AlertListComponent implements OnInit, OnDestroy {
     
     if (this.locationDropdownOpen) {
       this.experienceDropdownOpen = false;
+      this.availabilityDropdownOpen = false;
       this.skillsDropdownOpen = false;
       this.locationSearchText = '';
       this.filteredLocationOptions = [...this.locationOptions];
@@ -335,6 +396,17 @@ export class AlertListComponent implements OnInit, OnDestroy {
     this.experienceSearchText = searchText;
     this.filteredExperienceOptions = this.experienceOptions.filter(
       exp => exp.toLowerCase().includes(searchText)
+    );
+  }
+  
+  /**
+   * Filtre les options de disponibilité selon le texte de recherche
+   */
+  filterAvailabilityOptions(event: Event): void {
+    const searchText = (event.target as HTMLInputElement).value.toLowerCase();
+    this.availabilitySearchText = searchText;
+    this.filteredAvailabilityOptions = this.availabilityOptions.filter(
+      avail => avail.toLowerCase().includes(searchText)
     );
   }
   
@@ -435,6 +507,20 @@ export class AlertListComponent implements OnInit, OnDestroy {
   }
   
   /**
+   * Bascule la sélection d'une option de disponibilité
+   */
+  toggleAvailabilityOption(availability: string, event: Event): void {
+    event.stopPropagation();
+    const index = this.tempAvailability.indexOf(availability);
+    if (index === -1) {
+      this.tempAvailability.push(availability);
+    } else {
+      this.tempAvailability.splice(index, 1);
+    }
+    this.updateSelection('availability', null);
+  }
+  
+  /**
    * Bascule la sélection d'une option de localisation
    */
   toggleLocationOption(location: string, event: Event): void {
@@ -469,6 +555,15 @@ export class AlertListComponent implements OnInit, OnDestroy {
     return this.tempExperience.length > 0 
       ? `${this.tempExperience.length} niveau${this.tempExperience.length > 1 ? 'x' : ''} d'expérience sélectionné${this.tempExperience.length > 1 ? 's' : ''}`
       : 'Sélectionner des niveaux d\'expérience';
+  }
+  
+  /**
+   * Obtient le texte à afficher dans le bouton de dropdown de disponibilité
+   */
+  getAvailabilityDisplayText(): string {
+    return this.tempAvailability.length > 0 
+      ? `${this.tempAvailability.length} disponibilité${this.tempAvailability.length > 1 ? 's' : ''} sélectionnée${this.tempAvailability.length > 1 ? 's' : ''}`
+      : 'Sélectionner des disponibilités';
   }
   
   /**
