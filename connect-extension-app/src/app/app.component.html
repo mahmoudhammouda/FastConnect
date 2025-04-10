@@ -71,7 +71,7 @@
           <!-- User authenticated -->
           <div *ngIf="isAuthenticated" class="relative">
             <button 
-              (click)="toggleMenu()" 
+              (click)="toggleMenu($event)" 
               class="rounded-full p-0 flex items-center justify-center overflow-hidden w-8 h-8 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-150 focus:outline-none"
               aria-expanded="false"
             >
@@ -81,12 +81,12 @@
             <!-- Dropdown Menu -->
             <div 
               *ngIf="menuOpen" 
-              class="absolute right-0 mt-2 w-40 md:w-48 bg-white rounded-md shadow-lg py-1 z-50 ring-1 ring-black ring-opacity-5"
+              class="profile-menu absolute right-0 mt-2 w-40 md:w-48 bg-white rounded-md shadow-lg py-1 z-50 ring-1 ring-black ring-opacity-5"
             >
               <a 
                 routerLink="/profile" 
                 class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
-                (click)="toggleMenu()"
+                (click)="toggleMenu($event)"
               >
                 <div class="flex items-center">
                   <span class="material-icons text-gray-600 mr-2 text-sm">person</span>
@@ -99,7 +99,7 @@
                 *ngIf="currentUser?.role === 'admin'" 
                 routerLink="/admin" 
                 class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
-                (click)="toggleMenu()"
+                (click)="toggleMenu($event)"
               >
                 Administration
               </a>
@@ -108,16 +108,28 @@
                 *ngIf="currentUser?.role === 'consultant'" 
                 routerLink="/consultant-profile" 
                 class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
-                (click)="toggleMenu()"
+                (click)="toggleMenu($event)"
               >
                 Mon profil consultant
               </a>
 
+              <!-- Lien vers la liste des consultants (Disponibilités) -->
+              <a 
+                routerLink="/consultants" 
+                class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
+                (click)="toggleMenu($event)"
+              >
+                <div class="flex items-center">
+                  <span class="material-icons text-green-600 mr-2 text-sm">event_available</span>
+                  Disponibilités
+                </div>
+              </a>
+              
               <!-- Lien vers les favoris -->
               <a 
                 routerLink="/bookmarks" 
                 class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
-                (click)="toggleMenu()"
+                (click)="toggleMenu($event)"
               >
                 <div class="flex items-center">
                   <span class="material-icons text-purple-600 mr-2 text-sm">bookmark</span>
@@ -129,7 +141,7 @@
               <a 
                 routerLink="/alerts" 
                 class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
-                (click)="toggleMenu()"
+                (click)="toggleMenu($event)"
               >
                 <div class="flex items-center">
                   <span class="material-icons text-orange-600 mr-2 text-sm">notifications</span>

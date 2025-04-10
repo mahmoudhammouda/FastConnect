@@ -264,8 +264,34 @@ export class AppComponent implements OnInit {
     this.showFilterPanel = !this.showFilterPanel;
   }
 
-  toggleMenu(): void {
+  toggleMenu(event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
     this.menuOpen = !this.menuOpen;
+    
+    // Ajouter un écouteur d'événement au document pour fermer le menu quand on clique ailleurs
+    if (this.menuOpen) {
+      setTimeout(() => {
+        document.addEventListener('click', this.closeMenu);
+      }, 0);
+    }
+  }
+  
+  /**
+   * Fonction pour fermer le menu profil lorsqu'on clique ailleurs
+   */
+  closeMenu = (event: MouseEvent) => {
+    // Vérifier si le clic est dans le menu
+    const profileMenu = document.querySelector('.profile-menu');
+    
+    // Ne pas fermer si on a cliqué dans le menu
+    if (profileMenu && profileMenu.contains(event.target as Node)) {
+      return;
+    }
+    
+    this.menuOpen = false;
+    document.removeEventListener('click', this.closeMenu);
   }
 
   openLoginModal(): void {
