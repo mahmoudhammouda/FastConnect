@@ -27,7 +27,7 @@
   transition: all 0.2s ease;
   position: relative;
   z-index: var(--content-z-index);
-  overflow: hidden;
+  /* overflow: hidden; Commenté pour permettre aux menus déroulants de s'afficher correctement */
   border: 1px solid #f0f0f0;
   
   &:hover {
