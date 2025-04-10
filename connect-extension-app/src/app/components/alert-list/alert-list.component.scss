@@ -37,7 +37,8 @@
   } */
   
   &.selected {
-    border-left: 4px solid #3b82f6;
+    /* Bordure gauche bleue supprimée */
+    /* border-left: 4px solid #3b82f6; */  
     box-shadow: 0 4px 12px -2px rgba(59, 130, 246, 0.15);
   }
   
