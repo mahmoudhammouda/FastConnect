@@ -19,6 +19,7 @@ export interface AlertCriteria {
   availability: string[];
   location: string[];
   skills: string[];
+  country: string | null;
 }
 
 /**

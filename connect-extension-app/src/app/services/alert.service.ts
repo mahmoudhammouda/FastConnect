@@ -323,7 +323,8 @@ export class AlertService {
       experience: ['3-5 ans'],
       availability: ['Disponible maintenant'],
       location: ['Paris'],
-      skills: ['JavaScript', 'React', 'Node.js']
+      skills: ['JavaScript', 'React', 'Node.js'],
+      country: 'France'
     });
     
     // Exemple 2: Data Scientists disponibles dans 30 jours
@@ -331,7 +332,8 @@ export class AlertService {
       experience: ['5-10 ans'],
       availability: ['Disponible dans 30 jours'],
       location: ['Remote', 'Bordeaux'],
-      skills: ['Python', 'Machine Learning', 'TensorFlow']
+      skills: ['Python', 'Machine Learning', 'TensorFlow'],
+      country: 'France'
     });
     
     // Exemple 3: Experts en IA
@@ -339,7 +341,8 @@ export class AlertService {
       experience: ['10+ ans'],
       availability: ['Disponible maintenant', 'Disponible dans 15 jours'],
       location: ['Lyon', 'Remote'],
-      skills: ['Deep Learning', 'NLP', 'Computer Vision']
+      skills: ['Deep Learning', 'NLP', 'Computer Vision'],
+      country: 'Belgique'
     });
     
     // Simuler quelques nouveaux consultants pour l'exemple

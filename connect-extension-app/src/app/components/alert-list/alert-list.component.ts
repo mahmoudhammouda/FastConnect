@@ -46,28 +46,20 @@ export class AlertListComponent implements OnInit, OnDestroy {
   availabilityOptions: string[] = ['Disponible maintenant', 'Disponible dans 15 jours', 'Disponible dans 30 jours', 'Disponible dans 60 jours'];
   locationOptions: string[] = ['Paris', 'Lyon', 'Marseille', 'Bordeaux', 'Lille', 'Remote'];
   skillOptions: string[] = ['JavaScript', 'Python', 'Java', 'C#', 'React', 'Angular', 'Vue.js', 'Node.js', 'Express', 'Django', 'Flask', 'Spring', 'ASP.NET', 'Machine Learning', 'Deep Learning', 'NLP', 'Computer Vision', 'Data Science', 'TensorFlow', 'PyTorch', 'SQL', 'NoSQL', 'MongoDB', 'PostgreSQL', 'DevOps', 'Docker', 'Kubernetes', 'AWS', 'Azure', 'GCP'];
+  countryOptions: string[] = ['France', 'Belgique', 'Suisse', 'Canada', 'Luxembourg', 'Allemagne', 'Espagne', 'Italie', 'Royaume-Uni', 'Pays-Bas'];
   
   // Valeurs des sélecteurs pour le nouveau format de filtres
   selectedExperience: string = '';
   selectedAvailability: string = '';
   selectedLocation: string = '';
   selectedSkill: string = '';
+  selectedCountry: string | null = null;
   
   // États pour les dropdowns personnalisés
   experienceDropdownOpen: boolean = false;
   availabilityDropdownOpen: boolean = false;
   locationDropdownOpen: boolean = false;
   skillsDropdownOpen: boolean = false;
-  experienceSearchText: string = '';
-  availabilitySearchText: string = '';
-  locationSearchText: string = '';
-  skillsSearchText: string = '';
-  
-  // Listes filtrées pour la recherche
-  filteredExperienceOptions: string[] = [];
-  filteredAvailabilityOptions: string[] = [];
-  filteredLocationOptions: string[] = [];
-  filteredSkillOptions: string[] = [];
   
   // Subscription
   private subscription: Subscription = new Subscription();
@@ -86,12 +78,6 @@ export class AlertListComponent implements OnInit, OnDestroy {
         this.selectedAlertId = state.selectedAlertId;
       })
     );
-    
-    // Initialiser les listes filtrées
-    this.filteredExperienceOptions = [...this.experienceOptions];
-    this.filteredAvailabilityOptions = [...this.availabilityOptions];
-    this.filteredLocationOptions = [...this.locationOptions];
-    this.filteredSkillOptions = [...this.skillOptions];
     
     // Gestion des clics à l'extérieur des dropdowns pour les fermer
     this.addDropdownListeners();
@@ -216,8 +202,7 @@ export class AlertListComponent implements OnInit, OnDestroy {
     if (this.experienceDropdownOpen) {
       this.locationDropdownOpen = false;
       this.skillsDropdownOpen = false;
-      this.experienceSearchText = '';
-      this.filteredExperienceOptions = [...this.experienceOptions];
+      this.availabilityDropdownOpen = false;
       
       // Positionner le menu après qu'il soit rendu (setTimeout)
       setTimeout(() => {
@@ -262,8 +247,6 @@ export class AlertListComponent implements OnInit, OnDestroy {
       this.experienceDropdownOpen = false;
       this.locationDropdownOpen = false;
       this.skillsDropdownOpen = false;
-      this.availabilitySearchText = '';
-      this.filteredAvailabilityOptions = [...this.availabilityOptions];
       
       // Positionner le menu après qu'il soit rendu (setTimeout)
       setTimeout(() => {
@@ -308,8 +291,6 @@ export class AlertListComponent implements OnInit, OnDestroy {
       this.experienceDropdownOpen = false;
       this.availabilityDropdownOpen = false;
       this.skillsDropdownOpen = false;
-      this.locationSearchText = '';
-      this.filteredLocationOptions = [...this.locationOptions];
       
       // Positionner le menu après qu'il soit rendu (setTimeout)
       setTimeout(() => {
@@ -353,8 +334,7 @@ export class AlertListComponent implements OnInit, OnDestroy {
     if (this.skillsDropdownOpen) {
       this.experienceDropdownOpen = false;
       this.locationDropdownOpen = false;
-      this.skillsSearchText = '';
-      this.filteredSkillOptions = [...this.skillOptions];
+      this.availabilityDropdownOpen = false;
       
       // Positionner le menu après qu'il soit rendu (setTimeout)
       setTimeout(() => {
@@ -388,49 +368,7 @@ export class AlertListComponent implements OnInit, OnDestroy {
     }
   }
   
-  /**
-   * Filtre les options d'expérience selon le texte de recherche
-   */
-  filterExperienceOptions(event: Event): void {
-    const searchText = (event.target as HTMLInputElement).value.toLowerCase();
-    this.experienceSearchText = searchText;
-    this.filteredExperienceOptions = this.experienceOptions.filter(
-      exp => exp.toLowerCase().includes(searchText)
-    );
-  }
-  
-  /**
-   * Filtre les options de disponibilité selon le texte de recherche
-   */
-  filterAvailabilityOptions(event: Event): void {
-    const searchText = (event.target as HTMLInputElement).value.toLowerCase();
-    this.availabilitySearchText = searchText;
-    this.filteredAvailabilityOptions = this.availabilityOptions.filter(
-      avail => avail.toLowerCase().includes(searchText)
-    );
-  }
-  
-  /**
-   * Filtre les options de localisation selon le texte de recherche
-   */
-  filterLocationOptions(event: Event): void {
-    const searchText = (event.target as HTMLInputElement).value.toLowerCase();
-    this.locationSearchText = searchText;
-    this.filteredLocationOptions = this.locationOptions.filter(
-      loc => loc.toLowerCase().includes(searchText)
-    );
-  }
-  
-  /**
-   * Filtre les options de compétences selon le texte de recherche
-   */
-  filterSkillOptions(event: Event): void {
-    const searchText = (event.target as HTMLInputElement).value.toLowerCase();
-    this.skillsSearchText = searchText;
-    this.filteredSkillOptions = this.skillOptions.filter(
-      skill => skill.toLowerCase().includes(searchText)
-    );
-  }
+
   
   /**
    * Met à jour le filtre d'expérience quand le menu déroulant change
@@ -553,7 +491,7 @@ export class AlertListComponent implements OnInit, OnDestroy {
    */
   getExperienceDisplayText(): string {
     return this.tempExperience.length > 0 
-      ? `${this.tempExperience.length} niveau${this.tempExperience.length > 1 ? 'x' : ''} d'expérience sélectionné${this.tempExperience.length > 1 ? 's' : ''}`
+      ? `${this.tempExperience.length} niveau${this.tempExperience.length > 1 ? 'x' : ''}`
       : 'Sélectionner des niveaux d\'expérience';
   }
   
@@ -562,7 +500,7 @@ export class AlertListComponent implements OnInit, OnDestroy {
    */
   getAvailabilityDisplayText(): string {
     return this.tempAvailability.length > 0 
-      ? `${this.tempAvailability.length} disponibilité${this.tempAvailability.length > 1 ? 's' : ''} sélectionnée${this.tempAvailability.length > 1 ? 's' : ''}`
+      ? `${this.tempAvailability.length} disponibilité${this.tempAvailability.length > 1 ? 's' : ''}`
       : 'Sélectionner des disponibilités';
   }
   
@@ -571,7 +509,7 @@ export class AlertListComponent implements OnInit, OnDestroy {
    */
   getLocationDisplayText(): string {
     return this.tempLocation.length > 0 
-      ? `${this.tempLocation.length} localisation${this.tempLocation.length > 1 ? 's' : ''} sélectionnée${this.tempLocation.length > 1 ? 's' : ''}`
+      ? `${this.tempLocation.length} localisation${this.tempLocation.length > 1 ? 's' : ''}`
       : 'Sélectionner des localisations';
   }
   
@@ -580,7 +518,7 @@ export class AlertListComponent implements OnInit, OnDestroy {
    */
   getSkillsDisplayText(): string {
     return this.tempSkills.length > 0
-      ? `${this.tempSkills.length} compétence${this.tempSkills.length > 1 ? 's' : ''} sélectionnée${this.tempSkills.length > 1 ? 's' : ''}`
+      ? `${this.tempSkills.length} compétence${this.tempSkills.length > 1 ? 's' : ''}`
       : 'Sélectionner des compétences';
   }
   
@@ -617,6 +555,7 @@ export class AlertListComponent implements OnInit, OnDestroy {
     this.tempAvailability = [];
     this.tempLocation = [];
     this.tempSkills = [];
+    this.selectedCountry = null;
     
     // Réinitialiser l'état d'édition
     this.editingAlertId = null;
@@ -643,7 +582,8 @@ export class AlertListComponent implements OnInit, OnDestroy {
       experience: this.tempExperience,
       availability: this.tempAvailability,
       location: this.tempLocation,
-      skills: this.tempSkills
+      skills: this.tempSkills,
+      country: this.selectedCountry
     };
     
     const alertId = this.alertService.createAlert(this.newAlertForm.name.trim(), criteria);
@@ -672,6 +612,9 @@ export class AlertListComponent implements OnInit, OnDestroy {
     this.tempLocation = [...alert.criteria.location];
     this.tempSkills = [...alert.criteria.skills];
     
+    // Initialiser le pays sélectionné
+    this.selectedCountry = alert.criteria.country;
+    
     this.editingAlertId = alert.id;
     this.showNewAlertForm = true;
   }
@@ -699,7 +642,8 @@ export class AlertListComponent implements OnInit, OnDestroy {
       experience: this.tempExperience,
       availability: this.tempAvailability,
       location: this.tempLocation,
-      skills: this.tempSkills
+      skills: this.tempSkills,
+      country: this.selectedCountry
     };
     
     this.alertService.updateAlert(this.editingAlertId, this.newAlertForm.name.trim(), criteria);
@@ -847,6 +791,10 @@ export class AlertListComponent implements OnInit, OnDestroy {
    */
   getCriteriaSummary(criteria: AlertCriteria): string {
     const parts = [];
+    
+    if (criteria.country) {
+      parts.push(`Pays: ${criteria.country}`);
+    }
     
     if (criteria.experience.length > 0) {
       parts.push(`Exp: ${criteria.experience.join(', ')}`);

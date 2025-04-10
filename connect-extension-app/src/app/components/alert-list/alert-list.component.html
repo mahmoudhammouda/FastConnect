@@ -40,6 +40,18 @@
           class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500" />
       </div>
       
+      <!-- Champ Pays -->
+      <div class="form-section mb-4">
+        <label for="alert-country" class="block text-xs font-medium text-gray-600 mb-1">Pays</label>
+        <select 
+          id="alert-country" 
+          [(ngModel)]="selectedCountry"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+          <option [value]="null">Sélectionner un pays</option>
+          <option *ngFor="let country of countryOptions" [value]="country">{{ country }}</option>
+        </select>
+      </div>
+      
       <!-- Grille de filtres avec menus déroulants multi-options -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
         <!-- Expérience -->
@@ -58,14 +70,7 @@
               </div>
             </button>
             <div *ngIf="experienceDropdownOpen" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
-              <div class="px-2 py-1 border-b border-gray-200">
-                <input 
-                  type="text" 
-                  placeholder="Rechercher..."
-                  class="w-full px-2 py-1 text-sm border border-gray-300 rounded"
-                  (input)="filterExperienceOptions($event)">
-              </div>
-              <div *ngFor="let exp of filteredExperienceOptions" 
+              <div *ngFor="let exp of experienceOptions" 
                   class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
                   (click)="toggleExperienceOption(exp, $event)">
                 <input 
@@ -94,14 +99,7 @@
               </div>
             </button>
             <div *ngIf="availabilityDropdownOpen" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
-              <div class="px-2 py-1 border-b border-gray-200">
-                <input 
-                  type="text" 
-                  placeholder="Rechercher..."
-                  class="w-full px-2 py-1 text-sm border border-gray-300 rounded"
-                  (input)="filterAvailabilityOptions($event)">
-              </div>
-              <div *ngFor="let avail of filteredAvailabilityOptions" 
+              <div *ngFor="let avail of availabilityOptions" 
                   class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
                   (click)="toggleAvailabilityOption(avail, $event)">
                 <input 
@@ -130,14 +128,7 @@
               </div>
             </button>
             <div *ngIf="locationDropdownOpen" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
-              <div class="px-2 py-1 border-b border-gray-200">
-                <input 
-                  type="text" 
-                  placeholder="Rechercher..."
-                  class="w-full px-2 py-1 text-sm border border-gray-300 rounded"
-                  (input)="filterLocationOptions($event)">
-              </div>
-              <div *ngFor="let location of filteredLocationOptions" 
+              <div *ngFor="let location of locationOptions" 
                   class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
                   (click)="toggleLocationOption(location, $event)">
                 <input 
@@ -166,14 +157,7 @@
               </div>
             </button>
             <div *ngIf="skillsDropdownOpen" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
-              <div class="px-2 py-1 border-b border-gray-200">
-                <input 
-                  type="text" 
-                  placeholder="Rechercher..."
-                  class="w-full px-2 py-1 text-sm border border-gray-300 rounded"
-                  (input)="filterSkillOptions($event)">
-              </div>
-              <div *ngFor="let skill of filteredSkillOptions" 
+              <div *ngFor="let skill of skillOptions" 
                   class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
                   (click)="toggleSkillOption(skill, $event)">
                 <input 
@@ -313,7 +297,7 @@
         </div>
         
         <!-- Champ Nom -->
-        <div class="form-section">
+        <div class="form-section mb-4">
           <label for="alert-name-edit" class="block text-xs font-medium text-gray-600 mb-1">Nom de l'alerte</label>
           <input 
             type="text" 
@@ -321,6 +305,18 @@
             [(ngModel)]="newAlertForm.name" 
             placeholder="Ex: Développeurs JavaScript à Paris"
             class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+        </div>
+        
+        <!-- Champ Pays -->
+        <div class="form-section mb-4">
+          <label for="alert-country-edit" class="block text-xs font-medium text-gray-600 mb-1">Pays</label>
+          <select 
+            id="alert-country-edit" 
+            [(ngModel)]="selectedCountry"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+            <option [value]="null">Sélectionner un pays</option>
+            <option *ngFor="let country of countryOptions" [value]="country">{{ country }}</option>
+          </select>
         </div>
         
         <!-- Grille de filtres avec menus déroulants multi-options pour l'édition -->
@@ -341,14 +337,7 @@
                 </div>
               </button>
               <div *ngIf="experienceDropdownOpen" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
-                <div class="px-2 py-1 border-b border-gray-200">
-                  <input 
-                    type="text" 
-                    placeholder="Rechercher..."
-                    class="w-full px-2 py-1 text-sm border border-gray-300 rounded"
-                    (input)="filterExperienceOptions($event)">
-                </div>
-                <div *ngFor="let exp of filteredExperienceOptions" 
+                <div *ngFor="let exp of experienceOptions" 
                     class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
                     (click)="toggleExperienceOption(exp, $event)">
                   <input 
@@ -377,14 +366,7 @@
                 </div>
               </button>
               <div *ngIf="availabilityDropdownOpen" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
-                <div class="px-2 py-1 border-b border-gray-200">
-                  <input 
-                    type="text" 
-                    placeholder="Rechercher..."
-                    class="w-full px-2 py-1 text-sm border border-gray-300 rounded"
-                    (input)="filterAvailabilityOptions($event)">
-                </div>
-                <div *ngFor="let avail of filteredAvailabilityOptions" 
+                <div *ngFor="let avail of availabilityOptions" 
                     class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
                     (click)="toggleAvailabilityOption(avail, $event)">
                   <input 
@@ -413,14 +395,7 @@
                 </div>
               </button>
               <div *ngIf="locationDropdownOpen" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
-                <div class="px-2 py-1 border-b border-gray-200">
-                  <input 
-                    type="text" 
-                    placeholder="Rechercher..."
-                    class="w-full px-2 py-1 text-sm border border-gray-300 rounded"
-                    (input)="filterLocationOptions($event)">
-                </div>
-                <div *ngFor="let location of filteredLocationOptions" 
+                <div *ngFor="let location of locationOptions" 
                     class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
                     (click)="toggleLocationOption(location, $event)">
                   <input 
@@ -449,14 +424,7 @@
                 </div>
               </button>
               <div *ngIf="skillsDropdownOpen" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
-                <div class="px-2 py-1 border-b border-gray-200">
-                  <input 
-                    type="text" 
-                    placeholder="Rechercher..."
-                    class="w-full px-2 py-1 text-sm border border-gray-300 rounded"
-                    (input)="filterSkillOptions($event)">
-                </div>
-                <div *ngFor="let skill of filteredSkillOptions" 
+                <div *ngFor="let skill of skillOptions" 
                     class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
                     (click)="toggleSkillOption(skill, $event)">
                   <input 
