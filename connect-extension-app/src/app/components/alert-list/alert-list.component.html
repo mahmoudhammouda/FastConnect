@@ -69,7 +69,7 @@
                 </svg>
               </div>
             </button>
-            <div *ngIf="experienceDropdownOpen" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
+            <div *ngIf="experienceDropdownOpen" class="fixed z-50 mt-1 w-48 bg-white shadow-lg max-h-80 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
               <div *ngFor="let exp of experienceOptions" 
                   class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
                   (click)="toggleExperienceOption(exp, $event)">
@@ -98,7 +98,7 @@
                 </svg>
               </div>
             </button>
-            <div *ngIf="availabilityDropdownOpen" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
+            <div *ngIf="availabilityDropdownOpen" class="fixed z-50 mt-1 w-48 bg-white shadow-lg max-h-80 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
               <div *ngFor="let avail of availabilityOptions" 
                   class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
                   (click)="toggleAvailabilityOption(avail, $event)">
@@ -127,7 +127,7 @@
                 </svg>
               </div>
             </button>
-            <div *ngIf="locationDropdownOpen" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
+            <div *ngIf="locationDropdownOpen" class="fixed z-50 mt-1 w-48 bg-white shadow-lg max-h-80 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
               <div *ngFor="let location of locationOptions" 
                   class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
                   (click)="toggleLocationOption(location, $event)">
@@ -156,7 +156,7 @@
                 </svg>
               </div>
             </button>
-            <div *ngIf="skillsDropdownOpen" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
+            <div *ngIf="skillsDropdownOpen" class="fixed z-50 mt-1 w-48 bg-white shadow-lg max-h-80 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
               <div *ngFor="let skill of skillOptions" 
                   class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
                   (click)="toggleSkillOption(skill, $event)">
@@ -336,7 +336,7 @@
                   </svg>
                 </div>
               </button>
-              <div *ngIf="experienceDropdownOpen" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
+              <div *ngIf="experienceDropdownOpen" class="fixed z-50 mt-1 w-48 bg-white shadow-lg max-h-80 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
                 <div *ngFor="let exp of experienceOptions" 
                     class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
                     (click)="toggleExperienceOption(exp, $event)">
@@ -365,7 +365,7 @@
                   </svg>
                 </div>
               </button>
-              <div *ngIf="availabilityDropdownOpen" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
+              <div *ngIf="availabilityDropdownOpen" class="fixed z-50 mt-1 w-48 bg-white shadow-lg max-h-80 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
                 <div *ngFor="let avail of availabilityOptions" 
                     class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
                     (click)="toggleAvailabilityOption(avail, $event)">
@@ -394,7 +394,7 @@
                   </svg>
                 </div>
               </button>
-              <div *ngIf="locationDropdownOpen" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
+              <div *ngIf="locationDropdownOpen" class="fixed z-50 mt-1 w-48 bg-white shadow-lg max-h-80 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
                 <div *ngFor="let location of locationOptions" 
                     class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
                     (click)="toggleLocationOption(location, $event)">
@@ -423,7 +423,7 @@
                   </svg>
                 </div>
               </button>
-              <div *ngIf="skillsDropdownOpen" class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
+              <div *ngIf="skillsDropdownOpen" class="fixed z-50 mt-1 w-48 bg-white shadow-lg max-h-80 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
                 <div *ngFor="let skill of skillOptions" 
                     class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
                     (click)="toggleSkillOption(skill, $event)">
