@@ -1,0 +1,69 @@
+Nous voulons permettre à un recruteur de créer une “Alerte Automatique” basée sur des critères de recherche précis (expérience, disponibilité, localisation, compétences). Dès qu’un nouveau consultant correspond à ces critères, un compteur doit s’incrémenter, et le recruteur doit en être notifié.
+
+L’interface souhaitée doit être similaire à celle des listes de favoris déjà mise en place (voir capture). Cela implique :
+
+Un affichage type “carte” ou “ligne” listant chaque alerte.
+
+Un bouton ou une icône permettant d’éditer, de supprimer l’alerte, et un éventuel indicateur (badge) du nombre de nouveaux profils trouvés.
+
+Exigences fonctionnelles :
+
+Formulaire de création / édition d’alerte
+
+Proposer un formulaire de création où le recruteur peut renseigner :
+
+Nom de l’alerte (facultatif mais recommandé, ex. “Alerte Bordeaux Data Scientist”).
+
+Expérience (ex. “Moins de 3 ans”, “3-5 ans”, “5-10 ans”, etc.).
+
+Disponibilité (ex. “Disponible maintenant”, “Disponible dans X jours”).
+
+Localisation (ex. “Bordeaux”, “Paris”, “Remote”, etc.).
+
+Compétences (ex. “JavaScript”, “Machine Learning”, etc.) – champ multi-sélect.
+
+Ce formulaire doit être similaire en style et en disposition à la fenêtre de création d’une liste de favoris.
+
+L’utilisateur peut ensuite cliquer sur “Sauvegarder” pour créer ou mettre à jour l’alerte.
+
+Affichage des alertes
+
+Dans une page ou un onglet “Mes Alertes Automatiques” (similaire à “Mes listes de favoris”), l’utilisateur voit la liste de ses alertes existantes.
+
+Chaque alerte s’affiche sous forme de ligne (ou de carte), incluant :
+
+Le nom de l’alerte.
+
+Le récapitulatif des critères (expérience, disponibilité, localisation, compétences) en version courte ou icônes.
+
+Un badge ou un indicateur (“+X”) pour signaler le nombre de nouveaux consultants correspondant aux critères depuis la dernière consultation.
+
+Des icônes / boutons d’actions : éditer (✎), supprimer (🗑️), etc.
+
+Compteur de nouveaux consultants
+
+Dès qu’un nouveau consultant est créé ou mis à jour sur la plateforme et qu’il correspond aux critères de l’alerte (expérience, dispo, localisation, compétences), on incrémente le compteur de l’alerte concernée.
+
+Quand l’utilisateur clique sur une alerte pour voir la liste des consultants correspondants, le compteur se réinitialise à 0 (on considère que l’utilisateur a “vu” les nouveaux profils).
+
+Possibilité de conserver un historique si besoin (date d’ajout, etc.), ou de simplement vider le compteur.
+
+Logique de matching & notifications
+
+Matching : Au back-end, comparer les attributs d’un nouveau consultant avec les critères de chaque alerte active.
+
+Notification / Incrément :
+
+Soit un système d’événements en temps réel (ex. websockets) : au moment où un consultant correspond, on envoie une notification ou on incrémente directement le badge du front.
+
+Soit un polling périodique : le front-end interroge régulièrement le back-end pour mettre à jour le compteur.
+
+L’utilisateur reçoit ainsi une indication visuelle immédiate (badge sur l’alerte) lorsqu’il y a de nouveaux consultants.
+
+Intégration & design
+
+L’ensemble de cette fonctionnalité (création, édition, affichage des alertes) doit reprendre la même présentation que les listes de favoris :
+
+Même style de titres, de boutons, d’icônes, d’espacements, etc.
+
+S’assurer que le responsive design fonctionne sur desktop et mobile (comme c’est le cas pour les listes de favoris).

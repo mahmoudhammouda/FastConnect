@@ -29,6 +29,8 @@ Extension Chrome et application web pour la découverte intelligente de consulta
 ✅ Récupération et affichage de la liste des consultants depuis l'API
 ✅ Optimisation de l'affichage sur mobile (responsive design, interface améliorée)
 ✅ Fonctionnalité de tri et filtrage des consultants en mode mobile
+✅ Positionnement optimisé des éléments d'interface (dropdown bookmark, expansions de message)
+✅ Gestion améliorée des états d'expansion de message avec synchronisation complète
 🚧 En cours : Authentification avec Google et LinkedIn OAuth
 🚧 En cours : Développement des fonctionnalités de filtrage avancées
 

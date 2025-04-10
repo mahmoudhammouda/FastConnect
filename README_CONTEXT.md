@@ -295,8 +295,10 @@ L'authentification est gérée par plusieurs composants clés :
 - ✅ API .NET Core opérationnelle
 - ✅ Scripts de génération d'extension pour le développement et la production
 - ✅ Système d'authentification avec modal et JWT
+- ✅ Optimisation de l'affichage sur mobile (responsive design)
+- ✅ Améliorations UI avec positionnement précis des dropdowns
+- ✅ Synchronisation des états d'interface (expansion de message)
 - 🚧 Authentification avec Google et LinkedIn OAuth (en cours)
 - 🚧 Développement des fonctionnalités de filtrage avancées (en cours)
-- 🚧 Optimisation de l'affichage sur mobile (en cours)
 
 Ce document fournit un aperçu complet du contexte de l'application FastConnect, de son architecture, de ses fonctionnalités, et des considérations techniques importantes pour comprendre pleinement le projet.

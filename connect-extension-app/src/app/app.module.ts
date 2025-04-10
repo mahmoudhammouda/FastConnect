@@ -12,6 +12,7 @@ import { UserProfileComponent } from './components/user/profile/user-profile.com
 import { AuthInterceptor } from './services/auth.interceptor';
 import { RouterModule } from '@angular/router';
 import { AppDebugComponent } from './app.component.debug';
+import { AlertListComponent } from './components/alert-list/alert-list.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { AppDebugComponent } from './app.component.debug';
     ConsultantListComponent,
     LoginComponent,
     UserProfileComponent,
-    AppDebugComponent
+    AppDebugComponent,
+    AlertListComponent
   ],
   providers: [
     // Intercepteur HTTP pour ajouter le token à toutes les requêtes

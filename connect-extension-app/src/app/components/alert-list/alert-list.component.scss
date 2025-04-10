@@ -1,0 +1,583 @@
+/* Règle globale pour s'assurer que les listes déroulantes sont toujours au premier plan */
+:root {
+  --dropdown-z-index: 10000; /* Z-index très élevé pour les listes déroulantes */
+  --dropdown-container-z-index: 9999; /* Z-index pour les conteneurs de listes déroulantes */
+  --content-z-index: 1; /* Z-index bas pour le contenu standard */
+}
+
+/* Règle globale pour garantir que tous les menus dropdown sont au-dessus de tout */
+.dropdown-menu.show {
+  z-index: 10000 !important; /* Force le z-index à être très élevé */
+  position: fixed !important; /* Force la position à être fixed pour être au-dessus de tout */
+}
+
+/* Styles pour les alertes */
+.alerts-container {
+  padding: 0.75rem;
+  max-width: 100%;
+  
+  @media (min-width: 640px) {
+    padding: 1rem;
+  }
+}
+
+.alert-item {
+  margin-bottom: 0.75rem;
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+  position: inherit; /* Modifié de 'relative' à 'inherit' pour résoudre le problème de chevauchement */
+  z-index: var(--content-z-index);
+  /* overflow: hidden; Commenté pour permettre aux menus déroulants de s'afficher correctement */
+  border: 1px solid #f0f0f0;
+  
+  /* Hover effect retiré pour éviter les conflits
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08);
+  } */
+  
+  &.selected {
+    /* Bordure gauche bleue supprimée */
+    /* border-left: 4px solid #3b82f6; */  
+    box-shadow: 0 4px 12px -2px rgba(59, 130, 246, 0.15);
+  }
+  
+  /* Animation pour les alertes avec nouveaux consultants */
+  &.has-new-consultants {
+    animation: pulseHighlight 2s ease-in-out;
+    border-color: #93c5fd;
+    
+    .alert-header {
+      background-color: #f8faff;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem;
+  }
+}
+
+.alert-header {
+  position: inherit; /* Modifié de 'relative' à 'inherit' pour résoudre le problème de chevauchement */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1rem;
+  cursor: pointer;
+  background-color: white;
+  border-radius: inherit;
+  z-index: var(--content-z-index);
+  
+  /* Design plus épuré pour petit écran */
+  @media (max-width: 640px) {
+    padding: 0.75rem;
+    flex-wrap: wrap;
+    
+    .flex-1 {
+      flex: 0 0 100%;
+      margin-bottom: 0.5rem;
+    }
+    
+    .flex.items-center.gap-2 {
+      margin-left: auto;
+      margin-top: 0.5rem;
+    }
+  }
+}
+
+.alert-criteria {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  
+  @media (min-width: 640px) {
+    font-size: 0.875rem;
+  }
+}
+
+.alert-button {
+  transition: all 0.2s ease;
+  outline: none;
+  
+  &:focus {
+    outline: none;
+  }
+}
+
+/* Formulaire de création/édition d'alerte - Style collapsable */
+.alert-form-collapsable {
+  width: 100%;
+  margin-bottom: 1rem;
+  transform-origin: top;
+  animation: slideDown 0.3s ease-out forwards;
+  overflow: visible;
+  border: 1px solid #e5e7eb;
+  position: inherit; /* Modifié de 'relative' à 'inherit' pour résoudre le problème de chevauchement */
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  
+  &.exit {
+    animation: slideUp 0.3s ease-in forwards;
+  }
+  
+  @media (max-width: 640px) {
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: scaleY(0);
+    max-height: 0;
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1);
+    max-height: 800px;
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: scaleY(1);
+    max-height: 800px;
+    opacity: 1;
+  }
+  to {
+    transform: scaleY(0);
+    max-height: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes pulseHighlight {
+  0% {
+    transform: translateY(0);
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.3);
+  }
+  50% {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px -2px rgba(59, 130, 246, 0.35);
+  }
+  100% {
+    transform: translateY(0);
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.3);
+  }
+}
+
+.form-section {
+  margin-bottom: 1rem;
+  
+  @media (max-width: 640px) {
+    margin-bottom: 0.75rem;
+  }
+  
+  label {
+    color: #4b5563;
+    font-weight: 500;
+    font-size: 0.75rem;
+    margin-bottom: 0.25rem;
+    display: inline-block;
+    
+    @media (min-width: 640px) {
+      font-size: 0.8125rem;
+    }
+  }
+  
+  input[type="text"], input[type="email"], input[type="password"], textarea, select {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+    width: 100%;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    background-color: white;
+    
+    &:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    }
+    
+    &::placeholder {
+      color: #9ca3af;
+    }
+  }
+}
+
+.selection-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  
+  @media (min-width: 480px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Styles pour le formulaire compact */
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  position: inherit; /* Modifié de 'relative' à 'inherit' pour résoudre le problème de chevauchement */
+  z-index: var(--content-z-index); /* Utilise la variable CSS pour le z-index */
+}
+
+.form-col {
+  flex: 1 1 auto;
+  min-width: 150px;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-bottom: 0.25rem;
+  font-size: 0.8125rem;
+  background-color: white;
+  
+  &.selected {
+    background-color: #dbeafe;
+    border-color: #93c5fd;
+    box-shadow: 0 1px 2px rgba(59, 130, 246, 0.1);
+  }
+  
+  &:hover {
+    background-color: #f3f4f6;
+    transform: translateY(-1px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: #3b82f6;
+    margin-right: 0.5rem;
+    cursor: pointer;
+  }
+  
+  @media (max-width: 640px) {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.5rem;
+  }
+}
+
+.option-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+/* Styles pour les dropdowns personnalisés */
+.custom-dropdown {
+  position: inherit; /* Modifié de 'relative' à 'inherit' pour résoudre le problème de chevauchement */
+  width: 100%;
+  font-size: 0.875rem;
+  /* Propriétés ajoutées pour assurer la visibilité du dropdown */
+  z-index: var(--dropdown-container-z-index); /* Utilise la variable CSS pour le z-index */
+  isolation: isolate; /* Pour créer un nouveau contexte d'empilement */
+  
+  /* Styles spécifiques pour chaque type de dropdown */
+  &.experience {
+    z-index: calc(var(--dropdown-container-z-index) + 2);
+  }
+  
+  &.location {
+    z-index: calc(var(--dropdown-container-z-index) + 1);
+  }
+  
+  &.skills {
+    z-index: var(--dropdown-container-z-index);
+  }
+}
+
+.dropdown-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #9ca3af;
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+  }
+  
+  svg {
+    transition: transform 0.2s ease;
+  }
+  
+  &.active svg {
+    transform: rotate(180deg);
+  }
+}
+
+.dropdown-menu {
+  position: absolute; /* Position absolue au lieu de fixed */
+  z-index: 10000 !important; /* Z-index extrêmement élevé */
+  width: 100%;
+  max-height: 250px;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  margin-top: 0.25rem;
+  padding: 0.5rem 0;
+  display: none;
+  
+  &.show {
+    display: block;
+    animation: fadeIn 0.2s ease;
+    max-height: 80vh; /* Limite la hauteur à 80% de la hauteur de la fenêtre */
+    min-width: 200px; /* Largeur minimale */
+  }
+
+  /* Styles spécifiques pour chaque type de dropdown */
+  &.experience-menu,
+  &.location-menu,
+  &.skills-menu {
+    z-index: 10000 !important; /* Z-index extrêmement élevé pour ces menus spécifiques */
+    position: absolute; /* Position absolue au lieu de fixed */
+    background-color: white; 
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Ombre très prononcée */
+    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
+  }
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: #f3f4f6;
+  }
+  
+  input[type="checkbox"] {
+    margin-right: 0.5rem;
+  }
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  
+  &:focus {
+    outline: none;
+    border-bottom-color: #3b82f6;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Badge pour les nouveaux consultants */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.375rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1;
+  border-radius: 9999px;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  &.badge-red {
+    background-color: #ef4444;
+    background-image: linear-gradient(45deg, #ef4444, #f87171);
+  }
+  
+  @media (min-width: 640px) {
+    min-width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Position du badge */
+.badge-container {
+  position: inherit; /* Modifié de 'relative' à 'inherit' pour résoudre le problème de chevauchement */
+}
+
+.badge-notification {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  transform: scale(0.95);
+  transition: transform 0.2s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+/* Utilitaires */
+.form-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    ring-color: #93c5fd;
+    ring-width: 2px;
+  }
+}
+
+.form-label {
+  display: block;
+  font-weight: 500;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  outline: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  
+  &:focus {
+    outline: none;
+  }
+  
+  &.button-primary {
+    background-color: #3b82f6;
+    background-image: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    
+    &:hover {
+      background-color: #2563eb;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transform: translateY(-1px);
+    }
+    
+    &:active {
+      transform: translateY(0);
+    }
+    
+    @media (max-width: 640px) {
+      font-size: 0.75rem;
+      padding: 0.5rem 0.75rem;
+    }
+  }
+  
+  &.button-secondary {
+    background-color: #f3f4f6;
+    color: #1f2937;
+    border: 1px solid #e5e7eb;
+    
+    &:hover {
+      background-color: #e5e7eb;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+  }
+  
+  &.button-danger {
+    background-color: #ef4444;
+    background-image: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    
+    &:hover {
+      background-color: #dc2626;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+.button-icon {
+  padding: 0.375rem;
+  border-radius: 9999px;
+  outline: none;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  
+  &:focus {
+    outline: none;
+  }
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  @media (max-width: 640px) {
+    padding: 0.25rem;
+    
+    svg {
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+}

@@ -1,0 +1,490 @@
+<div class="alerts-container">
+  <!-- En-tête avec bouton d'ajout -->
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-lg font-semibold">Alertes automatiques</h2>
+    <button 
+      (click)="showCreateAlertForm()"
+      class="button button-primary flex items-center gap-1">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+      </svg>
+      Créer une alerte
+    </button>
+  </div>
+  
+  <!-- Nouveau formulaire de création d'alerte - Style collapsable affiché depuis le bouton principal -->
+  <div *ngIf="showNewAlertForm && !editingAlertId" 
+       class="alert-form-collapsable bg-white shadow-md rounded-lg mb-4 overflow-hidden">
+    <div class="p-4">
+      <div class="flex justify-between items-center mb-3">
+        <h3 class="text-sm font-medium text-gray-700">
+          Créer une alerte automatique
+        </h3>
+        <button 
+          (click)="hideCreateAlertForm()" 
+          class="text-gray-400 hover:text-gray-600">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Champ Nom -->
+      <div class="form-section mb-4">
+        <label for="alert-name" class="block text-xs font-medium text-gray-600 mb-1">Nom de l'alerte</label>
+        <input 
+          type="text" 
+          id="alert-name" 
+          [(ngModel)]="newAlertForm.name" 
+          placeholder="Ex: Développeurs JavaScript à Paris"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+      </div>
+      
+      <!-- Champ Pays -->
+      <div class="form-section mb-4">
+        <label for="alert-country" class="block text-xs font-medium text-gray-600 mb-1">Pays</label>
+        <select 
+          id="alert-country" 
+          [(ngModel)]="selectedCountry"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+          <option [value]="null">Sélectionner un pays</option>
+          <option *ngFor="let country of countryOptions" [value]="country">{{ country }}</option>
+        </select>
+      </div>
+      
+      <!-- Grille de filtres avec menus déroulants multi-options -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+        <!-- Expérience -->
+        <div>
+          <h3 class="text-xs font-medium text-gray-600 mb-2">Expérience</h3>
+          <div class="relative dropdown-container">
+            <button 
+              type="button"
+              class="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm text-left"
+              (click)="toggleExperienceDropdown($event)">
+              {{ getExperienceDisplayText() }}
+              <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+              </div>
+            </button>
+            <div *ngIf="experienceDropdownOpen" class="fixed z-50 mt-1 w-48 bg-white shadow-lg max-h-80 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
+              <div *ngFor="let exp of experienceOptions" 
+                  class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                  (click)="toggleExperienceOption(exp, $event)">
+                <input 
+                  type="checkbox" 
+                  [checked]="tempExperience.includes(exp)"
+                  class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                <span class="ml-2 text-gray-700">{{ exp }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Disponibilité -->
+        <div>
+          <h3 class="text-xs font-medium text-gray-600 mb-2">Disponibilité</h3>
+          <div class="relative dropdown-container">
+            <button 
+              type="button"
+              class="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm text-left"
+              (click)="toggleAvailabilityDropdown($event)">
+              {{ getAvailabilityDisplayText() }}
+              <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+              </div>
+            </button>
+            <div *ngIf="availabilityDropdownOpen" class="fixed z-50 mt-1 w-48 bg-white shadow-lg max-h-80 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
+              <div *ngFor="let avail of availabilityOptions" 
+                  class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                  (click)="toggleAvailabilityOption(avail, $event)">
+                <input 
+                  type="checkbox" 
+                  [checked]="tempAvailability.includes(avail)"
+                  class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                <span class="ml-2 text-gray-700">{{ avail }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Localisation -->
+        <div>
+          <h3 class="text-xs font-medium text-gray-600 mb-2">Localisation</h3>
+          <div class="relative dropdown-container">
+            <button 
+              type="button"
+              class="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm text-left"
+              (click)="toggleLocationDropdown($event)">
+              {{ getLocationDisplayText() }}
+              <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+              </div>
+            </button>
+            <div *ngIf="locationDropdownOpen" class="fixed z-50 mt-1 w-48 bg-white shadow-lg max-h-80 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
+              <div *ngFor="let location of locationOptions" 
+                  class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                  (click)="toggleLocationOption(location, $event)">
+                <input 
+                  type="checkbox" 
+                  [checked]="tempLocation.includes(location)"
+                  class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                <span class="ml-2 text-gray-700">{{ location }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Compétences -->
+        <div>
+          <h3 class="text-xs font-medium text-gray-600 mb-2">Compétences</h3>
+          <div class="relative dropdown-container">
+            <button 
+              type="button"
+              class="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm text-left"
+              (click)="toggleSkillsDropdown($event)">
+              {{ getSkillsDisplayText() }}
+              <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+              </div>
+            </button>
+            <div *ngIf="skillsDropdownOpen" class="fixed z-50 mt-1 w-48 bg-white shadow-lg max-h-80 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
+              <div *ngFor="let skill of skillOptions" 
+                  class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                  (click)="toggleSkillOption(skill, $event)">
+                <input 
+                  type="checkbox" 
+                  [checked]="tempSkills.includes(skill)"
+                  class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                <span class="ml-2 text-gray-700">{{ skill }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Sélections actives -->
+      <div *ngIf="tempExperience.length > 0 || tempLocation.length > 0 || tempSkills.length > 0" class="mb-4">
+        <div class="flex flex-wrap gap-1 mt-1">
+          <div *ngFor="let exp of tempExperience" 
+              class="text-xs bg-blue-100 text-blue-800 rounded-full px-2 py-1 flex items-center">
+            {{ exp }}
+            <button class="ml-1 text-blue-500 hover:text-blue-700" (click)="toggleExperienceOption(exp, $event)">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <div *ngFor="let loc of tempLocation" 
+              class="text-xs bg-blue-100 text-blue-800 rounded-full px-2 py-1 flex items-center">
+            {{ loc }}
+            <button class="ml-1 text-blue-500 hover:text-blue-700" (click)="toggleLocationOption(loc, $event)">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+          <div *ngFor="let skill of tempSkills" 
+              class="text-xs bg-blue-100 text-blue-800 rounded-full px-2 py-1 flex items-center">
+            {{ skill }}
+            <button class="ml-1 text-blue-500 hover:text-blue-700" (click)="toggleSkillOption(skill, $event)">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Boutons d'action -->
+      <div class="flex justify-end gap-2 mt-4">
+        <button 
+          (click)="hideCreateAlertForm()" 
+          class="px-4 py-2 text-xs text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-150">
+          Annuler
+        </button>
+        <button 
+          *ngIf="!editingAlertId"
+          (click)="createAlert()" 
+          class="px-4 py-2 text-xs text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-150">
+          Créer l'alerte
+        </button>
+        <button 
+          *ngIf="editingAlertId"
+          (click)="updateAlert()" 
+          class="px-4 py-2 text-xs text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-150">
+          Mettre à jour
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Message si aucune alerte -->
+  <div *ngIf="alerts.length === 0" class="p-4 bg-gray-50 rounded-lg text-center">
+    <p class="text-gray-500">Aucune alerte automatique configurée.</p>
+    <p class="text-gray-500 text-sm mt-1">Créez une alerte pour être notifié lorsque de nouveaux consultants correspondent à vos critères.</p>
+  </div>
+  
+  <!-- Liste des alertes -->
+  <div *ngIf="alerts.length > 0">
+    <div *ngFor="let alert of alerts" 
+         [class.selected]="selectedAlertId === alert.id"
+         [class.has-new-consultants]="hasNewConsultants(alert.id)"
+         class="alert-item relative">
+      <div class="alert-header" (click)="selectAlert(alert.id)">
+        <!-- Contenu principal de l'alerte -->
+        <div class="flex-1">
+          <div class="flex items-center gap-2">
+            <span class="font-medium">{{ alert.name }}</span>
+            
+            <!-- Badge pour les nouveaux consultants -->
+            <div *ngIf="hasNewConsultants(alert.id)" class="badge badge-red">
+              {{ getNewConsultantCount(alert.id) }}
+            </div>
+          </div>
+          
+          <!-- Résumé des critères -->
+          <div class="alert-criteria">
+            {{ getCriteriaSummary(alert.criteria) }}
+          </div>
+        </div>
+        
+        <!-- Boutons d'action -->
+        <div class="flex items-center gap-2">
+          <!-- Bouton d'édition -->
+          <button 
+            (click)="editAlert(alert); $event.stopPropagation()"
+            class="button-icon text-blue-600 hover:bg-blue-100">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+            </svg>
+          </button>
+          
+          <!-- Bouton de suppression -->
+          <button 
+            (click)="deleteAlert(alert.id, $event)"
+            class="button-icon text-red-600 hover:bg-red-100">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Formulaire d'édition directement sous la carte d'alerte sélectionnée -->
+      <div *ngIf="editingAlertId === alert.id" 
+           class="alert-form-collapsable bg-white shadow-md rounded-lg my-2 overflow-hidden">
+      <div class="p-4">
+        <div class="flex justify-between items-center mb-3">
+          <h3 class="text-sm font-medium text-gray-700">
+            Modifier l'alerte
+          </h3>
+          <button 
+            (click)="hideCreateAlertForm()" 
+            class="text-gray-400 hover:text-gray-600">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Champ Nom -->
+        <div class="form-section mb-4">
+          <label for="alert-name-edit" class="block text-xs font-medium text-gray-600 mb-1">Nom de l'alerte</label>
+          <input 
+            type="text" 
+            id="alert-name-edit" 
+            [(ngModel)]="newAlertForm.name" 
+            placeholder="Ex: Développeurs JavaScript à Paris"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+        </div>
+        
+        <!-- Champ Pays -->
+        <div class="form-section mb-4">
+          <label for="alert-country-edit" class="block text-xs font-medium text-gray-600 mb-1">Pays</label>
+          <select 
+            id="alert-country-edit" 
+            [(ngModel)]="selectedCountry"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
+            <option [value]="null">Sélectionner un pays</option>
+            <option *ngFor="let country of countryOptions" [value]="country">{{ country }}</option>
+          </select>
+        </div>
+        
+        <!-- Grille de filtres avec menus déroulants multi-options pour l'édition -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+          <!-- Expérience -->
+          <div>
+            <h3 class="text-xs font-medium text-gray-600 mb-2">Expérience</h3>
+            <div class="relative dropdown-container">
+              <button 
+                type="button"
+                class="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm text-left"
+                (click)="toggleExperienceDropdown($event)">
+                {{ getExperienceDisplayText() }}
+                <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+              </button>
+              <div *ngIf="experienceDropdownOpen" class="fixed z-50 mt-1 w-48 bg-white shadow-lg max-h-80 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
+                <div *ngFor="let exp of experienceOptions" 
+                    class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                    (click)="toggleExperienceOption(exp, $event)">
+                  <input 
+                    type="checkbox" 
+                    [checked]="tempExperience.includes(exp)"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                  <span class="ml-2 text-gray-700">{{ exp }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Disponibilité -->
+          <div>
+            <h3 class="text-xs font-medium text-gray-600 mb-2">Disponibilité</h3>
+            <div class="relative dropdown-container">
+              <button 
+                type="button"
+                class="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm text-left"
+                (click)="toggleAvailabilityDropdown($event)">
+                {{ getAvailabilityDisplayText() }}
+                <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+              </button>
+              <div *ngIf="availabilityDropdownOpen" class="fixed z-50 mt-1 w-48 bg-white shadow-lg max-h-80 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
+                <div *ngFor="let avail of availabilityOptions" 
+                    class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                    (click)="toggleAvailabilityOption(avail, $event)">
+                  <input 
+                    type="checkbox" 
+                    [checked]="tempAvailability.includes(avail)"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                  <span class="ml-2 text-gray-700">{{ avail }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Localisation -->
+          <div>
+            <h3 class="text-xs font-medium text-gray-600 mb-2">Localisation</h3>
+            <div class="relative dropdown-container">
+              <button 
+                type="button"
+                class="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm text-left"
+                (click)="toggleLocationDropdown($event)">
+                {{ getLocationDisplayText() }}
+                <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+              </button>
+              <div *ngIf="locationDropdownOpen" class="fixed z-50 mt-1 w-48 bg-white shadow-lg max-h-80 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
+                <div *ngFor="let location of locationOptions" 
+                    class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                    (click)="toggleLocationOption(location, $event)">
+                  <input 
+                    type="checkbox" 
+                    [checked]="tempLocation.includes(location)"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                  <span class="ml-2 text-gray-700">{{ location }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Compétences -->
+          <div>
+            <h3 class="text-xs font-medium text-gray-600 mb-2">Compétences</h3>
+            <div class="relative dropdown-container">
+              <button 
+                type="button"
+                class="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm text-left"
+                (click)="toggleSkillsDropdown($event)">
+                {{ getSkillsDisplayText() }}
+                <div class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+              </button>
+              <div *ngIf="skillsDropdownOpen" class="fixed z-50 mt-1 w-48 bg-white shadow-lg max-h-80 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto">
+                <div *ngFor="let skill of skillOptions" 
+                    class="flex items-center px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                    (click)="toggleSkillOption(skill, $event)">
+                  <input 
+                    type="checkbox" 
+                    [checked]="tempSkills.includes(skill)"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                  <span class="ml-2 text-gray-700">{{ skill }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Sélections actives -->
+        <div *ngIf="tempExperience.length > 0 || tempLocation.length > 0 || tempSkills.length > 0" class="mb-4">
+          <div class="flex flex-wrap gap-1 mt-1">
+            <div *ngFor="let exp of tempExperience" 
+                class="text-xs bg-blue-100 text-blue-800 rounded-full px-2 py-1 flex items-center">
+              {{ exp }}
+              <button class="ml-1 text-blue-500 hover:text-blue-700" (click)="toggleExperienceOption(exp, $event)">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+            <div *ngFor="let loc of tempLocation" 
+                class="text-xs bg-blue-100 text-blue-800 rounded-full px-2 py-1 flex items-center">
+              {{ loc }}
+              <button class="ml-1 text-blue-500 hover:text-blue-700" (click)="toggleLocationOption(loc, $event)">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+            <div *ngFor="let skill of tempSkills" 
+                class="text-xs bg-blue-100 text-blue-800 rounded-full px-2 py-1 flex items-center">
+              {{ skill }}
+              <button class="ml-1 text-blue-500 hover:text-blue-700" (click)="toggleSkillOption(skill, $event)">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Boutons d'action -->
+        <div class="flex justify-end gap-2 mt-4">
+          <button 
+            (click)="hideCreateAlertForm()" 
+            class="px-4 py-2 text-xs text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-150">
+            Annuler
+          </button>
+          <button 
+            (click)="updateAlert()" 
+            class="px-4 py-2 text-xs text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-150">
+            Mettre à jour
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
