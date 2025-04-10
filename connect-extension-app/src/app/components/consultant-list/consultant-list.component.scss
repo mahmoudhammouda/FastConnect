@@ -144,7 +144,7 @@
   app-consultant-card {
     margin-bottom: 1.5rem;
     display: block;
-    position: relative;
+    position: inherit; /* Modifié de 'relative' à 'inherit' pour résoudre le problème de chevauchement */
     
     // Ligne séparatrice décorative sous chaque carte
     &::after {
@@ -258,7 +258,7 @@
   // Augmenter l'espacement entre les cartes en mode mobile
   .space-y-6 > * {
     margin-bottom: 1.25rem;
-    position: relative;
+    position: inherit; /* Modifié de 'relative' à 'inherit' pour résoudre le problème de chevauchement */
     
     // Séparateur visuel entre les cartes en mode mobile
     &::after {

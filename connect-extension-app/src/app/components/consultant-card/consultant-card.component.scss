@@ -228,8 +228,8 @@
   .mobile-card-modern {
     margin-bottom: 12px;
     border-radius: 0;
-    position: relative;
-    overflow: hidden;
+    position: inherit; /* Modifié de 'relative' à 'inherit' pour résoudre le problème de chevauchement */
+    /* overflow: hidden; Commenté pour permettre aux menus déroulants de s'afficher correctement */
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     
     // Effet de hover subtil
@@ -362,7 +362,8 @@
 @media (min-width: 769px) {
   .consultant-card-mobile, .mobile-consultant-card {
     border-radius: 0.75rem;
-    overflow: hidden;
+    /* overflow: hidden; Commenté pour permettre aux menus déroulants de s'afficher correctement */
+    position: inherit; /* Modifié de 'relative' à 'inherit' pour résoudre le problème de chevauchement */
     transition: all 0.3s ease;
     border: 1px solid rgba(226, 232, 240, 0.9);
     box-shadow: 

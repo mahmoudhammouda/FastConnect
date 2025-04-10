@@ -25,7 +25,7 @@
   margin-bottom: 0.75rem;
   border-radius: 0.75rem;
   transition: all 0.2s ease;
-  position: relative;
+  position: inherit; /* Modifié de 'relative' à 'inherit' pour résoudre le problème de chevauchement */
   z-index: var(--content-z-index);
   /* overflow: hidden; Commenté pour permettre aux menus déroulants de s'afficher correctement */
   border: 1px solid #f0f0f0;
@@ -57,7 +57,7 @@
 }
 
 .alert-header {
-  position: relative;
+  position: inherit; /* Modifié de 'relative' à 'inherit' pour résoudre le problème de chevauchement */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -115,7 +115,7 @@
   animation: slideDown 0.3s ease-out forwards;
   overflow: visible;
   border: 1px solid #e5e7eb;
-  position: relative;
+  position: inherit; /* Modifié de 'relative' à 'inherit' pour résoudre le problème de chevauchement */
   border-radius: 0.75rem;
   box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 0.1);
   background-color: white;
@@ -231,7 +231,7 @@
   flex-wrap: wrap;
   gap: 0.75rem;
   margin-bottom: 0.75rem;
-  position: relative; /* Ajouté pour créer un contexte de positionnement */
+  position: inherit; /* Modifié de 'relative' à 'inherit' pour résoudre le problème de chevauchement */
   z-index: var(--content-z-index); /* Utilise la variable CSS pour le z-index */
 }
 
@@ -293,7 +293,7 @@
 
 /* Styles pour les dropdowns personnalisés */
 .custom-dropdown {
-  position: relative;
+  position: inherit; /* Modifié de 'relative' à 'inherit' pour résoudre le problème de chevauchement */
   width: 100%;
   font-size: 0.875rem;
   /* Propriétés ajoutées pour assurer la visibilité du dropdown */
@@ -450,7 +450,7 @@
 
 /* Position du badge */
 .badge-container {
-  position: relative;
+  position: inherit; /* Modifié de 'relative' à 'inherit' pour résoudre le problème de chevauchement */
 }
 
 .badge-notification {
