@@ -88,7 +88,10 @@
                 class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
                 (click)="toggleMenu()"
               >
-                Mon profil
+                <div class="flex items-center">
+                  <span class="material-icons text-gray-600 mr-2 text-sm">person</span>
+                  Mon profil
+                </div>
               </a>
 
               <!-- Liens spécifiques au rôle -->
@@ -118,7 +121,7 @@
               >
                 <div class="flex items-center">
                   <span class="material-icons text-purple-600 mr-2 text-sm">bookmark</span>
-                  Mes listes de favoris
+                  Mes listes
                 </div>
               </a>
               
@@ -130,7 +133,7 @@
               >
                 <div class="flex items-center">
                   <span class="material-icons text-orange-600 mr-2 text-sm">notifications</span>
-                  Mes alertes automatiques
+                  Mes alertes
                 </div>
               </a>
               
@@ -139,7 +142,10 @@
                 (click)="logout()" 
                 class="block w-full text-left px-3 md:px-4 py-2 text-xs md:text-sm text-red-600 hover:bg-gray-100 transition duration-150"
               >
-                Déconnexion
+                <div class="flex items-center">
+                  <span class="material-icons text-red-600 mr-2 text-sm">logout</span>
+                  Déconnexion
+                </div>
               </button>
             </div>
           </div>
