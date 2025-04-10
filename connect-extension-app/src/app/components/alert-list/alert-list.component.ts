@@ -492,7 +492,7 @@ export class AlertListComponent implements OnInit, OnDestroy {
   getExperienceDisplayText(): string {
     return this.tempExperience.length > 0 
       ? `${this.tempExperience.length} niveau${this.tempExperience.length > 1 ? 'x' : ''}`
-      : 'Sélectionner des niveaux d\'expérience';
+      : 'Niveaux d\'expérience';
   }
   
   /**
@@ -501,7 +501,7 @@ export class AlertListComponent implements OnInit, OnDestroy {
   getAvailabilityDisplayText(): string {
     return this.tempAvailability.length > 0 
       ? `${this.tempAvailability.length} disponibilité${this.tempAvailability.length > 1 ? 's' : ''}`
-      : 'Sélectionner des disponibilités';
+      : 'Disponibilités';
   }
   
   /**
@@ -510,7 +510,7 @@ export class AlertListComponent implements OnInit, OnDestroy {
   getLocationDisplayText(): string {
     return this.tempLocation.length > 0 
       ? `${this.tempLocation.length} localisation${this.tempLocation.length > 1 ? 's' : ''}`
-      : 'Sélectionner des localisations';
+      : 'Localisations';
   }
   
   /**
@@ -519,7 +519,7 @@ export class AlertListComponent implements OnInit, OnDestroy {
   getSkillsDisplayText(): string {
     return this.tempSkills.length > 0
       ? `${this.tempSkills.length} compétence${this.tempSkills.length > 1 ? 's' : ''}`
-      : 'Sélectionner des compétences';
+      : 'Compétences';
   }
   
   /**
