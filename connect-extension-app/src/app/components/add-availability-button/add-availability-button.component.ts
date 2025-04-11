@@ -34,8 +34,8 @@ import { ConsultantFormComponent } from '../consultant-form/consultant-form.comp
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 40px;
-      height: 40px;
+      width: 32px;
+      height: 32px;
       background-color: #3b82f6;
       color: white;
       border: none;
@@ -43,20 +43,20 @@ import { ConsultantFormComponent } from '../consultant-form/consultant-form.comp
       cursor: pointer;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
       transition: all 0.2s ease-in-out;
-      
-      &:hover {
-        background-color: #2563eb;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      }
-      
-      &:active {
-        transform: translateY(0);
-      }
-      
-      .material-icons {
-        font-size: 24px;
-      }
+    }
+    
+    .add-availability-button:hover {
+      background-color: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .add-availability-button:active {
+      transform: translateY(0);
+    }
+    
+    .add-availability-button .material-icons {
+      font-size: 18px;
     }
   `]
 })
