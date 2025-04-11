@@ -56,15 +56,17 @@
         </button>
         
         <!-- Bouton d'ajout de disponibilité -->
-        <div *ngIf="isAuthenticated" class="flex items-center h-8 ml-1 mr-2">
-          <button 
-            (click)="openAddAvailabilityForm()"
-            title="Ajouter une disponibilité"
-            class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow-sm transition-all duration-200 hover:shadow-md"
-          >
-            <span class="material-icons text-sm">add</span>
-          </button>
-        </div>
+        <button 
+          *ngIf="isAuthenticated"
+          (click)="openAddAvailabilityForm()"
+          title="Ajouter une disponibilité"
+          class="flex items-center justify-center gap-1 px-2 py-1.5 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors duration-150 h-8 mr-2"
+        >
+          <svg class="h-4 w-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          <span class="text-xs text-gray-600 hidden md:inline">Disponibilité</span>
+        </button>
         
         <!-- Bouton Profil / Connexion -->
         <div class="flex items-center">
