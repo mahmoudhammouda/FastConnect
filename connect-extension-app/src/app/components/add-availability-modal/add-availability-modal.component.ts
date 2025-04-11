@@ -30,6 +30,8 @@ export class AddAvailabilityModalComponent implements OnInit {
   };
   selectedCountry: string = '';
   availableCities: string[] = [];
+  selectedCities: string[] = [];
+  citiesDropdownOpen: boolean = false;
   experienceOptions = [
     { value: 'junior', label: 'Junior (1-3 ans)' },
     { value: 'intermediaire', label: 'Intermédiaire (3-5 ans)' },
@@ -104,7 +106,13 @@ export class AddAvailabilityModalComponent implements OnInit {
     this.availabilityForm.get('country')?.valueChanges.subscribe(country => {
       this.selectedCountry = country;
       this.availableCities = this.cities[country] || [];
+      this.selectedCities = [];
       this.availabilityForm.get('cities')?.setValue([]);
+    });
+    
+    // S'abonner aux changements dans les villes sélectionnées
+    this.availabilityForm.get('cities')?.valueChanges.subscribe(cities => {
+      this.selectedCities = cities || [];
     });
   }
   
@@ -275,5 +283,45 @@ export class AddAvailabilityModalComponent implements OnInit {
 
   compareArrays(array1: any[], array2: any[]): boolean {
     return JSON.stringify(array1) === JSON.stringify(array2);
+  }
+
+  // Méthodes pour la gestion du dropdown des villes
+  toggleCitiesDropdown(event: Event): void {
+    event.stopPropagation();
+    this.citiesDropdownOpen = !this.citiesDropdownOpen;
+    
+    // Fermer le dropdown lorsqu'on clique ailleurs sur la page
+    if (this.citiesDropdownOpen) {
+      setTimeout(() => {
+        document.addEventListener('click', this.closeDropdown);
+      }, 0);
+    }
+  }
+
+  closeDropdown = () => {
+    this.citiesDropdownOpen = false;
+    document.removeEventListener('click', this.closeDropdown);
+  }
+
+  isCitySelected(city: string): boolean {
+    return this.selectedCities.includes(city);
+  }
+
+  toggleCity(city: string): void {
+    const cities = [...this.selectedCities];
+    const index = cities.indexOf(city);
+    
+    if (index === -1) {
+      cities.push(city);
+    } else {
+      cities.splice(index, 1);
+    }
+    
+    this.availabilityForm.get('cities')?.setValue(cities);
+  }
+
+  removeCity(city: string): void {
+    const cities = this.selectedCities.filter(c => c !== city);
+    this.availabilityForm.get('cities')?.setValue(cities);
   }
 }
