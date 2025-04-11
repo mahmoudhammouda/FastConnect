@@ -1,7 +1,7 @@
 <div class="add-availability-modal hidden fixed inset-0 items-center justify-center z-50">
   <div class="modal-container relative mx-auto bg-white rounded-lg shadow-xl w-11/12 md:w-4/5 lg:w-3/4 max-w-4xl max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
     <!-- En-tête de la modal -->
-    <div class="modal-header">
+    <div class="modal-header flex justify-between items-center">
       <div class="flex items-center">
         <h2 class="text-lg font-semibold text-gray-900">Ajouter une disponibilité</h2>
         <!-- Bouton de verrouillage -->
@@ -12,7 +12,6 @@
             <div class="block w-10 h-6 bg-gray-200 rounded-full peer-checked:bg-blue-500"></div>
             <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition peer-checked:translate-x-4"></div>
           </div>
-          <span class="text-xs text-gray-400">(N'apparaît pas dans les recherches)</span>
         </div>
       </div>
       <button (click)="closeModal()" class="text-gray-500 hover:text-gray-700">
@@ -25,6 +24,15 @@
     <!-- Corps de la modal avec le formulaire -->
     <div class="modal-body">
       <form [formGroup]="availabilityForm" (ngSubmit)="onSubmit()">
+        <!-- URL LinkedIn -->
+        <div class="form-section">
+          <h3 class="form-section-title">Profil LinkedIn</h3>
+          <div class="form-group">
+            <label for="linkedinUrl">URL LinkedIn</label>
+            <input type="url" id="linkedinUrl" formControlName="linkedinUrl" class="form-control" placeholder="https://www.linkedin.com/in/votre-profil">
+          </div>
+        </div>
+          
         <!-- Informations principales du consultant -->
         <div class="form-section">
           <h3 class="form-section-title">Informations principales</h3>
@@ -57,11 +65,6 @@
               <div *ngIf="availabilityForm.get('abbreviation')?.touched && availabilityForm.get('abbreviation')?.invalid" class="invalid-feedback">
                 L'abréviation est obligatoire et doit faire moins de 10 caractères
               </div>
-            </div>
-            
-            <div class="form-group">
-              <label for="linkedinUrl">URL LinkedIn</label>
-              <input type="url" id="linkedinUrl" formControlName="linkedinUrl" class="form-control" placeholder="https://www.linkedin.com/in/votre-profil">
             </div>
             
             <div class="form-group">
@@ -151,23 +154,45 @@
           <h3 class="form-section-title">Compétences</h3>
           <div class="form-group">
             <label>Compétences techniques</label>
-            <div class="flex flex-wrap items-center gap-2 mt-1">
-              <select class="form-control w-auto" #skillSelect>
-                <option value="">Sélectionner dans la liste</option>
-                <option *ngFor="let skill of skillsList" [value]="skill">{{ skill }}</option>
-              </select>
-              <button type="button" class="btn btn-secondary" (click)="addSkillFromSelect(skillSelect.value); skillSelect.value = '';">Ajouter</button>
+            <div class="relative">
+              <button type="button" 
+                     class="form-control text-left pr-8 flex items-center justify-between" 
+                     (click)="toggleSkillsDropdown($event)">
+                <span *ngIf="(availabilityForm.get('skills')?.value || []).length === 0">Sélectionner des compétences</span>
+                <span *ngIf="(availabilityForm.get('skills')?.value || []).length === 1">{{ availabilityForm.get('skills')?.value[0] }}</span>
+                <span *ngIf="(availabilityForm.get('skills')?.value || []).length > 1">{{ availabilityForm.get('skills')?.value.length }} compétences sélectionnées</span>
+                <svg class="h-4 w-4 absolute right-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
               
-              <span class="px-2 text-gray-400">ou</span>
-              
-              <input type="text" class="form-control w-auto" placeholder="Nouvelle compétence" #newSkillInput>
-              <button type="button" class="btn btn-secondary" (click)="addSkill(newSkillInput.value); newSkillInput.value = '';">Ajouter</button>
+              <div *ngIf="skillsDropdownOpen" class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                <div class="p-2">
+                  <div *ngFor="let skill of skillsList" class="checkbox-group py-1">
+                    <input type="checkbox" 
+                          [id]="'skill-' + skill" 
+                          [checked]="isSkillSelected(skill)"
+                          (change)="toggleSkill(skill)">
+                    <label [for]="'skill-' + skill" class="ml-2 text-sm">{{ skill }}</label>
+                  </div>
+                  <!-- Option pour ajouter une nouvelle compétence -->
+                  <div class="mt-2 pt-2 border-t border-gray-200">
+                    <div class="flex items-center">
+                      <input type="text" class="form-control flex-1" placeholder="Nouvelle compétence" #newSkillInput>
+                      <button type="button" class="btn btn-sm btn-secondary ml-2" (click)="addSkill(newSkillInput.value); newSkillInput.value = '';">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            
-            <div *ngIf="availabilityForm.get('skills')?.value?.length > 0" class="skills-container mt-2">
-              <div *ngFor="let skill of availabilityForm.get('skills')?.value; let i = index" class="skill-tag">
+            <div *ngIf="(availabilityForm.get('skills')?.value || []).length > 0" class="mt-2 flex flex-wrap gap-1">
+              <div *ngFor="let skill of availabilityForm.get('skills')?.value" class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-md flex items-center">
                 {{ skill }}
-                <button type="button" (click)="removeSkill(i)" title="Supprimer">
+                <button type="button" (click)="removeSkill(skill)" class="ml-1 text-blue-600 hover:text-blue-800">
                   <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                   </svg>

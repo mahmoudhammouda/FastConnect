@@ -34,6 +34,7 @@ export class AddAvailabilityModalComponent implements OnInit {
   citiesDropdownOpen: boolean = false;
   sectorsDropdownOpen: boolean = false;
   expertisesDropdownOpen: boolean = false;
+  skillsDropdownOpen: boolean = false;
   experienceOptions = [
     { value: 'junior', label: 'Junior (1-3 ans)' },
     { value: 'intermediaire', label: 'Intermédiaire (3-5 ans)' },
@@ -164,9 +165,50 @@ export class AddAvailabilityModalComponent implements OnInit {
     this.addSkill(skill);
   }
 
-  removeSkill(index: number) {
+  removeSkill(skill: string) {
     const skills = this.availabilityForm.get('skills')?.value || [];
-    skills.splice(index, 1);
+    const updatedSkills = skills.filter((s: string) => s !== skill);
+    this.availabilityForm.get('skills')?.setValue(updatedSkills);
+  }
+  
+  // Méthodes pour le dropdown des compétences
+  toggleSkillsDropdown(event: Event): void {
+    event.stopPropagation();
+    this.skillsDropdownOpen = !this.skillsDropdownOpen;
+    
+    // Fermer les autres dropdowns
+    this.citiesDropdownOpen = false;
+    this.sectorsDropdownOpen = false;
+    this.expertisesDropdownOpen = false;
+    
+    // Fermer le dropdown lorsqu'on clique ailleurs sur la page
+    if (this.skillsDropdownOpen) {
+      setTimeout(() => {
+        document.addEventListener('click', this.closeSkillsDropdown);
+      }, 0);
+    }
+  }
+
+  closeSkillsDropdown = () => {
+    this.skillsDropdownOpen = false;
+    document.removeEventListener('click', this.closeSkillsDropdown);
+  }
+  
+  isSkillSelected(skill: string): boolean {
+    const skills = this.availabilityForm.get('skills')?.value || [];
+    return skills.includes(skill);
+  }
+  
+  toggleSkill(skill: string): void {
+    const skills = this.availabilityForm.get('skills')?.value || [];
+    const index = skills.indexOf(skill);
+    
+    if (index === -1) {
+      skills.push(skill);
+    } else {
+      skills.splice(index, 1);
+    }
+    
     this.availabilityForm.get('skills')?.setValue(skills);
   }
 
