@@ -15,10 +15,12 @@ import { RouterModule } from '@angular/router';
 import { AppDebugComponent } from './app.component.debug';
 import { AlertListComponent } from './components/alert-list/alert-list.component';
 import { ConsultantFormComponent } from './components/consultant-form/consultant-form.component';
+import { AddAvailabilityModalComponent } from './components/add-availability-modal/add-availability-modal.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    AddAvailabilityModalComponent
     // Les composants qui ne sont pas standalone doivent être déclarés ici
   ],
   imports: [
@@ -35,7 +37,8 @@ import { ConsultantFormComponent } from './components/consultant-form/consultant
     LoginComponent,
     UserProfileComponent,
     AppDebugComponent,
-    AlertListComponent
+    AlertListComponent,
+    ConsultantFormComponent
   ],
   providers: [
     // Intercepteur HTTP pour ajouter le token à toutes les requêtes

@@ -68,7 +68,7 @@ export class AddAvailabilityButtonComponent implements OnInit {
   
   constructor(
     private authService: AuthService,
-    private consultantService: ConsultantAvailabilityService
+    private availabilityService: ConsultantAvailabilityService
   ) { }
 
   ngOnInit(): void {
@@ -101,7 +101,7 @@ export class AddAvailabilityButtonComponent implements OnInit {
    */
   openAddAvailabilityForm(): void {
     // Initialise un nouveau formulaire
-    this.consultantService.initNewForm();
+    this.availabilityService.initNewForm();
     // Affiche le formulaire
     this.showForm = true;
   }

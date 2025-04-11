@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, of, throwError, Subject } from 'rxjs';
 import { map, catchError, tap, delay } from 'rxjs/operators';
 import { Consultant, ConsultantWithTags, ExperienceLevel, ExperienceLevelString, AvailabilityStatus } from '../models/consultant.model';
 import { environment } from '../../environments/environment';
@@ -10,6 +10,8 @@ import { ApiService } from './api.service';
 })
 export class ConsultantService {
   private mockData: Consultant[] = [];
+  private refreshSubject = new Subject<void>();
+  public refresh$ = this.refreshSubject.asObservable();
 
   constructor(private apiService: ApiService) { 
     console.log('ConsultantService initialized');
@@ -178,6 +180,14 @@ export class ConsultantService {
         sectors: randomSectors
       } as Consultant);
     }
+  }
+
+  /**
+   * Déclenche une actualisation des consultants
+   */
+  refreshConsultants(): void {
+    console.log('[ConsultantService] Demande de rafraîchissement des consultants');
+    this.refreshSubject.next();
   }
 
   /**

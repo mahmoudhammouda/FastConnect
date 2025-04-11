@@ -1,136 +1,113 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
-import { Consultant, AvailabilityStatus, ExperienceLevel, Experience } from '../models/consultant.model';
-import { ConsultantFormData } from '../models/consultant-form.model';
-import { UserService } from './user.service';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { ApiService } from './api.service';
 
-/**
- * Valeurs par défaut pour le formulaire
- */
-export const DEFAULT_FORM_VALUES: ConsultantFormData = {
-  role: '',
-  skills: [],
-  location: '',
-  experience: ExperienceLevel.Intermediate,
-  availability: AvailabilityStatus.Available,
-  message: '',
-  linkedinUrl: '',
-  phone: '',
-  email: '',
-  expertises: [],
-  sectors: [],
-  experiences: []
-};
-
-/**
- * Service de gestion des disponibilités des consultants
- */
 @Injectable({
   providedIn: 'root'
 })
 export class ConsultantAvailabilityService {
-  // État d'édition du formulaire
-  private isEditMode = new BehaviorSubject<boolean>(false);
+  private refreshNeededSource = new BehaviorSubject<boolean>(false);
+  refreshNeeded$ = this.refreshNeededSource.asObservable();
   
-  // Données courantes du formulaire
-  private currentFormData = new BehaviorSubject<ConsultantFormData | null>(null);
-  
+  // État du mode d'édition (nouveau vs édition)
+  private isEditModeSource = new BehaviorSubject<boolean>(false);
+  private currentFormDataSource = new BehaviorSubject<any>(null);
+
   constructor(
     private http: HttpClient,
-    private userService: UserService
-  ) {}
+    private apiService: ApiService
+  ) { }
+
+  /**
+   * Notifie les abonnés qu'une actualisation des données est nécessaire
+   */
+  notifyRefreshNeeded(): void {
+    this.refreshNeededSource.next(true);
+  }
   
   /**
-   * Initialise un nouveau formulaire avec les valeurs par défaut
+   * Initialise un nouveau formulaire
    */
   initNewForm(): void {
-    this.isEditMode.next(false);
-    this.currentFormData.next({...DEFAULT_FORM_VALUES});
+    this.isEditModeSource.next(false);
+    this.currentFormDataSource.next({
+      firstName: '',
+      lastName: '',
+      role: '',
+      abbreviation: '',
+      country: '',
+      cities: [],
+      experienceLevel: '',
+      linkedinUrl: '',
+      isProfileLocked: false,
+      isSubcontractor: false,
+      skills: []
+    });
   }
   
   /**
-   * Initialise le formulaire avec les données d'un consultant existant
+   * Initialise le formulaire en mode édition
+   * @param consultantData Les données du consultant à éditer
    */
-  initEditForm(consultant: Consultant): void {
-    this.isEditMode.next(true);
-    
-    const formData: ConsultantFormData = {
-      id: consultant.id,
-      role: consultant.role,
-      skills: [...consultant.skills],
-      location: consultant.location,
-      experience: consultant.experience,
-      availability: consultant.availability,
-      message: consultant.message || '',
-      linkedinUrl: consultant.linkedinUrl,
-      phone: consultant.phone || '',
-      email: consultant.email || '',
-      expertises: consultant.expertises ? [...consultant.expertises] : [],
-      sectors: consultant.sectors ? [...consultant.sectors] : [],
-      experiences: consultant.experiences ? [...consultant.experiences] : []
-    };
-    
-    this.currentFormData.next(formData);
+  initEditForm(consultantData: any): void {
+    this.isEditModeSource.next(true);
+    this.currentFormDataSource.next(consultantData);
   }
   
   /**
-   * Obtient l'état d'édition du formulaire
+   * Récupère l'état du mode d'édition
    */
   getIsEditMode(): Observable<boolean> {
-    return this.isEditMode.asObservable();
+    return this.isEditModeSource.asObservable();
   }
   
   /**
-   * Obtient les données courantes du formulaire
+   * Récupère les données actuelles du formulaire
    */
-  getCurrentFormData(): Observable<ConsultantFormData | null> {
-    return this.currentFormData.asObservable();
+  getCurrentFormData(): Observable<any> {
+    return this.currentFormDataSource.asObservable();
   }
   
   /**
-   * Crée ou met à jour un consultant
+   * Enregistre un consultant (ajout ou mise à jour)
+   * @param formData Les données du formulaire à enregistrer
    */
-  saveConsultant(data: ConsultantFormData): Observable<Consultant> {
-    // Pour le mode démo, on simule la sauvegarde avec un délai
-    // Dans une application réelle, ceci ferait appel à l'API
-    return new Observable<Consultant>(observer => {
-      setTimeout(() => {
-        // On récupère l'ID de l'utilisateur courant
-        const userId = this.userService.getCurrentUserId();
-        
-        // Si l'ID est null, on simule une erreur d'authentification
-        if (!userId) {
-          observer.error(new Error('Utilisateur non authentifié.'));
-          return;
-        }
-        
-        // On prépare les données à sauvegarder
-        const dataToSave: any = {
-          ...data,
-          createdBy: userId,
-        };
-        
-        // Si c'est une création (pas d'ID)
-        if (!data.id) {
-          // Génération d'un ID unique
-          dataToSave.id = 'consultant-' + Math.floor(Math.random() * 10000);
-          dataToSave.createdAt = new Date();
-        }
-        
-        // Dans une application réelle, on enverrait ces données à l'API
-        // Par exemple :
-        // if (data.id) {
-        //   return this.http.put<Consultant>(`/api/consultants/${data.id}`, dataToSave);
-        // } else {
-        //   return this.http.post<Consultant>('/api/consultants', dataToSave);
-        // }
-        
-        // Pour la démo, on simule un succès
-        observer.next(dataToSave as Consultant);
-        observer.complete();
-      }, 1000); // Délai simulé
-    });
+  saveConsultant(formData: any): Observable<any> {
+    if (this.isEditModeSource.value && formData.id) {
+      // Mode édition
+      return this.updateConsultantAvailability(formData.id, formData);
+    } else {
+      // Mode ajout
+      return this.addConsultantAvailability(formData);
+    }
+  }
+
+  /**
+   * Ajoute une nouvelle disponibilité de consultant
+   * @param consultantData Les données du consultant à ajouter
+   * @returns Une Observable contenant la réponse du serveur
+   */
+  addConsultantAvailability(consultantData: any): Observable<any> {
+    return this.apiService.post('/consultants/availability', consultantData);
+  }
+
+  /**
+   * Met à jour la disponibilité d'un consultant
+   * @param consultantId L'identifiant du consultant
+   * @param availabilityData Les données de disponibilité à mettre à jour
+   * @returns Une Observable contenant la réponse du serveur
+   */
+  updateConsultantAvailability(consultantId: string, availabilityData: any): Observable<any> {
+    return this.apiService.put(`/consultants/${consultantId}/availability`, availabilityData);
+  }
+
+  /**
+   * Supprime la disponibilité d'un consultant
+   * @param consultantId L'identifiant du consultant
+   * @returns Une Observable contenant la réponse du serveur
+   */
+  deleteConsultantAvailability(consultantId: string): Observable<any> {
+    return this.apiService.delete(`/consultants/${consultantId}/availability`);
   }
 }
