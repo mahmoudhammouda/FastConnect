@@ -2,7 +2,19 @@
   <div class="modal-container relative mx-auto bg-white rounded-lg shadow-xl w-11/12 md:w-4/5 lg:w-3/4 max-w-4xl max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
     <!-- En-tête de la modal -->
     <div class="modal-header">
-      <h2 class="text-lg font-semibold text-gray-900">Ajouter une disponibilité</h2>
+      <div class="flex items-center">
+        <h2 class="text-lg font-semibold text-gray-900">Ajouter une disponibilité</h2>
+        <!-- Bouton de verrouillage -->
+        <div class="ml-4 flex items-center">
+          <label for="profile-lock-toggle" class="text-sm text-gray-500 mr-2">Profil verrouillé</label>
+          <div class="relative inline-block w-10 mr-2 align-middle select-none">
+            <input type="checkbox" id="profile-lock-toggle" formControlName="locked" class="sr-only peer">
+            <div class="block w-10 h-6 bg-gray-200 rounded-full peer-checked:bg-blue-500"></div>
+            <div class="dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition peer-checked:translate-x-4"></div>
+          </div>
+          <span class="text-xs text-gray-400">(N'apparaît pas dans les recherches)</span>
+        </div>
+      </div>
       <button (click)="closeModal()" class="text-gray-500 hover:text-gray-700">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -45,6 +57,11 @@
               <div *ngIf="availabilityForm.get('abbreviation')?.touched && availabilityForm.get('abbreviation')?.invalid" class="invalid-feedback">
                 L'abréviation est obligatoire et doit faire moins de 10 caractères
               </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="linkedinUrl">URL LinkedIn</label>
+              <input type="url" id="linkedinUrl" formControlName="linkedinUrl" class="form-control" placeholder="https://www.linkedin.com/in/votre-profil">
             </div>
             
             <div class="form-group">
@@ -126,19 +143,6 @@
                 Le TJM doit être un nombre positif
               </div>
             </div>
-            
-            <div class="form-group">
-              <label for="linkedinUrl">URL LinkedIn</label>
-              <input type="url" id="linkedinUrl" formControlName="linkedinUrl" class="form-control" placeholder="https://www.linkedin.com/in/votre-profil">
-            </div>
-          </div>
-          
-          <div class="form-group mt-3">
-            <div class="checkbox-group">
-              <input type="checkbox" id="locked" formControlName="locked">
-              <label for="locked">Profil verrouillé</label>
-            </div>
-            <small class="text-gray-500 text-xs mt-1 block">Un profil verrouillé n'apparaît pas dans les recherches standard</small>
           </div>
         </div>
         
@@ -175,10 +179,38 @@
           <!-- Secteurs d'activité -->
           <div class="form-group mt-3">
             <label>Secteurs d'activité</label>
-            <div class="skills-container mt-1">
-              <div *ngFor="let sector of sectors" class="checkbox-group">
-                <input type="checkbox" [id]="'sector-' + sector" (change)="toggleSector(sector)" [checked]="isSectorSelected(sector)">
-                <label [for]="'sector-' + sector">{{ sector }}</label>
+            <div class="relative">
+              <button type="button" 
+                     class="form-control text-left pr-8 flex items-center justify-between" 
+                     (click)="toggleSectorsDropdown($event)">
+                <span *ngIf="(availabilityForm.get('selectedSectors')?.value || []).length === 0">Sélectionner des secteurs</span>
+                <span *ngIf="(availabilityForm.get('selectedSectors')?.value || []).length === 1">{{ availabilityForm.get('selectedSectors')?.value[0] }}</span>
+                <span *ngIf="(availabilityForm.get('selectedSectors')?.value || []).length > 1">{{ availabilityForm.get('selectedSectors')?.value.length }} secteurs sélectionnés</span>
+                <svg class="h-4 w-4 absolute right-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              
+              <div *ngIf="sectorsDropdownOpen" class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                <div class="p-2">
+                  <div *ngFor="let sector of sectors" class="checkbox-group py-1">
+                    <input type="checkbox" 
+                          [id]="'sector-' + sector" 
+                          [checked]="isSectorSelected(sector)"
+                          (change)="toggleSector(sector)">
+                    <label [for]="'sector-' + sector" class="ml-2 text-sm">{{ sector }}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="(availabilityForm.get('selectedSectors')?.value || []).length > 0" class="mt-2 flex flex-wrap gap-1">
+              <div *ngFor="let sector of availabilityForm.get('selectedSectors')?.value" class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-md flex items-center">
+                {{ sector }}
+                <button type="button" (click)="removeSector(sector)" class="ml-1 text-blue-600 hover:text-blue-800">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
@@ -186,10 +218,38 @@
           <!-- Expertises -->
           <div class="form-group mt-3">
             <label>Domaines d'expertise</label>
-            <div class="skills-container mt-1">
-              <div *ngFor="let expertise of expertises" class="checkbox-group">
-                <input type="checkbox" [id]="'expertise-' + expertise" (change)="toggleExpertise(expertise)" [checked]="isExpertiseSelected(expertise)">
-                <label [for]="'expertise-' + expertise">{{ expertise }}</label>
+            <div class="relative">
+              <button type="button" 
+                     class="form-control text-left pr-8 flex items-center justify-between" 
+                     (click)="toggleExpertisesDropdown($event)">
+                <span *ngIf="(availabilityForm.get('selectedExpertises')?.value || []).length === 0">Sélectionner des domaines d'expertise</span>
+                <span *ngIf="(availabilityForm.get('selectedExpertises')?.value || []).length === 1">{{ availabilityForm.get('selectedExpertises')?.value[0] }}</span>
+                <span *ngIf="(availabilityForm.get('selectedExpertises')?.value || []).length > 1">{{ availabilityForm.get('selectedExpertises')?.value.length }} domaines sélectionnés</span>
+                <svg class="h-4 w-4 absolute right-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              
+              <div *ngIf="expertisesDropdownOpen" class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                <div class="p-2">
+                  <div *ngFor="let expertise of expertises" class="checkbox-group py-1">
+                    <input type="checkbox" 
+                          [id]="'expertise-' + expertise" 
+                          [checked]="isExpertiseSelected(expertise)"
+                          (change)="toggleExpertise(expertise)">
+                    <label [for]="'expertise-' + expertise" class="ml-2 text-sm">{{ expertise }}</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="(availabilityForm.get('selectedExpertises')?.value || []).length > 0" class="mt-2 flex flex-wrap gap-1">
+              <div *ngFor="let expertise of availabilityForm.get('selectedExpertises')?.value" class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-md flex items-center">
+                {{ expertise }}
+                <button type="button" (click)="removeExpertise(expertise)" class="ml-1 text-blue-600 hover:text-blue-800">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </button>
               </div>
             </div>
           </div>

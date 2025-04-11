@@ -32,6 +32,8 @@ export class AddAvailabilityModalComponent implements OnInit {
   availableCities: string[] = [];
   selectedCities: string[] = [];
   citiesDropdownOpen: boolean = false;
+  sectorsDropdownOpen: boolean = false;
+  expertisesDropdownOpen: boolean = false;
   experienceOptions = [
     { value: 'junior', label: 'Junior (1-3 ans)' },
     { value: 'intermediaire', label: 'Intermédiaire (3-5 ans)' },
@@ -323,5 +325,61 @@ export class AddAvailabilityModalComponent implements OnInit {
   removeCity(city: string): void {
     const cities = this.selectedCities.filter(c => c !== city);
     this.availabilityForm.get('cities')?.setValue(cities);
+  }
+
+  // Méthodes pour la gestion du dropdown des secteurs
+  toggleSectorsDropdown(event: Event): void {
+    event.stopPropagation();
+    this.sectorsDropdownOpen = !this.sectorsDropdownOpen;
+    
+    // Fermer les autres dropdowns
+    this.citiesDropdownOpen = false;
+    this.expertisesDropdownOpen = false;
+    
+    // Fermer le dropdown lorsqu'on clique ailleurs sur la page
+    if (this.sectorsDropdownOpen) {
+      setTimeout(() => {
+        document.addEventListener('click', this.closeSectorsDropdown);
+      }, 0);
+    }
+  }
+
+  closeSectorsDropdown = () => {
+    this.sectorsDropdownOpen = false;
+    document.removeEventListener('click', this.closeSectorsDropdown);
+  }
+
+  removeSector(sector: string): void {
+    const sectors = this.availabilityForm.get('selectedSectors')?.value || [];
+    const updatedSectors = sectors.filter((s: string) => s !== sector);
+    this.availabilityForm.get('selectedSectors')?.setValue(updatedSectors);
+  }
+
+  // Méthodes pour la gestion du dropdown des expertises
+  toggleExpertisesDropdown(event: Event): void {
+    event.stopPropagation();
+    this.expertisesDropdownOpen = !this.expertisesDropdownOpen;
+    
+    // Fermer les autres dropdowns
+    this.citiesDropdownOpen = false;
+    this.sectorsDropdownOpen = false;
+    
+    // Fermer le dropdown lorsqu'on clique ailleurs sur la page
+    if (this.expertisesDropdownOpen) {
+      setTimeout(() => {
+        document.addEventListener('click', this.closeExpertisesDropdown);
+      }, 0);
+    }
+  }
+
+  closeExpertisesDropdown = () => {
+    this.expertisesDropdownOpen = false;
+    document.removeEventListener('click', this.closeExpertisesDropdown);
+  }
+
+  removeExpertise(expertise: string): void {
+    const expertises = this.availabilityForm.get('selectedExpertises')?.value || [];
+    const updatedExpertises = expertises.filter((e: string) => e !== expertise);
+    this.availabilityForm.get('selectedExpertises')?.setValue(updatedExpertises);
   }
 }
