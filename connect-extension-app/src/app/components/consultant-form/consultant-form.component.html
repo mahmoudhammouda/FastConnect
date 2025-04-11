@@ -1,0 +1,111 @@
+<!-- Overlay modal backdrop -->
+<div class="modal-backdrop" (click)="closeModal()"></div>
+
+<!-- Formulaire modal -->
+<div class="modal-container">
+  <div class="modal-content">
+    <!-- En-tête du formulaire -->
+    <div class="modal-header">
+      <h2 class="modal-title">{{ isEditMode ? 'Modifier la disponibilité' : 'Ajouter une disponibilité' }}</h2>
+      <button type="button" class="close-button" (click)="closeModal()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+    
+    <!-- Corps du formulaire -->
+    <div class="modal-body">
+      <!-- Messages d'erreur/succès -->
+      <div *ngIf="formError" class="error-message">{{ formError }}</div>
+      <div *ngIf="formSuccess" class="success-message">{{ formSuccess }}</div>
+      
+      <form [formGroup]="consultantForm" (ngSubmit)="submitForm()">
+        <!-- Informations de base -->
+        <div class="form-section">
+          <h3>Informations de base</h3>
+          
+          <div class="form-group">
+            <label for="role" class="form-label">Poste/rôle <span class="required">*</span></label>
+            <input id="role" type="text" formControlName="role" class="form-input" 
+                  placeholder="ex: Développeur Full Stack">
+          </div>
+          
+          <div class="form-group">
+            <label for="availability" class="form-label">Disponibilité <span class="required">*</span></label>
+            <select id="availability" formControlName="availability" class="form-select">
+              <option *ngFor="let option of availabilityOptions" [value]="option.value">{{ option.label }}</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="experience" class="form-label">Niveau d'expérience <span class="required">*</span></label>
+            <select id="experience" formControlName="experience" class="form-select">
+              <option *ngFor="let option of experienceOptions" [value]="option.value">{{ option.label }}</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="location" class="form-label">Localisation <span class="required">*</span></label>
+            <input id="location" type="text" formControlName="location" class="form-input" 
+                  placeholder="ex: Paris, Remote">
+          </div>
+          
+          <div class="form-group">
+            <label for="message" class="form-label">Message personnalisé</label>
+            <textarea id="message" formControlName="message" class="form-textarea" rows="3" 
+                    placeholder="Description, informations supplémentaires..."></textarea>
+          </div>
+        </div>
+        
+        <!-- Compétences -->
+        <div class="form-section">
+          <h3>Compétences & Expertises</h3>
+          
+          <div class="form-group">
+            <label class="form-label">Compétences techniques <span class="required">*</span></label>
+            <div class="input-with-button">
+              <input type="text" [(ngModel)]="skillInput" [ngModelOptions]="{standalone: true}" class="form-input" 
+                    placeholder="ex: React, Node.js, Python">
+              <button type="button" class="add-button" (click)="addSkill()">
+                <span class="material-icons">add</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="linkedinUrl" class="form-label">URL LinkedIn <span class="required">*</span></label>
+            <input id="linkedinUrl" type="text" formControlName="linkedinUrl" class="form-input"
+                  placeholder="ex: https://www.linkedin.com/in/username">
+          </div>
+          
+          <div class="form-group">
+            <label for="email" class="form-label">Email (optionnel)</label>
+            <input id="email" type="email" formControlName="email" class="form-input"
+                  placeholder="ex: contact@exemple.com">
+          </div>
+          
+          <div class="form-group">
+            <label for="phone" class="form-label">Téléphone (optionnel)</label>
+            <input id="phone" type="tel" formControlName="phone" class="form-input"
+                  placeholder="ex: +33 6 00 00 00 00">
+          </div>
+        </div>
+      </form>
+    </div>
+    
+    <!-- Pied du formulaire avec boutons -->
+    <div class="modal-footer">
+      <div class="buttons-container">
+        <button type="button" class="button secondary" (click)="closeModal()">
+          Annuler
+        </button>
+        
+        <button type="button" class="button primary" 
+                [disabled]="consultantForm.invalid || isLoading"
+                (click)="submitForm()">
+          <span *ngIf="isLoading">Chargement...</span>
+          <span *ngIf="!isLoading">{{ isEditMode ? 'Enregistrer' : 'Ajouter' }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

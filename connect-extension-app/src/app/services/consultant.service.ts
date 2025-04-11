@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, throwError } from 'rxjs';
 import { map, catchError, tap, delay } from 'rxjs/operators';
-import { Consultant, ConsultantWithTags, ExperienceLevel, AvailabilityStatus } from '../models/consultant.model';
+import { Consultant, ConsultantWithTags, ExperienceLevel, ExperienceLevelString, AvailabilityStatus } from '../models/consultant.model';
 import { environment } from '../../environments/environment';
 import { ApiService } from './api.service';
 
@@ -28,7 +28,7 @@ export class ConsultantService {
     const roles = ['Développeur Full Stack', 'Data Scientist', 'DevOps Engineer', 'UX/UI Designer', 'Product Manager', 'Architecte Logiciel', 'Mobile Developer', 'Frontend Developer', 'Backend Developer', 'SRE/Cloud Engineer'];
     const types = ['Freelance', 'Salarié', 'Consultant'];
     const locations = ['Paris', 'Lyon', 'Marseille', 'Toulouse', 'Bordeaux', 'Lille', 'Nantes', 'Strasbourg', 'Remote', 'Hybride', 'Full-Remote', 'Luxembourg', 'Bruxelles'];
-    const experiences: ExperienceLevel[] = ['less_than_3', 'between_3_and_10', 'more_than_10'];
+    const experiences: ExperienceLevelString[] = ['less_than_3', 'between_3_and_10', 'more_than_10'];
     const availabilities: AvailabilityStatus[] = [0, 1, 2]; // 0 = available, 1 = soon, 2 = unavailable
     
     // Entreprises pour les expériences professionnelles
@@ -154,26 +154,29 @@ export class ConsultantService {
         });
       }
       
+      // Conversion des chaînes d'énumération en valeurs d'énumération
+      const expLevel = randomExperience === 'less_than_3' 
+                 ? ExperienceLevel.Junior 
+                 : randomExperience === 'between_3_and_10' 
+                 ? ExperienceLevel.Intermediate 
+                 : ExperienceLevel.Senior;
+                 
       this.mockData.push({
         id: `100${i}`,
         role: randomRole,
         linkedinUrl: 'https://www.linkedin.com/in/example',
-        phone: locked ? null : '+33 6 12 34 56 78',
-        email: locked ? null : 'contact@example.com',
-        locked: locked,
+        phone: locked ? undefined : '+33 6 12 34 56 78',
+        email: locked ? undefined : 'contact@example.com',
         type: randomType,
         skills: randomSkills,
         location: consultantLocations,
-        experience: randomExperience,
-        phoneValidated: !locked,
-        emailValidated: !locked,
-        linkedinValidated: true,
+        experience: expLevel,
         availability: randomAvailability,
         message: randomMessage,
         experiences: randomExperiences,
         expertises: randomExpertises,
         sectors: randomSectors
-      });
+      } as Consultant);
     }
   }
 
@@ -291,10 +294,12 @@ export class ConsultantService {
       // Filter by search text
       if (searchText && searchText.trim() !== '') {
         const searchLower = searchText.toLowerCase();
-        const messageMatch = consultant.message.toLowerCase().includes(searchLower);
+        const messageMatch = consultant.message ? consultant.message.toLowerCase().includes(searchLower) : false;
         const roleMatch = consultant.role.toLowerCase().includes(searchLower);
         const locationMatch = consultant.location.toLowerCase().includes(searchLower);
-        const tagsMatch = consultant.tags.some(tag => tag.toLowerCase().includes(searchLower));
+        const tagsMatch = consultant.tags && consultant.tags.length > 0 
+                           ? consultant.tags.some(tag => tag.toLowerCase().includes(searchLower)) 
+                           : false;
         
         if (!messageMatch && !roleMatch && !locationMatch && !tagsMatch) {
           return false;
