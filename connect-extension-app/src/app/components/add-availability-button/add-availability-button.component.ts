@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
 import { ConsultantAvailabilityService } from '../../services/consultant-availability.service';
 import { ConsultantFormComponent } from '../consultant-form/consultant-form.component';
+import { UserRole } from '../../models/user.model';
 
 @Component({
   selector: 'app-add-availability-button',
@@ -62,14 +63,24 @@ import { ConsultantFormComponent } from '../consultant-form/consultant-form.comp
 })
 export class AddAvailabilityButtonComponent implements OnInit {
   showForm = false; // Contrôle l'affichage du formulaire
+  isAuthenticated = false;
+  userRole: UserRole | null = null;
   
   constructor(
-    private userService: UserService,
+    private authService: AuthService,
     private consultantService: ConsultantAvailabilityService
   ) { }
 
   ngOnInit(): void {
-    // Initialisation du composant
+    // S'abonner aux changements d'état d'authentification
+    this.authService.authState$.subscribe(state => {
+      this.isAuthenticated = state.isAuthenticated;
+      this.userRole = state.user?.role || null;
+      console.log('AddAvailabilityButton - Auth State:', { 
+        isAuthenticated: this.isAuthenticated, 
+        role: this.userRole 
+      });
+    });
   }
   
   /**
@@ -77,7 +88,12 @@ export class AddAvailabilityButtonComponent implements OnInit {
    */
   get canAddAvailability(): boolean {
     // Les recruteurs et les consultants peuvent ajouter des disponibilités
-    return this.userService.isRecruiter() || this.userService.isConsultant();
+    const isRecruiter = this.userRole === UserRole.Recruiter || this.userRole === UserRole.Admin;
+    const isConsultant = this.userRole === UserRole.Consultant;
+    const canAdd = this.isAuthenticated && (isRecruiter || isConsultant);
+    
+    console.log('canAddAvailability:', canAdd, 'isAuthenticated:', this.isAuthenticated, 'role:', this.userRole);
+    return canAdd;
   }
   
   /**
