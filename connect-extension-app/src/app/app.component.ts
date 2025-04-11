@@ -334,6 +334,19 @@ export class AppComponent implements OnInit {
   isMobileView(): boolean {
     return window.innerWidth < this.mobileBreakpoint;
   }
+  
+  /**
+   * Ouvre le formulaire d'ajout de disponibilité
+   */
+  openAddAvailabilityForm(): void {
+    console.log('Ouverture du formulaire d\'ajout de disponibilité');
+    // Pour l'instant, affiche simplement une alerte
+    alert('Fonctionnalité d\'ajout de disponibilité en cours de développement');
+    
+    // Note: Pour implémenter complètement cette fonctionnalité,
+    // nous devrons créer un modal spécifique pour le formulaire d'ajout
+    // de disponibilité et l'ajouter au ModalService
+  }
 
   /**
    * Ouvre/ferme le dropdown de compétences en mode desktop

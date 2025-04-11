@@ -14,7 +14,6 @@ import { AuthInterceptor } from './services/auth.interceptor';
 import { RouterModule } from '@angular/router';
 import { AppDebugComponent } from './app.component.debug';
 import { AlertListComponent } from './components/alert-list/alert-list.component';
-import { AddAvailabilityButtonComponent } from './components/add-availability-button/add-availability-button.component';
 import { ConsultantFormComponent } from './components/consultant-form/consultant-form.component';
 
 @NgModule({
@@ -36,8 +35,7 @@ import { ConsultantFormComponent } from './components/consultant-form/consultant
     LoginComponent,
     UserProfileComponent,
     AppDebugComponent,
-    AlertListComponent,
-    AddAvailabilityButtonComponent
+    AlertListComponent
   ],
   providers: [
     // Intercepteur HTTP pour ajouter le token à toutes les requêtes

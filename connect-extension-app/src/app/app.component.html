@@ -56,8 +56,14 @@
         </button>
         
         <!-- Bouton d'ajout de disponibilité -->
-        <div class="flex items-center h-8 ml-1 mr-2">
-          <app-add-availability-button *ngIf="isAuthenticated"></app-add-availability-button>
+        <div *ngIf="isAuthenticated" class="flex items-center h-8 ml-1 mr-2">
+          <button 
+            (click)="openAddAvailabilityForm()"
+            title="Ajouter une disponibilité"
+            class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow-sm transition-all duration-200 hover:shadow-md"
+          >
+            <span class="material-icons text-sm">add</span>
+          </button>
         </div>
         
         <!-- Bouton Profil / Connexion -->
