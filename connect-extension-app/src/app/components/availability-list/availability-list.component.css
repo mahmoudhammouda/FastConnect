@@ -58,10 +58,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 9999px;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
   transition: background-color 0.15s ease-in-out;
+}
+
+/* Styles spécifiques pour les icônes d'action alignées à droite */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Espacement exact entre les boutons comme sur l'image */
+}
+
+.action-buttons button {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.action-buttons button:hover {
+  opacity: 0.8;
 }
 
 /* Style pour l'état vide */
