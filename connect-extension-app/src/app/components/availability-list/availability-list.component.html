@@ -26,8 +26,10 @@
          class="consultant-item mb-3 bg-white rounded-lg shadow overflow-hidden">
       <div class="consultant-header py-3 px-4 hover:bg-gray-50 transition-colors duration-150">
         <!-- Structure similaire à l'image de référence -->
-        <div class="flex items-center justify-between">
-          <div class="flex-grow pr-4">
+        <!-- Structure avec séparation claire texte / boutons -->
+        <div class="grid grid-cols-[1fr_auto] items-center w-full">
+          <!-- Colonne 1: informations du consultant -->
+          <div>
             <!-- Titre principal -->
             <div class="font-medium text-gray-800">{{ availability.consultantName }}</div>
             
@@ -37,7 +39,7 @@
             </div>
           </div>
           
-          <!-- Actions avec boutons exactement comme l'image, parfaitement alignés à droite -->
+          <!-- Colonne 2: boutons d'action exactement comme sur l'image -->
           <div class="action-buttons">
             <button 
               (click)="editAvailability(availability)" 

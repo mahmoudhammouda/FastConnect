@@ -69,6 +69,8 @@
   display: flex;
   align-items: center;
   gap: 12px; /* Espacement exact entre les boutons comme sur l'image */
+  margin-left: auto; /* Force l'alignement à droite */
+  padding-left: 12px; /* Ajoute un peu d'espace entre le texte et les boutons */
 }
 
 .action-buttons button {
@@ -77,11 +79,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.2s;
+  transition: all 0.2s;
+  flex-shrink: 0; /* Empêche les boutons de rétrécir */
 }
 
 .action-buttons button:hover {
   opacity: 0.8;
+  transform: scale(1.05); /* Légère animation au survol */
 }
 
 /* Style pour l'état vide */
