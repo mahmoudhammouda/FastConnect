@@ -126,6 +126,18 @@
                 Mon profil consultant
               </a>
 
+              <!-- Lien vers la liste des consultants -->
+              <a 
+                routerLink="/consultants" 
+                class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
+                (click)="toggleMenu($event)"
+              >
+                <div class="flex items-center">
+                  <span class="material-icons text-blue-600 mr-2 text-sm">people</span>
+                  Liste des consultants
+                </div>
+              </a>
+
               <!-- Lien vers la gestion des disponibilités -->
               <a 
                 routerLink="/availabilities" 

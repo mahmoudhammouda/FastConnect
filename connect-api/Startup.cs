@@ -34,6 +34,7 @@ namespace ConnectExtension.Backend
             
             // Register the services
             services.AddSingleton<IConsultantService, ConsultantService>();
+            services.AddSingleton<IConsultantAvailabilityService, ConsultantAvailabilityService>();
             services.AddSingleton<IAuthService, AuthService>();
             
             // Configure JWT authentication
