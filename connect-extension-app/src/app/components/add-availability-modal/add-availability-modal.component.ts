@@ -5,13 +5,13 @@ import { ConsultantAvailabilityService } from '../../services/consultant-availab
 import { AvailabilityStatus } from '../../models/consultant.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AngularEditorConfig, AngularEditorModule } from '@kolkov/angular-editor';
 
 @Component({
   selector: 'app-add-availability-modal',
   templateUrl: './add-availability-modal.component.html',
   styleUrls: ['./add-availability-modal.component.css'],
-  standalone: false
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, FormsModule]
 })
 export class AddAvailabilityModalComponent implements OnInit {
   availabilityForm: FormGroup;
@@ -81,40 +81,11 @@ export class AddAvailabilityModalComponent implements OnInit {
   workModesDropdownOpen: boolean = false;
   selectedWorkModes: string[] = [];
   
-  // Configuration de l'éditeur de texte enrichi
-  editorConfig: AngularEditorConfig = {
-    editable: true,
-    spellcheck: true,
-    height: '200px',
-    minHeight: '100px',
-    maxHeight: '300px',
-    width: 'auto',
-    minWidth: '0',
-    translate: 'yes',
-    enableToolbar: true,
-    showToolbar: true,
-    placeholder: 'Entrez votre message ici...',
-    defaultParagraphSeparator: '',
-    defaultFontName: '',
-    defaultFontSize: '',
-    fonts: [
-      {class: 'arial', name: 'Arial'},
-      {class: 'times-new-roman', name: 'Times New Roman'},
-      {class: 'calibri', name: 'Calibri'}
-    ],
-    customClasses: [
-      { name: 'quote', class: 'quote' },
-      { name: 'redText', class: 'redText' },
-      { name: 'titleText', class: 'titleText', tag: 'h1' },
-    ],
-    uploadUrl: '',
-    uploadWithCredentials: false,
-    sanitize: true,
-    toolbarPosition: 'top',
-    toolbarHiddenButtons: [
-      ['insertImage', 'insertVideo']
-    ]
-  };
+  // État de l'éditeur de texte
+  isBold = false;
+  isItalic = false;
+  isUnderline = false;
+  textAlignment = 'left';
 
   constructor(
     private fb: FormBuilder,
@@ -521,5 +492,24 @@ export class AddAvailabilityModalComponent implements OnInit {
     const updatedWorkModes = workModes.filter((w: string) => w !== workMode);
     this.availabilityForm.get('workModes')?.setValue(updatedWorkModes);
     this.selectedWorkModes = updatedWorkModes;
+  }
+  
+  // Méthodes pour l'éditeur de texte WYSIWYG Tailwind
+  applyTextStyle(style: 'bold' | 'italic' | 'underline'): void {
+    switch (style) {
+      case 'bold':
+        this.isBold = !this.isBold;
+        break;
+      case 'italic':
+        this.isItalic = !this.isItalic;
+        break;
+      case 'underline':
+        this.isUnderline = !this.isUnderline;
+        break;
+    }
+  }
+  
+  setTextAlignment(alignment: 'left' | 'center' | 'right'): void {
+    this.textAlignment = alignment;
   }
 }

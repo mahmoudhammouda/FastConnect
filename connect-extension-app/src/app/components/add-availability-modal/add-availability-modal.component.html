@@ -34,7 +34,82 @@
           </div>
           <div class="form-group mt-3">
             <label for="recruiterMessage">Message à envoyer au recruteur</label>
-            <angular-editor formControlName="recruiterMessage" [config]="editorConfig"></angular-editor>
+            <div class="wysiwyg-editor bg-white border border-gray-300 rounded-md overflow-hidden">
+              <!-- Barre d'outils -->
+              <div class="toolbar bg-gray-100 p-2 border-b border-gray-200 flex space-x-2">
+                <!-- Gras -->
+                <button type="button" 
+                        class="p-1 rounded hover:bg-gray-200" 
+                        [class.bg-gray-300]="isBold"
+                        (click)="applyTextStyle('bold')">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V8a1 1 0 0 1 1-1h5a3 3 0 0 1 0 6h-5v-1.5m0 5.5h6a3 3 0 0 0 0-6H7v6z"/>
+                  </svg>
+                </button>
+                
+                <!-- Italique -->
+                <button type="button" 
+                        class="p-1 rounded hover:bg-gray-200" 
+                        [class.bg-gray-300]="isItalic"
+                        (click)="applyTextStyle('italic')">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 4.5H14M12 4.5V18.5M8 18.5H16"/>
+                  </svg>
+                </button>
+                
+                <!-- Souligné -->
+                <button type="button" 
+                        class="p-1 rounded hover:bg-gray-200" 
+                        [class.bg-gray-300]="isUnderline"
+                        (click)="applyTextStyle('underline')">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 15.5h10M9 7v5a3 3 0 1 0 6 0V7"/>
+                  </svg>
+                </button>
+                
+                <!-- Séparateur vertical -->
+                <div class="w-px h-5 bg-gray-300"></div>
+                
+                <!-- Alignement de texte -->
+                <button type="button" 
+                        class="p-1 rounded hover:bg-gray-200" 
+                        [class.bg-gray-300]="textAlignment === 'left'"
+                        (click)="setTextAlignment('left')">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 11h10M4 15h16"/>
+                  </svg>
+                </button>
+                
+                <button type="button" 
+                        class="p-1 rounded hover:bg-gray-200" 
+                        [class.bg-gray-300]="textAlignment === 'center'"
+                        (click)="setTextAlignment('center')">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M7 11h10M4 15h16"/>
+                  </svg>
+                </button>
+                
+                <button type="button" 
+                        class="p-1 rounded hover:bg-gray-200" 
+                        [class.bg-gray-300]="textAlignment === 'right'"
+                        (click)="setTextAlignment('right')">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M10 11h10M4 15h16"/>
+                  </svg>
+                </button>
+              </div>
+              
+              <!-- Zone d'édition -->
+              <div class="p-3">
+                <textarea formControlName="recruiterMessage" 
+                          class="w-full h-40 outline-none resize-none border-0 p-0"
+                          placeholder="Entrez votre message ici..."
+                          [style.fontWeight]="isBold ? 'bold' : 'normal'"
+                          [style.fontStyle]="isItalic ? 'italic' : 'normal'"
+                          [style.textDecoration]="isUnderline ? 'underline' : 'none'"
+                          [style.textAlign]="textAlignment"></textarea>
+              </div>
+            </div>
           </div>
         </div>
           
