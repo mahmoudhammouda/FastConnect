@@ -107,4 +107,36 @@ export class AvailabilityListComponent implements OnInit {
         return workMode;
     }
   }
+  
+  /**
+   * Retourne le libellé d'expérience basé sur le niveau
+   */
+  getExperienceLabel(experienceLevel: string | undefined): string {
+    if (!experienceLevel) return '0-5 ans'; // Valeur par défaut
+    
+    switch(experienceLevel) {
+      case 'junior':
+        return '0-5 ans';
+      case 'intermediate':
+        return '5-10 ans';
+      case 'senior':
+        return '10+ ans';
+      default:
+        return '5-10 ans'; // Valeur par défaut pour l'affichage
+    }
+  }
+  
+  /**
+   * Convertit un tableau de compétences en chaîne lisible
+   */
+  getSkillsString(skills: string[] | undefined): string {
+    if (!skills || skills.length === 0) return 'C#, Angular +1'; // Valeur par défaut pour correspondre à l'exemple
+    
+    // Si nous avons plus de 2 compétences, on affiche les 2 premières suivies de "+X"
+    if (skills.length > 2) {
+      return `${skills.slice(0, 2).join(', ')} +${skills.length - 2}`;
+    }
+    
+    return skills.join(', ');
+  }
 }

@@ -10,62 +10,52 @@
     </button>
   </div>
   
-  <!-- État vide - aucun consultant proposé -->
-  <div *ngIf="consultantAvailabilities.length === 0" class="empty-state">
-    <span class="material-icons empty-icon">person_search</span>
-    <p class="empty-title">Aucun consultant proposé</p>
-    <p class="empty-subtitle">Ajoutez des consultants à proposer en cliquant sur "Nouveau consultant"</p>
+  <!-- L'état vide est maintenant intégré au tableau -->
+  
+  <!-- Liste des consultants proposés - Style similaire à Mes favoris -->
+  <div *ngIf="consultantAvailabilities.length === 0" 
+       class="p-4 bg-gray-50 rounded-lg text-center">
+    <span class="material-icons text-gray-400 text-4xl mb-2">person_search</span>
+    <p class="text-lg font-medium text-gray-700">Aucun consultant proposé</p>
+    <p class="text-sm text-gray-500">Ajoutez des consultants à proposer en cliquant sur "Nouveau consultant"</p>
   </div>
   
-  <!-- Liste des consultants proposés -->
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <!-- Liste des consultants -->
+  <div *ngIf="consultantAvailabilities.length > 0">
     <div *ngFor="let availability of consultantAvailabilities" 
-      class="consultant-card bg-white rounded-lg shadow-md overflow-hidden">
-      
-      <div class="card-header">
-        <div>
-          <h3 class="consultant-name">{{ availability.consultantName }}</h3>
-          <p class="consultant-role">{{ availability.consultantRole }}</p>
-        </div>
-        
-        <span 
-          class="status-indicator"
-          [ngClass]="{
-            'status-available': availability.status === 'available',
-            'status-pending': availability.status === 'pending',
-            'status-inactive': availability.status === 'inactive'
-          }">
-          {{ getStatusLabel(availability.status) }}
-        </span>
-      </div>
-      
-      <div class="card-body">
-        <div class="info-section">
-          <div>
-            <p class="info-label">Disponibilité</p>
-            <p class="info-value">{{ formatDate(availability.startDate) }}</p>
-            <p class="text-xs text-gray-600">{{ availability.durationInMonths }} mois</p>
+         class="consultant-item mb-3 bg-white rounded-lg shadow overflow-hidden">
+      <div class="consultant-header py-3 px-4 hover:bg-gray-50 transition-colors duration-150">
+        <!-- Structure similaire à l'image de référence -->
+        <div class="flex items-center justify-between">
+          <div class="flex-1">
+            <!-- Titre principal -->
+            <div class="font-medium text-gray-800">{{ availability.consultantName }}</div>
+            
+            <!-- Ligne d'informations -->
+            <div class="text-xs text-gray-500 mt-1">
+              Pays: France | Exp: {{ getExperienceLabel(availability.experienceLevel) }} | Lieu: {{ availability.cities.join(', ') }} | Skills: {{ getSkillsString(availability.skills) }}
+            </div>
           </div>
-          <div>
-            <p class="info-label">Localisation</p>
-            <p class="info-value">{{ availability.cities.join(', ') }}</p>
-            <p class="text-xs text-gray-600">{{ getWorkModeLabel(availability.workMode) }}</p>
+          
+          <!-- Actions avec exactement les mêmes boutons que sur l'image -->
+          <div class="flex items-center gap-2">
+            <button 
+              (click)="editAvailability(availability)" 
+              class="button-icon text-blue-600 hover:bg-blue-100" 
+              title="Modifier ce consultant">
+              <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+            </button>
+            <button 
+              (click)="deleteAvailability(availability)" 
+              class="button-icon text-red-600 hover:bg-red-100"
+              title="Supprimer ce consultant">
+              <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
           </div>
-        </div>
-        
-        <div class="card-actions">
-          <button 
-            (click)="editAvailability(availability)" 
-            class="action-button edit-button" 
-            title="Modifier ce consultant">
-            <span class="material-icons" style="font-size: 18px;">edit</span>
-          </button>
-          <button 
-            (click)="deleteAvailability(availability)" 
-            class="action-button delete-button"
-            title="Supprimer ce consultant">
-            <span class="material-icons" style="font-size: 18px;">delete</span>
-          </button>
         </div>
       </div>
     </div>

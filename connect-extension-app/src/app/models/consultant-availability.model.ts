@@ -12,4 +12,5 @@ export interface ConsultantAvailability {
   skills?: string[];
   description?: string;
   sectors?: string[];
+  experienceLevel?: 'junior' | 'intermediate' | 'senior';
 }
