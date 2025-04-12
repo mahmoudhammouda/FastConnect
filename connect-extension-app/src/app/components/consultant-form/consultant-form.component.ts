@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { ConsultantAvailabilityService } from '../../services/consultant-availability.service';
 import { ConsultantFormData } from '../../models/consultant-form.model';
 import { AvailabilityStatus, ExperienceLevel, ExperienceLevelString, Experience } from '../../models/consultant.model';
+import { ConsultantAvailability } from '../../models/consultant-availability.model';
 import { UserService } from '../../services/user.service';
 
 @Component({

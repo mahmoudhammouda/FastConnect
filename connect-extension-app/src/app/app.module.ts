@@ -17,6 +17,7 @@ import { AlertListComponent } from './components/alert-list/alert-list.component
 import { ConsultantFormComponent } from './components/consultant-form/consultant-form.component';
 import { BookmarkListsComponent } from './components/bookmark-lists/bookmark-lists.component';
 import { AddAvailabilityModalComponent } from './components/add-availability-modal/add-availability-modal.component';
+import { AvailabilityListComponent } from './components/availability-list/availability-list.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { AddAvailabilityModalComponent } from './components/add-availability-mod
     AlertListComponent,
     ConsultantFormComponent,
     BookmarkListsComponent,
-    AddAvailabilityModalComponent // Ajouté ici car maintenant c'est un composant standalone
+    AddAvailabilityModalComponent, // Ajouté ici car maintenant c'est un composant standalone
+    AvailabilityListComponent // Composant de liste des disponibilités
   ],
   providers: [
     // Intercepteur HTTP pour ajouter le token à toutes les requêtes

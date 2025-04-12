@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ModalService } from '../../services/modal.service';
 import { ConsultantAvailabilityService } from '../../services/consultant-availability.service';
+import { ConsultantAvailability } from '../../models/consultant-availability.model';
 import { AvailabilityStatus } from '../../models/consultant.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -325,7 +326,7 @@ export class AddAvailabilityModalComponent implements OnInit {
     // Envoyer les données au service
     this.availabilityService.saveConsultant(this.availabilityForm.value)
       .subscribe({
-        next: (response) => {
+        next: (response: ConsultantAvailability) => {
           console.log('Disponibilité enregistrée:', response);
           this.isSubmitting = false;
           this.closeModal();
@@ -336,7 +337,7 @@ export class AddAvailabilityModalComponent implements OnInit {
           // Afficher un message de succès (idéalement avec un service de toast/notification)
           alert('Disponibilité ajoutée avec succès!');
         },
-        error: (error) => {
+        error: (error: any) => {
           console.error('Erreur lors de l\'enregistrement:', error);
           this.isSubmitting = false;
           this.submitError = error.message || 'Une erreur est survenue lors de l\'enregistrement. Veuillez réessayer.';
