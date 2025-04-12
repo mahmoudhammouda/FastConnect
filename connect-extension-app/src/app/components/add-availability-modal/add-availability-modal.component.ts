@@ -5,7 +5,7 @@ import { ConsultantAvailabilityService } from '../../services/consultant-availab
 import { AvailabilityStatus } from '../../models/consultant.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AngularEditorConfig } from '@kolkov/angular-editor';
+import { AngularEditorConfig, AngularEditorModule } from '@kolkov/angular-editor';
 
 @Component({
   selector: 'app-add-availability-modal',
@@ -318,6 +318,9 @@ export class AddAvailabilityModalComponent implements OnInit {
       availabilityStatus: '',
       locked: false,
       linkedinUrl: '',
+      recruiterMessage: '',
+      engagementType: '',
+      workModes: [],
       skills: [],
       selectedSectors: [],
       selectedExpertises: [],

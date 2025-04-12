@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AngularEditorModule } from '@kolkov/angular-editor';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -30,6 +31,7 @@ import { AddAvailabilityModalComponent } from './components/add-availability-mod
     ReactiveFormsModule,
     AppRoutingModule,
     RouterModule, // Ajout explicite du RouterModule
+    AngularEditorModule, // Module pour l'éditeur de texte riche
     // Importation des composants standalone et modules
     CommonModule,
     ConsultantCardComponent,
