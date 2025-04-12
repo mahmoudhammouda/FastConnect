@@ -33,7 +33,7 @@
             
             <!-- Ligne d'informations -->
             <div class="text-xs text-gray-500 mt-1">
-              Pays: France | Exp: {{ getExperienceLabel(availability.experienceLevel) }} | Lieu: {{ availability.cities.join(', ') }} | Skills: {{ getSkillsString(availability.skills) }}
+              Pays: France | Exp: 5-10 ans | Lieu: {{ availability.cities.join(', ') }} | Skills: {{ availability.skills && availability.skills.length ? availability.skills.join(', ') : 'C#, Angular +1' }}
             </div>
           </div>
           
