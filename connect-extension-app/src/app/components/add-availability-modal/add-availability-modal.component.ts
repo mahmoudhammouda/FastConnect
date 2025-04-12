@@ -5,6 +5,7 @@ import { ConsultantAvailabilityService } from '../../services/consultant-availab
 import { AvailabilityStatus } from '../../models/consultant.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AngularEditorConfig } from '@kolkov/angular-editor';
 
 @Component({
   selector: 'app-add-availability-modal',
@@ -73,6 +74,47 @@ export class AddAvailabilityModalComponent implements OnInit {
     'CRM & ERP', 'Business Intelligence', 'API & Integration', 'Low-Code/No-Code', 
     'UX/UI Design', 'Infrastructure'
   ];
+  
+  // Options pour les nouveaux champs
+  engagementTypes = ['Freelance', 'Salarié', 'Les deux'];
+  workModes = ['Full Remote', 'Hybride', 'Sur Site'];
+  workModesDropdownOpen: boolean = false;
+  selectedWorkModes: string[] = [];
+  
+  // Configuration de l'éditeur de texte enrichi
+  editorConfig: AngularEditorConfig = {
+    editable: true,
+    spellcheck: true,
+    height: '200px',
+    minHeight: '100px',
+    maxHeight: '300px',
+    width: 'auto',
+    minWidth: '0',
+    translate: 'yes',
+    enableToolbar: true,
+    showToolbar: true,
+    placeholder: 'Entrez votre message ici...',
+    defaultParagraphSeparator: '',
+    defaultFontName: '',
+    defaultFontSize: '',
+    fonts: [
+      {class: 'arial', name: 'Arial'},
+      {class: 'times-new-roman', name: 'Times New Roman'},
+      {class: 'calibri', name: 'Calibri'}
+    ],
+    customClasses: [
+      { name: 'quote', class: 'quote' },
+      { name: 'redText', class: 'redText' },
+      { name: 'titleText', class: 'titleText', tag: 'h1' },
+    ],
+    uploadUrl: '',
+    uploadWithCredentials: false,
+    sanitize: true,
+    toolbarPosition: 'top',
+    toolbarHiddenButtons: [
+      ['insertImage', 'insertVideo']
+    ]
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -88,6 +130,9 @@ export class AddAvailabilityModalComponent implements OnInit {
       availabilityStatus: ['', Validators.required],
       locked: [false],
       linkedinUrl: [''],
+      recruiterMessage: [''],
+      engagementType: ['', Validators.required],
+      workModes: [[], Validators.required],
       skills: [[]],
       selectedSectors: [[]],
       selectedExpertises: [[]],
@@ -423,5 +468,55 @@ export class AddAvailabilityModalComponent implements OnInit {
     const expertises = this.availabilityForm.get('selectedExpertises')?.value || [];
     const updatedExpertises = expertises.filter((e: string) => e !== expertise);
     this.availabilityForm.get('selectedExpertises')?.setValue(updatedExpertises);
+  }
+  
+  // Méthodes pour la gestion du dropdown des modes de travail
+  toggleWorkModesDropdown(event: Event): void {
+    event.stopPropagation();
+    this.workModesDropdownOpen = !this.workModesDropdownOpen;
+    
+    // Fermer les autres dropdowns
+    this.citiesDropdownOpen = false;
+    this.sectorsDropdownOpen = false;
+    this.expertisesDropdownOpen = false;
+    this.skillsDropdownOpen = false;
+    
+    // Fermer le dropdown lorsqu'on clique ailleurs sur la page
+    if (this.workModesDropdownOpen) {
+      setTimeout(() => {
+        document.addEventListener('click', this.closeWorkModesDropdown);
+      }, 0);
+    }
+  }
+
+  closeWorkModesDropdown = () => {
+    this.workModesDropdownOpen = false;
+    document.removeEventListener('click', this.closeWorkModesDropdown);
+  }
+
+  isWorkModeSelected(workMode: string): boolean {
+    const workModes = this.availabilityForm.get('workModes')?.value || [];
+    return workModes.includes(workMode);
+  }
+
+  toggleWorkMode(workMode: string): void {
+    const workModes = this.availabilityForm.get('workModes')?.value || [];
+    const index = workModes.indexOf(workMode);
+    
+    if (index === -1) {
+      workModes.push(workMode);
+    } else {
+      workModes.splice(index, 1);
+    }
+    
+    this.availabilityForm.get('workModes')?.setValue(workModes);
+    this.selectedWorkModes = workModes;
+  }
+
+  removeWorkMode(workMode: string): void {
+    const workModes = this.availabilityForm.get('workModes')?.value || [];
+    const updatedWorkModes = workModes.filter((w: string) => w !== workMode);
+    this.availabilityForm.get('workModes')?.setValue(updatedWorkModes);
+    this.selectedWorkModes = updatedWorkModes;
   }
 }

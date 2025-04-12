@@ -1,0 +1,46 @@
+Nous souhaitons améliorer le formulaire d'ajout de disponibilité, lequel permet d'enregistrer les informations d'un consultant dans la liste publique des consultants disponibles sur le marché. L'objectif est de rendre ce formulaire plus ergonomique, complet et responsive (adapté à desktop, extension Chrome et mobile). Ce formulaire doit reprendre l'ensemble des informations figurant sur la carte d'un consultant.
+
+Exigences Fonctionnelles et Améliorations Demandées
+Placement et Ergonomie du Toggle (Radio On/Off pour le verrouillage du profil)
+
+Positionnement : Placer le toggle (radio on/off) à droite, en bas, le plus proche possible de la croix de fermeture (« X ») de la fenêtre modale.
+
+Fonctionnalité :
+
+Lorsque ce toggle est activé, cela indique que le profil du consultant doit être verrouillé.
+
+L'utilisateur pourra ainsi activer ou désactiver le verrouillage du profil directement via ce composant.
+
+Ajout d'un Champ Message à Envoyer au Recruteur
+
+Emplacement : Placer le champ juste sous le champ de l'URL LinkedIn.
+
+Type de composant :
+
+Utiliser un Angular Text Editor qui permet la saisie de texte enrichi, avec la possibilité d’insérer des emoji.
+
+Ce composant doit également être en mesure d'afficher les messages qui proviennent de LinkedIn.
+
+Utilisation : Permettre à l'utilisateur de rédiger ou éditer un message personnalisé destiné au recruteur.
+
+Ajout du Champ Type d'Engagement
+
+Description : Ajouter un champ permettant de préciser si le consultant recherche une mission en mode freelance ou salarié.
+
+Type de sélection :
+
+Ce champ peut être implémenté sous forme d'un select (choix unique) ou d'un groupe de boutons radio pour une sélection directe.
+
+Ajout du Champ Mode de Travail Souhaité
+
+Options :
+
+Les options doivent inclure : Full Remote, Hybride et Sur Site.
+
+Type de composant :
+
+Utiliser un multi-select (avec possibilité de cocher/décocher) si l'on veut permettre la sélection de plusieurs options, ou un choix unique si le design le permet.
+
+Exigence complémentaire :
+
+Le formulaire doit offrir la possibilité d’indiquer plusieurs modalités si nécessaire.
