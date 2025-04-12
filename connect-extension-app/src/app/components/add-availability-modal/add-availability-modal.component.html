@@ -378,54 +378,10 @@
             </div>
           </div>
           
-          <!-- Expertises -->
-          <div class="form-group mt-3">
-            <label>Domaines d'expertise</label>
-            <div class="relative">
-              <button type="button" 
-                     class="form-control text-left pr-8 flex items-center justify-between" 
-                     (click)="toggleExpertisesDropdown($event)">
-                <span *ngIf="(availabilityForm.get('selectedExpertises')?.value || []).length === 0">Sélectionner des domaines d'expertise</span>
-                <span *ngIf="(availabilityForm.get('selectedExpertises')?.value || []).length === 1">{{ availabilityForm.get('selectedExpertises')?.value[0] }}</span>
-                <span *ngIf="(availabilityForm.get('selectedExpertises')?.value || []).length > 1">{{ availabilityForm.get('selectedExpertises')?.value.length }} domaines sélectionnés</span>
-                <svg class="h-4 w-4 absolute right-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
-              </button>
-              
-              <div *ngIf="expertisesDropdownOpen" class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                <div class="p-2">
-                  <div *ngFor="let expertise of expertises" class="checkbox-group py-1">
-                    <input type="checkbox" 
-                          [id]="'expertise-' + expertise" 
-                          [checked]="isExpertiseSelected(expertise)"
-                          (change)="toggleExpertise(expertise)">
-                    <label [for]="'expertise-' + expertise" class="ml-2 text-sm">{{ expertise }}</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div *ngIf="(availabilityForm.get('selectedExpertises')?.value || []).length > 0" class="mt-2 flex flex-wrap gap-1">
-              <div *ngFor="let expertise of availabilityForm.get('selectedExpertises')?.value" class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-md flex items-center">
-                {{ expertise }}
-                <button type="button" (click)="removeExpertise(expertise)" class="ml-1 text-blue-600 hover:text-blue-800">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
+          <!-- Expertises supprimées pour réduire la taille du formulaire -->
         </div>
         
-        <!-- Notes supplémentaires -->
-        <div class="form-section">
-          <h3 class="form-section-title">Notes supplémentaires</h3>
-          <div class="form-group">
-            <label for="notes">Notes (visible uniquement pour les recruteurs)</label>
-            <textarea id="notes" formControlName="notes" class="form-control" rows="3"></textarea>
-          </div>
-        </div>
+        <!-- Notes supplémentaires supprimées pour réduire la taille du formulaire -->
         
         <!-- Gestion de sous-traitance (pour les recruteurs) -->
         <div class="form-section">
