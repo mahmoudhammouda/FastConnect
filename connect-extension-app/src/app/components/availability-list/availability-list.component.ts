@@ -25,11 +25,13 @@ export class AvailabilityListComponent implements OnInit {
   skillsInput: string = '';
   citiesInput: string = '';
   sectorsInput: string = '';
+  selectedEngagementTypes: string[] = [];
+  
   experienceLevels = [
-    { value: 'junior', label: '0-5 ans' },
-    { value: 'intermediate', label: '5-10 ans' },
-    { value: 'senior', label: '10+ ans' },
-    { value: 'expert', label: '15+ ans' }
+    { value: 'junior', label: 'Moins de 3 ans' },
+    { value: 'intermediate', label: '3-5 ans' },
+    { value: 'senior', label: '5-10 ans' },
+    { value: 'expert', label: '10+ ans' }
   ];
   
   // Options supplémentaires inspirées de add-availability-modal

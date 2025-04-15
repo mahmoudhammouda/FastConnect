@@ -74,76 +74,238 @@
         </div>
         
         <form [formGroup]="editForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Nom du consultant -->
-          <div class="form-group">
-            <label class="form-label">Nom du consultant</label>
-            <input type="text" formControlName="consultantName" class="form-input">
+          <!-- Bouton de verrouillage (en haut à droite) -->
+          <div class="md:col-span-2 flex justify-end mb-2">
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" formControlName="locked" class="sr-only peer">
+              <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              <span class="ml-2 text-sm font-medium text-gray-600 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                Verrouiller le profil
+              </span>
+            </label>
           </div>
           
-          <!-- Date de début -->
-          <div class="form-group">
-            <label class="form-label">Date de début</label>
-            <input type="date" formControlName="startDate" class="form-input">
+          <!-- Section : Informations Privées (Non Partagées) -->
+          <div class="md:col-span-2 bg-blue-50 p-3 rounded-md mb-2">
+            <h4 class="text-sm font-semibold text-blue-700 mb-2 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              Informations Privées (usage interne uniquement)
+            </h4>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <!-- Nom complet du consultant -->
+              <div class="form-group">
+                <label class="form-label">Nom complet du consultant <span class="text-red-500">*</span></label>
+                <input type="text" formControlName="consultantName" class="form-input">
+              </div>
+              
+              <!-- Email du consultant -->
+              <div class="form-group">
+                <label class="form-label">Email du consultant</label>
+                <input type="email" formControlName="consultantEmail" class="form-input">
+              </div>
+              
+              <!-- Téléphone du consultant -->
+              <div class="form-group">
+                <label class="form-label">Téléphone du consultant</label>
+                <input type="tel" formControlName="consultantPhone" class="form-input">
+              </div>
+              
+              <!-- Acronyme d'identification -->
+              <div class="form-group">
+                <label class="form-label">Acronyme d'identification</label>
+                <input type="text" formControlName="acronym" class="form-input">
+              </div>
+              
+              <!-- Numéro interne -->
+              <div class="form-group">
+                <label class="form-label">Numéro interne</label>
+                <input type="text" formControlName="internalId" class="form-input">
+              </div>
+            </div>
           </div>
           
-          <!-- Durée (mois) -->
-          <div class="form-group">
-            <label class="form-label">Durée (mois)</label>
-            <input type="number" formControlName="durationInMonths" min="1" class="form-input">
+          <!-- Section : Informations Publiques (Partagées) -->
+          <div class="md:col-span-2 bg-green-50 p-3 rounded-md mb-2">
+            <h4 class="text-sm font-semibold text-green-700 mb-2 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+              Informations Publiques (visibles par les recruteurs)
+            </h4>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <!-- Abréviation du consultant -->
+              <div class="form-group">
+                <label class="form-label">Abréviation publique</label>
+                <input type="text" formControlName="consultantAbbreviation" class="form-input">
+              </div>
+              
+              <!-- Rôle / Intitulé du poste -->
+              <div class="form-group">
+                <label class="form-label">Rôle / Intitulé du poste <span class="text-red-500">*</span></label>
+                <input type="text" formControlName="role" class="form-input">
+              </div>
+              
+              <!-- Expérience globale -->
+              <div class="form-group">
+                <label class="form-label">Niveau d'expérience</label>
+                <select formControlName="experienceLevel" class="form-select">
+                  <option *ngFor="let level of experienceLevels" [value]="level.value">{{ level.label }}</option>
+                </select>
+              </div>
+              
+              <!-- Date de début -->
+              <div class="form-group">
+                <label class="form-label">Disponibilité à partir du <span class="text-red-500">*</span></label>
+                <input type="date" formControlName="startDate" class="form-input">
+              </div>
+              
+              <!-- Type d'engagement -->
+              <div class="form-group">
+                <label class="form-label">Type d'engagement</label>
+                <div class="flex flex-col space-y-2">
+                  <div class="flex items-center">
+                    <input id="engagement-freelance" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                      [checked]="isEngagementTypeSelected('Freelance')"
+                      (change)="toggleEngagementType('Freelance', $event)"
+                      [disabled]="isEngagementTypeSelected('Sous-traitance')">
+                    <label for="engagement-freelance" class="ml-2 text-sm text-gray-700">Freelance</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input id="engagement-salarie" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                      [checked]="isEngagementTypeSelected('Salarié')"
+                      (change)="toggleEngagementType('Salarié', $event)"
+                      [disabled]="isEngagementTypeSelected('Sous-traitance')">
+                    <label for="engagement-salarie" class="ml-2 text-sm text-gray-700">Salarié (CDI)</label>
+                  </div>
+                  <div class="flex items-center">
+                    <input id="engagement-soustraitance" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                      [checked]="isEngagementTypeSelected('Sous-traitance')"
+                      (change)="toggleEngagementType('Sous-traitance', $event)"
+                      [disabled]="isEngagementTypeSelected('Freelance') || isEngagementTypeSelected('Salarié')">
+                    <label for="engagement-soustraitance" class="ml-2 text-sm text-gray-700">Sous-traitance</label>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Mode de travail -->
+              <div class="form-group">
+                <label class="form-label">Mode de travail</label>
+                <select formControlName="workMode" class="form-select">
+                  <option *ngFor="let mode of workModes" [value]="mode.value">{{ mode.label }}</option>
+                </select>
+              </div>
+              
+              <!-- Taux journalier -->
+              <div class="form-group">
+                <label class="form-label">Taux journalier (€)</label>
+                <input type="number" formControlName="rate" min="0" class="form-input">
+              </div>
+              
+              <!-- Durée (mois) -->
+              <div class="form-group">
+                <label class="form-label">Durée (mois)</label>
+                <input type="number" formControlName="durationInMonths" min="1" class="form-input">
+              </div>
+            </div>
           </div>
           
-          <!-- Niveau d'expérience -->
-          <div class="form-group">
-            <label class="form-label">Niveau d'expérience</label>
-            <select formControlName="experienceLevel" class="form-select">
-              <option *ngFor="let level of experienceLevels" [value]="level.value">{{ level.label }}</option>
-            </select>
+          <!-- Section : Coordonnées et Liens -->
+          <div class="md:col-span-2 bg-purple-50 p-3 rounded-md mb-2">
+            <h4 class="text-sm font-semibold text-purple-700 mb-2 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 015.656 0l4 4a4 4 0 01-5.656 5.656l-1.102-1.101" />
+              </svg>
+              Coordonnées et Liens
+            </h4>
+            
+            <!-- URL LinkedIn -->
+            <div class="form-group mb-3">
+              <label class="form-label">URL du profil LinkedIn</label>
+              <div class="flex items-center">
+                <span class="bg-gray-100 px-3 py-2 text-gray-500 border border-r-0 border-gray-300 rounded-l-md text-sm">
+                  <i class="fab fa-linkedin text-blue-700"></i>
+                </span>
+                <input type="url" formControlName="linkedinUrl" placeholder="https://www.linkedin.com/in/username" class="form-input rounded-l-none w-full">
+              </div>
+            </div>
+            
+            <!-- Message personnalisé -->
+            <div class="form-group">
+              <label class="form-label">Message pour le recruteur</label>
+              <textarea formControlName="recruiterMessage" rows="3" class="form-textarea" placeholder="Expliquez brièvement votre situation, vos attentes ou toute autre information utile pour les recruteurs..."></textarea>
+            </div>
           </div>
           
-          <!-- Villes -->
-          <div class="form-group">
-            <label class="form-label">Villes (séparées par des virgules)</label>
-            <input type="text" [(ngModel)]="citiesInput" [ngModelOptions]="{standalone: true}" class="form-input">
-          </div>
-          
-          <!-- Mode de travail -->
-          <div class="form-group">
-            <label class="form-label">Mode de travail</label>
-            <select formControlName="workMode" class="form-select">
-              <option *ngFor="let mode of workModes" [value]="mode.value">{{ mode.label }}</option>
-            </select>
-          </div>
-          
-          <!-- Statut -->
-          <div class="form-group">
-            <label class="form-label">Statut</label>
-            <select formControlName="status" class="form-select">
-              <option *ngFor="let status of statuses" [value]="status.value">{{ status.label }}</option>
-            </select>
-          </div>
-          
-          <!-- Taux journalier -->
-          <div class="form-group">
-            <label class="form-label">Taux journalier (€)</label>
-            <input type="number" formControlName="rate" min="0" class="form-input">
-          </div>
-          
-          <!-- Compétences -->
-          <div class="form-group md:col-span-2">
-            <label class="form-label">Compétences (séparées par des virgules)</label>
-            <input type="text" [(ngModel)]="skillsInput" [ngModelOptions]="{standalone: true}" class="form-input">
-          </div>
-          
-          <!-- Secteurs -->
-          <div class="form-group md:col-span-2">
-            <label class="form-label">Secteurs (séparés par des virgules)</label>
-            <input type="text" [(ngModel)]="sectorsInput" [ngModelOptions]="{standalone: true}" class="form-input">
-          </div>
-          
-          <!-- Description -->
-          <div class="form-group md:col-span-2">
-            <label class="form-label">Description</label>
-            <textarea formControlName="description" rows="3" class="form-textarea"></textarea>
+          <!-- Section : Compétences et Localisation -->
+          <div class="md:col-span-2 bg-yellow-50 p-3 rounded-md mb-2">
+            <h4 class="text-sm font-semibold text-yellow-700 mb-2 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              Compétences et Localisation
+            </h4>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <!-- Compétences -->
+              <div class="form-group">
+                <label class="form-label">Compétences (séparées par des virgules)</label>
+                <input type="text" [(ngModel)]="skillsInput" [ngModelOptions]="{standalone: true}" class="form-input">
+                <div class="flex flex-wrap gap-1 mt-1">
+                  <div *ngFor="let skill of skillsList.slice(0, 5)" 
+                      (click)="toggleSkill(skill)"
+                      class="px-2 py-1 text-xs rounded cursor-pointer transition-colors"
+                      [ngClass]="isSkillSelected(skill) ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'">
+                    {{ skill }}
+                  </div>
+                  <div *ngIf="skillsList.length > 5" class="px-2 py-1 text-xs rounded bg-gray-100 text-gray-700">
+                    +{{ skillsList.length - 5 }} autres
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Villes -->
+              <div class="form-group">
+                <label class="form-label">Villes (séparées par des virgules)</label>
+                <input type="text" [(ngModel)]="citiesInput" [ngModelOptions]="{standalone: true}" class="form-input">
+                <!-- Pays -->
+                <div class="mt-2">
+                  <label class="form-label">Pays</label>
+                  <select formControlName="country" class="form-select">
+                    <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+                  </select>
+                </div>
+              </div>
+              
+              <!-- Secteurs -->
+              <div class="form-group md:col-span-2">
+                <label class="form-label">Secteurs d'activité (séparés par des virgules)</label>
+                <input type="text" [(ngModel)]="sectorsInput" [ngModelOptions]="{standalone: true}" class="form-input">
+                <div class="flex flex-wrap gap-1 mt-1">
+                  <div *ngFor="let sector of sectors.slice(0, 5)" 
+                      (click)="toggleSector(sector)"
+                      class="px-2 py-1 text-xs rounded cursor-pointer transition-colors"
+                      [ngClass]="isSectorSelected(sector) ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'">
+                    {{ sector }}
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Statut (visibilité) -->
+              <div class="form-group">
+                <label class="form-label">Statut de la disponibilité</label>
+                <select formControlName="status" class="form-select">
+                  <option *ngFor="let status of statuses" [value]="status.value">{{ status.label }}</option>
+                </select>
+              </div>
+            </div>
           </div>
           
           <!-- Boutons d'action -->

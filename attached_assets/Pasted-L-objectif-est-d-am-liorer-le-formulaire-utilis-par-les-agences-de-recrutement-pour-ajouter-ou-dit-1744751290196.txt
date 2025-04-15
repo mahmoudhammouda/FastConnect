@@ -1,0 +1,75 @@
+L’objectif est d’améliorer le formulaire utilisé par les agences de recrutement pour ajouter ou éditer la disponibilité d’un consultant. Ce formulaire doit permettre de saisir des informations internes (privées) destinées à l’identification en interne ainsi que des informations publiques (partagées) qui seront visibles par d’autres recruteurs. Par ailleurs, le formulaire doit être optimisé pour une utilisation sur desktop, en extension Chrome et sur mobile.
+
+Exigences Fonctionnelles
+1. Informations Privées (Non Partagées)
+Ces champs sont réservés à l’usage interne et ne seront pas affichés publiquement :
+
+Nom complet du consultant
+Champ texte obligatoire.
+
+Adresse email du consultant
+Champ email.
+
+Numéro de téléphone du consultant
+Champ de type numéro ou texte.
+
+Acronyme d'identification
+Champ texte pour fournir un code court ou des initiales permettant de reconnaître rapidement le consultant.
+
+Numéro interne
+Identifiant unique au sein de l'agence.
+
+2. Informations Publiques (Partagées)
+Ces champs constituent les informations visibles par les recruteurs :
+
+Abréviation du consultant
+Champ texte court pour afficher un nom public.
+
+Rôle / Intitulé du poste
+Exemples : “Développeur Full Stack”, “Data Scientist”, etc.
+
+Expérience globale
+Sélecteur (dropdown) proposant des options telles que “Moins de 3 ans”, “3-5 ans”, “5-10 ans”, “10+ ans”.
+
+Disponibilité
+Champ date ou sélection d’intervalle (ex. “Disponible dès maintenant” ou “Disponible à partir du [date]”).
+
+Type d'engagement (multisélection)
+
+Options : Freelance, Salarié (CDI), Sous-traitance.
+
+Règle de sélection :
+
+Freelance et Salarié peuvent être sélectionnés simultanément.
+
+L’option Sous-traitance est exclusive : si elle est sélectionnée, aucune autre option ne peut être cochée (et vice versa).
+
+Mode de travail souhaité
+Champ de sélection (avec possibilité de multisélection si nécessaire) proposant les options : Full Remote, Hybride, Sur site.
+
+Taux Journalier (TJM)
+Champ numérique ou texte indiquant le TJM, applicable si l’option de rémunération par TJM est choisie.
+
+3. Coordonnées et Liens
+URL du profil LinkedIn
+Champ texte, optionnel. Pour les recruteurs qui préfèrent, ce champ peut être remplacé par un lien vers un CV anonyme.
+
+Message personnalisé à destination du recruteur
+
+Utiliser un éditeur de texte riche Angular qui autorise la mise en forme et l’insertion d’emojis.
+
+Ce champ se positionnera sous le champ URL LinkedIn et pourra soit afficher des messages prélevés depuis LinkedIn, soit permettre à l’utilisateur de rédiger son propre message.
+
+4. Paramètres Complémentaires
+Toggle (Radio On/Off pour le verrouillage du profil)
+
+Ce composant doit être positionné en haut à droite de la fenêtre modale, près de la croix de fermeture.
+
+Fonctionnalité :
+
+Lorsque activé, le profil du consultant est verrouillé (affichage d’un cadenas sur la carte).
+
+Si un recruteur souhaite consulter un profil verrouillé, il doit passer par une étape de déverrouillage.
+
+Lors du déclenchement de cette procédure, le consultant reçoit une notification indiquant qu’un recruteur a demandé à accéder à son profil.
+
