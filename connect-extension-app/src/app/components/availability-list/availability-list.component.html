@@ -153,7 +153,10 @@
               <!-- Rôle / Intitulé du poste -->
               <div class="form-group">
                 <label class="form-label">Rôle / Intitulé du poste <span class="text-red-500">*</span></label>
-                <input type="text" formControlName="role" class="form-input">
+                <select formControlName="role" class="form-select">
+                  <option value="">Sélectionner un rôle</option>
+                  <option *ngFor="let role of roleOptions" [value]="role">{{ role }}</option>
+                </select>
               </div>
               
               <!-- Expérience globale -->
@@ -172,30 +175,14 @@
               
               <!-- Type d'engagement -->
               <div class="form-group">
-                <label class="form-label">Type d'engagement</label>
-                <div class="flex flex-col space-y-2">
-                  <div class="flex items-center">
-                    <input [id]="'engagement-freelance-' + availability.id" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                      [checked]="isEngagementTypeSelected('Freelance')"
-                      (change)="toggleEngagementType('Freelance', $event)"
-                      [disabled]="isEngagementTypeSelected('Sous-traitance')">
-                    <label [for]="'engagement-freelance-' + availability.id" class="ml-2 text-sm text-gray-700">Freelance</label>
-                  </div>
-                  <div class="flex items-center">
-                    <input [id]="'engagement-salarie-' + availability.id" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                      [checked]="isEngagementTypeSelected('Salarié')"
-                      (change)="toggleEngagementType('Salarié', $event)"
-                      [disabled]="isEngagementTypeSelected('Sous-traitance')">
-                    <label [for]="'engagement-salarie-' + availability.id" class="ml-2 text-sm text-gray-700">Salarié (CDI)</label>
-                  </div>
-                  <div class="flex items-center">
-                    <input [id]="'engagement-soustraitance-' + availability.id" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                      [checked]="isEngagementTypeSelected('Sous-traitance')"
-                      (change)="toggleEngagementType('Sous-traitance', $event)"
-                      [disabled]="isEngagementTypeSelected('Freelance') || isEngagementTypeSelected('Salarié')">
-                    <label [for]="'engagement-soustraitance-' + availability.id" class="ml-2 text-sm text-gray-700">Sous-traitance</label>
-                  </div>
-                </div>
+                <label class="form-label">Type d'engagement <span class="text-red-500">*</span></label>
+                <select formControlName="engagementType" class="form-select">
+                  <option value="">Sélectionner un type</option>
+                  <option value="Freelance">Freelance</option>
+                  <option value="Salarié">Salarié (CDI)</option>
+                  <option value="Sous-traitance">Sous-traitance</option>
+                  <option value="Les deux">Freelance et Salarié</option>
+                </select>
               </div>
               
               <!-- Mode de travail -->

@@ -1,31 +1,28 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormsModule, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConsultantAvailability } from '../../models/consultant-availability.model';
 import { ConsultantAvailabilityService } from '../../services/consultant-availability.service';
 import { ModalService } from '../../services/modal.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-availability-list',
   templateUrl: './availability-list.component.html',
   styleUrls: ['./availability-list.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule]
+  imports: [CommonModule, FormsModule, ReactiveFormsModule]
 })
 export class AvailabilityListComponent implements OnInit {
   consultantAvailabilities: ConsultantAvailability[] = [];
   loading: boolean = false;
   error: boolean = false;
-  
-  // État du mode édition
+
   editingAvailabilityId: string | null = null;
   editForm: FormGroup | null = null;
   skillsInput: string = '';
   citiesInput: string = '';
   sectorsInput: string = '';
-  selectedEngagementTypes: string[] = [];
   
   // État des dropdowns
   skillsDropdownOpen: boolean = false;
@@ -301,9 +298,6 @@ export class AvailabilityListComponent implements OnInit {
     this.availableSkills = [...this.skillsList];
     this.availableSectors = [...this.sectors];
     this.updateAvailableCities();
-    
-    // Initialise les types d'engagement
-    this.initializeEngagementTypes(availability.engagementType);
   }
   
   // Annule le mode édition
@@ -317,7 +311,6 @@ export class AvailabilityListComponent implements OnInit {
     this.skillsInput = '';
     this.citiesInput = '';
     this.sectorsInput = '';
-    this.selectedEngagementTypes = [];
     
     // Fermer tous les dropdowns
     this.skillsDropdownOpen = false;
@@ -761,95 +754,5 @@ export class AvailabilityListComponent implements OnInit {
     }
     
     this.editForm.patchValue({ sectors });
-  }
-  
-  /**
-   * Vérifie si un type d'engagement est sélectionné
-   */
-  isEngagementTypeSelected(type: string): boolean {
-    // Si nous utilisons selectedEngagementTypes, vérifier dedans
-    if (this.selectedEngagementTypes.length > 0) {
-      return this.selectedEngagementTypes.includes(type);
-    }
-    
-    // Sinon, vérifier le engagementType du formulaire
-    if (this.editForm && this.editForm.get('engagementType')) {
-      const currentType = this.editForm.get('engagementType')?.value;
-      return currentType === type;
-    }
-    
-    return false;
-  }
-  
-  /**
-   * Gère la sélection ou désélection d'un type d'engagement
-   * avec les règles métier spécifiques
-   */
-  toggleEngagementType(type: string, event: Event): void {
-    if (!this.editForm) return;
-    
-    const checkbox = event.target as HTMLInputElement;
-    
-    // Règle : Sous-traitance est exclusif
-    if (type === 'Sous-traitance') {
-      if (checkbox.checked) {
-        // Si Sous-traitance est sélectionné, désélectionner les autres
-        this.selectedEngagementTypes = ['Sous-traitance'];
-        this.editForm.patchValue({ engagementType: 'Sous-traitance' });
-      } else {
-        // Si Sous-traitance est désélectionné, vider la sélection
-        this.selectedEngagementTypes = [];
-        this.editForm.patchValue({ engagementType: '' });
-      }
-    } else {
-      // Pour Freelance et Salarié
-      if (checkbox.checked) {
-        // Si déjà Sous-traitance, ne rien faire
-        if (this.isEngagementTypeSelected('Sous-traitance')) {
-          return;
-        }
-        
-        // Ajouter le type à la sélection
-        if (!this.selectedEngagementTypes.includes(type)) {
-          this.selectedEngagementTypes.push(type);
-        }
-        
-        // Mettre à jour le champ du formulaire
-        if (this.selectedEngagementTypes.length === 1) {
-          this.editForm.patchValue({ engagementType: type });
-        } else if (this.selectedEngagementTypes.length === 2) {
-          this.editForm.patchValue({ engagementType: 'Les deux' });
-        }
-      } else {
-        // Retirer le type de la sélection
-        this.selectedEngagementTypes = this.selectedEngagementTypes.filter(t => t !== type);
-        
-        // Mettre à jour le champ du formulaire
-        if (this.selectedEngagementTypes.length === 0) {
-          this.editForm.patchValue({ engagementType: '' });
-        } else if (this.selectedEngagementTypes.length === 1) {
-          this.editForm.patchValue({ engagementType: this.selectedEngagementTypes[0] });
-        }
-      }
-    }
-  }
-  
-  /**
-   * Initialise les types d'engagement à partir d'une disponibilité existante
-   */
-  initializeEngagementTypes(engagementType?: string): void {
-    this.selectedEngagementTypes = [];
-    
-    if (!engagementType) return;
-    
-    if (engagementType === 'Sous-traitance') {
-      this.selectedEngagementTypes = ['Sous-traitance'];
-    } else if (engagementType === 'Freelance') {
-      this.selectedEngagementTypes = ['Freelance'];
-    } else if (engagementType === 'Salarié') {
-      this.selectedEngagementTypes = ['Salarié'];
-    } else if (engagementType === 'Les deux') {
-      this.selectedEngagementTypes = ['Freelance', 'Salarié'];
-    }
   }
 }
