@@ -90,8 +90,11 @@
 
 /* Styles pour le formulaire d'édition collapsable */
 .edit-form-collapsable {
-  animation: slideDown 0.2s ease-out;
+  animation: slideDown 0.3s ease-out;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  position: relative;
+  overflow: visible;
+  z-index: 5;
 }
 
 @keyframes slideDown {
@@ -102,9 +105,21 @@
   }
   to {
     opacity: 1;
-    max-height: 800px;
+    max-height: 2000px; /* Augmenté pour gérer les formulaires plus grands */
     transform: translateY(0);
   }
+}
+
+/* Assure que le formulaire d'édition reste visible pendant le scrolling */
+.consultant-item {
+  position: relative;
+  overflow: visible;
+  margin-bottom: 15px;
+  transition: margin-bottom 0.3s ease-out;
+}
+
+.consultant-item.editing {
+  margin-bottom: 25px;
 }
 
 /* Styles pour les éléments de formulaire */
@@ -237,6 +252,7 @@
   padding-right: 8px;
   margin-right: -8px; /* Compense le padding pour éviter que la barre de défilement ne prenne de la place */
   padding-bottom: 20px; /* Ajoute de l'espace en bas pour le défilement */
+  overflow-anchor: auto; /* Assure que la position de défilement est préservée lors de l'ajout de contenu */
 }
 
 /* Style de la barre de défilement spécifique pour Chrome Extension */

@@ -217,6 +217,17 @@ export class AvailabilityListComponent implements OnInit {
     // Active le mode édition pour cette disponibilité
     this.editingAvailabilityId = availability.id;
     
+    // Petite pause pour permettre au DOM de se mettre à jour avant de faire défiler
+    setTimeout(() => {
+      // Trouve l'élément du formulaire d'édition et le rend visible dans la zone de défilement
+      const editForm = document.querySelector(`.edit-form-collapsable[data-id="${availability.id}"]`) || 
+                      document.querySelector(`.consultant-item.editing`);
+      
+      if (editForm) {
+        editForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }, 100);
+    
     // Initialise le formulaire avec les valeurs actuelles
     this.editForm = new FormGroup({
       // Informations privées
