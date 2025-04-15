@@ -35,14 +35,14 @@
             
             <!-- Ligne d'informations -->
             <div class="text-xs text-gray-500 mt-1">
-              Pays: France | Exp: 5-10 ans | Lieu: {{ availability.cities.join(', ') }} | Skills: {{ availability.skills && availability.skills.length ? availability.skills.join(', ') : 'C#, Angular +1' }}
+              Pays: France | Exp: {{ getExperienceLabel(availability.experienceLevel) }} | Lieu: {{ availability.cities.join(', ') }} | Skills: {{ availability.skills && availability.skills.length ? availability.skills.join(', ') : 'C#, Angular +1' }}
             </div>
           </div>
           
           <!-- Colonne 2: boutons d'action exactement comme sur l'image -->
           <div class="action-buttons">
             <button 
-              (click)="editAvailability(availability)" 
+              (click)="editAvailability(availability, $event)" 
               class="text-blue-600 hover:text-blue-800" 
               title="Modifier ce consultant">
               <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -50,7 +50,7 @@
               </svg>
             </button>
             <button 
-              (click)="deleteAvailability(availability)" 
+              (click)="deleteAvailability(availability, $event)" 
               class="text-red-600 hover:text-red-800"
               title="Supprimer ce consultant">
               <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -59,6 +59,112 @@
             </button>
           </div>
         </div>
+      </div>
+      
+      <!-- Formulaire d'édition collapsable -->
+      <div *ngIf="editingAvailabilityId === availability.id && editForm" 
+           class="edit-form-collapsable bg-gray-50 border-t border-gray-200 px-4 py-3">
+        <div class="mb-3 flex justify-between items-center">
+          <h3 class="text-sm font-medium text-gray-700">Modifier les informations du consultant</h3>
+          <button (click)="cancelEditing($event)" class="text-gray-400 hover:text-gray-600">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <form [formGroup]="editForm" (click)="stopPropagation($event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Nom du consultant -->
+          <div class="form-group">
+            <label class="form-label">Nom du consultant</label>
+            <input type="text" formControlName="consultantName" class="form-input">
+          </div>
+          
+          <!-- Date de début -->
+          <div class="form-group">
+            <label class="form-label">Date de début</label>
+            <input type="date" formControlName="startDate" class="form-input">
+          </div>
+          
+          <!-- Durée (mois) -->
+          <div class="form-group">
+            <label class="form-label">Durée (mois)</label>
+            <input type="number" formControlName="durationInMonths" min="1" class="form-input">
+          </div>
+          
+          <!-- Niveau d'expérience -->
+          <div class="form-group">
+            <label class="form-label">Niveau d'expérience</label>
+            <select formControlName="experienceLevel" class="form-select">
+              <option *ngFor="let level of experienceLevels" [value]="level.value">{{ level.label }}</option>
+            </select>
+          </div>
+          
+          <!-- Villes -->
+          <div class="form-group">
+            <label class="form-label">Villes (séparées par des virgules)</label>
+            <input type="text" [(ngModel)]="citiesInput" [ngModelOptions]="{standalone: true}" class="form-input">
+          </div>
+          
+          <!-- Mode de travail -->
+          <div class="form-group">
+            <label class="form-label">Mode de travail</label>
+            <select formControlName="workMode" class="form-select">
+              <option *ngFor="let mode of workModes" [value]="mode.value">{{ mode.label }}</option>
+            </select>
+          </div>
+          
+          <!-- Statut -->
+          <div class="form-group">
+            <label class="form-label">Statut</label>
+            <select formControlName="status" class="form-select">
+              <option *ngFor="let status of statuses" [value]="status.value">{{ status.label }}</option>
+            </select>
+          </div>
+          
+          <!-- Taux journalier -->
+          <div class="form-group">
+            <label class="form-label">Taux journalier (€)</label>
+            <input type="number" formControlName="rate" min="0" class="form-input">
+          </div>
+          
+          <!-- Compétences -->
+          <div class="form-group md:col-span-2">
+            <label class="form-label">Compétences (séparées par des virgules)</label>
+            <input type="text" [(ngModel)]="skillsInput" [ngModelOptions]="{standalone: true}" class="form-input">
+          </div>
+          
+          <!-- Secteurs -->
+          <div class="form-group md:col-span-2">
+            <label class="form-label">Secteurs (séparés par des virgules)</label>
+            <input type="text" [(ngModel)]="sectorsInput" [ngModelOptions]="{standalone: true}" class="form-input">
+          </div>
+          
+          <!-- Description -->
+          <div class="form-group md:col-span-2">
+            <label class="form-label">Description</label>
+            <textarea formControlName="description" rows="3" class="form-textarea"></textarea>
+          </div>
+          
+          <!-- Boutons d'action -->
+          <div class="md:col-span-2 flex justify-end gap-2 mt-2">
+            <button 
+              type="button" 
+              (click)="cancelEditing($event)" 
+              class="px-4 py-2 text-xs text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-150">
+              Annuler
+            </button>
+            <button 
+              type="button"
+              [disabled]="!editForm.valid"
+              (click)="saveAvailability(availability.id, $event)" 
+              class="px-4 py-2 text-xs text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-150"
+              [class.opacity-50]="!editForm.valid"
+              [class.cursor-not-allowed]="!editForm.valid">
+              Enregistrer
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>

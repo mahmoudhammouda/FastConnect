@@ -67,7 +67,12 @@ export class ConsultantAvailabilityService {
    * @param availability Données mises à jour de la disponibilité
    */
   updateAvailability(id: string, availability: ConsultantAvailability): Observable<ConsultantAvailability> {
-    return this.apiService.put<ConsultantAvailability>(`${this.endpoint}/${id}`, availability);
+    // S'assurer que l'ID dans le chemin et l'objet correspondent
+    const availabilityToUpdate = {
+      ...availability,
+      id: id // S'assurer que l'ID est correctement défini
+    };
+    return this.apiService.put<ConsultantAvailability>(`${this.endpoint}/${id}`, availabilityToUpdate);
   }
   
   /**
