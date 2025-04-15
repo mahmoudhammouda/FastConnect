@@ -36,6 +36,9 @@ logMessage(`Redirection du trafic vers Angular (port ${ANGULAR_PORT}) et l'API .
 app.use('/api', createProxyMiddleware({
   target: `http://0.0.0.0:${API_PORT}`,
   changeOrigin: true,
+  pathRewrite: {
+    '^/api': '/api' // Ne pas modifier le chemin pour les requêtes API
+  },
   logLevel: 'debug',
   onProxyReq: (proxyReq, req, res) => {
     logMessage(`Proxy API request: ${req.method} ${req.url}`, 'blue');
@@ -46,9 +49,10 @@ app.use('/api', createProxyMiddleware({
 }));
 
 // Proxy pour toutes les autres requêtes vers Angular sur le port 5000
-app.use('/', createProxyMiddleware({
+const angularProxy = createProxyMiddleware({
   target: `http://0.0.0.0:${ANGULAR_PORT}`,
   changeOrigin: true,
+  ws: true, // Support WebSockets
   logLevel: 'debug',
   onProxyReq: (proxyReq, req, res) => {
     logMessage(`Proxy Angular request: ${req.method} ${req.url}`, 'blue');
@@ -56,7 +60,21 @@ app.use('/', createProxyMiddleware({
   onProxyRes: (proxyRes, req, res) => {
     logMessage(`Proxy Angular response: ${proxyRes.statusCode} ${req.method} ${req.url}`, 'green');
   }
-}));
+});
+
+// Routes Angular
+app.use('/', angularProxy);
+
+// Middleware pour toutes les routes qui ne sont pas gérées ailleurs
+app.use((req, res, next) => {
+  if (req.url.startsWith('/api/')) {
+    return next(); // Laisser passer les requêtes API
+  }
+  
+  logMessage(`Redirection vers index.html pour la route ${req.url}`, 'yellow');
+  // Servir le fichier index.html pour les routes Angular (SPA routing)
+  res.redirect('/');
+});
 
 // Démarrage du serveur proxy
 app.listen(PROXY_PORT, '0.0.0.0', () => {

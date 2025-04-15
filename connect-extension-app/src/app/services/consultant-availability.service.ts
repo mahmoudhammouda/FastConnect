@@ -11,7 +11,7 @@ import { ConsultantAvailability } from '../models/consultant-availability.model'
 })
 export class ConsultantAvailabilityService {
   // Endpoint pour les disponibilités
-  private endpoint = 'consultant-availabilities';
+  private endpoint = 'availability';
   
   // Sujets pour la gestion du formulaire et les notifications
   private refreshNeededSource = new Subject<void>();

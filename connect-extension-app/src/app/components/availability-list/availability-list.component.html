@@ -1,23 +1,23 @@
-<div class="container mx-auto px-4 py-6">
-  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-    <h1 class="text-2xl font-bold text-gray-800 mb-4 md:mb-0">Mes consultants</h1>
-    
-    <button 
-      (click)="openAddAvailabilityModal()" 
-      class="add-button">
-      <span class="material-icons add-button-icon">add</span>
-      Nouveau consultant
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-semibold text-gray-800">Mes Consultants</h1>
+    <button (click)="openAddAvailabilityModal()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-150 flex items-center">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+      </svg>
+      Nouvelle disponibilité
     </button>
   </div>
   
-  <!-- L'état vide est maintenant intégré au tableau -->
+  <!-- État de chargement -->
+  <div *ngIf="loading" class="flex justify-center items-center h-40">
+    <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+  </div>
   
-  <!-- Liste des consultants proposés - Style similaire à Mes favoris -->
-  <div *ngIf="consultantAvailabilities.length === 0" 
-       class="p-4 bg-gray-50 rounded-lg text-center">
-    <span class="material-icons text-gray-400 text-4xl mb-2">person_search</span>
-    <p class="text-lg font-medium text-gray-700">Aucun consultant proposé</p>
-    <p class="text-sm text-gray-500">Ajoutez des consultants à proposer en cliquant sur "Nouveau consultant"</p>
+  <!-- État d'erreur -->
+  <div *ngIf="error && !loading" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+    <strong class="font-bold">Erreur!</strong>
+    <span class="block sm:inline">Impossible de charger les consultants. Veuillez réessayer plus tard.</span>
   </div>
   
   <!-- Liste des consultants -->
@@ -35,14 +35,14 @@
             
             <!-- Ligne d'informations -->
             <div class="text-xs text-gray-500 mt-1">
-              Pays: France | Exp: {{ getExperienceLabel(availability.experienceLevel) }} | Lieu: {{ availability.cities.join(', ') }} | Skills: {{ availability.skills && availability.skills.length ? availability.skills.join(', ') : 'C#, Angular +1' }}
+              Pays: France | Exp: {{ getExperienceLabel(availability.experienceLevel) }} | Lieu: {{ availability.cities.join(', ') || 'Non spécifié' }} | Skills: {{ getSkillsString(availability.skills) }}
             </div>
           </div>
           
           <!-- Colonne 2: boutons d'action exactement comme sur l'image -->
           <div class="action-buttons">
             <button 
-              (click)="editAvailability(availability, $event)" 
+              (click)="editAvailability(availability)"
               class="text-blue-600 hover:text-blue-800" 
               title="Modifier ce consultant">
               <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -50,7 +50,7 @@
               </svg>
             </button>
             <button 
-              (click)="deleteAvailability(availability, $event)" 
+              (click)="deleteAvailability(availability)"
               class="text-red-600 hover:text-red-800"
               title="Supprimer ce consultant">
               <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -66,14 +66,14 @@
            class="edit-form-collapsable bg-gray-50 border-t border-gray-200 px-4 py-3">
         <div class="mb-3 flex justify-between items-center">
           <h3 class="text-sm font-medium text-gray-700">Modifier les informations du consultant</h3>
-          <button (click)="cancelEditing($event)" class="text-gray-400 hover:text-gray-600">
+          <button (click)="cancelEditing()" class="text-gray-400 hover:text-gray-600">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </button>
         </div>
         
-        <form [formGroup]="editForm" (click)="stopPropagation($event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form [formGroup]="editForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Nom du consultant -->
           <div class="form-group">
             <label class="form-label">Nom du consultant</label>
@@ -150,17 +150,16 @@
           <div class="md:col-span-2 flex justify-end gap-2 mt-2">
             <button 
               type="button" 
-              (click)="cancelEditing($event)" 
+              (click)="cancelEditing()" 
               class="px-4 py-2 text-xs text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-150">
               Annuler
             </button>
             <button 
               type="button"
               [disabled]="!editForm.valid"
-              (click)="saveAvailability(availability.id, $event)" 
+              (click)="saveAvailability(availability.id)" 
               class="px-4 py-2 text-xs text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-150"
-              [class.opacity-50]="!editForm.valid"
-              [class.cursor-not-allowed]="!editForm.valid">
+              [ngClass]="{'opacity-50': !editForm.valid, 'cursor-not-allowed': !editForm.valid}">
               Enregistrer
             </button>
           </div>

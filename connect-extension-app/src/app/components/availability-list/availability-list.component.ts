@@ -16,6 +16,8 @@ import { ModalService } from '../../services/modal.service';
 })
 export class AvailabilityListComponent implements OnInit {
   consultantAvailabilities: ConsultantAvailability[] = [];
+  loading: boolean = false;
+  error: boolean = false;
   
   // État du mode édition
   editingAvailabilityId: string | null = null;
@@ -26,8 +28,57 @@ export class AvailabilityListComponent implements OnInit {
   experienceLevels = [
     { value: 'junior', label: '0-5 ans' },
     { value: 'intermediate', label: '5-10 ans' },
-    { value: 'senior', label: '10+ ans' }
+    { value: 'senior', label: '10+ ans' },
+    { value: 'expert', label: '15+ ans' }
   ];
+  
+  // Options supplémentaires inspirées de add-availability-modal
+  roleOptions = [
+    'Développeur Full-Stack', 'Développeur Front-End', 'Développeur Back-End', 
+    'Développeur Mobile', 'Développeur .NET', 'Développeur Java', 'Développeur PHP', 
+    'Développeur Python', 'DevOps Engineer', 'Data Scientist', 'Data Engineer', 
+    'SRE Engineer', 'UX/UI Designer', 'Product Owner', 'Scrum Master', 'Chef de Projet', 
+    'Architecte Logiciel', 'Tech Lead', 'QA Engineer', 'Business Analyst'
+  ];
+  
+  countries = ['France', 'Belgique', 'Suisse', 'Luxembourg', 'Allemagne', 'Espagne', 'Italie', 'Royaume-Uni', 'Pays-Bas'];
+  
+  cities: { [key: string]: string[] } = {
+    'France': ['Paris', 'Lyon', 'Marseille', 'Bordeaux', 'Lille', 'Nantes', 'Strasbourg', 'Toulouse', 'Nice', 'Rennes'],
+    'Belgique': ['Bruxelles', 'Anvers', 'Gand', 'Liège', 'Bruges', 'Namur', 'Louvain'],
+    'Suisse': ['Genève', 'Zürich', 'Bâle', 'Lausanne', 'Berne', 'Lugano'],
+    'Luxembourg': ['Luxembourg-Ville', 'Esch-sur-Alzette', 'Differdange', 'Dudelange'],
+    'Allemagne': ['Berlin', 'Munich', 'Francfort', 'Hambourg', 'Cologne', 'Düsseldorf', 'Stuttgart'],
+    'Espagne': ['Madrid', 'Barcelone', 'Valence', 'Séville', 'Bilbao', 'Malaga'],
+    'Italie': ['Rome', 'Milan', 'Naples', 'Turin', 'Florence', 'Venise', 'Bologne'],
+    'Royaume-Uni': ['Londres', 'Manchester', 'Birmingham', 'Glasgow', 'Liverpool', 'Édimbourg', 'Bristol'],
+    'Pays-Bas': ['Amsterdam', 'Rotterdam', 'La Haye', 'Utrecht', 'Eindhoven']
+  };
+  
+  skillsList = [
+    'JavaScript', 'TypeScript', 'Angular', 'React', 'Vue.js', 'Node.js', 'PHP', 'Laravel', 
+    'Symfony', 'Python', 'Django', 'Flask', 'Ruby', 'Ruby on Rails', '.NET', 'C#', 'Java', 
+    'Spring', 'Kotlin', 'Swift', 'iOS', 'Android', 'React Native', 'Flutter', 'AWS', 
+    'Azure', 'GCP', 'Docker', 'Kubernetes', 'CI/CD', 'DevOps', 'SQL', 'NoSQL', 'MongoDB', 
+    'PostgreSQL', 'MySQL', 'Redis', 'Elasticsearch', 'GraphQL', 'REST API', 'Microservices', 
+    'Architecture', 'Agile', 'Scrum', 'Product Owner', 'UX/UI', 'Figma', 'Adobe XD'
+  ];
+  
+  sectors = [
+    'Banque & Finance', 'Assurance', 'Santé', 'Retail & E-commerce', 'Industrie', 
+    'Transport & Logistique', 'Énergie', 'Télécommunications', 'Média & Divertissement', 
+    'Services Publics', 'Luxe', 'Éducation', 'Agroalimentaire', 'Immobilier', 
+    'Technologie & Startups'
+  ];
+  
+  expertises = [
+    'Développement Web', 'Développement Mobile', 'Cloud & DevOps', 'Base de Données', 
+    'IA & Machine Learning', 'Big Data', 'Sécurité Informatique', 'Blockchain', 'IoT', 
+    'CRM & ERP', 'Business Intelligence', 'API & Integration', 'Low-Code/No-Code', 
+    'UX/UI Design', 'Infrastructure'
+  ];
+  
+  engagementTypes = ['Freelance', 'Salarié', 'Les deux'];
   workModes = [
     { value: 'onsite', label: 'Sur site' },
     { value: 'remote', label: 'Télétravail' },
@@ -49,14 +100,95 @@ export class AvailabilityListComponent implements OnInit {
   }
   
   loadAvailabilities(): void {
+    this.loading = true;
+    this.error = false;
+    
+    // Données temporaires pour le développement et les tests
+    // Ces données seront remplacées par les données réelles de l'API
+    // lorsque celle-ci sera disponible
+    const mockAvailabilities: ConsultantAvailability[] = [
+      {
+        id: '1',
+        consultantId: '101',
+        consultantName: 'Marie Dupont',
+        role: 'Développeur Full-Stack',
+        consultantRole: 'Développeur Full-Stack',
+        startDate: '2025-05-01T00:00:00.000Z',
+        durationInMonths: 3,
+        status: 'available',
+        cities: ['Paris', 'Lyon'],
+        workMode: 'hybrid',
+        rate: 650,
+        skills: ['JavaScript', 'Angular', 'Node.js', 'MongoDB'],
+        description: 'Développeuse full-stack avec 8 ans d\'expérience dans le développement de SaaS et d\'applications web.',
+        sectors: ['Banque & Finance', 'Assurance'],
+        experienceLevel: 'senior',
+        country: 'France',
+        engagementType: 'Freelance'
+      },
+      {
+        id: '2',
+        consultantId: '102',
+        consultantName: 'Jean Martin',
+        role: 'DevOps Engineer',
+        consultantRole: 'DevOps Engineer',
+        startDate: '2025-06-15T00:00:00.000Z',
+        durationInMonths: 6,
+        status: 'pending',
+        cities: ['Bordeaux'],
+        workMode: 'remote',
+        rate: 750,
+        skills: ['AWS', 'Kubernetes', 'Docker', 'Terraform', 'CI/CD'],
+        description: 'Ingénieur DevOps spécialisé dans la mise en place de pipelines CI/CD et d\'infrastructures cloud.',
+        sectors: ['Technologie & Startups'],
+        experienceLevel: 'expert',
+        country: 'France',
+        engagementType: 'Freelance'
+      },
+      {
+        id: '3',
+        consultantId: '103',
+        consultantName: 'Sophie Petit',
+        role: 'Data Scientist',
+        consultantRole: 'Data Scientist',
+        startDate: '2025-04-20T00:00:00.000Z',
+        durationInMonths: 2,
+        status: 'available',
+        cities: ['Paris', 'Lille'],
+        workMode: 'onsite',
+        rate: 680,
+        skills: ['Python', 'TensorFlow', 'Pandas', 'SQL', 'Machine Learning'],
+        description: 'Data scientist avec expertise en analyse prédictive et traitement du langage naturel.',
+        sectors: ['Retail & E-commerce', 'Santé'],
+        experienceLevel: 'intermediate',
+        country: 'France',
+        engagementType: 'Les deux'
+      }
+    ];
+    
+    // Simuler un délai réseau pour montrer le loader
+    setTimeout(() => {
+      this.consultantAvailabilities = mockAvailabilities;
+      this.loading = false;
+      
+      // Enregistrer dans la console pour le débogage
+      console.log('Disponibilités chargées:', this.consultantAvailabilities);
+    }, 500);
+    
+    // Note: Code laissé en commentaire pour être réactivé quand l'API sera prête
+    /*
     this.consultantAvailabilityService.getAllAvailabilities().subscribe({
       next: (availabilities: ConsultantAvailability[]) => {
         this.consultantAvailabilities = availabilities;
+        this.loading = false;
       },
       error: (error: any) => {
         console.error('Erreur lors du chargement des disponibilités', error);
+        this.loading = false;
+        this.error = true;
       }
     });
+    */
   }
   
   openAddAvailabilityModal(): void {
@@ -74,11 +206,7 @@ export class AvailabilityListComponent implements OnInit {
   }
   
   // Commence l'édition directement dans la liste avec le formulaire collapsable
-  editAvailability(availability: ConsultantAvailability, event?: Event): void {
-    if (event) {
-      event.stopPropagation();
-    }
-    
+  editAvailability(availability: ConsultantAvailability): void {
     // Ferme tout autre formulaire d'édition qui pourrait être ouvert
     if (this.editingAvailabilityId && this.editingAvailabilityId !== availability.id) {
       this.cancelEditing();
@@ -90,13 +218,18 @@ export class AvailabilityListComponent implements OnInit {
     // Initialise le formulaire avec les valeurs actuelles
     this.editForm = new FormGroup({
       consultantName: new FormControl(availability.consultantName, Validators.required),
+      role: new FormControl(availability.role || '', Validators.required),
       startDate: new FormControl(this.formatDateForInput(availability.startDate), Validators.required),
       durationInMonths: new FormControl(availability.durationInMonths, [Validators.required, Validators.min(1)]),
       status: new FormControl(availability.status, Validators.required),
       workMode: new FormControl(availability.workMode, Validators.required),
       experienceLevel: new FormControl(availability.experienceLevel || 'intermediate', Validators.required),
       rate: new FormControl(availability.rate || 0),
-      description: new FormControl(availability.description || '')
+      description: new FormControl(availability.description || ''),
+      linkedinUrl: new FormControl(availability.linkedinUrl || ''),
+      country: new FormControl(availability.country || 'France', Validators.required),
+      engagementType: new FormControl(availability.engagementType || 'Freelance', Validators.required),
+      locked: new FormControl(availability.locked || false)
     });
     
     // Initialise les valeurs pour les champs de tags (convertis en chaînes pour l'affichage)
@@ -235,6 +368,8 @@ export class AvailabilityListComponent implements OnInit {
         return '5-10 ans';
       case 'senior':
         return '10+ ans';
+      case 'expert':
+        return '15+ ans';
       default:
         return '5-10 ans'; // Valeur par défaut pour l'affichage
     }
@@ -252,5 +387,96 @@ export class AvailabilityListComponent implements OnInit {
     }
     
     return skills.join(', ');
+  }
+  
+  /**
+   * Vérifie si une compétence est sélectionnée
+   */
+  isSkillSelected(skill: string): boolean {
+    const skills = this.skillsInput.split(',').map(s => s.trim()).filter(s => s !== '');
+    return skills.includes(skill);
+  }
+  
+  /**
+   * Ajoute ou supprime une compétence
+   */
+  toggleSkill(skill: string, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    const skills = this.skillsInput.split(',').map(s => s.trim()).filter(s => s !== '');
+    const index = skills.indexOf(skill);
+    
+    if (index === -1) {
+      skills.push(skill);
+    } else {
+      skills.splice(index, 1);
+    }
+    
+    this.skillsInput = skills.join(', ');
+  }
+  
+  /**
+   * Récupère les villes disponibles pour un pays
+   */
+  getAvailableCities(country: string): string[] {
+    return this.cities[country] || [];
+  }
+  
+  /**
+   * Vérifie si une expertise est sélectionnée
+   */
+  isExpertiseSelected(expertise: string): boolean {
+    const expertises = this.sectorsInput.split(',').map(s => s.trim()).filter(s => s !== '');
+    return expertises.includes(expertise);
+  }
+  
+  /**
+   * Ajoute ou supprime une expertise
+   */
+  toggleExpertise(expertise: string, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    const expertises = this.sectorsInput.split(',').map(s => s.trim()).filter(s => s !== '');
+    const index = expertises.indexOf(expertise);
+    
+    if (index === -1) {
+      expertises.push(expertise);
+    } else {
+      expertises.splice(index, 1);
+    }
+    
+    this.sectorsInput = expertises.join(', ');
+  }
+  
+  /**
+   * Vérifie si un secteur est sélectionné
+   */
+  isSectorSelected(sector: string): boolean {
+    const sectors = this.sectorsInput.split(',').map(s => s.trim()).filter(s => s !== '');
+    return sectors.includes(sector);
+  }
+  
+  /**
+   * Ajoute ou supprime un secteur
+   */
+  toggleSector(sector: string, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    const sectors = this.sectorsInput.split(',').map(s => s.trim()).filter(s => s !== '');
+    const index = sectors.indexOf(sector);
+    
+    if (index === -1) {
+      sectors.push(sector);
+    } else {
+      sectors.splice(index, 1);
+    }
+    
+    this.sectorsInput = sectors.join(', ');
   }
 }
