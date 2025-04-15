@@ -5,6 +5,7 @@
 const express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 
@@ -31,6 +32,16 @@ function logMessage(message, color = 'reset') {
 // Message de démarrage
 logMessage("=== DÉMARRAGE DU PROXY REPLIT ===", 'magenta');
 logMessage(`Redirection du trafic vers Angular (port ${ANGULAR_PORT}) et l'API .NET (port ${API_PORT})`, 'cyan');
+
+// Ajouter un en-tête pour le débogage
+app.use((req, res, next) => {
+  res.setHeader('X_TEST', 'TEST');
+  // Ajouter CORS headers pour le développement
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  next();
+});
 
 // Proxy pour les requêtes API vers le port 8000
 app.use('/api', createProxyMiddleware({
@@ -65,9 +76,17 @@ const angularProxy = createProxyMiddleware({
 // Routes Angular
 app.use('/', angularProxy);
 
-// Utilisation du fallback HTML5 pour le routing SPA
-// On simplifie l'approche en utilisant uniquement le proxy original pour toutes les routes
-// Les routes /api sont déjà gérées par le middleware précédent
+// Midleware de gestion d'erreur pour attraper les 404 et rediriger vers index.html
+app.use((req, res, next) => {
+  if (req.url.startsWith('/api')) {
+    // Pour les API, on laisse passer l'erreur
+    next();
+  } else {
+    // Pour Angular, on redirige vers le proxy Angular
+    logMessage(`Redirection de ${req.url} vers Angular (fallback)`, 'yellow');
+    angularProxy(req, res, next);
+  }
+});
 
 // Démarrage du serveur proxy
 app.listen(PROXY_PORT, '0.0.0.0', () => {
