@@ -173,6 +173,102 @@
   color: rgba(107, 114, 128, 1);
 }
 
+/* Styles pour le défilement optimisé */
+.fixed-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: white;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(229, 231, 235, 1);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.scrollable-content {
+  height: calc(100vh - 80px); /* Hauteur du viewport moins la hauteur de l'en-tête */
+  overflow-y: auto;
+  padding-right: 0.5rem; /* Espace pour la barre de défilement */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+.scrollable-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollable-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.8);
+}
+
+/* Pour les applications Chrome Extension */
+.chrome-extension-view {
+  height: 100vh;
+  max-height: 600px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.chrome-extension-view .fixed-header {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 100;
+  padding: 0.75rem 0;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.chrome-extension-view .scrollable-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  height: auto;
+  max-height: calc(100% - 70px);
+  padding-right: 8px;
+  margin-right: -8px; /* Compense le padding pour éviter que la barre de défilement ne prenne de la place */
+  padding-bottom: 20px; /* Ajoute de l'espace en bas pour le défilement */
+}
+
+/* Style de la barre de défilement spécifique pour Chrome Extension */
+.chrome-extension-view .scrollable-content::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.chrome-extension-view .scrollable-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.chrome-extension-view .scrollable-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Style amélioré pour les éléments du formulaire dans un contexte réduit */
+.chrome-extension-view .edit-form-collapsable {
+  padding: 0.5rem;
+}
+
+.chrome-extension-view .form-group {
+  margin-bottom: 0.5rem;
+}
+
+.chrome-extension-view .form-input,
+.chrome-extension-view .form-select {
+  padding: 0.4rem;
+  font-size: 0.8rem;
+}
+
 /* Responsive grid */
 @media (max-width: 768px) {
   .container {
@@ -182,5 +278,9 @@
   
   .grid {
     grid-template-columns: repeat(1, 1fr);
+  }
+  
+  .scrollable-content {
+    height: calc(100vh - 70px); /* Ajustement pour les mobiles */
   }
 }

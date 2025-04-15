@@ -65,16 +65,9 @@ const angularProxy = createProxyMiddleware({
 // Routes Angular
 app.use('/', angularProxy);
 
-// Middleware pour toutes les routes qui ne sont pas gérées ailleurs
-app.use((req, res, next) => {
-  if (req.url.startsWith('/api/')) {
-    return next(); // Laisser passer les requêtes API
-  }
-  
-  logMessage(`Redirection vers index.html pour la route ${req.url}`, 'yellow');
-  // Servir le fichier index.html pour les routes Angular (SPA routing)
-  res.redirect('/');
-});
+// Utilisation du fallback HTML5 pour le routing SPA
+// On simplifie l'approche en utilisant uniquement le proxy original pour toutes les routes
+// Les routes /api sont déjà gérées par le middleware précédent
 
 // Démarrage du serveur proxy
 app.listen(PROXY_PORT, '0.0.0.0', () => {

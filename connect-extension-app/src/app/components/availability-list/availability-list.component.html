@@ -1,5 +1,5 @@
-<div class="container mx-auto px-4 py-8">
-  <div class="flex justify-between items-center mb-6">
+<div class="container mx-auto px-4 py-8 chrome-extension-view">
+  <div class="flex justify-between items-center mb-6 fixed-header">
     <h1 class="text-2xl font-semibold text-gray-800">Mes Consultants</h1>
     <button (click)="openAddAvailabilityModal()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-150 flex items-center">
       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -8,6 +8,8 @@
       Nouvelle disponibilité
     </button>
   </div>
+  
+  <div class="scrollable-content">
   
   <!-- État de chargement -->
   <div *ngIf="loading" class="flex justify-center items-center h-40">
@@ -171,25 +173,25 @@
                 <label class="form-label">Type d'engagement</label>
                 <div class="flex flex-col space-y-2">
                   <div class="flex items-center">
-                    <input id="engagement-freelance" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                    <input [id]="'engagement-freelance-' + availability.id" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                       [checked]="isEngagementTypeSelected('Freelance')"
                       (change)="toggleEngagementType('Freelance', $event)"
                       [disabled]="isEngagementTypeSelected('Sous-traitance')">
-                    <label for="engagement-freelance" class="ml-2 text-sm text-gray-700">Freelance</label>
+                    <label [for]="'engagement-freelance-' + availability.id" class="ml-2 text-sm text-gray-700">Freelance</label>
                   </div>
                   <div class="flex items-center">
-                    <input id="engagement-salarie" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                    <input [id]="'engagement-salarie-' + availability.id" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                       [checked]="isEngagementTypeSelected('Salarié')"
                       (change)="toggleEngagementType('Salarié', $event)"
                       [disabled]="isEngagementTypeSelected('Sous-traitance')">
-                    <label for="engagement-salarie" class="ml-2 text-sm text-gray-700">Salarié (CDI)</label>
+                    <label [for]="'engagement-salarie-' + availability.id" class="ml-2 text-sm text-gray-700">Salarié (CDI)</label>
                   </div>
                   <div class="flex items-center">
-                    <input id="engagement-soustraitance" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                    <input [id]="'engagement-soustraitance-' + availability.id" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                       [checked]="isEngagementTypeSelected('Sous-traitance')"
                       (change)="toggleEngagementType('Sous-traitance', $event)"
                       [disabled]="isEngagementTypeSelected('Freelance') || isEngagementTypeSelected('Salarié')">
-                    <label for="engagement-soustraitance" class="ml-2 text-sm text-gray-700">Sous-traitance</label>
+                    <label [for]="'engagement-soustraitance-' + availability.id" class="ml-2 text-sm text-gray-700">Sous-traitance</label>
                   </div>
                 </div>
               </div>
@@ -328,5 +330,5 @@
         </form>
       </div>
     </div>
-  </div>
+  </div> <!-- Fin de scrollable-content -->
 </div>

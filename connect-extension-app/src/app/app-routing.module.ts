@@ -56,7 +56,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { 
-    useHash: false,  // Désactivation du mode hash pour tester
+    useHash: true,  // Activation du mode hash pour éviter les problèmes de routing sur Replit
     enableTracing: false // Désactiver le traçage pour la production
   })], 
   exports: [RouterModule]

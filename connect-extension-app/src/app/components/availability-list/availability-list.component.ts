@@ -80,7 +80,7 @@ export class AvailabilityListComponent implements OnInit {
     'UX/UI Design', 'Infrastructure'
   ];
   
-  engagementTypes = ['Freelance', 'Salarié', 'Les deux'];
+  engagementTypes = ['Freelance', 'Salarié', 'Sous-traitance'];
   workModes = [
     { value: 'onsite', label: 'Sur site' },
     { value: 'remote', label: 'Télétravail' },
@@ -219,7 +219,15 @@ export class AvailabilityListComponent implements OnInit {
     
     // Initialise le formulaire avec les valeurs actuelles
     this.editForm = new FormGroup({
+      // Informations privées
       consultantName: new FormControl(availability.consultantName, Validators.required),
+      consultantEmail: new FormControl(availability.consultantEmail || ''),
+      consultantPhone: new FormControl(availability.consultantPhone || ''),
+      acronym: new FormControl(availability.acronym || ''),
+      internalId: new FormControl(availability.internalId || ''),
+      
+      // Informations publiques
+      consultantAbbreviation: new FormControl(availability.consultantAbbreviation || ''),
       role: new FormControl(availability.role || '', Validators.required),
       startDate: new FormControl(this.formatDateForInput(availability.startDate), Validators.required),
       durationInMonths: new FormControl(availability.durationInMonths, [Validators.required, Validators.min(1)]),
@@ -227,8 +235,13 @@ export class AvailabilityListComponent implements OnInit {
       workMode: new FormControl(availability.workMode, Validators.required),
       experienceLevel: new FormControl(availability.experienceLevel || 'intermediate', Validators.required),
       rate: new FormControl(availability.rate || 0),
-      description: new FormControl(availability.description || ''),
+      
+      // Coordonnées et liens
       linkedinUrl: new FormControl(availability.linkedinUrl || ''),
+      recruiterMessage: new FormControl(availability.recruiterMessage || ''),
+      
+      // Autres paramètres
+      description: new FormControl(availability.description || ''),
       country: new FormControl(availability.country || 'France', Validators.required),
       engagementType: new FormControl(availability.engagementType || 'Freelance', Validators.required),
       locked: new FormControl(availability.locked || false)
@@ -238,6 +251,9 @@ export class AvailabilityListComponent implements OnInit {
     this.skillsInput = (availability.skills || []).join(', ');
     this.citiesInput = (availability.cities || []).join(', ');
     this.sectorsInput = (availability.sectors || []).join(', ');
+    
+    // Initialise les types d'engagement
+    this.initializeEngagementTypes(availability.engagementType);
   }
   
   // Annule le mode édition
@@ -251,6 +267,7 @@ export class AvailabilityListComponent implements OnInit {
     this.skillsInput = '';
     this.citiesInput = '';
     this.sectorsInput = '';
+    this.selectedEngagementTypes = [];
   }
   
   // Sauvegarde les modifications
@@ -480,5 +497,95 @@ export class AvailabilityListComponent implements OnInit {
     }
     
     this.sectorsInput = sectors.join(', ');
+  }
+  
+  /**
+   * Vérifie si un type d'engagement est sélectionné
+   */
+  isEngagementTypeSelected(type: string): boolean {
+    // Si nous utilisons selectedEngagementTypes, vérifier dedans
+    if (this.selectedEngagementTypes.length > 0) {
+      return this.selectedEngagementTypes.includes(type);
+    }
+    
+    // Sinon, vérifier le engagementType du formulaire
+    if (this.editForm && this.editForm.get('engagementType')) {
+      const currentType = this.editForm.get('engagementType')?.value;
+      return currentType === type;
+    }
+    
+    return false;
+  }
+  
+  /**
+   * Gère la sélection ou désélection d'un type d'engagement
+   * avec les règles métier spécifiques
+   */
+  toggleEngagementType(type: string, event: Event): void {
+    if (!this.editForm) return;
+    
+    const checkbox = event.target as HTMLInputElement;
+    
+    // Règle : Sous-traitance est exclusif
+    if (type === 'Sous-traitance') {
+      if (checkbox.checked) {
+        // Si Sous-traitance est sélectionné, désélectionner les autres
+        this.selectedEngagementTypes = ['Sous-traitance'];
+        this.editForm.patchValue({ engagementType: 'Sous-traitance' });
+      } else {
+        // Si Sous-traitance est désélectionné, vider la sélection
+        this.selectedEngagementTypes = [];
+        this.editForm.patchValue({ engagementType: '' });
+      }
+    } else {
+      // Pour Freelance et Salarié
+      if (checkbox.checked) {
+        // Si déjà Sous-traitance, ne rien faire
+        if (this.isEngagementTypeSelected('Sous-traitance')) {
+          return;
+        }
+        
+        // Ajouter le type à la sélection
+        if (!this.selectedEngagementTypes.includes(type)) {
+          this.selectedEngagementTypes.push(type);
+        }
+        
+        // Mettre à jour le champ du formulaire
+        if (this.selectedEngagementTypes.length === 1) {
+          this.editForm.patchValue({ engagementType: type });
+        } else if (this.selectedEngagementTypes.length === 2) {
+          this.editForm.patchValue({ engagementType: 'Les deux' });
+        }
+      } else {
+        // Retirer le type de la sélection
+        this.selectedEngagementTypes = this.selectedEngagementTypes.filter(t => t !== type);
+        
+        // Mettre à jour le champ du formulaire
+        if (this.selectedEngagementTypes.length === 0) {
+          this.editForm.patchValue({ engagementType: '' });
+        } else if (this.selectedEngagementTypes.length === 1) {
+          this.editForm.patchValue({ engagementType: this.selectedEngagementTypes[0] });
+        }
+      }
+    }
+  }
+  
+  /**
+   * Initialise les types d'engagement à partir d'une disponibilité existante
+   */
+  initializeEngagementTypes(engagementType?: string): void {
+    this.selectedEngagementTypes = [];
+    
+    if (!engagementType) return;
+    
+    if (engagementType === 'Sous-traitance') {
+      this.selectedEngagementTypes = ['Sous-traitance'];
+    } else if (engagementType === 'Freelance') {
+      this.selectedEngagementTypes = ['Freelance'];
+    } else if (engagementType === 'Salarié') {
+      this.selectedEngagementTypes = ['Salarié'];
+    } else if (engagementType === 'Les deux') {
+      this.selectedEngagementTypes = ['Freelance', 'Salarié'];
+    }
   }
 }
