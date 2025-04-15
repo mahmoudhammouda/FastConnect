@@ -20,15 +20,17 @@
 
 /* Styles pour la liste de consultants */
 .consultant-item {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.consultant-item:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  margin-bottom: 15px;
+  border-radius: 0.375rem;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .consultant-header {
-  transition: background-color 0.15s ease-in-out;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .status-indicator {
@@ -54,23 +56,12 @@
   color: rgb(107, 114, 128);
 }
 
-.button-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 4px;
-  transition: background-color 0.15s ease-in-out;
-}
-
 /* Styles spécifiques pour les icônes d'action alignées à droite */
 .action-buttons {
   display: flex;
   align-items: center;
-  gap: 12px; /* Espacement exact entre les boutons comme sur l'image */
-  margin-left: auto; /* Force l'alignement à droite */
-  padding-left: 12px; /* Ajoute un peu d'espace entre le texte et les boutons */
+  gap: 12px;
+  margin-left: auto;
 }
 
 .action-buttons button {
@@ -79,47 +70,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
-  flex-shrink: 0; /* Empêche les boutons de rétrécir */
 }
 
-.action-buttons button:hover {
-  opacity: 0.8;
-  transform: scale(1.05); /* Légère animation au survol */
-}
-
-/* Styles pour le formulaire d'édition collapsable */
+/* Styles pour le formulaire d'édition */
 .edit-form-collapsable {
-  animation: slideDown 0.3s ease-out;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
-  position: relative;
-  overflow: visible;
-  z-index: 5;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    max-height: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    max-height: 2000px; /* Augmenté pour gérer les formulaires plus grands */
-    transform: translateY(0);
-  }
-}
-
-/* Assure que le formulaire d'édition reste visible pendant le scrolling */
-.consultant-item {
-  position: relative;
-  overflow: visible;
-  margin-bottom: 15px;
-  transition: margin-bottom 0.3s ease-out;
-}
-
-.consultant-item.editing {
-  margin-bottom: 25px;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-top: 1px solid #e5e7eb;
 }
 
 /* Styles pour les éléments de formulaire */
@@ -129,7 +86,7 @@
 
 .form-label {
   display: block;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   font-weight: 500;
   color: #4b5563;
   margin-bottom: 0.25rem;
@@ -143,17 +100,7 @@
   border: 1px solid #d1d5db;
   border-radius: 0.375rem;
   font-size: 0.875rem;
-  color: #1f2937;
-  transition: border-color 0.15s, box-shadow 0.15s;
   background-color: white;
-}
-
-.form-input:focus,
-.form-select:focus,
-.form-textarea:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .form-textarea {
@@ -167,25 +114,25 @@
   padding: 3rem 1rem;
   background-color: white;
   border-radius: 0.5rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .empty-icon {
   font-size: 3rem;
-  color: rgba(156, 163, 175, 1);
+  color: #9ca3af;
   margin-bottom: 1rem;
 }
 
 .empty-title {
   font-size: 1.25rem;
   font-weight: 500;
-  color: rgba(31, 41, 55, 1);
+  color: #1f2937;
   margin-bottom: 0.5rem;
 }
 
 .empty-subtitle {
   font-size: 0.875rem;
-  color: rgba(107, 114, 128, 1);
+  color: #6b7280;
 }
 
 /* Styles pour le défilement optimisé */
@@ -195,94 +142,28 @@
   z-index: 10;
   background-color: white;
   padding: 1rem 0;
-  border-bottom: 1px solid rgba(229, 231, 235, 1);
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .scrollable-content {
-  height: calc(100vh - 80px); /* Hauteur du viewport moins la hauteur de l'en-tête */
-  overflow-y: auto;
-  padding-right: 0.5rem; /* Espace pour la barre de défilement */
-  scrollbar-width: thin;
-  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+  padding: 1rem;
 }
 
-.scrollable-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.scrollable-content::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.scrollable-content::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.5);
-  border-radius: 3px;
-}
-
-.scrollable-content::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(156, 163, 175, 0.8);
-}
-
-/* Pour les applications Chrome Extension */
-.chrome-extension-view {
-  height: 100vh;
-  max-height: 600px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.chrome-extension-view .fixed-header {
-  flex-shrink: 0;
-  position: sticky;
-  top: 0;
-  background: white;
-  z-index: 100;
-  padding: 0.75rem 0;
+/* Couleur d'arrière-plan spéciale pour les sections */
+.bg-blue-50 {
+  background-color: #eff6ff;
+  border-radius: 0.5rem;
+  border: 1px solid #dbeafe;
+  padding: 1rem;
   margin-bottom: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.chrome-extension-view .scrollable-content {
-  flex-grow: 1;
-  overflow-y: auto;
-  height: auto;
-  max-height: calc(100% - 70px);
-  padding-right: 8px;
-  margin-right: -8px; /* Compense le padding pour éviter que la barre de défilement ne prenne de la place */
-  padding-bottom: 20px; /* Ajoute de l'espace en bas pour le défilement */
-  overflow-anchor: auto; /* Assure que la position de défilement est préservée lors de l'ajout de contenu */
-}
-
-/* Style de la barre de défilement spécifique pour Chrome Extension */
-.chrome-extension-view .scrollable-content::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-
-.chrome-extension-view .scrollable-content::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-}
-
-.chrome-extension-view .scrollable-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.3);
-}
-
-/* Style amélioré pour les éléments du formulaire dans un contexte réduit */
-.chrome-extension-view .edit-form-collapsable {
-  padding: 0.5rem;
-}
-
-.chrome-extension-view .form-group {
-  margin-bottom: 0.5rem;
-}
-
-.chrome-extension-view .form-input,
-.chrome-extension-view .form-select {
-  padding: 0.4rem;
-  font-size: 0.8rem;
+.bg-green-50 {
+  background-color: #f0fdf4;
+  border-radius: 0.5rem;
+  border: 1px solid #dcfce7;
+  padding: 1rem;
+  margin-bottom: 1rem;
 }
 
 /* Responsive grid */
@@ -293,10 +174,8 @@
   }
   
   .grid {
+    display: grid;
     grid-template-columns: repeat(1, 1fr);
-  }
-  
-  .scrollable-content {
-    height: calc(100vh - 70px); /* Ajustement pour les mobiles */
+    gap: 1rem;
   }
 }
