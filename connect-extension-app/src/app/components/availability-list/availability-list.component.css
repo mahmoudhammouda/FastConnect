@@ -77,6 +77,8 @@
   padding: 1rem;
   background-color: #f9fafb;
   border-top: 1px solid #e5e7eb;
+  max-height: none; /* Assure que le formulaire n'est pas tronqué */
+  overflow: visible; /* Permet au contenu de dépasser si nécessaire */
 }
 
 /* Styles pour les éléments de formulaire */
@@ -147,6 +149,9 @@
 
 .scrollable-content {
   padding: 1rem;
+  height: auto;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
 }
 
 /* Couleur d'arrière-plan spéciale pour les sections */
