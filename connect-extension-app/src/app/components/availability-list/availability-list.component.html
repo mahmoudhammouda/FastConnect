@@ -258,46 +258,160 @@
             </h4>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <!-- Compétences -->
+              <!-- Compétences (Menu déroulant) -->
               <div class="form-group">
-                <label class="form-label">Compétences (séparées par des virgules)</label>
-                <input type="text" [(ngModel)]="skillsInput" [ngModelOptions]="{standalone: true}" class="form-input">
-                <div class="flex flex-wrap gap-1 mt-1">
-                  <div *ngFor="let skill of skillsList.slice(0, 5)" 
-                      (click)="toggleSkill(skill)"
-                      class="px-2 py-1 text-xs rounded cursor-pointer transition-colors"
-                      [ngClass]="isSkillSelected(skill) ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'">
-                    {{ skill }}
+                <label class="form-label">Compétences</label>
+                <div class="relative">
+                  <button type="button" 
+                         class="form-input text-left pr-8 flex items-center justify-between w-full" 
+                         (click)="toggleSkillsDropdown($event)">
+                    <span *ngIf="(editForm!.get('skills')?.value || []).length === 0">Sélectionner des compétences</span>
+                    <span *ngIf="(editForm!.get('skills')?.value || []).length === 1">{{ editForm!.get('skills')?.value[0] }}</span>
+                    <span *ngIf="(editForm!.get('skills')?.value || []).length > 1">{{ editForm!.get('skills')?.value.length }} compétences</span>
+                    <svg class="h-4 w-4 absolute right-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </button>
+                  
+                  <div *ngIf="skillsDropdownOpen" class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                    <div class="p-2">
+                      <div *ngFor="let skill of skillsList" class="flex items-center py-1">
+                        <input type="checkbox" 
+                              [id]="'edit-skill-' + skill"
+                              [checked]="isSkillSelected(skill)"
+                              (change)="toggleSkill(skill, $event)"
+                              class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <label [for]="'edit-skill-' + skill" class="ml-2 text-sm text-gray-700">{{ skill }}</label>
+                      </div>
+                      <!-- Input pour nouvelle compétence -->
+                      <div class="mt-2 pt-2 border-t border-gray-200 flex items-center">
+                        <input type="text" [(ngModel)]="skillsInput" [ngModelOptions]="{standalone: true}" 
+                          class="form-input py-1 text-sm flex-1" placeholder="Nouvelle compétence">
+                        <button (click)="addSkillsToForm()" class="ml-1 p-1 bg-blue-500 text-white text-xs rounded">
+                          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <div *ngIf="skillsList.length > 5" class="px-2 py-1 text-xs rounded bg-gray-100 text-gray-700">
-                    +{{ skillsList.length - 5 }} autres
+                </div>
+                <div *ngIf="(editForm!.get('skills')?.value || []).length > 0" class="mt-2 flex flex-wrap gap-1">
+                  <div *ngFor="let skill of editForm!.get('skills')?.value" class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-md flex items-center">
+                    {{ skill }}
+                    <button (click)="removeSkillFromForm(skill)" class="ml-1 text-blue-600 hover:text-blue-800">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                      </svg>
+                    </button>
                   </div>
                 </div>
               </div>
               
-              <!-- Villes -->
+              <!-- Villes (Menu déroulant) -->
               <div class="form-group">
-                <label class="form-label">Villes (séparées par des virgules)</label>
-                <input type="text" [(ngModel)]="citiesInput" [ngModelOptions]="{standalone: true}" class="form-input">
                 <!-- Pays -->
-                <div class="mt-2">
+                <div class="mb-2">
                   <label class="form-label">Pays</label>
-                  <select formControlName="country" class="form-select">
+                  <select formControlName="country" class="form-select" (change)="updateAvailableCities()">
                     <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
                   </select>
                 </div>
+                
+                <label class="form-label">Villes</label>
+                <div class="relative">
+                  <button type="button" 
+                         class="form-input text-left pr-8 flex items-center justify-between w-full" 
+                         (click)="toggleCitiesDropdown($event)">
+                    <span *ngIf="(editForm!.get('cities')?.value || []).length === 0">Sélectionner des villes</span>
+                    <span *ngIf="(editForm!.get('cities')?.value || []).length === 1">{{ editForm!.get('cities')?.value[0] }}</span>
+                    <span *ngIf="(editForm!.get('cities')?.value || []).length > 1">{{ editForm!.get('cities')?.value.length }} villes</span>
+                    <svg class="h-4 w-4 absolute right-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </button>
+                  
+                  <div *ngIf="citiesDropdownOpen" class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                    <div class="p-2">
+                      <div *ngFor="let city of getAvailableCities(editForm!.get('country')?.value)" class="flex items-center py-1">
+                        <input type="checkbox" 
+                              [id]="'edit-city-' + city"
+                              [checked]="isCitySelected(city)"
+                              (change)="toggleCity(city, $event)"
+                              class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <label [for]="'edit-city-' + city" class="ml-2 text-sm text-gray-700">{{ city }}</label>
+                      </div>
+                      <!-- Input pour nouvelle ville -->
+                      <div class="mt-2 pt-2 border-t border-gray-200 flex items-center">
+                        <input type="text" [(ngModel)]="citiesInput" [ngModelOptions]="{standalone: true}" 
+                          class="form-input py-1 text-sm flex-1" placeholder="Nouvelle ville">
+                        <button (click)="addCitiesToForm()" class="ml-1 p-1 bg-blue-500 text-white text-xs rounded">
+                          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="(editForm!.get('cities')?.value || []).length > 0" class="mt-2 flex flex-wrap gap-1">
+                  <div *ngFor="let city of editForm!.get('cities')?.value" class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-md flex items-center">
+                    {{ city }}
+                    <button (click)="removeCityFromForm(city)" class="ml-1 text-green-600 hover:text-green-800">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
               </div>
               
-              <!-- Secteurs -->
-              <div class="form-group md:col-span-2">
-                <label class="form-label">Secteurs d'activité (séparés par des virgules)</label>
-                <input type="text" [(ngModel)]="sectorsInput" [ngModelOptions]="{standalone: true}" class="form-input">
-                <div class="flex flex-wrap gap-1 mt-1">
-                  <div *ngFor="let sector of sectors.slice(0, 5)" 
-                      (click)="toggleSector(sector)"
-                      class="px-2 py-1 text-xs rounded cursor-pointer transition-colors"
-                      [ngClass]="isSectorSelected(sector) ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'">
+              <!-- Secteurs (Menu déroulant) -->
+              <div class="form-group">
+                <label class="form-label">Secteurs d'activité</label>
+                <div class="relative">
+                  <button type="button" 
+                         class="form-input text-left pr-8 flex items-center justify-between w-full" 
+                         (click)="toggleSectorsDropdown($event)">
+                    <span *ngIf="(editForm!.get('sectors')?.value || []).length === 0">Sélectionner des secteurs</span>
+                    <span *ngIf="(editForm!.get('sectors')?.value || []).length === 1">{{ editForm!.get('sectors')?.value[0] }}</span>
+                    <span *ngIf="(editForm!.get('sectors')?.value || []).length > 1">{{ editForm!.get('sectors')?.value.length }} secteurs</span>
+                    <svg class="h-4 w-4 absolute right-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </button>
+                  
+                  <div *ngIf="sectorsDropdownOpen" class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                    <div class="p-2">
+                      <div *ngFor="let sector of sectors" class="flex items-center py-1">
+                        <input type="checkbox" 
+                              [id]="'edit-sector-' + sector"
+                              [checked]="isSectorSelected(sector)"
+                              (change)="toggleSector(sector, $event)"
+                              class="h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                        <label [for]="'edit-sector-' + sector" class="ml-2 text-sm text-gray-700">{{ sector }}</label>
+                      </div>
+                      <!-- Input pour nouveau secteur -->
+                      <div class="mt-2 pt-2 border-t border-gray-200 flex items-center">
+                        <input type="text" [(ngModel)]="sectorsInput" [ngModelOptions]="{standalone: true}" 
+                          class="form-input py-1 text-sm flex-1" placeholder="Nouveau secteur">
+                        <button (click)="addSectorsToForm()" class="ml-1 p-1 bg-purple-500 text-white text-xs rounded">
+                          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="(editForm!.get('sectors')?.value || []).length > 0" class="mt-2 flex flex-wrap gap-1">
+                  <div *ngFor="let sector of editForm!.get('sectors')?.value" class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-md flex items-center">
                     {{ sector }}
+                    <button (click)="removeSectorFromForm(sector)" class="ml-1 text-purple-600 hover:text-purple-800">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                      </svg>
+                    </button>
                   </div>
                 </div>
               </div>

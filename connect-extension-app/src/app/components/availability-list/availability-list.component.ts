@@ -27,6 +27,16 @@ export class AvailabilityListComponent implements OnInit {
   sectorsInput: string = '';
   selectedEngagementTypes: string[] = [];
   
+  // État des dropdowns
+  skillsDropdownOpen: boolean = false;
+  citiesDropdownOpen: boolean = false;
+  sectorsDropdownOpen: boolean = false;
+  
+  // Listes disponibles
+  availableSkills: string[] = [];
+  availableCities: string[] = [];
+  availableSectors: string[] = [];
+  
   experienceLevels = [
     { value: 'junior', label: 'Moins de 3 ans' },
     { value: 'intermediate', label: '3-5 ans' },
@@ -99,6 +109,16 @@ export class AvailabilityListComponent implements OnInit {
   
   ngOnInit(): void {
     this.loadAvailabilities();
+    this.initAvailableLists();
+  }
+  
+  /**
+   * Initialise les listes disponibles pour les dropdowns
+   */
+  initAvailableLists(): void {
+    this.availableSkills = [...this.skillsList];
+    this.availableSectors = [...this.sectors];
+    this.updateAvailableCities();
   }
   
   loadAvailabilities(): void {
@@ -258,10 +278,29 @@ export class AvailabilityListComponent implements OnInit {
       locked: new FormControl(availability.locked || false)
     });
     
-    // Initialise les valeurs pour les champs de tags (convertis en chaînes pour l'affichage)
-    this.skillsInput = (availability.skills || []).join(', ');
-    this.citiesInput = (availability.cities || []).join(', ');
-    this.sectorsInput = (availability.sectors || []).join(', ');
+    // Initialise les valeurs pour les champs de tags
+    if (Array.isArray(availability.skills)) {
+      this.editForm.patchValue({ skills: availability.skills });
+    } else {
+      this.editForm.patchValue({ skills: [] });
+    }
+    
+    if (Array.isArray(availability.cities)) {
+      this.editForm.patchValue({ cities: availability.cities });
+    } else {
+      this.editForm.patchValue({ cities: [] });
+    }
+    
+    if (Array.isArray(availability.sectors)) {
+      this.editForm.patchValue({ sectors: availability.sectors });
+    } else {
+      this.editForm.patchValue({ sectors: [] });
+    }
+    
+    // Initialise les disponibles pour les dropdowns
+    this.availableSkills = [...this.skillsList];
+    this.availableSectors = [...this.sectors];
+    this.updateAvailableCities();
     
     // Initialise les types d'engagement
     this.initializeEngagementTypes(availability.engagementType);
@@ -279,6 +318,204 @@ export class AvailabilityListComponent implements OnInit {
     this.citiesInput = '';
     this.sectorsInput = '';
     this.selectedEngagementTypes = [];
+    
+    // Fermer tous les dropdowns
+    this.skillsDropdownOpen = false;
+    this.citiesDropdownOpen = false;
+    this.sectorsDropdownOpen = false;
+  }
+  
+  // Méthodes pour les dropdowns
+  
+  /**
+   * Ouvre/ferme le dropdown des compétences
+   */
+  toggleSkillsDropdown(event: Event): void {
+    event.stopPropagation();
+    this.skillsDropdownOpen = !this.skillsDropdownOpen;
+    this.citiesDropdownOpen = false;
+    this.sectorsDropdownOpen = false;
+  }
+  
+  /**
+   * Ouvre/ferme le dropdown des villes
+   */
+  toggleCitiesDropdown(event: Event): void {
+    event.stopPropagation();
+    this.citiesDropdownOpen = !this.citiesDropdownOpen;
+    this.skillsDropdownOpen = false;
+    this.sectorsDropdownOpen = false;
+  }
+  
+  /**
+   * Ouvre/ferme le dropdown des secteurs
+   */
+  toggleSectorsDropdown(event: Event): void {
+    event.stopPropagation();
+    this.sectorsDropdownOpen = !this.sectorsDropdownOpen;
+    this.skillsDropdownOpen = false;
+    this.citiesDropdownOpen = false;
+  }
+  
+  /**
+   * Met à jour la liste des villes disponibles
+   */
+  updateAvailableCities(): void {
+    if (!this.editForm) return;
+    
+    const country = this.editForm.get('country')?.value;
+    if (country && this.cities[country]) {
+      this.availableCities = [...this.cities[country]];
+    } else {
+      this.availableCities = [];
+    }
+  }
+  
+  /**
+   * Vérifie si une ville est sélectionnée
+   */
+  isCitySelected(city: string): boolean {
+    if (!this.editForm) return false;
+    
+    const cities = this.editForm.get('cities')?.value || [];
+    if (Array.isArray(cities)) {
+      return cities.includes(city);
+    }
+    return false;
+  }
+  
+  /**
+   * Ajoute ou supprime une ville
+   */
+  toggleCity(city: string, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    if (!this.editForm) return;
+    
+    let cities = (this.editForm.get('cities')?.value || []) as string[];
+    if (!Array.isArray(cities)) {
+      cities = [];
+    }
+    
+    const index = cities.indexOf(city);
+    
+    if (index === -1) {
+      cities.push(city);
+    } else {
+      cities.splice(index, 1);
+    }
+    
+    this.editForm.patchValue({ cities });
+  }
+  
+  /**
+   * Ajoute des compétences depuis l'input
+   */
+  addSkillsToForm(): void {
+    if (!this.skillsInput.trim() || !this.editForm) return;
+    
+    const newSkill = this.skillsInput.trim();
+    let skills = (this.editForm.get('skills')?.value || []) as string[];
+    
+    if (!Array.isArray(skills)) {
+      skills = [];
+    }
+    
+    if (newSkill && !skills.includes(newSkill)) {
+      skills.push(newSkill);
+      this.editForm.patchValue({ skills });
+    }
+    
+    this.skillsInput = '';
+  }
+  
+  /**
+   * Ajoute des villes depuis l'input
+   */
+  addCitiesToForm(): void {
+    if (!this.citiesInput.trim() || !this.editForm) return;
+    
+    const newCity = this.citiesInput.trim();
+    let cities = (this.editForm.get('cities')?.value || []) as string[];
+    
+    if (!Array.isArray(cities)) {
+      cities = [];
+    }
+    
+    if (newCity && !cities.includes(newCity)) {
+      cities.push(newCity);
+      this.editForm.patchValue({ cities });
+    }
+    
+    this.citiesInput = '';
+  }
+  
+  /**
+   * Ajoute des secteurs depuis l'input
+   */
+  addSectorsToForm(): void {
+    if (!this.sectorsInput.trim() || !this.editForm) return;
+    
+    const newSector = this.sectorsInput.trim();
+    let sectors = (this.editForm.get('sectors')?.value || []) as string[];
+    
+    if (!Array.isArray(sectors)) {
+      sectors = [];
+    }
+    
+    if (newSector && !sectors.includes(newSector)) {
+      sectors.push(newSector);
+      this.editForm.patchValue({ sectors });
+    }
+    
+    this.sectorsInput = '';
+  }
+  
+  /**
+   * Supprime une compétence du formulaire
+   */
+  removeSkillFromForm(skill: string): void {
+    if (!this.editForm) return;
+    
+    const skills = (this.editForm.get('skills')?.value || []) as string[];
+    const index = skills.indexOf(skill);
+    
+    if (index !== -1) {
+      skills.splice(index, 1);
+      this.editForm.patchValue({ skills });
+    }
+  }
+  
+  /**
+   * Supprime une ville du formulaire
+   */
+  removeCityFromForm(city: string): void {
+    if (!this.editForm) return;
+    
+    const cities = (this.editForm.get('cities')?.value || []) as string[];
+    const index = cities.indexOf(city);
+    
+    if (index !== -1) {
+      cities.splice(index, 1);
+      this.editForm.patchValue({ cities });
+    }
+  }
+  
+  /**
+   * Supprime un secteur du formulaire
+   */
+  removeSectorFromForm(sector: string): void {
+    if (!this.editForm) return;
+    
+    const sectors = (this.editForm.get('sectors')?.value || []) as string[];
+    const index = sectors.indexOf(sector);
+    
+    if (index !== -1) {
+      sectors.splice(index, 1);
+      this.editForm.patchValue({ sectors });
+    }
   }
   
   // Sauvegarde les modifications
@@ -298,15 +535,16 @@ export class AvailabilityListComponent implements OnInit {
     }
     
     // Crée une nouvelle disponibilité avec les valeurs du formulaire
+    const formValues = this.editForm.value;
     const updatedAvailability: ConsultantAvailability = {
       ...originalAvailability,
-      ...this.editForm.value,
-      // Convertit les chaînes en tableaux pour les champs de tags
-      skills: this.skillsInput.split(',').map(s => s.trim()).filter(s => s),
-      cities: this.citiesInput.split(',').map(s => s.trim()).filter(s => s),
-      sectors: this.sectorsInput.split(',').map(s => s.trim()).filter(s => s),
+      ...formValues,
+      // Assure que les tableaux sont bien initialisés
+      skills: Array.isArray(formValues.skills) ? formValues.skills : [],
+      cities: Array.isArray(formValues.cities) ? formValues.cities : [],
+      sectors: Array.isArray(formValues.sectors) ? formValues.sectors : [],
       // Formatage de la date
-      startDate: new Date(this.editForm.value.startDate).toISOString()
+      startDate: new Date(formValues.startDate).toISOString()
     };
     
     // Envoie la mise à jour au serveur
@@ -423,8 +661,13 @@ export class AvailabilityListComponent implements OnInit {
    * Vérifie si une compétence est sélectionnée
    */
   isSkillSelected(skill: string): boolean {
-    const skills = this.skillsInput.split(',').map(s => s.trim()).filter(s => s !== '');
-    return skills.includes(skill);
+    if (!this.editForm) return false;
+    
+    const skills = this.editForm.get('skills')?.value || [];
+    if (Array.isArray(skills)) {
+      return skills.includes(skill);
+    }
+    return false;
   }
   
   /**
@@ -435,7 +678,13 @@ export class AvailabilityListComponent implements OnInit {
       event.stopPropagation();
     }
     
-    const skills = this.skillsInput.split(',').map(s => s.trim()).filter(s => s !== '');
+    if (!this.editForm) return;
+    
+    let skills = (this.editForm.get('skills')?.value || []) as string[];
+    if (!Array.isArray(skills)) {
+      skills = [];
+    }
+    
     const index = skills.indexOf(skill);
     
     if (index === -1) {
@@ -444,7 +693,7 @@ export class AvailabilityListComponent implements OnInit {
       skills.splice(index, 1);
     }
     
-    this.skillsInput = skills.join(', ');
+    this.editForm.patchValue({ skills });
   }
   
   /**
@@ -458,36 +707,34 @@ export class AvailabilityListComponent implements OnInit {
    * Vérifie si une expertise est sélectionnée
    */
   isExpertiseSelected(expertise: string): boolean {
-    const expertises = this.sectorsInput.split(',').map(s => s.trim()).filter(s => s !== '');
-    return expertises.includes(expertise);
+    if (!this.editForm) return false;
+    
+    const sectors = this.editForm.get('sectors')?.value || [];
+    if (Array.isArray(sectors)) {
+      return sectors.includes(expertise);
+    }
+    return false;
   }
   
   /**
-   * Ajoute ou supprime une expertise
+   * Ajoute ou supprime une expertise (alias pour toggleSector)
    */
   toggleExpertise(expertise: string, event?: Event): void {
-    if (event) {
-      event.stopPropagation();
-    }
-    
-    const expertises = this.sectorsInput.split(',').map(s => s.trim()).filter(s => s !== '');
-    const index = expertises.indexOf(expertise);
-    
-    if (index === -1) {
-      expertises.push(expertise);
-    } else {
-      expertises.splice(index, 1);
-    }
-    
-    this.sectorsInput = expertises.join(', ');
+    // Réutilise toggleSector car les expertises sont stockées dans le même champ
+    this.toggleSector(expertise, event);
   }
   
   /**
    * Vérifie si un secteur est sélectionné
    */
   isSectorSelected(sector: string): boolean {
-    const sectors = this.sectorsInput.split(',').map(s => s.trim()).filter(s => s !== '');
-    return sectors.includes(sector);
+    if (!this.editForm) return false;
+    
+    const sectors = this.editForm.get('sectors')?.value || [];
+    if (Array.isArray(sectors)) {
+      return sectors.includes(sector);
+    }
+    return false;
   }
   
   /**
@@ -498,7 +745,13 @@ export class AvailabilityListComponent implements OnInit {
       event.stopPropagation();
     }
     
-    const sectors = this.sectorsInput.split(',').map(s => s.trim()).filter(s => s !== '');
+    if (!this.editForm) return;
+    
+    let sectors = (this.editForm.get('sectors')?.value || []) as string[];
+    if (!Array.isArray(sectors)) {
+      sectors = [];
+    }
+    
     const index = sectors.indexOf(sector);
     
     if (index === -1) {
@@ -507,7 +760,7 @@ export class AvailabilityListComponent implements OnInit {
       sectors.splice(index, 1);
     }
     
-    this.sectorsInput = sectors.join(', ');
+    this.editForm.patchValue({ sectors });
   }
   
   /**
