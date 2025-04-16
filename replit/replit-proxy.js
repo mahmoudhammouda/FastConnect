@@ -54,6 +54,8 @@ app.use('/api', createProxyMiddleware({
   },
   onProxyReq: (proxyReq, req, res) => {
     logMessage(`Proxy API request: ${req.method} ${req.url} -> ${proxyReq.path}`, 'blue');
+    // Impression explicite de l'URL complète pour debug
+    console.log('URL complète de la requête:', `http://0.0.0.0:${API_PORT}${req.url}`);
     // Déboggage détaillé des en-têtes de requête
     console.log('Headers de la requête API:', JSON.stringify(proxyReq.getHeaders()));
   },
@@ -62,6 +64,11 @@ app.use('/api', createProxyMiddleware({
     // Ajout d'un log détaillé pour la réponse
     console.log('Status Code API:', proxyRes.statusCode);
     console.log('Headers de la réponse API:', JSON.stringify(proxyRes.headers));
+  },
+  onError: (err, req, res) => {
+    console.error('Erreur de proxy pour la requête API:', err);
+    res.writeHead(500, { 'Content-Type': 'text/plain' });
+    res.end('Erreur proxy: ' + err.message);
   }
 }));
 

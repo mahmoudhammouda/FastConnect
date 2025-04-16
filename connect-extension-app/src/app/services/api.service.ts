@@ -45,6 +45,13 @@ export class ApiService {
       endpoint = apiPrefix + endpoint;
     }
     
+    // Si API_URL est vide, utiliser un chemin relatif (pour éviter Mixed Content)
+    if (!this.API_URL || this.API_URL === '') {
+      console.log('Utilisation de chemin relatif pour l\'API:', endpoint);
+      return endpoint;
+    }
+    
+    console.log('URL API complète:', `${this.API_URL}${endpoint}`);
     return `${this.API_URL}${endpoint}`;
   }
 
