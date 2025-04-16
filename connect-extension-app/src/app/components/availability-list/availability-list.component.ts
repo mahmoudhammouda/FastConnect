@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConsultantAvailability } from '../../models/consultant-availability.model';
 import { ConsultantAvailabilityService } from '../../services/consultant-availability.service';
@@ -6,6 +6,11 @@ import { ModalService } from '../../services/modal.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // (Référence à AddAvailabilityModalComponent supprimée)
+declare global {
+  interface Window {
+    initFlowbite: any;
+  }
+}
 
 @Component({
   selector: 'app-availability-list',
@@ -14,7 +19,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule]
 })
-export class AvailabilityListComponent implements OnInit {
+export class AvailabilityListComponent implements OnInit, AfterViewInit {
   consultantAvailabilities: ConsultantAvailability[] = [];
   loading: boolean = false;
   error: boolean = false;
@@ -38,6 +43,17 @@ export class AvailabilityListComponent implements OnInit {
   citiesDropdownOpen: boolean = false;
   sectorsDropdownOpen: boolean = false;
   workModesDropdownOpen: boolean = false;
+  
+  // Propriétés pour le sélecteur de pays dans le téléphone
+  selectedPhoneCountryCode: string = '+33';
+  phoneCountryCodes: { [key: string]: string } = {
+    'France': '+33',
+    'Belgique': '+32',
+    'Suisse': '+41',
+    'Luxembourg': '+352',
+    'États-Unis': '+1',
+    'Royaume-Uni': '+44'
+  };
   
   // Gestion du fichier CV
   selectedCvFile: File | null = null;
@@ -134,6 +150,62 @@ export class AvailabilityListComponent implements OnInit {
   ngOnInit(): void {
     this.loadAvailabilities();
     this.initAvailableLists();
+  }
+  
+  ngAfterViewInit(): void {
+    // Initialize flowbite dropdown menu for phone country selection
+    setTimeout(() => {
+      if (typeof window !== 'undefined' && window.initFlowbite) {
+        window.initFlowbite();
+      }
+      
+      // Ajouter les événements pour les options du pays
+      this.setupPhoneCountrySelector();
+    }, 100);
+  }
+  
+  /**
+   * Configure le sélecteur de pays pour le téléphone
+   */
+  private setupPhoneCountrySelector(): void {
+    const countryOptions = document.querySelectorAll('.country-option');
+    const dropdownButton = document.getElementById('dropdown-phone-button');
+    
+    if (countryOptions && dropdownButton) {
+      countryOptions.forEach(option => {
+        option.addEventListener('click', (event) => {
+          const target = event.currentTarget as HTMLElement;
+          const countryCode = target.getAttribute('data-code');
+          const countryText = target.textContent?.trim() || '';
+          
+          if (countryCode) {
+            this.selectedPhoneCountryCode = countryCode;
+            
+            // Mettre à jour le texte du bouton
+            const svgContent = dropdownButton.innerHTML.split('</svg>')[0] + '</svg>';
+            dropdownButton.innerHTML = svgContent + ' ' + countryCode + ' <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/></svg>';
+            
+            // Mettre à jour le numéro de téléphone dans le formulaire si besoin
+            this.updatePhoneWithCountryCode();
+          }
+        });
+      });
+    }
+  }
+  
+  /**
+   * Met à jour le numéro de téléphone avec le code pays sélectionné
+   */
+  private updatePhoneWithCountryCode(): void {
+    // Cette méthode peut être utilisée pour traiter le numéro 
+    // lors de la sauvegarde ou pour préfixer automatiquement le numéro
+    if (this.editForm) {
+      const phoneNumber = this.editForm.get('consultantPhone')?.value || '';
+      
+      // Logique pour mettre à jour le numéro si nécessaire
+      // Vous pouvez l'adapter selon vos besoins
+      console.log(`Téléphone mis à jour avec le code pays ${this.selectedPhoneCountryCode}: ${phoneNumber}`);
+    }
   }
   
   /**

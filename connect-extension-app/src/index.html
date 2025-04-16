@@ -79,8 +79,27 @@
   </script>
   
   <!-- Chargement de Flowbite -->
-  <script type="module">
-    import 'flowbite';
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
+  <script>
+    // Rendre initFlowbite disponible pour tous les composants Angular
+    window.initFlowbite = function() {
+      if (typeof window.flowbite !== 'undefined') {
+        // Initialize dropdowns
+        const dropdownElements = document.querySelectorAll('[data-dropdown-toggle]');
+        dropdownElements.forEach(dropdownEl => {
+          const targetId = dropdownEl.getAttribute('data-dropdown-toggle');
+          const targetEl = document.getElementById(targetId);
+          
+          if (targetEl && window.flowbite && window.flowbite.initDropdowns) {
+            window.flowbite.initDropdowns(dropdownEl, targetEl);
+          }
+        });
+        
+        console.log('Flowbite dropdowns initialized');
+      } else {
+        console.warn('Flowbite not loaded yet');
+      }
+    };
   </script>
   
   <app-root></app-root>
