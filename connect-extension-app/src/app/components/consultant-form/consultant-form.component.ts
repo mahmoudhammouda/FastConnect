@@ -103,65 +103,92 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
    */
   private initIntlTelInput(): void {
     try {
-      // Utiliser directement la version locale (installée via npm)
-      console.log('Initialisation de intl-tel-input avec le package npm...');
+      console.log('Initialisation de intl-tel-input...');
       
-      // Import dynamique de intl-tel-input
-      import('intl-tel-input').then(module => {
-        const intlTelInput = module.default;
-        console.log('Module intl-tel-input chargé, initialisation du composant...');
+      // Ajouter le CSS manuellement (puisque l'import dans angular.json ne fonctionne pas)
+      const styleLink = document.createElement('link');
+      styleLink.rel = 'stylesheet';
+      styleLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.css';
+      document.head.appendChild(styleLink);
+      
+      // Charger la librairie principal depuis un CDN (plus fiable)
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js';
+      script.async = true;
+      
+      script.onload = () => {
+        console.log('Script principal chargé, chargement des utils...');
         
-        if (!this.phoneInput?.nativeElement) {
-          console.error("L'élément input pour le téléphone n'est pas disponible");
-          return;
-        }
+        // Charger utils.js
+        const utilsScript = document.createElement('script');
+        utilsScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js';
+        utilsScript.async = true;
         
-        // Configuration pour reproduire exactement l'exemple de l'image
-        const options = {
-          initialCountry: 'fr',
-          preferredCountries: ['fr', 'be', 'ch', 'lu', 'ca'],
-          separateDialCode: true,
-          formatOnDisplay: true,
-          allowDropdown: true,
-          autoPlaceholder: 'aggressive',
-          customContainer: 'iti-container',
-          nationalMode: false,
-          utilsScript: 'node_modules/intl-tel-input/build/js/utils.js'
+        utilsScript.onload = () => {
+          console.log('Utils chargé, initialisation du composant...');
+          
+          if (!this.phoneInput?.nativeElement) {
+            console.error("L'élément input pour le téléphone n'est pas disponible");
+            return;
+          }
+          
+          // L'objet intlTelInput est maintenant disponible dans la fenêtre
+          const intTelInput = (window as any).intlTelInput;
+          
+          if (!intTelInput) {
+            console.error("intlTelInput n'est pas disponible dans la fenêtre globale");
+            return;
+          }
+          
+          // Configuration pour reproduire exactement l'exemple de l'image
+          const options = {
+            initialCountry: 'fr',
+            preferredCountries: ['fr', 'be', 'ch', 'lu', 'ca'],
+            separateDialCode: true,
+            formatOnDisplay: true,
+            allowDropdown: true,
+            autoPlaceholder: 'aggressive',
+            customContainer: 'iti-container',
+            nationalMode: false,
+            utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js'
+          };
+          
+          // Création de l'instance
+          this.intlTelInstance = intTelInput(this.phoneInput.nativeElement, options);
+          console.log('Instance intlTelInput créée avec succès');
+          
+          // Événements
+          this.phoneInput.nativeElement.addEventListener('countrychange', () => {
+            this.updatePhoneNumber();
+          });
+          
+          this.phoneInput.nativeElement.addEventListener('input', () => {
+            this.updatePhoneNumber();
+          });
+          
+          // Forcer un peu d'espace à gauche pour le drapeau et l'indicatif
+          this.phoneInput.nativeElement.style.paddingLeft = '90px';
+          
+          // Initialiser avec la valeur existante si présente
+          const currentPhone = this.consultantForm.get('phone')?.value;
+          if (currentPhone) {
+            setTimeout(() => {
+              try {
+                if (this.intlTelInstance) {
+                  this.intlTelInstance.setNumber(currentPhone);
+                  console.log('Numéro de téléphone initialisé:', currentPhone);
+                }
+              } catch (e) {
+                console.error('Erreur lors de la définition du numéro:', e);
+              }
+            }, 100);
+          }
         };
         
-        // Création de l'instance
-        this.intlTelInstance = intlTelInput(this.phoneInput.nativeElement, options);
-        console.log('Instance intlTelInput créée avec succès');
-        
-        // Événements
-        this.phoneInput.nativeElement.addEventListener('countrychange', () => {
-          this.updatePhoneNumber();
-        });
-        
-        this.phoneInput.nativeElement.addEventListener('input', () => {
-          this.updatePhoneNumber();
-        });
-        
-        // Forcer un peu d'espace à gauche pour le drapeau et l'indicatif
-        this.phoneInput.nativeElement.style.paddingLeft = '90px';
-        
-        // Initialiser avec la valeur existante si présente
-        const currentPhone = this.consultantForm.get('phone')?.value;
-        if (currentPhone) {
-          setTimeout(() => {
-            try {
-              if (this.intlTelInstance) {
-                this.intlTelInstance.setNumber(currentPhone);
-                console.log('Numéro de téléphone initialisé:', currentPhone);
-              }
-            } catch (e) {
-              console.error('Erreur lors de la définition du numéro:', e);
-            }
-          }, 100);
-        }
-      }).catch(error => {
-        console.error('Erreur lors du chargement du module intl-tel-input:', error);
-      });
+        document.head.appendChild(utilsScript);
+      };
+      
+      document.head.appendChild(script);
     } catch (error) {
       console.error('[ConsultantForm] Erreur lors du chargement de intlTelInput:', error);
     }

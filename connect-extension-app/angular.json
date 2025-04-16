@@ -24,8 +24,7 @@
             "styles": [
               "src/styles.css",
               "src/app/components/consultant-card/consultant-card.component.scss",
-              "src/app/components/consultant-list/consultant-list.component.scss",
-              "node_modules/intl-tel-input/build/css/intlTelInput.css"
+              "src/app/components/consultant-list/consultant-list.component.scss"
             ],
             "scripts": []
           },
