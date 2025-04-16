@@ -231,10 +231,13 @@
               </div>
             </div>
             
-            <!-- TJM pour Freelance et Les deux -->
-            <div class="form-group" *ngIf="availabilityForm.get('engagementType')?.value === 'Freelance' || availabilityForm.get('engagementType')?.value === 'Les deux'">
+            <!-- TJM (toujours affiché, mais grisé quand non applicable) -->
+            <div class="form-group">
               <label for="tjm">TJM (Taux Journalier Moyen) *</label>
-              <input type="number" id="tjm" formControlName="tjm" class="form-control" [class.is-invalid]="availabilityForm.get('tjm')?.touched && (availabilityForm.get('tjm')?.errors?.['min'] || availabilityForm.get('tjm')?.errors?.['pattern'] || availabilityForm.get('tjm')?.errors?.['required'])">
+              <input type="number" id="tjm" formControlName="tjm" class="form-control" 
+                     [disabled]="!(availabilityForm.get('engagementType')?.value === 'Freelance' || availabilityForm.get('engagementType')?.value === 'Les deux')"
+                     [ngClass]="{'bg-gray-100 text-gray-500': !(availabilityForm.get('engagementType')?.value === 'Freelance' || availabilityForm.get('engagementType')?.value === 'Les deux')}"
+                     [class.is-invalid]="availabilityForm.get('tjm')?.touched && (availabilityForm.get('tjm')?.errors?.['min'] || availabilityForm.get('tjm')?.errors?.['pattern'] || availabilityForm.get('tjm')?.errors?.['required'])">
               <div *ngIf="availabilityForm.get('tjm')?.touched && (availabilityForm.get('tjm')?.errors?.['min'] || availabilityForm.get('tjm')?.errors?.['pattern'])" class="invalid-feedback">
                 Le TJM doit être un nombre positif
               </div>
@@ -243,10 +246,13 @@
               </div>
             </div>
             
-            <!-- Salaire pour Salarié -->
-            <div class="form-group" *ngIf="availabilityForm.get('engagementType')?.value === 'Salarié'">
+            <!-- Salaire (toujours affiché mais grisé quand non applicable) -->
+            <div class="form-group">
               <label for="salary">Salaire minimum (€/an) *</label>
-              <input type="number" id="salary" formControlName="salary" class="form-control" [class.is-invalid]="availabilityForm.get('salary')?.touched && (availabilityForm.get('salary')?.errors?.['min'] || availabilityForm.get('salary')?.errors?.['pattern'] || availabilityForm.get('salary')?.errors?.['required'])">
+              <input type="number" id="salary" formControlName="salary" class="form-control" 
+                     [disabled]="availabilityForm.get('engagementType')?.value !== 'Salarié'"
+                     [ngClass]="{'bg-gray-100 text-gray-500': availabilityForm.get('engagementType')?.value !== 'Salarié'}"
+                     [class.is-invalid]="availabilityForm.get('salary')?.touched && (availabilityForm.get('salary')?.errors?.['min'] || availabilityForm.get('salary')?.errors?.['pattern'] || availabilityForm.get('salary')?.errors?.['required'])">
               <div *ngIf="availabilityForm.get('salary')?.touched && (availabilityForm.get('salary')?.errors?.['min'] || availabilityForm.get('salary')?.errors?.['pattern'])" class="invalid-feedback">
                 Le salaire doit être un nombre positif
               </div>
