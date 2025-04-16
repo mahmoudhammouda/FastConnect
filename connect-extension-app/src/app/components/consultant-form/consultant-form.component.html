@@ -90,7 +90,7 @@
               <div class="phone-field-container">
                 <div class="flex items-center">
                   <button id="dropdown-phone-button" #phoneButton
-                          data-dropdown-toggle="dropdown-phone" 
+                          (click)="togglePhoneDropdown()"
                           class="shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" 
                           type="button">
                     <svg fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
@@ -110,10 +110,11 @@
                   </button>
                   
                   <!-- Dropdown menu -->
-                  <div id="dropdown-phone" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-52 dark:bg-gray-700">
+                  <div id="dropdown-phone" class="country-dropdown absolute z-50 left-0 top-full mt-1 bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-52 dark:bg-gray-700"
+                       [class.hidden]="!phoneDropdownOpen">
                     <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-phone-button">
                       <li>
-                        <button type="button" data-code="+33" class="country-option inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                        <button type="button" data-code="+33" class="country-option inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" (click)="selectCountry($event, '+33')">
                           <span class="inline-flex items-center">
                             <svg fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
                               <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
@@ -131,7 +132,7 @@
                         </button>
                       </li>
                       <li>
-                        <button type="button" data-code="+32" class="country-option inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                        <button type="button" data-code="+32" class="country-option inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" (click)="selectCountry($event, '+32')">
                           <span class="inline-flex items-center">
                             <svg class="h-4 w-4 me-2" fill="none" viewBox="0 0 20 15">
                               <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
@@ -149,7 +150,7 @@
                         </button>
                       </li>
                       <li>
-                        <button type="button" data-code="+41" class="country-option inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                        <button type="button" data-code="+41" class="country-option inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" (click)="selectCountry($event, '+41')">
                           <span class="inline-flex items-center">
                             <svg class="h-4 w-4 me-2" fill="none" viewBox="0 0 20 15">
                               <rect width="19.6" height="14" y=".5" fill="#ff0000" rx="2"/>
@@ -166,7 +167,7 @@
                         </button>
                       </li>
                       <li>
-                        <button type="button" data-code="+352" class="country-option inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                        <button type="button" data-code="+352" class="country-option inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" (click)="selectCountry($event, '+352')">
                           <span class="inline-flex items-center">
                             <svg class="h-4 w-4 me-2" fill="none" viewBox="0 0 20 15">
                               <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
@@ -184,7 +185,7 @@
                         </button>
                       </li>
                       <li>
-                        <button type="button" data-code="+1" class="country-option inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                        <button type="button" data-code="+1" class="country-option inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" (click)="selectCountry($event, '+1')">
                           <span class="inline-flex items-center">
                             <svg class="h-4 w-4 me-2" fill="none" viewBox="0 0 20 15">
                               <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
@@ -203,7 +204,7 @@
                         </button>
                       </li>
                       <li>
-                        <button type="button" data-code="+44" class="country-option inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                        <button type="button" data-code="+44" class="country-option inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" (click)="selectCountry($event, '+44')">
                           <span class="inline-flex items-center">
                             <svg class="h-4 w-4 me-2" fill="none" viewBox="0 0 20 15">
                               <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>

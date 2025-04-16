@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Output, EventEmitter, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter, AfterViewInit, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -29,6 +29,10 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
 
   // Intl Tel Input instance
   private intlTelInstance: any;
+  
+  // État du dropdown de téléphone
+  phoneDropdownOpen = false;
+  selectedCountryCode = '+33';
   
   // Formulaire principal
   consultantForm!: FormGroup;
@@ -380,5 +384,86 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
    */
   isConsultant(): boolean {
     return this.userService.isConsultant();
+  }
+  
+  /**
+   * Bascule l'état d'ouverture du dropdown téléphone
+   */
+  togglePhoneDropdown(): void {
+    this.phoneDropdownOpen = !this.phoneDropdownOpen;
+    console.log('Toggle dropdown téléphone:', this.phoneDropdownOpen);
+  }
+  
+  /**
+   * Ferme le dropdown des pays si on clique en dehors
+   */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    // Vérifier si le clic est à l'extérieur du dropdown et du bouton
+    const phoneButton = this.phoneButton?.nativeElement;
+    const dropdown = document.getElementById('dropdown-phone');
+    
+    if (!phoneButton?.contains(event.target as Node) && 
+        !dropdown?.contains(event.target as Node) && 
+        this.phoneDropdownOpen) {
+      this.phoneDropdownOpen = false;
+    }
+  }
+  
+  /**
+   * Sélectionne un pays dans le dropdown
+   */
+  selectCountry(event: Event, countryCode: string): void {
+    event.stopPropagation(); // Empêcher la propagation pour éviter la fermeture immédiate
+    
+    // Mettre à jour le code pays sélectionné
+    this.selectedCountryCode = countryCode;
+    
+    // Trouver les éléments DOM
+    const target = event.currentTarget as HTMLElement;
+    const countryElement = target.querySelector('svg')?.cloneNode(true);
+    const phoneButton = this.phoneButton.nativeElement;
+    const phoneInput = this.phoneInput.nativeElement;
+    
+    // Mettre à jour le bouton avec le drapeau et le code du pays sélectionné
+    if (phoneButton && countryElement) {
+      // Récupérer l'élément svg existant dans le bouton
+      const currentSvg = phoneButton.querySelector('svg:first-child');
+      
+      // Remplacer le SVG s'il existe
+      if (currentSvg) {
+        phoneButton.replaceChild(countryElement, currentSvg);
+      }
+      
+      // Mettre à jour le texte du code pays affiché
+      // Trouver le nœud de texte entre les deux SVG
+      let textUpdated = false;
+      for (let i = 0; i < phoneButton.childNodes.length; i++) {
+        const node = phoneButton.childNodes[i];
+        if (node.nodeType === Node.TEXT_NODE) {
+          node.textContent = countryCode + ' ';
+          textUpdated = true;
+          break;
+        }
+      }
+      
+      // Si aucun nœud de texte n'a été trouvé, créer et insérer un nouveau
+      if (!textUpdated) {
+        const textNode = document.createTextNode(countryCode + ' ');
+        // Insérer avant le deuxième SVG (flèche vers le bas)
+        const secondSvg = phoneButton.querySelector('svg:nth-child(2)');
+        if (secondSvg) {
+          phoneButton.insertBefore(textNode, secondSvg);
+        } else {
+          phoneButton.appendChild(textNode);
+        }
+      }
+    }
+    
+    // Mettre à jour la valeur du formulaire avec le nouveau code pays
+    this.updatePhoneNumberWithCountryCode(countryCode, phoneInput.value);
+    
+    // Fermer le dropdown
+    this.phoneDropdownOpen = false;
   }
 }
