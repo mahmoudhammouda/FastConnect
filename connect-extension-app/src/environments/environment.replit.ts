@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
   // URL pour l'API en mode Replit avec proxy
-  apiUrl: '/api',  // Utilise le proxy configuré dans proxy.conf.json qui redirige vers 0.0.0.0:8000/api
+  apiUrl: '', // Modifié pour éviter la duplication du préfixe /api
   isExtension: false,
   envName: 'replit',
   // Informations de débogage pour vérifier la configuration

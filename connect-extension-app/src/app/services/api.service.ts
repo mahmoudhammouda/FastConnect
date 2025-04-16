@@ -37,9 +37,13 @@ export class ApiService {
       endpoint = '/' + endpoint;
     }
     
-    // Les URL sont configurées par environnement et ne devraient pas
-    // nécessiter de logique conditionnelle supplémentaire ici
-    // Utiliser simplement l'URL configurée dans l'environnement
+    // Ajouter le préfixe /api aux requêtes pour le backend
+    const apiPrefix = '/api';
+    
+    // Éviter de dupliquer le préfixe /api s'il est déjà dans l'endpoint
+    if (!endpoint.startsWith(apiPrefix)) {
+      endpoint = apiPrefix + endpoint;
+    }
     
     return `${this.API_URL}${endpoint}`;
   }

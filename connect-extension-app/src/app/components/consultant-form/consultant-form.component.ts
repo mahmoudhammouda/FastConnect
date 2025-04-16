@@ -103,24 +103,24 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
    */
   private initIntlTelInput(): void {
     try {
-      console.log('Initialisation de intl-tel-input (version simplifiée)...');
+      // Nous utilisons directement intlTelInput intégré via CDN dans index.html
+      console.log('Initialisation de intl-tel-input...');
       
-      // Attendre que le DOM soit complètement chargé
+      // Attendre que le DOM et les scripts soient complètement chargés
       setTimeout(() => {
         if (!this.phoneInput?.nativeElement) {
           console.error("L'élément input pour le téléphone n'est pas disponible");
           return;
         }
         
-        // Vérifier si intlTelInput est disponible depuis le CDN
+        // Vérifions si la bibliothèque est disponible
         const intlTelInput = (window as any).intlTelInput;
-        
         if (!intlTelInput) {
-          console.error("La bibliothèque intlTelInput n'est pas disponible");
+          console.error("La bibliothèque intlTelInput n'est pas disponible dans window");
           return;
         }
         
-        // Configuration pour reproduire exactement l'exemple de l'image
+        // Configuration avancée pour le téléphone international
         const options = {
           initialCountry: 'fr',
           preferredCountries: ['fr', 'be', 'ch', 'lu', 'ca'],
@@ -129,15 +129,15 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
           allowDropdown: true,
           autoPlaceholder: 'aggressive',
           customContainer: 'iti-container',
-          nationalMode: false,
+          nationalMode: false, 
           utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js'
         };
         
-        // Créer l'instance de intlTelInput
+        // Créer l'instance
         this.intlTelInstance = intlTelInput(this.phoneInput.nativeElement, options);
         console.log('Instance intlTelInput créée avec succès');
         
-        // Événements
+        // Événements pour synchroniser avec le formulaire Angular
         this.phoneInput.nativeElement.addEventListener('countrychange', () => {
           this.updatePhoneNumber();
         });
@@ -146,10 +146,10 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
           this.updatePhoneNumber();
         });
         
-        // Forcer un peu d'espace à gauche pour le drapeau et l'indicatif
+        // Forcer l'espace pour le drapeau et l'indicatif
         this.phoneInput.nativeElement.style.paddingLeft = '90px';
         
-        // Initialiser avec la valeur existante si présente
+        // Si le formulaire contient déjà un numéro, initialiser avec
         const currentPhone = this.consultantForm.get('phone')?.value;
         if (currentPhone) {
           try {
@@ -159,7 +159,7 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
             console.error('Erreur lors de la définition du numéro:', e);
           }
         }
-      }, 500); // Attendre 500ms pour s'assurer que tout est bien chargé
+      }, 800); // Augmenté à 800ms pour assurer que tous les scripts sont chargés
     } catch (error) {
       console.error("[ConsultantForm] Erreur lors de l'initialisation de intlTelInput:", error);
     }

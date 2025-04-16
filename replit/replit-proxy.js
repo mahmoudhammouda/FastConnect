@@ -77,15 +77,27 @@ const angularProxy = createProxyMiddleware({
 });
 
 // Redirection des requêtes /consultants vers /api/consultants (fix pour les requêtes API mal formées)
-app.use('/consultants', (req, res) => {
-  logMessage(`Redirection de /consultants vers /api/consultants`, 'yellow');
-  req.url = '/api/consultants';
-  createProxyMiddleware({
-    target: `http://0.0.0.0:${API_PORT}`,
-    changeOrigin: true,
-    logLevel: 'debug'
-  })(req, res);
-});
+app.use('/consultants', createProxyMiddleware({
+  target: `http://0.0.0.0:${API_PORT}`,
+  changeOrigin: true,
+  pathRewrite: {
+    '^/consultants': '/api/consultants'  // Réécriture du chemin pour qu'il inclue le préfixe /api
+  },
+  logLevel: 'debug',
+  onProxyReq: (proxyReq, req, res) => {
+    logMessage(`Proxy API request (consultants): ${req.method} ${req.url} -> ${proxyReq.path}`, 'blue');
+  }
+}));
+
+// De même pour les autres endpoints qui pourraient être appelés sans préfixe /api
+app.use('/availability', createProxyMiddleware({
+  target: `http://0.0.0.0:${API_PORT}`,
+  changeOrigin: true,
+  pathRewrite: {
+    '^/availability': '/api/availability'  // Réécriture du chemin
+  },
+  logLevel: 'debug'
+}));
 
 // Routes Angular - doit être après les routes spécifiques
 app.use('/', angularProxy);
