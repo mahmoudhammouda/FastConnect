@@ -271,9 +271,18 @@ export class AvailabilityListComponent implements OnInit {
       // Autres paramètres
       description: new FormControl(availability.description || ''),
       country: new FormControl(availability.country || 'France', Validators.required),
-      engagementType: new FormControl(availability.engagementType || 'Freelance', Validators.required),
+      engagementType: new FormControl(''),  // Champ conservé pour compatibilité mais non utilisé
+      engagementTypes: new FormControl([]),  // Nouveau champ pour la multi-sélection
       locked: new FormControl(availability.locked || false)
     });
+    
+    // Initialise les types d'engagement à partir de la valeur unique
+    if (availability.engagementType) {
+      // Convertit une valeur unique en tableau pour le nouveau champ
+      this.editForm.patchValue({ 
+        engagementTypes: [availability.engagementType]
+      });
+    }
     
     // Initialise les valeurs pour les champs de tags
     if (Array.isArray(availability.skills)) {
@@ -311,12 +320,18 @@ export class AvailabilityListComponent implements OnInit {
     this.skillsInput = '';
     this.citiesInput = '';
     this.sectorsInput = '';
+    this.engagementTypeInput = '';
     
     // Fermer tous les dropdowns
     this.skillsDropdownOpen = false;
     this.citiesDropdownOpen = false;
     this.sectorsDropdownOpen = false;
+    this.engagementTypeDropdownOpen = false;
   }
+  
+  // État des dropdowns pour le type d'engagement
+  engagementTypeDropdownOpen: boolean = false;
+  engagementTypeInput: string = '';
   
   // Méthodes pour les dropdowns
   
@@ -328,6 +343,7 @@ export class AvailabilityListComponent implements OnInit {
     this.skillsDropdownOpen = !this.skillsDropdownOpen;
     this.citiesDropdownOpen = false;
     this.sectorsDropdownOpen = false;
+    this.engagementTypeDropdownOpen = false;
   }
   
   /**
@@ -338,6 +354,7 @@ export class AvailabilityListComponent implements OnInit {
     this.citiesDropdownOpen = !this.citiesDropdownOpen;
     this.skillsDropdownOpen = false;
     this.sectorsDropdownOpen = false;
+    this.engagementTypeDropdownOpen = false;
   }
   
   /**
@@ -348,6 +365,18 @@ export class AvailabilityListComponent implements OnInit {
     this.sectorsDropdownOpen = !this.sectorsDropdownOpen;
     this.skillsDropdownOpen = false;
     this.citiesDropdownOpen = false;
+    this.engagementTypeDropdownOpen = false;
+  }
+  
+  /**
+   * Ouvre/ferme le dropdown des types d'engagement
+   */
+  toggleEngagementTypeDropdown(event: Event): void {
+    event.stopPropagation();
+    this.engagementTypeDropdownOpen = !this.engagementTypeDropdownOpen;
+    this.skillsDropdownOpen = false;
+    this.citiesDropdownOpen = false;
+    this.sectorsDropdownOpen = false;
   }
   
   /**
@@ -511,6 +540,81 @@ export class AvailabilityListComponent implements OnInit {
     }
   }
   
+  /**
+   * Vérifie si un type d'engagement est sélectionné
+   */
+  isEngagementTypeSelected(type: string): boolean {
+    if (!this.editForm) return false;
+    
+    const engagementTypes = this.editForm.get('engagementTypes')?.value || [];
+    if (Array.isArray(engagementTypes)) {
+      return engagementTypes.includes(type);
+    }
+    return false;
+  }
+  
+  /**
+   * Ajoute ou supprime un type d'engagement
+   */
+  toggleEngagementType(type: string, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    if (!this.editForm) return;
+    
+    let engagementTypes = (this.editForm.get('engagementTypes')?.value || []) as string[];
+    if (!Array.isArray(engagementTypes)) {
+      engagementTypes = [];
+    }
+    
+    const index = engagementTypes.indexOf(type);
+    
+    if (index === -1) {
+      engagementTypes.push(type);
+    } else {
+      engagementTypes.splice(index, 1);
+    }
+    
+    this.editForm.patchValue({ engagementTypes });
+  }
+  
+  /**
+   * Ajoute un type d'engagement depuis l'input
+   */
+  addEngagementTypeToForm(): void {
+    if (!this.engagementTypeInput.trim() || !this.editForm) return;
+    
+    const newType = this.engagementTypeInput.trim();
+    let engagementTypes = (this.editForm.get('engagementTypes')?.value || []) as string[];
+    
+    if (!Array.isArray(engagementTypes)) {
+      engagementTypes = [];
+    }
+    
+    if (newType && !engagementTypes.includes(newType)) {
+      engagementTypes.push(newType);
+      this.editForm.patchValue({ engagementTypes });
+    }
+    
+    this.engagementTypeInput = '';
+  }
+  
+  /**
+   * Supprime un type d'engagement du formulaire
+   */
+  removeEngagementTypeFromForm(type: string): void {
+    if (!this.editForm) return;
+    
+    const engagementTypes = (this.editForm.get('engagementTypes')?.value || []) as string[];
+    const index = engagementTypes.indexOf(type);
+    
+    if (index !== -1) {
+      engagementTypes.splice(index, 1);
+      this.editForm.patchValue({ engagementTypes });
+    }
+  }
+  
   // Sauvegarde les modifications
   saveAvailability(availabilityId: string, event?: Event): void {
     if (event) {
@@ -536,6 +640,10 @@ export class AvailabilityListComponent implements OnInit {
       skills: Array.isArray(formValues.skills) ? formValues.skills : [],
       cities: Array.isArray(formValues.cities) ? formValues.cities : [],
       sectors: Array.isArray(formValues.sectors) ? formValues.sectors : [],
+      // Utilise le premier type d'engagement du tableau pour le champ ancien format
+      engagementType: Array.isArray(formValues.engagementTypes) && formValues.engagementTypes.length > 0 
+        ? formValues.engagementTypes[0] 
+        : 'Freelance',
       // Formatage de la date
       startDate: new Date(formValues.startDate).toISOString()
     };

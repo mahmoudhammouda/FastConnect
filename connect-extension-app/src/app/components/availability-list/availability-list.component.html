@@ -173,16 +173,54 @@
                 <input type="date" formControlName="startDate" class="form-input">
               </div>
               
-              <!-- Type d'engagement -->
+              <!-- Type d'engagement (Multi-select) -->
               <div class="form-group">
                 <label class="form-label">Type d'engagement <span class="text-red-500">*</span></label>
-                <select formControlName="engagementType" class="form-select">
-                  <option value="">Sélectionner un type</option>
-                  <option value="Freelance">Freelance</option>
-                  <option value="Salarié">Salarié (CDI)</option>
-                  <option value="Sous-traitance">Sous-traitance</option>
-                  <option value="Les deux">Freelance et Salarié</option>
-                </select>
+                <div class="relative">
+                  <button type="button" 
+                         class="form-input text-left pr-8 flex items-center justify-between w-full" 
+                         (click)="toggleEngagementTypeDropdown($event)">
+                    <span *ngIf="(editForm!.get('engagementTypes')?.value || []).length === 0">Sélectionner des types d'engagement</span>
+                    <span *ngIf="(editForm!.get('engagementTypes')?.value || []).length === 1">{{ editForm!.get('engagementTypes')?.value[0] }}</span>
+                    <span *ngIf="(editForm!.get('engagementTypes')?.value || []).length > 1">{{ editForm!.get('engagementTypes')?.value.length }} types</span>
+                    <svg class="h-4 w-4 absolute right-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </button>
+                  
+                  <div *ngIf="engagementTypeDropdownOpen" class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                    <div class="p-2">
+                      <div *ngFor="let type of engagementTypes" class="flex items-center py-1">
+                        <input type="checkbox" 
+                              [id]="'edit-engagement-type-' + type"
+                              [checked]="isEngagementTypeSelected(type)"
+                              (change)="toggleEngagementType(type, $event)"
+                              class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                        <label [for]="'edit-engagement-type-' + type" class="ml-2 text-sm text-gray-700">{{ type }}</label>
+                      </div>
+                      <!-- Input pour nouveau type d'engagement -->
+                      <div class="mt-2 pt-2 border-t border-gray-200 flex items-center">
+                        <input type="text" [(ngModel)]="engagementTypeInput" [ngModelOptions]="{standalone: true}" 
+                          class="form-input py-1 text-sm flex-1" placeholder="Autre type d'engagement">
+                        <button (click)="addEngagementTypeToForm()" class="ml-1 p-1 bg-indigo-500 text-white text-xs rounded">
+                          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="(editForm!.get('engagementTypes')?.value || []).length > 0" class="mt-2 flex flex-wrap gap-1">
+                  <div *ngFor="let type of editForm!.get('engagementTypes')?.value" class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-md flex items-center">
+                    {{ type }}
+                    <button (click)="removeEngagementTypeFromForm(type)" class="ml-1 text-indigo-600 hover:text-indigo-800">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
               </div>
               
               <!-- Mode de travail -->
