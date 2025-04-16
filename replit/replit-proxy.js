@@ -49,6 +49,9 @@ app.use('/api', createProxyMiddleware({
   changeOrigin: true,
   // Ne pas modifier le chemin - la route doit rester /api/...
   logLevel: 'debug',
+  pathRewrite: {
+    '^/api': '/api'  // Conserver le préfixe /api
+  },
   onProxyReq: (proxyReq, req, res) => {
     logMessage(`Proxy API request: ${req.method} ${req.url} -> ${proxyReq.path}`, 'blue');
     // Déboggage détaillé des en-têtes de requête
@@ -86,6 +89,13 @@ app.use('/consultants', createProxyMiddleware({
   logLevel: 'debug',
   onProxyReq: (proxyReq, req, res) => {
     logMessage(`Proxy API request (consultants): ${req.method} ${req.url} -> ${proxyReq.path}`, 'blue');
+    // Déboggage détaillé des en-têtes de requête
+    console.log('Headers de la requête consultants:', JSON.stringify(proxyReq.getHeaders()));
+  },
+  onProxyRes: (proxyRes, req, res) => {
+    logMessage(`Proxy API response (consultants): ${proxyRes.statusCode} ${req.method} ${req.url}`, 'green');
+    // Ajout d'un log détaillé pour la réponse
+    console.log('Status Code consultants:', proxyRes.statusCode);
   }
 }));
 
