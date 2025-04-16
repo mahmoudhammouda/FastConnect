@@ -286,12 +286,14 @@ export class AvailabilityListComponent implements OnInit {
       consultantAbbreviation: new FormControl(availability.consultantAbbreviation || ''),
       role: new FormControl(availability.role || '', Validators.required),
       startDate: new FormControl(this.formatDateForInput(availability.startDate), Validators.required),
-      durationInMonths: new FormControl(availability.durationInMonths, [Validators.required, Validators.min(1)]),
+      // Le champ durationInMonths ne sera plus requis par défaut
+      durationInMonths: new FormControl(availability.durationInMonths || 0),
       status: new FormControl(availability.status, Validators.required),
       workMode: new FormControl(availability.workMode, Validators.required),
       workModes: new FormControl([]),  // Nouveau champ pour la multi-sélection des modes de travail
       experienceLevel: new FormControl(availability.experienceLevel || 'intermediate', Validators.required),
       rate: new FormControl(availability.rate || 0),
+      salary: new FormControl(availability.salary || 0),
       
       // Coordonnées et liens
       linkedinUrl: new FormControl(availability.linkedinUrl || ''),
@@ -593,6 +595,32 @@ export class AvailabilityListComponent implements OnInit {
     const engagementTypes = this.editForm.get('engagementTypes')?.value || [];
     if (Array.isArray(engagementTypes)) {
       return engagementTypes.includes(type);
+    }
+    return false;
+  }
+  
+  /**
+   * Vérifie si le consultant est un salarié (pour afficher le champ salaire)
+   */
+  isSalarieEngagement(): boolean {
+    if (!this.editForm) return false;
+    
+    const engagementTypes = this.editForm.get('engagementTypes')?.value || [];
+    if (Array.isArray(engagementTypes)) {
+      return engagementTypes.includes('Salarié');
+    }
+    return false;
+  }
+  
+  /**
+   * Vérifie si le consultant est un freelance (pour afficher le champ tjm)
+   */
+  isFreelanceEngagement(): boolean {
+    if (!this.editForm) return false;
+    
+    const engagementTypes = this.editForm.get('engagementTypes')?.value || [];
+    if (Array.isArray(engagementTypes)) {
+      return engagementTypes.includes('Freelance') || engagementTypes.includes('Les deux');
     }
     return false;
   }

@@ -273,16 +273,16 @@
                 </div>
               </div>
               
-              <!-- Taux journalier -->
-              <div class="form-group">
-                <label class="form-label">Taux journalier (€)</label>
+              <!-- Taux journalier (pour Freelance) -->
+              <div class="form-group" *ngIf="isFreelanceEngagement()">
+                <label class="form-label">Taux journalier (€) *</label>
                 <input type="number" formControlName="rate" min="0" class="form-input">
               </div>
               
-              <!-- Durée (mois) -->
-              <div class="form-group">
-                <label class="form-label">Durée (mois)</label>
-                <input type="number" formControlName="durationInMonths" min="1" class="form-input">
+              <!-- Salaire (pour Salarié) -->
+              <div class="form-group" *ngIf="isSalarieEngagement()">
+                <label class="form-label">Salaire minimum (€/an) *</label>
+                <input type="number" formControlName="salary" min="0" class="form-input">
               </div>
             </div>
             
