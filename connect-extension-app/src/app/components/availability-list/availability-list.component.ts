@@ -5,14 +5,14 @@ import { ConsultantAvailabilityService } from '../../services/consultant-availab
 import { ModalService } from '../../services/modal.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AddAvailabilityModalComponent } from '../add-availability-modal/add-availability-modal.component';
+// (Référence à AddAvailabilityModalComponent supprimée)
 
 @Component({
   selector: 'app-availability-list',
   templateUrl: './availability-list.component.html',
   styleUrls: ['./availability-list.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, AddAvailabilityModalComponent]
+  imports: [CommonModule, FormsModule, ReactiveFormsModule]
 })
 export class AvailabilityListComponent implements OnInit {
   consultantAvailabilities: ConsultantAvailability[] = [];
@@ -252,10 +252,10 @@ export class AvailabilityListComponent implements OnInit {
   }
   
   viewAvailability(availability: ConsultantAvailability): void {
-    // Affichage en lecture seule des détails
-    this.modalService.openAddAvailabilityModal(availability, true).then(() => {
-      // Pas besoin de recharger car aucune modification
-    });
+    // Cette méthode a été modifiée pour supporter la future implémentation
+    console.log('Visualisation des détails', availability);
+    // Mémoriser pour l'utilisateur que cette fonctionnalité sera mise à jour
+    alert('Cette fonctionnalité sera implémentée différemment dans une prochaine étape');
   }
   
   // Commence l'édition directement dans la liste avec le formulaire collapsable

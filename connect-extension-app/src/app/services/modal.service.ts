@@ -22,7 +22,7 @@ export interface ModalDataCallbacks<T> {
 })
 export class ModalService {
   private loginModalVisibleSubject = new BehaviorSubject<boolean>(false);
-  private addAvailabilityModalVisibleSubject = new BehaviorSubject<boolean>(false);
+  // Référence au modal addAvailability supprimée
   modalBackdropVisibleSubject = new BehaviorSubject<boolean>(false);
   
   // Registre des modals
@@ -31,7 +31,6 @@ export class ModalService {
   
   // Observable public pour que les composants puissent s'abonner aux changements
   public loginModalVisible$: Observable<boolean> = this.loginModalVisibleSubject.asObservable();
-  public addAvailabilityModalVisible$: Observable<boolean> = this.addAvailabilityModalVisibleSubject.asObservable();
   public modalBackdropVisible$: Observable<boolean> = this.modalBackdropVisibleSubject.asObservable();
 
   // État actuel du modal
@@ -106,47 +105,38 @@ export class ModalService {
   }
   
   /**
-   * Ouvre le modal d'ajout de disponibilité
+   * Méthode temporaire qui remplace l'ancien modal d'ajout de disponibilité
+   * Cette méthode sera modifiée dans une future étape pour refléter la nouvelle implémentation
    * @param availability Disponibilité à éditer (optionnel)
    * @param readOnly Mode lecture seule (optionnel)
-   * @returns Promise qui se résout lorsque le modal est fermé
+   * @returns Promise qui se résout immédiatement (pour compatibilité)
    */
   openAddAvailabilityModal(availability?: ConsultantAvailability, readOnly = false): Promise<void> {
-    return new Promise<void>((resolve) => {
-      // Définir l'état du modal
-      this.addAvailabilityModalVisibleSubject.next(true);
-      this.modalBackdropVisibleSubject.next(true);
-      
-      // Gérer la résolution de la promesse lors de la fermeture
-      const subscription = this.addAvailabilityModalVisible$.subscribe(visible => {
-        if (!visible) {
-          subscription.unsubscribe();
-          resolve();
-        }
-      });
-      
-      // Appeler le callback d'ouverture si enregistré
-      if (this.dataModals['addAvailability']) {
+    console.log('Cette fonctionnalité sera implémentée différemment dans une prochaine étape');
+    
+    // Si le modal a été enregistré via le système de données dynamiques,
+    // on peut toujours essayer de l'appeler pour maintenir la compatibilité
+    if (this.dataModals['addAvailability']) {
+      try {
         this.dataModals['addAvailability'].open(availability, readOnly);
+      } catch (error) {
+        console.warn('Le modal addAvailability n\'est plus disponible', error);
       }
-    });
+    }
+    
+    // Afficher le backdrop pour compatibilité
+    this.modalBackdropVisibleSubject.next(true);
+    
+    // Retourne une promesse qui se résout immédiatement (pour compatibilité)
+    return Promise.resolve();
   }
   
   /**
-   * Ferme le modal d'ajout de disponibilité
+   * Méthode temporaire qui remplace l'ancien modal d'ajout de disponibilité
+   * Cette méthode sera supprimée dans une future étape
    */
   closeAddAvailabilityModal(): void {
-    this.addAvailabilityModalVisibleSubject.next(false);
-    
-    // Si aucun autre modal n'est ouvert, cacher le backdrop
-    if (!this.isLoginModalVisible) {
-      this.modalBackdropVisibleSubject.next(false);
-    }
-    
-    // Appeler le callback de fermeture si enregistré
-    if (this.dataModals['addAvailability']) {
-      this.dataModals['addAvailability'].close();
-    }
+    // Ne fait rien, car le modal n'existe plus
   }
 
   /**

@@ -16,7 +16,7 @@ import { AppDebugComponent } from './app.component.debug';
 import { AlertListComponent } from './components/alert-list/alert-list.component';
 import { ConsultantFormComponent } from './components/consultant-form/consultant-form.component';
 import { BookmarkListsComponent } from './components/bookmark-lists/bookmark-lists.component';
-import { AddAvailabilityModalComponent } from './components/add-availability-modal/add-availability-modal.component';
+// (Référence à AddAvailabilityModalComponent supprimée)
 import { AvailabilityListComponent } from './components/availability-list/availability-list.component';
 
 @NgModule({
@@ -41,7 +41,7 @@ import { AvailabilityListComponent } from './components/availability-list/availa
     AlertListComponent,
     ConsultantFormComponent,
     BookmarkListsComponent,
-    AddAvailabilityModalComponent, // Ajouté ici car maintenant c'est un composant standalone
+    // (Référence à AddAvailabilityModalComponent supprimée)
     AvailabilityListComponent // Composant de liste des disponibilités
   ],
   providers: [
