@@ -88,91 +88,151 @@
             <div class="relative">
               <!-- Composant Flowbite Phone Input -->
               <div class="phone-field-container">
-                <div class="flex">
-                  <button id="phone-button" #phoneButton data-dropdown-toggle="phone-dropdown" 
-                          class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-l-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" 
+                <div class="flex items-center">
+                  <button id="dropdown-phone-button" #phoneButton
+                          data-dropdown-toggle="dropdown-phone" 
+                          class="shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" 
                           type="button">
-                    <div class="inline-flex items-center">
-                      <svg aria-hidden="true" class="h-4 w-4 mr-2" viewBox="0 0 20 15">
-                        <rect width="20" height="15" fill="#fff" />
-                        <rect width="20" height="5" fill="#0055a4" />
-                        <rect width="20" height="5" fill="#fff" y="5" />
-                        <rect width="20" height="5" fill="#ef4135" y="10" />
-                      </svg>
-                      +33
-                    </div>
-                    <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                    <svg fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
+                      <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                      <mask id="a" style="mask-type:luminance" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse">
+                        <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                      </mask>
+                      <g mask="url(#a)">
+                        <path fill="#0055a4" d="M0 .5h6.5v14H0z"/>
+                        <path fill="#fff" d="M6.5 .5h6.5v14H6.5z"/>
+                        <path fill="#ef4135" d="M13 .5h6.6v14H13z"/>
+                      </g>
+                    </svg>
+                    +33 <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                     </svg>
                   </button>
                   
                   <!-- Dropdown menu -->
-                  <div id="phone-dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-52 dark:bg-gray-700">
-                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="phone-button">
+                  <div id="dropdown-phone" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-52 dark:bg-gray-700">
+                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdown-phone-button">
                       <li>
-                        <button type="button" data-code="+33" class="country-option flex items-center w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">
-                          <svg aria-hidden="true" class="h-4 w-4 mr-2" viewBox="0 0 20 15">
-                            <rect width="20" height="15" fill="#fff" />
-                            <rect width="20" height="5" fill="#0055a4" />
-                            <rect width="20" height="5" fill="#fff" y="5" />
-                            <rect width="20" height="5" fill="#ef4135" y="10" />
-                          </svg>
-                          France (+33)
+                        <button type="button" data-code="+33" class="country-option inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                          <span class="inline-flex items-center">
+                            <svg fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
+                              <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                              <mask id="a" style="mask-type:luminance" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse">
+                                <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                              </mask>
+                              <g mask="url(#a)">
+                                <path fill="#0055a4" d="M0 .5h6.5v14H0z"/>
+                                <path fill="#fff" d="M6.5 .5h6.5v14H6.5z"/>
+                                <path fill="#ef4135" d="M13 .5h6.6v14H13z"/>
+                              </g>
+                            </svg>
+                            France (+33)
+                          </span>
                         </button>
                       </li>
                       <li>
-                        <button type="button" data-code="+32" class="country-option flex items-center w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">
-                          <svg aria-hidden="true" class="h-4 w-4 mr-2" viewBox="0 0 20 15">
-                            <rect width="20" height="15" fill="#ffda44" />
-                            <rect width="6.5" height="15" fill="#000" />
-                            <rect width="7" height="15" fill="#d80027" x="13" />
-                          </svg>
-                          Belgique (+32)
+                        <button type="button" data-code="+32" class="country-option inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                          <span class="inline-flex items-center">
+                            <svg class="h-4 w-4 me-2" fill="none" viewBox="0 0 20 15">
+                              <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                              <mask id="a" style="mask-type:luminance" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse">
+                                <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                              </mask>
+                              <g mask="url(#a)">
+                                <path fill="#ffda44" d="M0 .5h6.5v14H0z"/>
+                                <path fill="#000" d="M6.5 .5h6.5v14H6.5z"/>
+                                <path fill="#d80027" d="M13 .5h6.6v14H13z"/>
+                              </g>
+                            </svg>
+                            Belgique (+32)
+                          </span>
                         </button>
                       </li>
                       <li>
-                        <button type="button" data-code="+41" class="country-option flex items-center w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">
-                          <svg aria-hidden="true" class="h-4 w-4 mr-2" viewBox="0 0 20 15">
-                            <rect width="20" height="15" fill="#ff0000" />
-                            <polygon fill="#fff" points="10,3 12,7 16,7 13,10 14,14 10,12 6,14 7,10 4,7 8,7" />
-                          </svg>
-                          Suisse (+41)
+                        <button type="button" data-code="+41" class="country-option inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                          <span class="inline-flex items-center">
+                            <svg class="h-4 w-4 me-2" fill="none" viewBox="0 0 20 15">
+                              <rect width="19.6" height="14" y=".5" fill="#ff0000" rx="2"/>
+                              <mask id="a" style="mask-type:luminance" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse">
+                                <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                              </mask>
+                              <g mask="url(#a)">
+                                <path fill="#ff0000" d="M0 .5h19.6v14H0z"/>
+                                <path fill="#fff" d="M8.3 3.5h3v3h3v3h-3v3h-3v-3h-3v-3h3z"/>
+                              </g>
+                            </svg>
+                            Suisse (+41)
+                          </span>
                         </button>
                       </li>
                       <li>
-                        <button type="button" data-code="+352" class="country-option flex items-center w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">
-                          <svg aria-hidden="true" class="h-4 w-4 mr-2" viewBox="0 0 20 15">
-                            <rect width="20" height="15" fill="#fff" />
-                            <rect width="20" height="5" fill="#00a1de" />
-                            <rect width="20" height="5" fill="#ed2939" y="10" />
-                          </svg>
-                          Luxembourg (+352)
+                        <button type="button" data-code="+352" class="country-option inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                          <span class="inline-flex items-center">
+                            <svg class="h-4 w-4 me-2" fill="none" viewBox="0 0 20 15">
+                              <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                              <mask id="a" style="mask-type:luminance" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse">
+                                <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                              </mask>
+                              <g mask="url(#a)">
+                                <path fill="#fff" d="M0 .5h19.6v14H0z"/>
+                                <path fill="#00a1de" d="M0 .5h19.6v4.7H0z"/>
+                                <path fill="#ed2939" d="M0 9.8h19.6v4.7H0z"/>
+                              </g>
+                            </svg>
+                            Luxembourg (+352)
+                          </span>
                         </button>
                       </li>
                       <li>
-                        <button type="button" data-code="+1" class="country-option flex items-center w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">
-                          <svg aria-hidden="true" class="h-4 w-4 mr-2" viewBox="0 0 20 15">
-                            <rect width="20" height="15" fill="#f0f0f0" />
-                            <rect width="20" height="1.1" fill="#d80027" y="0" />
-                            <rect width="20" height="1.1" fill="#d80027" y="2.2" />
-                            <rect width="20" height="1.1" fill="#d80027" y="4.4" />
-                            <rect width="20" height="1.1" fill="#d80027" y="6.6" />
-                            <rect width="20" height="1.1" fill="#d80027" y="8.8" />
-                            <rect width="20" height="1.1" fill="#d80027" y="11" />
-                            <rect width="20" height="1.1" fill="#d80027" y="13.2" />
-                            <rect width="8" height="8.1" fill="#2e3560" />
-                          </svg>
-                          Canada (+1)
+                        <button type="button" data-code="+1" class="country-option inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                          <span class="inline-flex items-center">
+                            <svg class="h-4 w-4 me-2" fill="none" viewBox="0 0 20 15">
+                              <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                              <mask id="a" style="mask-type:luminance" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse">
+                                <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                              </mask>
+                              <g mask="url(#a)">
+                                <path fill="#fff" d="M0 .5h19.6v14H0z"/>
+                                <path fill="#d80027" d="M0 .5h19.6v1H0zM0 2.5h19.6v1H0zM0 4.5h19.6v1H0zM0 6.5h19.6v1H0zM0 8.5h19.6v1H0zM0 10.5h19.6v1H0zM0 12.5h19.6v1H0z"/>
+                                <path fill="#2e3560" d="M0 .5h8v8H0z"/>
+                                <path fill="#fff" d="M1 1.5l.707.207.5.5.5-.5.793-.207-.293.707.293.793-.793-.293-.5.5-.5-.5-.707.293.207-.793z"/>
+                              </g>
+                            </svg>
+                            États-Unis (+1)
+                          </span>
+                        </button>
+                      </li>
+                      <li>
+                        <button type="button" data-code="+44" class="country-option inline-flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">
+                          <span class="inline-flex items-center">
+                            <svg class="h-4 w-4 me-2" fill="none" viewBox="0 0 20 15">
+                              <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                              <mask id="a" style="mask-type:luminance" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse">
+                                <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                              </mask>
+                              <g mask="url(#a)">
+                                <path fill="#0A17A7" d="M0 .5h19.6v14H0z"/>
+                                <path fill="#fff" d="M0 .5l19.6 14M19.6 .5L0 14.5"/>
+                                <path fill="#fff" d="M9.8 .5v14M0 7.5h19.6"/>
+                                <path fill="#E52D35" d="M0 8.5h19.6v2H0z"/>
+                                <path fill="#E52D35" d="M8.2 .5h3.2v14H8.2z"/>
+                              </g>
+                            </svg>
+                            Royaume-Uni (+44)
+                          </span>
                         </button>
                       </li>
                     </ul>
                   </div>
                   
-                  <input type="tel" id="phone" #phoneInput formControlName="phone" 
-                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-r-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-                         placeholder="123-456-789">
+                  <label for="phone-input" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Numéro de téléphone:</label>
+                  <div class="relative w-full">
+                    <input type="text" id="phone-input" #phoneInput formControlName="phone" 
+                          class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-0 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" 
+                          placeholder="612345678">
+                  </div>
                 </div>
-                <small class="text-gray-500 mt-1 text-xs">Format: + code pays suivi du numéro (ex: +33612345678)</small>
+                <small class="text-gray-500 mt-1 text-xs">Format: code pays automatiquement ajouté</small>
               </div>
             </div>
           </div>

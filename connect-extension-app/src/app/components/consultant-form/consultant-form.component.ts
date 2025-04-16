@@ -112,14 +112,24 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
       console.log('Initialisation du composant téléphone Flowbite...');
       
       // Dynamiquement charger et initialiser Flowbite
-      import('flowbite').then(() => {
+      import('flowbite').then((flowbite) => {
         console.log('Flowbite chargé avec succès');
+
+        // Forcer l'initialisation des dropdowns
+        if (typeof window.initFlowbite === 'function') {
+          console.log('Initialisation manuelle de Flowbite');
+          window.initFlowbite();
+        } else {
+          console.log('Flowbite devrait s\'initialiser automatiquement');
+        }
         
         // Ajouter des gestionnaires d'événements pour les options de pays
         setTimeout(() => {
           const countryOptions = document.querySelectorAll('.country-option');
-          const phoneButton = document.getElementById('phone-button');
-          const currentCodeElement = phoneButton?.querySelector('.inline-flex') as HTMLElement;
+          const phoneButton = document.getElementById('dropdown-phone-button');
+          
+          console.log('Options de pays trouvées:', countryOptions.length);
+          console.log('Bouton téléphone trouvé:', !!phoneButton);
           
           // Ajouter des écouteurs d'événements à chaque option de pays
           countryOptions.forEach(option => {
@@ -129,19 +139,40 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
               const countryElement = target.querySelector('svg')?.cloneNode(true);
               const phoneInput = this.phoneInput.nativeElement;
               
+              console.log('Option de pays cliquée:', countryCode);
+              
               // Mettre à jour le bouton de pays
-              if (currentCodeElement && countryCode) {
-                // Remplacer le SVG
-                const currentSvg = currentCodeElement.querySelector('svg');
+              if (phoneButton && countryCode) {
+                // Récupérer l'élément svg existant dans le bouton
+                const currentSvg = phoneButton.querySelector('svg:first-child');
+                
+                // Remplacer le SVG s'il existe
                 if (currentSvg && countryElement) {
-                  currentCodeElement.replaceChild(countryElement, currentSvg);
+                  phoneButton.replaceChild(countryElement, currentSvg);
                 }
                 
-                // Mettre à jour le code
-                const textNode = Array.from(currentCodeElement.childNodes)
-                  .find(node => node.nodeType === Node.TEXT_NODE);
-                if (textNode) {
-                  textNode.textContent = countryCode;
+                // Mettre à jour le texte du code pays affiché
+                // Trouver le nœud de texte entre les deux SVG
+                let textUpdated = false;
+                for (let i = 0; i < phoneButton.childNodes.length; i++) {
+                  const node = phoneButton.childNodes[i];
+                  if (node.nodeType === Node.TEXT_NODE) {
+                    node.textContent = countryCode + ' ';
+                    textUpdated = true;
+                    break;
+                  }
+                }
+                
+                // Si aucun nœud de texte n'a été trouvé, créer et insérer un nouveau
+                if (!textUpdated) {
+                  const textNode = document.createTextNode(countryCode + ' ');
+                  // Insérer avant le deuxième SVG (flèche vers le bas)
+                  const secondSvg = phoneButton.querySelector('svg:nth-child(2)');
+                  if (secondSvg) {
+                    phoneButton.insertBefore(textNode, secondSvg);
+                  } else {
+                    phoneButton.appendChild(textNode);
+                  }
                 }
                 
                 // Mettre à jour la valeur du formulaire
@@ -152,7 +183,19 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
           
           // Écouter les changements sur l'input
           this.phoneInput.nativeElement.addEventListener('input', () => {
-            const currentCode = currentCodeElement?.textContent?.trim() || '+33';
+            // Récupérer le code pays actuel dans le texte du bouton
+            let currentCode = '+33'; // Valeur par défaut
+            
+            if (phoneButton) {
+              for (let i = 0; i < phoneButton.childNodes.length; i++) {
+                const node = phoneButton.childNodes[i];
+                if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
+                  currentCode = node.textContent.trim();
+                  break;
+                }
+              }
+            }
+            
             this.updatePhoneNumberWithCountryCode(currentCode, this.phoneInput.nativeElement.value);
           });
           
@@ -184,7 +227,7 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
           }
           
           console.log('Composant téléphone initialisé avec succès');
-        }, 500);
+        }, 1000); // Délai augmenté pour s'assurer que le DOM est prêt
       }).catch(error => {
         console.error('Erreur lors du chargement de Flowbite:', error);
       });

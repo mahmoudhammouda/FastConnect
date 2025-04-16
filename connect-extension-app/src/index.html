@@ -68,6 +68,19 @@
         }
       }, 2000);
     });
+    
+    // Initialiser Flowbite quand la page est chargée
+    window.addEventListener('load', () => {
+      if (typeof window.initFlowbite === 'function') {
+        window.initFlowbite();
+        console.log('Flowbite initialisé globalement');
+      }
+    });
+  </script>
+  
+  <!-- Chargement de Flowbite -->
+  <script type="module">
+    import 'flowbite';
   </script>
   
   <app-root></app-root>
