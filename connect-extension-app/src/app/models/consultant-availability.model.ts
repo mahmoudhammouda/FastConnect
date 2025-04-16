@@ -33,6 +33,9 @@ export interface ConsultantAvailability {
   
   // Coordonnées et liens
   linkedinUrl?: string;
+  cvUrl?: string;  // URL vers un CV en ligne
+  cvType?: 'linkedin' | 'url' | 'file'; // Type de CV fourni (LinkedIn, URL externe, fichier)
+  cvFileName?: string; // Nom du fichier CV si un fichier est uploadé
   recruiterMessage?: string;
   
   // Paramètres

@@ -306,14 +306,83 @@
               </div>
             </div>
             
-            <!-- URL LinkedIn -->
+            <!-- Choix du type de profil/CV -->
             <div class="form-group mb-3">
-              <label class="form-label">URL du profil LinkedIn</label>
-              <div class="flex items-center">
-                <span class="bg-gray-100 px-3 py-2 text-gray-500 border border-r-0 border-gray-300 rounded-l-md text-sm">
-                  <i class="fab fa-linkedin text-blue-700"></i>
-                </span>
-                <input type="url" formControlName="linkedinUrl" placeholder="https://www.linkedin.com/in/username" class="form-input rounded-l-none w-full">
+              <label class="form-label">Profil professionnel</label>
+              <div class="flex space-x-3 mb-3">
+                <div *ngFor="let type of cvTypes" 
+                     class="flex-1 cursor-pointer rounded-lg p-3 border-2 transition-all duration-200 shadow-sm transform hover:scale-105"
+                     [ngClass]="{
+                       [type.borderColor]: editForm.get('cvType')?.value === type.value, 
+                       [type.bgColor]: editForm.get('cvType')?.value === type.value,
+                       'border-gray-200 hover:border-gray-400 bg-white': editForm.get('cvType')?.value !== type.value
+                     }"
+                     (click)="changeCvType(type.value)">
+                  <div class="flex flex-col items-center justify-center text-center h-full">
+                    <i [class]="type.icon + ' text-xl mb-2'"></i>
+                    <span class="text-sm font-medium">{{ type.label }}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Affichage conditionnel selon le type sélectionné -->
+              
+              <!-- Option 1: LinkedIn URL (visible si cvType == 'linkedin') -->
+              <div *ngIf="editForm.get('cvType')?.value === 'linkedin'" class="mt-3">
+                <div class="flex items-center">
+                  <span class="bg-blue-100 px-3 py-2 text-blue-700 border border-r-0 border-blue-300 rounded-l-md">
+                    <i class="fab fa-linkedin text-xl"></i>
+                  </span>
+                  <input type="url" formControlName="linkedinUrl" placeholder="https://www.linkedin.com/in/username" 
+                         class="form-input rounded-l-none w-full focus:border-blue-500 focus:ring focus:ring-blue-200">
+                </div>
+                <small class="text-gray-600 mt-2 flex items-center">
+                  <i class="fas fa-info-circle mr-1 text-blue-500"></i>
+                  Le profil LinkedIn est obligatoire pour les consultants qui se proposent eux-mêmes
+                </small>
+              </div>
+              
+              <!-- Option 2: URL externe (visible si cvType == 'url') -->
+              <div *ngIf="editForm.get('cvType')?.value === 'url'" class="mt-3">
+                <div class="flex items-center">
+                  <span class="bg-emerald-100 px-3 py-2 text-emerald-700 border border-r-0 border-emerald-300 rounded-l-md">
+                    <i class="fas fa-link text-xl"></i>
+                  </span>
+                  <input type="url" formControlName="cvUrl" placeholder="https://example.com/cv.pdf" 
+                         class="form-input rounded-l-none w-full focus:border-emerald-500 focus:ring focus:ring-emerald-200">
+                </div>
+                <small class="text-gray-600 mt-2 flex items-center">
+                  <i class="fas fa-info-circle mr-1 text-emerald-500"></i>
+                  Indiquez l'URL du CV en ligne anonymisé pour protéger l'identité du consultant
+                </small>
+              </div>
+              
+              <!-- Option 3: Fichier CV (visible si cvType == 'file') -->
+              <div *ngIf="editForm.get('cvType')?.value === 'file'" class="mt-3">
+                <div class="border-dashed border-2 border-rose-300 rounded-lg p-4 text-center hover:border-rose-500 bg-rose-50 transition-all duration-200 shadow-sm">
+                  <input type="file" 
+                         id="cv-file-{{editingAvailabilityId}}" 
+                         class="hidden" 
+                         accept=".pdf" 
+                         (change)="handleCvFileUpload($event)">
+                  <label [for]="'cv-file-'+editingAvailabilityId" class="cursor-pointer">
+                    <i class="fas fa-file-pdf text-rose-600 mb-3 text-3xl block"></i>
+                    <span *ngIf="!editForm.get('cvFileName')?.value" class="text-gray-600">
+                      Cliquer pour sélectionner un fichier CV
+                    </span>
+                    <span *ngIf="editForm.get('cvFileName')?.value" class="text-emerald-600 font-medium">
+                      {{ editForm.get('cvFileName')?.value }}
+                    </span>
+                  </label>
+                </div>
+                <small class="text-gray-600 mt-2 flex items-center">
+                  <i class="fas fa-info-circle mr-1 text-rose-500"></i>
+                  Téléchargez un CV anonymisé au format PDF pour protéger l'identité du consultant
+                </small>
+                <small *ngIf="editForm.get('cvFileName')?.value" class="text-emerald-600 mt-2 flex items-center">
+                  <i class="fas fa-check-circle mr-1"></i>
+                  Fichier sélectionné, sera enregistré avec les autres modifications.
+                </small>
               </div>
             </div>
             

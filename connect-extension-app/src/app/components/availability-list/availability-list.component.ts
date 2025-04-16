@@ -39,6 +39,9 @@ export class AvailabilityListComponent implements OnInit {
   sectorsDropdownOpen: boolean = false;
   workModesDropdownOpen: boolean = false;
   
+  // Gestion du fichier CV
+  selectedCvFile: File | null = null;
+  
   // Listes disponibles
   availableSkills: string[] = [];
   availableCities: string[] = [];
@@ -106,6 +109,14 @@ export class AvailabilityListComponent implements OnInit {
   
   // Liste simplifiée pour le dropdown
   workModesList = ['Sur site', 'Télétravail', 'Hybride', 'Flexible'];
+  
+  // Types de CV disponibles
+  cvTypes = [
+    { value: 'linkedin', label: 'Profil LinkedIn', icon: 'fab fa-linkedin text-blue-600', bgColor: 'bg-blue-100', borderColor: 'border-blue-600' },
+    { value: 'url', label: 'URL de CV en ligne', icon: 'fas fa-link text-emerald-600', bgColor: 'bg-emerald-100', borderColor: 'border-emerald-600' },
+    { value: 'file', label: 'Fichier CV', icon: 'fas fa-file-pdf text-rose-600', bgColor: 'bg-rose-100', borderColor: 'border-rose-600' }
+  ];
+  
   statuses = [
     { value: 'available', label: 'Disponible' },
     { value: 'pending', label: 'En attente' },
@@ -303,6 +314,9 @@ export class AvailabilityListComponent implements OnInit {
       
       // Coordonnées et liens
       linkedinUrl: new FormControl(availability.linkedinUrl || ''),
+      cvUrl: new FormControl(availability.cvUrl || ''),
+      cvType: new FormControl(availability.cvType || 'linkedin'),
+      cvFileName: new FormControl(availability.cvFileName || ''),
       recruiterMessage: new FormControl(availability.recruiterMessage || ''),
       
       // Autres paramètres
@@ -798,6 +812,61 @@ export class AvailabilityListComponent implements OnInit {
   }
   
   /**
+   * Change le type de CV (LinkedIn, URL externe, fichier)
+   */
+  changeCvType(type: string): void {
+    if (!this.editForm) return;
+    
+    this.editForm.patchValue({ cvType: type });
+    
+    // Réinitialiser les champs selon le type de CV sélectionné
+    if (type === 'linkedin') {
+      // Garder uniquement l'URL LinkedIn
+      this.editForm.patchValue({ cvFileName: '', cvUrl: '' });
+      this.selectedCvFile = null;
+    } else if (type === 'url') {
+      // Garder uniquement l'URL du CV externe
+      this.editForm.patchValue({ linkedinUrl: '', cvFileName: '' });
+      this.selectedCvFile = null;
+    } else if (type === 'file') {
+      // Garder uniquement le nom du fichier CV uploadé
+      this.editForm.patchValue({ linkedinUrl: '', cvUrl: '' });
+    }
+  }
+  
+  /**
+   * Gère le téléchargement du fichier CV
+   * @param event L'événement de changement de fichier
+   */
+  handleCvFileUpload(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || !input.files.length || !this.editForm) return;
+    
+    const file = input.files[0];
+    
+    // Vérifier le type de fichier (accepter uniquement les PDF)
+    if (file.type !== 'application/pdf') {
+      alert('Veuillez sélectionner un fichier PDF');
+      return;
+    }
+    
+    // Vérifier la taille du fichier (max 5 MB)
+    const maxSizeInBytes = 5 * 1024 * 1024; // 5 MB
+    if (file.size > maxSizeInBytes) {
+      alert('La taille du fichier ne doit pas dépasser 5 MB');
+      return;
+    }
+    
+    // Stocker le fichier pour l'upload ultérieur
+    this.selectedCvFile = file;
+    
+    // Mettre à jour le nom du fichier dans le formulaire
+    this.editForm.patchValue({ cvFileName: file.name });
+    
+    console.log('Fichier CV sélectionné:', file.name);
+  }
+  
+  /**
    * Convertit un libellé de mode de travail en valeur compatible avec l'API
    */
   convertWorkMode(label: string): string {
@@ -853,16 +922,48 @@ export class AvailabilityListComponent implements OnInit {
       startDate: new Date(formValues.startDate).toISOString()
     };
     
-    // Envoie la mise à jour au serveur
-    this.consultantAvailabilityService.updateAvailability(availabilityId, updatedAvailability).subscribe({
-      next: () => {
-        this.cancelEditing();
-        this.loadAvailabilities();
-      },
-      error: (error: any) => {
-        console.error('Erreur lors de la mise à jour de la disponibilité', error);
-      }
-    });
+    // Si un fichier CV a été sélectionné, l'uploader d'abord
+    if (this.selectedCvFile && formValues.cvType === 'file') {
+      console.log('Préparation à l\'upload du fichier CV:', this.selectedCvFile.name);
+      
+      // Dans une application réelle, on utiliserait FormData pour l'upload
+      const formData = new FormData();
+      formData.append('cvFile', this.selectedCvFile);
+      formData.append('consultantId', updatedAvailability.consultantId);
+      
+      // Simuler l'upload pour le prototype
+      // Note: Dans une implémentation réelle, on enverrait formData au serveur
+      console.log('Simulation de l\'upload du fichier CV...');
+      
+      // Pour le prototype, on met simplement à jour la référence au fichier
+      // Le serveur stockerait normalement le fichier et renverrait son URL
+      setTimeout(() => {
+        console.log('Fichier CV uploadé avec succès (simulé)');
+        
+        // Mise à jour de la disponibilité avec le nom du fichier CV
+        this.consultantAvailabilityService.updateAvailability(availabilityId, updatedAvailability).subscribe({
+          next: () => {
+            this.selectedCvFile = null; // Réinitialisation après sauvegarde
+            this.cancelEditing();
+            this.loadAvailabilities();
+          },
+          error: (error: any) => {
+            console.error('Erreur lors de la mise à jour de la disponibilité', error);
+          }
+        });
+      }, 500);
+    } else {
+      // Pas de fichier à uploader, mise à jour directe de la disponibilité
+      this.consultantAvailabilityService.updateAvailability(availabilityId, updatedAvailability).subscribe({
+        next: () => {
+          this.cancelEditing();
+          this.loadAvailabilities();
+        },
+        error: (error: any) => {
+          console.error('Erreur lors de la mise à jour de la disponibilité', error);
+        }
+      });
+    }
   }
   
   // Formatte une date pour l'affichage dans un input type date
