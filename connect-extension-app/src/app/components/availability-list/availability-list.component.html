@@ -125,25 +125,56 @@
                   <button type="button" 
                          class="shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100" 
                          (click)="togglePhoneDropdown($event)">
-                    <!-- Drapeau de la France (hard-coded pour simplifier) -->
-                    <svg fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
-                      <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
-                      <mask id="b" style="mask-type:luminance" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse">
+                    <!-- Drapeaux de pays avec NgSwitch pour l'affichage dynamique -->
+                    <ng-container [ngSwitch]="selectedPhoneCountryCode">
+                      <svg *ngSwitchCase="'+33'" fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
                         <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
-                      </mask>
-                      <g mask="url(#b)">
-                        <path fill="#0055a4" d="M0 .5h6.5v14H0z"/>
-                        <path fill="#fff" d="M6.5 .5h6.5v14H6.5z"/>
-                        <path fill="#ef4135" d="M13 .5h6.6v14H13z"/>
-                      </g>
-                    </svg>
-                    {{ selectedPhoneCountryCode }} <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <mask id="av2" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                          <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                        </mask>
+                        <g mask="url(#av2)">
+                          <path fill="#0055a4" d="M0 .5h6.5v14H0z"/>
+                          <path fill="#fff" d="M6.5 .5h6.5v14H6.5z"/>
+                          <path fill="#ef4135" d="M13 .5h6.6v14H13z"/>
+                        </g>
+                      </svg>
+                      
+                      <svg *ngSwitchCase="'+32'" fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
+                        <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                        <mask id="bv2" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                          <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                        </mask>
+                        <g mask="url(#bv2)">
+                          <path fill="#000" d="M0 .5h6.5v14H0z"/>
+                          <path fill="#ffda44" d="M6.5 .5h6.5v14H6.5z"/>
+                          <path fill="#d80027" d="M13 .5h6.6v14H13z"/>
+                        </g>
+                      </svg>
+                      
+                      <svg *ngSwitchCase="'+41'" fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
+                        <rect width="19.6" height="14" y=".5" fill="#ff0000" rx="2"/>
+                        <mask id="cv2" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                          <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                        </mask>
+                        <g mask="url(#cv2)">
+                          <path fill="#ff0000" d="M0 .5h19.6v14H0z"/>
+                          <path fill="#fff" d="M8.3 3.5h3v3h3v3h-3v3h-3v-3h-3v-3h3z"/>
+                        </g>
+                      </svg>
+                      
+                      <svg *ngSwitchDefault fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
+                        <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                      </svg>
+                    </ng-container>
+                    
+                    {{ selectedPhoneCountryCode }} 
+                    <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                       <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                     </svg>
                   </button>
                   
                   <!-- Notre propre dropdown menu (comme les autres dans notre formulaire) -->
-                  <div *ngIf="phoneDropdownOpen" class="absolute z-50 mt-28 left-0 bg-white border border-gray-300 rounded-md shadow-lg w-52 max-h-60 overflow-y-auto">
+                  <div *ngIf="phoneDropdownOpen" class="absolute z-50 mt-1 top-full left-0 bg-white border border-gray-300 rounded-md shadow-lg w-52 max-h-60 overflow-y-auto">
                     <div class="py-2">
                       <div *ngFor="let country of phoneCountries" class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer" (click)="selectPhoneCountry(country, $event)">
                         <span class="inline-flex items-center">

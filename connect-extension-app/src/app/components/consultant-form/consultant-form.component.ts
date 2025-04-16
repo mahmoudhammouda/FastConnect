@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Output, EventEmitter, AfterViewInit, ElementRef, ViewChild, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ConsultantAvailabilityService } from '../../services/consultant-availability.service';
@@ -18,7 +18,7 @@ declare global {
 @Component({
   selector: 'app-consultant-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgIf, NgSwitch, NgSwitchCase, NgSwitchDefault],
   templateUrl: './consultant-form.component.html',
   styleUrls: ['./consultant-form.component.scss']
 })
@@ -29,6 +29,10 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
   
   // Formulaire principal
   consultantForm!: FormGroup;
+  
+  // État du dropdown des pays
+  countryDropdownOpen = false;
+  selectedCountryCode = '+33';
   
   // État du formulaire
   isEditMode = false;
@@ -109,11 +113,8 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
         const countryCode = '+' + match[1];
         const number = initialPhone.replace(countryCode, '');
         
-        // Mettre à jour le select avec le bon code pays
-        const selectElement = document.getElementById('country-code') as HTMLSelectElement;
-        if (selectElement) {
-          selectElement.value = countryCode;
-        }
+        // Mettre à jour le code pays sélectionné
+        this.selectedCountryCode = countryCode;
         
         // Mettre à jour l'input avec seulement le numéro
         this.phoneInput.nativeElement.value = number;
@@ -122,14 +123,6 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
         this.phoneInput.nativeElement.value = initialPhone;
       }
     }
-    
-    // Écouter les changements sur l'input
-    this.phoneInput.nativeElement.addEventListener('input', () => {
-      const selectElement = document.getElementById('country-code') as HTMLSelectElement;
-      const countryCode = selectElement ? selectElement.value : '+33';
-      
-      this.updatePhoneNumberWithCountryCode(countryCode, this.phoneInput.nativeElement.value);
-    });
   }
   
   /**
@@ -293,5 +286,52 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
    */
   isConsultant(): boolean {
     return this.userService.isConsultant();
+  }
+  
+  /**
+   * Bascule l'état d'ouverture du dropdown des pays
+   */
+  toggleCountryDropdown(): void {
+    this.countryDropdownOpen = !this.countryDropdownOpen;
+  }
+  
+  /**
+   * Gère la sélection d'un pays dans le dropdown
+   */
+  selectCountry(countryCode: string): void {
+    this.selectedCountryCode = countryCode;
+    
+    // Récupérer la valeur actuelle du champ téléphone et la nettoyer
+    const currentValue = this.phoneInput?.nativeElement.value || '';
+    const cleanNumber = currentValue.replace(/^\+\d+\s*/, '');
+    
+    // Mettre à jour le numéro avec le nouveau code pays
+    this.updatePhoneNumberWithCountryCode(countryCode, cleanNumber);
+    
+    // Fermer le dropdown
+    this.countryDropdownOpen = false;
+  }
+  
+  /**
+   * Gère les changements sur l'input du téléphone
+   */
+  onPhoneInputChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.updatePhoneNumberWithCountryCode(this.selectedCountryCode, input.value);
+  }
+  
+  /**
+   * Ferme le dropdown si on clique en dehors
+   */
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    
+    // Si le clic n'est pas sur le bouton de pays ou dans le dropdown, fermer le dropdown
+    if (!target.closest('button[type="button"]') && 
+        !target.closest('.absolute.z-50') && 
+        this.countryDropdownOpen) {
+      this.countryDropdownOpen = false;
+    }
   }
 }

@@ -197,8 +197,8 @@ export class ConsultantService {
     console.log('[ConsultantService] Fetching all consultants from API');
     
     // Use the real API with proper error handling
-    // ApiService ajoute automatiquement le préfixe /api
-    return this.apiService.get<Consultant[]>('/consultants')
+    // Note: ApiService ajoute automatiquement le préfixe /api
+    return this.apiService.get<Consultant[]>('consultants')
       .pipe(
         tap(response => {
           console.log('[ConsultantService] All consultants API Response received - length:', response?.length || 0);
@@ -237,7 +237,8 @@ export class ConsultantService {
     console.log(`[ConsultantService] Page: ${page}, PageSize: ${pageSize}`);
     
     // Pour le moment, nous utilisons l'API complète et simulons la pagination côté client
-    return this.apiService.get<Consultant[]>('/consultants')
+    // Note: L'ApiService ajoute automatiquement le préfixe /api
+    return this.apiService.get<Consultant[]>('consultants')
       .pipe(
         tap(response => {
           console.log('[ConsultantService] API Response received - length:', response?.length || 0);

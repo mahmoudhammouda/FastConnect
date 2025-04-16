@@ -1,0 +1,51 @@
+<div _ngcontent-ng-c3450572845="" class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto"><div _ngcontent-ng-c3450572845="" class="py-2"><div _ngcontent-ng-c3450572845="" class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"><span _ngcontent-ng-c3450572845="" class="inline-flex items-center"><svg _ngcontent-ng-c3450572845="" fill="none" aria-hidden="true" viewBox="0 0 20 15" class="h-4 w-4 me-2"><rect _ngcontent-ng-c3450572845="" width="19.6" height="14" y=".5" fill="#fff" rx="2"></rect><mask _ngcontent-ng-c3450572845="" id="a" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type: luminance;"><rect _ngcontent-ng-c3450572845="" width="19.6" height="14" y=".5" fill="#fff" rx="2"></rect></mask><g _ngcontent-ng-c3450572845="" mask="url(#a)"><path _ngcontent-ng-c3450572845="" fill="#0055a4" d="M0 .5h6.5v14H0z"></path><path _ngcontent-ng-c3450572845="" fill="#fff" d="M6.5 .5h6.5v14H6.5z"></path><path _ngcontent-ng-c3450572845="" fill="#ef4135" d="M13 .5h6.6v14H13z"></path></g></svg><!--bindings={
+  "ng-reflect-ng-if": "true"
+}--><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--> France (+33) </span></div><div _ngcontent-ng-c3450572845="" class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"><span _ngcontent-ng-c3450572845="" class="inline-flex items-center"><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><svg _ngcontent-ng-c3450572845="" fill="none" aria-hidden="true" viewBox="0 0 20 15" class="h-4 w-4 me-2"><rect _ngcontent-ng-c3450572845="" width="19.6" height="14" y=".5" fill="#fff" rx="2"></rect><mask _ngcontent-ng-c3450572845="" id="c" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type: luminance;"><rect _ngcontent-ng-c3450572845="" width="19.6" height="14" y=".5" fill="#fff" rx="2"></rect></mask><g _ngcontent-ng-c3450572845="" mask="url(#c)"><path _ngcontent-ng-c3450572845="" fill="#000" d="M0 .5h6.5v14H0z"></path><path _ngcontent-ng-c3450572845="" fill="#ffda44" d="M6.5 .5h6.5v14H6.5z"></path><path _ngcontent-ng-c3450572845="" fill="#d80027" d="M13 .5h6.6v14H13z"></path></g></svg><!--bindings={
+  "ng-reflect-ng-if": "true"
+}--><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--> Belgique (+32) </span></div><div _ngcontent-ng-c3450572845="" class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"><span _ngcontent-ng-c3450572845="" class="inline-flex items-center"><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><svg _ngcontent-ng-c3450572845="" fill="none" aria-hidden="true" viewBox="0 0 20 15" class="h-4 w-4 me-2"><rect _ngcontent-ng-c3450572845="" width="19.6" height="14" y=".5" fill="#ff0000" rx="2"></rect><mask _ngcontent-ng-c3450572845="" id="d" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type: luminance;"><rect _ngcontent-ng-c3450572845="" width="19.6" height="14" y=".5" fill="#fff" rx="2"></rect></mask><g _ngcontent-ng-c3450572845="" mask="url(#d)"><path _ngcontent-ng-c3450572845="" fill="#ff0000" d="M0 .5h19.6v14H0z"></path><path _ngcontent-ng-c3450572845="" fill="#fff" d="M8.3 3.5h3v3h3v3h-3v3h-3v-3h-3v-3h3z"></path></g></svg><!--bindings={
+  "ng-reflect-ng-if": "true"
+}--><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--> Suisse (+41) </span></div><div _ngcontent-ng-c3450572845="" class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"><span _ngcontent-ng-c3450572845="" class="inline-flex items-center"><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><svg _ngcontent-ng-c3450572845="" fill="none" viewBox="0 0 20 15" class="h-4 w-4 me-2"><rect _ngcontent-ng-c3450572845="" width="19.6" height="14" y=".5" fill="#fff" rx="2"></rect></svg><!--bindings={
+  "ng-reflect-ng-if": "true"
+}--> Luxembourg (+352) </span></div><div _ngcontent-ng-c3450572845="" class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"><span _ngcontent-ng-c3450572845="" class="inline-flex items-center"><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><svg _ngcontent-ng-c3450572845="" fill="none" viewBox="0 0 20 15" class="h-4 w-4 me-2"><rect _ngcontent-ng-c3450572845="" width="19.6" height="14" y=".5" fill="#fff" rx="2"></rect></svg><!--bindings={
+  "ng-reflect-ng-if": "true"
+}--> États-Unis (+1) </span></div><div _ngcontent-ng-c3450572845="" class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"><span _ngcontent-ng-c3450572845="" class="inline-flex items-center"><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><!--bindings={
+  "ng-reflect-ng-if": "false"
+}--><svg _ngcontent-ng-c3450572845="" fill="none" viewBox="0 0 20 15" class="h-4 w-4 me-2"><rect _ngcontent-ng-c3450572845="" width="19.6" height="14" y=".5" fill="#fff" rx="2"></rect></svg><!--bindings={
+  "ng-reflect-ng-if": "true"
+}--> Royaume-Uni (+44) </span></div><!--bindings={
+  "ng-reflect-ng-for-of": "[object Object],[object Object"
+}--></div></div>
