@@ -72,7 +72,7 @@
            class="edit-form-collapsable bg-gray-50 border-t border-gray-200 px-4 py-3"
            [attr.data-id]="availability.id">
         <div class="mb-3 flex justify-between items-center">
-          <h3 class="text-sm font-medium text-gray-700">Modifier les informations du consultant</h3>
+          <h3 class="text-sm font-medium text-gray-700">Informations du profil</h3>
           <button (click)="cancelEditing()" class="text-gray-400 hover:text-gray-600">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -111,28 +111,29 @@
                 <input type="text" formControlName="consultantName" class="form-input">
               </div>
               
-              <!-- Email du consultant -->
+              <!-- Email de contact -->
               <div class="form-group">
-                <label class="form-label">Email du consultant</label>
+                <label class="form-label">Email de contact</label>
                 <input type="email" formControlName="consultantEmail" class="form-input">
               </div>
               
-              <!-- Téléphone du consultant -->
+              <!-- Téléphone avec drapeau de pays -->
               <div class="form-group">
-                <label class="form-label">Téléphone du consultant</label>
-                <input type="tel" formControlName="consultantPhone" class="form-input">
+                <label class="form-label">Téléphone</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <div class="flex items-center">
+                      <img src="https://flagcdn.com/w20/fr.png" alt="France" class="h-4 w-6 mr-1" />
+                    </div>
+                  </div>
+                  <input type="tel" formControlName="consultantPhone" class="form-input pl-12" placeholder="06 12 34 56 78">
+                </div>
               </div>
               
               <!-- Acronyme d'identification -->
               <div class="form-group">
                 <label class="form-label">Acronyme d'identification</label>
                 <input type="text" formControlName="acronym" class="form-input">
-              </div>
-              
-              <!-- Numéro interne -->
-              <div class="form-group">
-                <label class="form-label">Numéro interne</label>
-                <input type="text" formControlName="internalId" class="form-input">
               </div>
             </div>
           </div>

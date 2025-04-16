@@ -18,6 +18,77 @@
   --transition-speed: 0.3s;
 }
 
+/* Styles pour le sélecteur de téléphone international */
+.phone-input-container {
+  position: relative;
+  
+  .phone-with-flag {
+    padding-left: 90px !important;
+  }
+  
+  &::after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+}
+
+::ng-deep {
+  .iti {
+    width: 100% !important;
+    display: block !important;
+    
+    &__country-list {
+      border-radius: 0.375rem !important;
+      max-height: 220px !important;
+      overflow-y: auto !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+      z-index: calc(var(--modal-z-index) + 10) !important;
+    }
+    
+    &__country {
+      padding: 8px 10px !important;
+      
+      &:hover {
+        background-color: var(--secondary-color) !important;
+      }
+      
+      &.iti__active {
+        background-color: rgba(59, 130, 246, 0.1) !important;
+      }
+    }
+    
+    &__flag-container {
+      padding-left: 10px !important;
+      position: absolute !important;
+      top: 1px !important;
+      bottom: 1px !important;
+      left: 0 !important;
+      z-index: 2 !important;
+    }
+    
+    &__selected-flag {
+      padding: 0 10px 0 15px !important;
+      height: calc(100% - 2px) !important;
+      border-top-left-radius: 0.375rem !important;
+      border-bottom-left-radius: 0.375rem !important;
+      background-color: var(--secondary-color) !important;
+      display: flex !important;
+      align-items: center !important;
+    }
+    
+    &__arrow {
+      margin-left: 5px !important;
+      transition: transform 0.2s ease !important;
+      
+      &--up {
+        transform: rotate(180deg) !important;
+        border-bottom-color: var(--primary-color) !important;
+      }
+    }
+  }
+}
+
 /* Overlay de la modal */
 .modal-backdrop {
   position: fixed;

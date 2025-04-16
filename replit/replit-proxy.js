@@ -47,15 +47,18 @@ app.use((req, res, next) => {
 app.use('/api', createProxyMiddleware({
   target: `http://0.0.0.0:${API_PORT}`,
   changeOrigin: true,
-  pathRewrite: {
-    '^/api': '/api' // Ne pas modifier le chemin pour les requêtes API
-  },
+  // Ne pas modifier le chemin - la route doit rester /api/...
   logLevel: 'debug',
   onProxyReq: (proxyReq, req, res) => {
-    logMessage(`Proxy API request: ${req.method} ${req.url}`, 'blue');
+    logMessage(`Proxy API request: ${req.method} ${req.url} -> ${proxyReq.path}`, 'blue');
+    // Déboggage détaillé des en-têtes de requête
+    console.log('Headers de la requête API:', JSON.stringify(proxyReq.getHeaders()));
   },
   onProxyRes: (proxyRes, req, res) => {
     logMessage(`Proxy API response: ${proxyRes.statusCode} ${req.method} ${req.url}`, 'green');
+    // Ajout d'un log détaillé pour la réponse
+    console.log('Status Code API:', proxyRes.statusCode);
+    console.log('Headers de la réponse API:', JSON.stringify(proxyRes.headers));
   }
 }));
 
