@@ -76,7 +76,18 @@ const angularProxy = createProxyMiddleware({
   }
 });
 
-// Routes Angular
+// Redirection des requêtes /consultants vers /api/consultants (fix pour les requêtes API mal formées)
+app.use('/consultants', (req, res) => {
+  logMessage(`Redirection de /consultants vers /api/consultants`, 'yellow');
+  req.url = '/api/consultants';
+  createProxyMiddleware({
+    target: `http://0.0.0.0:${API_PORT}`,
+    changeOrigin: true,
+    logLevel: 'debug'
+  })(req, res);
+});
+
+// Routes Angular - doit être après les routes spécifiques
 app.use('/', angularProxy);
 
 // Midleware de gestion d'erreur pour attraper les 404 et rediriger vers index.html

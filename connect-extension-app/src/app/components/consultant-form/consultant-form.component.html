@@ -84,9 +84,16 @@
           </div>
           
           <div class="form-group phone-input-container">
-            <label for="phone" class="form-label">Téléphone (optionnel)</label>
-            <input id="phone" #phoneInput type="tel" formControlName="phone" class="form-input phone-with-flag"
-                  placeholder="ex: +33 6 00 00 00 00">
+            <label for="phone" class="form-label">Téléphone</label>
+            <input 
+              id="phone" 
+              #phoneInput 
+              type="tel" 
+              formControlName="phone" 
+              class="form-input phone-with-flag"
+              autocomplete="tel"
+              placeholder=""
+            >
           </div>
         </div>
       </form>
