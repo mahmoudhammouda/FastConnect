@@ -33,8 +33,11 @@
         <div class="grid grid-cols-[1fr_auto] items-center w-full">
           <!-- Colonne 1: informations du consultant -->
           <div>
-            <!-- Titre principal -->
-            <div class="font-medium text-gray-800">{{ availability.consultantName }}</div>
+            <!-- Titre actuel (affiché en premier) -->
+            <div *ngIf="availability.title" class="font-medium text-gray-800 text-lg">{{ availability.title }}</div>
+            
+            <!-- Nom du consultant (affiché en second) -->
+            <div class="font-medium text-gray-700 mt-1">{{ availability.consultantName }}</div>
             
             <!-- Ligne d'informations -->
             <div class="text-xs text-gray-500 mt-1">
@@ -143,21 +146,23 @@
               Informations Publiques (visibles par les recruteurs)
             </h4>
             
+            <!-- Titre actuel (affiché en premier et sur toute la largeur) -->
+            <div class="col-span-1 md:col-span-2 mb-3">
+              <div class="form-group">
+                <label class="form-label font-semibold">Titre actuel</label>
+                <input type="text" formControlName="title" class="form-input" placeholder="Ex: Lead Developer, Senior Architect...">
+                <small class="text-gray-500 mt-1 block">
+                  <i class="fas fa-info-circle mr-1"></i>
+                  Le titre exact du consultant (ce titre sera affiché en premier dans la fiche de disponibilité)
+                </small>
+              </div>
+            </div>
+              
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <!-- Abréviation du consultant -->
               <div class="form-group">
                 <label class="form-label">Abréviation publique</label>
                 <input type="text" formControlName="consultantAbbreviation" class="form-input">
-              </div>
-              
-              <!-- Titre actuel -->
-              <div class="form-group">
-                <label class="form-label">Titre actuel</label>
-                <input type="text" formControlName="title" class="form-input" placeholder="Ex: Lead Developer, Senior Architect...">
-                <small class="text-gray-500 mt-1 block">
-                  <i class="fas fa-info-circle mr-1"></i>
-                  Le titre exact du consultant (différent du rôle)
-                </small>
               </div>
               
               <!-- Rôles / Intitulés de poste (Multi-select) -->
