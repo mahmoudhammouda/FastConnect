@@ -8,5 +8,29 @@
       "Connection": "keep-alive"
     },
     "timeout": 60000
+  },
+  "/consultants": {
+    "target": "http://0.0.0.0:8000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/consultants": "/api/consultants"
+    },
+    "headers": {
+      "Connection": "keep-alive"
+    }
+  },
+  "/availability": {
+    "target": "http://0.0.0.0:8000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/availability": "/api/availability"
+    },
+    "headers": {
+      "Connection": "keep-alive"
+    }
   }
 }

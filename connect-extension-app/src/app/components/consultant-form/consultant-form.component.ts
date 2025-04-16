@@ -8,8 +8,12 @@ import { AvailabilityStatus, ExperienceLevel, ExperienceLevelString, Experience 
 import { ConsultantAvailability } from '../../models/consultant-availability.model';
 import { UserService } from '../../services/user.service';
 
-// Déclaration pour intl-tel-input car TypeScript ne connaît pas tous les types
-declare const intlTelInput: any;
+// Importation pour Flowbite
+declare global {
+  interface Window {
+    initFlowbite: any;
+  }
+}
 
 @Component({
   selector: 'app-consultant-form',
@@ -98,95 +102,116 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
     this.subscriptions.unsubscribe();
   }
   
+  @ViewChild('phoneButton') phoneButton!: ElementRef;
+  
   /**
-   * Initialise le composant international téléphone
+   * Initialise le composant téléphone avec Flowbite
    */
   private initIntlTelInput(): void {
     try {
-      // Nous utilisons directement intlTelInput intégré via CDN dans index.html
-      console.log('Initialisation de intl-tel-input...');
+      console.log('Initialisation du composant téléphone Flowbite...');
       
-      // Attendre que le DOM et les scripts soient complètement chargés
-      setTimeout(() => {
-        if (!this.phoneInput?.nativeElement) {
-          console.error("L'élément input pour le téléphone n'est pas disponible");
-          return;
-        }
+      // Dynamiquement charger et initialiser Flowbite
+      import('flowbite').then(() => {
+        console.log('Flowbite chargé avec succès');
         
-        // Vérifions si la bibliothèque est disponible
-        const intlTelInput = (window as any).intlTelInput;
-        if (!intlTelInput) {
-          console.error("La bibliothèque intlTelInput n'est pas disponible dans window");
-          return;
-        }
-        
-        // Configuration avancée pour le téléphone international
-        const options = {
-          initialCountry: 'fr',
-          preferredCountries: ['fr', 'be', 'ch', 'lu', 'ca'],
-          separateDialCode: true,
-          formatOnDisplay: true,
-          allowDropdown: true,
-          autoPlaceholder: 'aggressive',
-          customContainer: 'iti-container',
-          nationalMode: false, 
-          utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js'
-        };
-        
-        // Créer l'instance
-        this.intlTelInstance = intlTelInput(this.phoneInput.nativeElement, options);
-        console.log('Instance intlTelInput créée avec succès');
-        
-        // Événements pour synchroniser avec le formulaire Angular
-        this.phoneInput.nativeElement.addEventListener('countrychange', () => {
-          this.updatePhoneNumber();
-        });
-        
-        this.phoneInput.nativeElement.addEventListener('input', () => {
-          this.updatePhoneNumber();
-        });
-        
-        // Forcer l'espace pour le drapeau et l'indicatif
-        this.phoneInput.nativeElement.style.paddingLeft = '90px';
-        
-        // Si le formulaire contient déjà un numéro, initialiser avec
-        const currentPhone = this.consultantForm.get('phone')?.value;
-        if (currentPhone) {
-          try {
-            this.intlTelInstance.setNumber(currentPhone);
-            console.log('Numéro de téléphone initialisé:', currentPhone);
-          } catch (e) {
-            console.error('Erreur lors de la définition du numéro:', e);
+        // Ajouter des gestionnaires d'événements pour les options de pays
+        setTimeout(() => {
+          const countryOptions = document.querySelectorAll('.country-option');
+          const phoneButton = document.getElementById('phone-button');
+          const currentCodeElement = phoneButton?.querySelector('.inline-flex') as HTMLElement;
+          
+          // Ajouter des écouteurs d'événements à chaque option de pays
+          countryOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+              const target = e.currentTarget as HTMLElement;
+              const countryCode = target.getAttribute('data-code');
+              const countryElement = target.querySelector('svg')?.cloneNode(true);
+              const phoneInput = this.phoneInput.nativeElement;
+              
+              // Mettre à jour le bouton de pays
+              if (currentCodeElement && countryCode) {
+                // Remplacer le SVG
+                const currentSvg = currentCodeElement.querySelector('svg');
+                if (currentSvg && countryElement) {
+                  currentCodeElement.replaceChild(countryElement, currentSvg);
+                }
+                
+                // Mettre à jour le code
+                const textNode = Array.from(currentCodeElement.childNodes)
+                  .find(node => node.nodeType === Node.TEXT_NODE);
+                if (textNode) {
+                  textNode.textContent = countryCode;
+                }
+                
+                // Mettre à jour la valeur du formulaire
+                this.updatePhoneNumberWithCountryCode(countryCode, phoneInput.value);
+              }
+            });
+          });
+          
+          // Écouter les changements sur l'input
+          this.phoneInput.nativeElement.addEventListener('input', () => {
+            const currentCode = currentCodeElement?.textContent?.trim() || '+33';
+            this.updatePhoneNumberWithCountryCode(currentCode, this.phoneInput.nativeElement.value);
+          });
+          
+          // Initialiser avec la valeur existante si présente
+          const initialPhone = this.consultantForm.get('phone')?.value;
+          if (initialPhone) {
+            // Extraire le code pays si possible
+            const match = initialPhone.match(/^\+(\d+)/);
+            if (match) {
+              const countryCode = '+' + match[1];
+              const number = initialPhone.replace(countryCode, '');
+              
+              // Trouver l'option de pays correspondante
+              const matchingOption = Array.from(countryOptions).find(
+                opt => (opt as HTMLElement).getAttribute('data-code') === countryCode
+              ) as HTMLElement;
+              
+              if (matchingOption) {
+                // Simuler un clic pour mettre à jour l'interface
+                matchingOption.click();
+              }
+              
+              // Mettre à jour l'input avec seulement le numéro
+              this.phoneInput.nativeElement.value = number;
+            } else {
+              // Si pas de format international, juste mettre la valeur telle quelle
+              this.phoneInput.nativeElement.value = initialPhone;
+            }
           }
-        }
-      }, 800); // Augmenté à 800ms pour assurer que tous les scripts sont chargés
+          
+          console.log('Composant téléphone initialisé avec succès');
+        }, 500);
+      }).catch(error => {
+        console.error('Erreur lors du chargement de Flowbite:', error);
+      });
     } catch (error) {
-      console.error("[ConsultantForm] Erreur lors de l'initialisation de intlTelInput:", error);
+      console.error("[ConsultantForm] Erreur lors de l'initialisation du composant téléphone:", error);
     }
   }
   
-
-  
   /**
-   * Met à jour le numéro de téléphone dans le formulaire
+   * Met à jour le numéro de téléphone avec le code pays
    */
-  private updatePhoneNumber(): void {
-    if (this.intlTelInstance) {
-      const isValid = this.intlTelInstance.isValidNumber();
-      const fullNumber = this.intlTelInstance.getNumber();
-      
-      if (isValid) {
-        this.consultantForm.patchValue({ phone: fullNumber });
-      } else {
-        // Mettre à jour le formulaire avec la valeur brute si elle existe
-        const rawValue = this.phoneInput.nativeElement.value;
-        if (rawValue) {
-          this.consultantForm.patchValue({ phone: rawValue });
-        } else {
-          this.consultantForm.patchValue({ phone: null });
-        }
-      }
+  private updatePhoneNumberWithCountryCode(countryCode: string, number: string): void {
+    // S'assurer que le code pays commence par +
+    const formattedCode = countryCode.startsWith('+') ? countryCode : `+${countryCode}`;
+    
+    // Nettoyer le numéro (enlever les espaces, tirets, etc.)
+    const cleanNumber = number.replace(/[^0-9]/g, '');
+    
+    // Formater le numéro complet
+    let fullNumber = '';
+    
+    if (cleanNumber) {
+      fullNumber = `${formattedCode}${cleanNumber}`;
     }
+    
+    // Mettre à jour le formulaire
+    this.consultantForm.patchValue({ phone: fullNumber || null });
   }
 
   /**

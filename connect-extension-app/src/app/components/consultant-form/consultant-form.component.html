@@ -83,17 +83,98 @@
                   placeholder="ex: contact@exemple.com">
           </div>
           
-          <div class="form-group phone-input-container">
+          <div class="form-group">
             <label for="phone" class="form-label">Téléphone</label>
-            <input 
-              id="phone" 
-              #phoneInput 
-              type="tel" 
-              formControlName="phone" 
-              class="form-input phone-with-flag"
-              autocomplete="tel"
-              placeholder=""
-            >
+            <div class="relative">
+              <!-- Composant Flowbite Phone Input -->
+              <div class="phone-field-container">
+                <div class="flex">
+                  <button id="phone-button" #phoneButton data-dropdown-toggle="phone-dropdown" 
+                          class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-500 bg-gray-100 border border-gray-300 rounded-l-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600" 
+                          type="button">
+                    <div class="inline-flex items-center">
+                      <svg aria-hidden="true" class="h-4 w-4 mr-2" viewBox="0 0 20 15">
+                        <rect width="20" height="15" fill="#fff" />
+                        <rect width="20" height="5" fill="#0055a4" />
+                        <rect width="20" height="5" fill="#fff" y="5" />
+                        <rect width="20" height="5" fill="#ef4135" y="10" />
+                      </svg>
+                      +33
+                    </div>
+                    <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
+                    </svg>
+                  </button>
+                  
+                  <!-- Dropdown menu -->
+                  <div id="phone-dropdown" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-52 dark:bg-gray-700">
+                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="phone-button">
+                      <li>
+                        <button type="button" data-code="+33" class="country-option flex items-center w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+                          <svg aria-hidden="true" class="h-4 w-4 mr-2" viewBox="0 0 20 15">
+                            <rect width="20" height="15" fill="#fff" />
+                            <rect width="20" height="5" fill="#0055a4" />
+                            <rect width="20" height="5" fill="#fff" y="5" />
+                            <rect width="20" height="5" fill="#ef4135" y="10" />
+                          </svg>
+                          France (+33)
+                        </button>
+                      </li>
+                      <li>
+                        <button type="button" data-code="+32" class="country-option flex items-center w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+                          <svg aria-hidden="true" class="h-4 w-4 mr-2" viewBox="0 0 20 15">
+                            <rect width="20" height="15" fill="#ffda44" />
+                            <rect width="6.5" height="15" fill="#000" />
+                            <rect width="7" height="15" fill="#d80027" x="13" />
+                          </svg>
+                          Belgique (+32)
+                        </button>
+                      </li>
+                      <li>
+                        <button type="button" data-code="+41" class="country-option flex items-center w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+                          <svg aria-hidden="true" class="h-4 w-4 mr-2" viewBox="0 0 20 15">
+                            <rect width="20" height="15" fill="#ff0000" />
+                            <polygon fill="#fff" points="10,3 12,7 16,7 13,10 14,14 10,12 6,14 7,10 4,7 8,7" />
+                          </svg>
+                          Suisse (+41)
+                        </button>
+                      </li>
+                      <li>
+                        <button type="button" data-code="+352" class="country-option flex items-center w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+                          <svg aria-hidden="true" class="h-4 w-4 mr-2" viewBox="0 0 20 15">
+                            <rect width="20" height="15" fill="#fff" />
+                            <rect width="20" height="5" fill="#00a1de" />
+                            <rect width="20" height="5" fill="#ed2939" y="10" />
+                          </svg>
+                          Luxembourg (+352)
+                        </button>
+                      </li>
+                      <li>
+                        <button type="button" data-code="+1" class="country-option flex items-center w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">
+                          <svg aria-hidden="true" class="h-4 w-4 mr-2" viewBox="0 0 20 15">
+                            <rect width="20" height="15" fill="#f0f0f0" />
+                            <rect width="20" height="1.1" fill="#d80027" y="0" />
+                            <rect width="20" height="1.1" fill="#d80027" y="2.2" />
+                            <rect width="20" height="1.1" fill="#d80027" y="4.4" />
+                            <rect width="20" height="1.1" fill="#d80027" y="6.6" />
+                            <rect width="20" height="1.1" fill="#d80027" y="8.8" />
+                            <rect width="20" height="1.1" fill="#d80027" y="11" />
+                            <rect width="20" height="1.1" fill="#d80027" y="13.2" />
+                            <rect width="8" height="8.1" fill="#2e3560" />
+                          </svg>
+                          Canada (+1)
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  <input type="tel" id="phone" #phoneInput formControlName="phone" 
+                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-r-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                         placeholder="123-456-789">
+                </div>
+                <small class="text-gray-500 mt-1 text-xs">Format: + code pays suivi du numéro (ex: +33612345678)</small>
+              </div>
+            </div>
           </div>
         </div>
       </form>
