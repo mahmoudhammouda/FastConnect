@@ -597,9 +597,9 @@
                       <button type="button" 
                              class="form-input text-left pr-8 flex items-center justify-between w-full" 
                              (click)="toggleSkillsDropdown($event)">
-                        <span *ngIf="(editForm?.get('skills')?.value || []).length === 0">Sélectionner des compétences</span>
-                        <span *ngIf="(editForm?.get('skills')?.value || []).length === 1">{{ editForm?.get('skills')?.value[0] }}</span>
-                        <span *ngIf="(editForm?.get('skills')?.value || []).length > 1">{{ editForm?.get('skills')?.value.length }} compétences</span>
+                        <span *ngIf="skillsValues.length === 0">Sélectionner des compétences</span>
+                        <span *ngIf="skillsValues.length === 1">{{ skillsValues[0] }}</span>
+                        <span *ngIf="skillsValues.length > 1">{{ skillsValues.length }} compétences</span>
                         <svg class="h-4 w-4 absolute right-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
@@ -647,9 +647,9 @@
                       <button type="button" 
                              class="form-input text-left pr-8 flex items-center justify-between w-full" 
                              (click)="toggleSectorsDropdown($event)">
-                        <span *ngIf="(editForm?.get('sectors')?.value || []).length === 0">Sélectionner des secteurs</span>
-                        <span *ngIf="(editForm?.get('sectors')?.value || []).length === 1">{{ editForm?.get('sectors')?.value[0] }}</span>
-                        <span *ngIf="(editForm?.get('sectors')?.value || []).length > 1">{{ editForm?.get('sectors')?.value.length }} secteurs</span>
+                        <span *ngIf="sectorsValues.length === 0">Sélectionner des secteurs</span>
+                        <span *ngIf="sectorsValues.length === 1">{{ sectorsValues[0] }}</span>
+                        <span *ngIf="sectorsValues.length > 1">{{ sectorsValues.length }} secteurs</span>
                         <svg class="h-4 w-4 absolute right-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
@@ -708,9 +708,9 @@
                       <button type="button" 
                              class="form-input text-left pr-8 flex items-center justify-between w-full" 
                              (click)="toggleCitiesDropdown($event)">
-                        <span *ngIf="(editForm?.get('cities')?.value || []).length === 0">Sélectionner des villes</span>
-                        <span *ngIf="(editForm?.get('cities')?.value || []).length === 1">{{ editForm?.get('cities')?.value[0] }}</span>
-                        <span *ngIf="(editForm?.get('cities')?.value || []).length > 1">{{ editForm?.get('cities')?.value.length }} villes</span>
+                        <span *ngIf="citiesValues.length === 0">Sélectionner des villes</span>
+                        <span *ngIf="citiesValues.length === 1">{{ citiesValues[0] }}</span>
+                        <span *ngIf="citiesValues.length > 1">{{ citiesValues.length }} villes</span>
                         <svg class="h-4 w-4 absolute right-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>

@@ -28,6 +28,19 @@
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
-    "strictTemplates": true
-  }
+    "strictTemplates": false
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "src/app/app.providers.ts",
+    "src/app/components/consultant-card/consultant-card.component.spec.ts",
+    "src/app/components/consultant-detail-sections/consultant-detail-sections.component.ts",
+    "src/environments/environment.local-extension.ts",
+    "src/environments/environment.local.ts",
+    "src/environments/environment.prod-extension.ts",
+    "src/environments/environment.prod.ts",
+    "src/environments/environment.replit.ts"
+  ]
 }

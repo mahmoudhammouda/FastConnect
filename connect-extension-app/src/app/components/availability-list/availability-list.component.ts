@@ -29,6 +29,19 @@ export class AvailabilityListComponent implements OnInit, AfterViewInit {
   editingAvailabilityId: string | null = null;
   editForm: FormGroup | null = null;
   skillsInput: string = '';
+
+  // Getters pour faciliter l'accès dans le template
+  get skillsValues(): any[] {
+    return this.editForm?.get('skills')?.value || [];
+  }
+
+  get sectorsValues(): any[] {
+    return this.editForm?.get('sectors')?.value || [];
+  }
+
+  get citiesValues(): any[] {
+    return this.editForm?.get('cities')?.value || [];
+  }
   citiesInput: string = '';
   sectorsInput: string = '';
   workModesInput: string = '';
