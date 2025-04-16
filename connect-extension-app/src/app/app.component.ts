@@ -339,15 +339,17 @@ export class AppComponent implements OnInit {
   
   /**
    * Ouvre le formulaire d'ajout de disponibilité
+   * Cette méthode sera modifiée dans une future étape
    */
   openAddAvailabilityForm(): void {
-    console.log('Ouverture du formulaire d\'ajout de disponibilité');
+    console.log('Cette fonctionnalité sera implémentée différemment dans une prochaine étape');
     
-    // Initialise un nouveau formulaire dans le service
-    this.availabilityService.initNewForm();
+    // Pour l'instant, nous redirigeons vers la page des disponibilités
+    this.router.navigate(['/availabilities']);
     
-    // Ouvre le modal d'ajout de disponibilité
-    this.modalService.open('add-availability-modal');
+    // L'ancien code est commenté mais conservé pour référence
+    // this.availabilityService.initNewForm();
+    // this.modalService.open('add-availability-modal');
   }
 
   /**
