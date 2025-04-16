@@ -11,8 +11,10 @@ export interface ConsultantAvailability {
   
   // Informations publiques
   consultantAbbreviation?: string;
+  title?: string;  // Titre actuel du consultant
   consultantRole?: string;
   role?: string;  // Ajouté pour la compatibilité avec le add-availability-modal
+  roles?: string[];  // Pour la sélection multiple des rôles
   startDate: string;
   durationInMonths?: number;  // Rendu optionel car remplacé par salary dans certains cas
   status: 'available' | 'pending' | 'inactive';

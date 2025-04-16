@@ -150,13 +150,64 @@
                 <input type="text" formControlName="consultantAbbreviation" class="form-input">
               </div>
               
-              <!-- Rôle / Intitulé du poste -->
+              <!-- Titre actuel -->
               <div class="form-group">
-                <label class="form-label">Rôle / Intitulé du poste <span class="text-red-500">*</span></label>
-                <select formControlName="role" class="form-select">
-                  <option value="">Sélectionner un rôle</option>
-                  <option *ngFor="let role of roleOptions" [value]="role">{{ role }}</option>
-                </select>
+                <label class="form-label">Titre actuel</label>
+                <input type="text" formControlName="title" class="form-input" placeholder="Ex: Lead Developer, Senior Architect...">
+                <small class="text-gray-500 mt-1 block">
+                  <i class="fas fa-info-circle mr-1"></i>
+                  Le titre exact du consultant (différent du rôle)
+                </small>
+              </div>
+              
+              <!-- Rôles / Intitulés de poste (Multi-select) -->
+              <div class="form-group">
+                <label class="form-label">Rôles / Intitulés de poste <span class="text-red-500">*</span></label>
+                <div class="relative">
+                  <button type="button" 
+                         class="form-input text-left pr-8 flex items-center justify-between w-full" 
+                         (click)="toggleRolesDropdown($event)">
+                    <span *ngIf="(editForm!.get('roles')?.value || []).length === 0">Sélectionner des rôles</span>
+                    <span *ngIf="(editForm!.get('roles')?.value || []).length === 1">{{ editForm!.get('roles')?.value[0] }}</span>
+                    <span *ngIf="(editForm!.get('roles')?.value || []).length > 1">{{ editForm!.get('roles')?.value.length }} rôles</span>
+                    <svg class="h-4 w-4 absolute right-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                  </button>
+                  
+                  <div *ngIf="rolesDropdownOpen" class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                    <div class="p-2">
+                      <div *ngFor="let role of roleOptions" class="flex items-center py-1">
+                        <input type="checkbox" 
+                              [id]="'edit-role-' + role"
+                              [checked]="isRoleSelected(role)"
+                              (change)="toggleRole(role, $event)"
+                              class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                        <label [for]="'edit-role-' + role" class="ml-2 text-sm text-gray-700">{{ role }}</label>
+                      </div>
+                      <!-- Input pour nouveau rôle -->
+                      <div class="mt-2 pt-2 border-t border-gray-200 flex items-center">
+                        <input type="text" [(ngModel)]="rolesInput" [ngModelOptions]="{standalone: true}" 
+                          class="form-input py-1 text-sm flex-1" placeholder="Autre rôle">
+                        <button (click)="addRoleToForm()" class="ml-1 p-1 bg-indigo-500 text-white text-xs rounded">
+                          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="(editForm!.get('roles')?.value || []).length > 0" class="mt-2 flex flex-wrap gap-1">
+                  <div *ngFor="let role of editForm!.get('roles')?.value" class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-md flex items-center">
+                    {{ role }}
+                    <button (click)="removeRoleFromForm(role)" class="ml-1 text-indigo-600 hover:text-indigo-800">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
               </div>
               
               <!-- Expérience globale -->

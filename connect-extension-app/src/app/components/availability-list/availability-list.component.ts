@@ -46,6 +46,9 @@ export class AvailabilityListComponent implements OnInit {
   availableSkills: string[] = [];
   availableCities: string[] = [];
   availableSectors: string[] = [];
+  availableRoles: string[] = [];
+  rolesDropdownOpen: boolean = false;
+  rolesInput: string = '';
   
   experienceLevels = [
     { value: 'junior', label: 'Moins de 3 ans' },
@@ -301,7 +304,9 @@ export class AvailabilityListComponent implements OnInit {
       
       // Informations publiques
       consultantAbbreviation: new FormControl(availability.consultantAbbreviation || ''),
+      title: new FormControl(availability.title || ''),  // Nouveau champ pour le titre actuel
       role: new FormControl(availability.role || '', Validators.required),
+      roles: new FormControl([]),  // Nouveau champ pour la multi-sélection des rôles
       startDate: new FormControl(this.formatDateForInput(availability.startDate), Validators.required),
       // Le champ durationInMonths ne sera plus requis par défaut
       durationInMonths: new FormControl(availability.durationInMonths || 0),
@@ -326,6 +331,17 @@ export class AvailabilityListComponent implements OnInit {
       engagementTypes: new FormControl([]),  // Nouveau champ pour la multi-sélection
       locked: new FormControl(availability.locked || false)
     });
+    
+    // Initialise les rôles multi-sélectionnables
+    if (Array.isArray(availability.roles) && availability.roles.length > 0) {
+      // Si roles est déjà un tableau, l'utiliser directement
+      this.editForm.patchValue({ roles: availability.roles });
+    } else if (availability.role) {
+      // Sinon, convertir la valeur unique role en tableau pour le nouveau champ roles
+      this.editForm.patchValue({ roles: [availability.role] });
+    } else {
+      this.editForm.patchValue({ roles: [] });
+    }
     
     // Initialise les types d'engagement à partir de la valeur unique
     if (availability.engagementType) {
@@ -380,6 +396,7 @@ export class AvailabilityListComponent implements OnInit {
     this.skillsInput = '';
     this.citiesInput = '';
     this.sectorsInput = '';
+    this.rolesInput = '';
     this.engagementTypeInput = '';
     this.workModesInput = '';
     
@@ -387,6 +404,7 @@ export class AvailabilityListComponent implements OnInit {
     this.skillsDropdownOpen = false;
     this.citiesDropdownOpen = false;
     this.sectorsDropdownOpen = false;
+    this.rolesDropdownOpen = false;
     this.engagementTypeDropdownOpen = false;
     this.workModesDropdownOpen = false;
   }
@@ -716,7 +734,113 @@ export class AvailabilityListComponent implements OnInit {
     this.skillsDropdownOpen = false;
     this.citiesDropdownOpen = false;
     this.sectorsDropdownOpen = false;
+    this.rolesDropdownOpen = false;
     this.engagementTypeDropdownOpen = false;
+  }
+  
+  /**
+   * Ouvre/ferme le dropdown des rôles
+   */
+  toggleRolesDropdown(event: Event): void {
+    event.stopPropagation();
+    this.rolesDropdownOpen = !this.rolesDropdownOpen;
+    this.skillsDropdownOpen = false;
+    this.citiesDropdownOpen = false;
+    this.sectorsDropdownOpen = false;
+    this.engagementTypeDropdownOpen = false;
+    this.workModesDropdownOpen = false;
+  }
+  
+  /**
+   * Vérifie si un rôle est sélectionné
+   */
+  isRoleSelected(role: string): boolean {
+    if (!this.editForm) return false;
+    
+    const roles = this.editForm.get('roles')?.value || [];
+    if (Array.isArray(roles)) {
+      return roles.includes(role);
+    }
+    return false;
+  }
+  
+  /**
+   * Ajoute ou supprime un rôle
+   */
+  toggleRole(role: string, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    if (!this.editForm) return;
+    
+    let roles = (this.editForm.get('roles')?.value || []) as string[];
+    if (!Array.isArray(roles)) {
+      roles = [];
+    }
+    
+    const index = roles.indexOf(role);
+    
+    if (index === -1) {
+      roles.push(role);
+    } else {
+      roles.splice(index, 1);
+    }
+    
+    this.editForm.patchValue({ roles });
+    
+    // Mise à jour du champ role (compatibilité)
+    if (roles.length > 0) {
+      this.editForm.patchValue({ role: roles[0] });
+    }
+  }
+  
+  /**
+   * Ajoute un rôle depuis l'input
+   */
+  addRoleToForm(): void {
+    if (!this.rolesInput.trim() || !this.editForm) return;
+    
+    const newRole = this.rolesInput.trim();
+    let roles = (this.editForm.get('roles')?.value || []) as string[];
+    
+    if (!Array.isArray(roles)) {
+      roles = [];
+    }
+    
+    if (newRole && !roles.includes(newRole)) {
+      roles.push(newRole);
+      this.editForm.patchValue({ roles });
+      
+      // Mise à jour du champ role (compatibilité)
+      if (roles.length === 1) {
+        this.editForm.patchValue({ role: newRole });
+      }
+    }
+    
+    this.rolesInput = '';
+  }
+  
+  /**
+   * Supprime un rôle du formulaire
+   */
+  removeRoleFromForm(role: string): void {
+    if (!this.editForm) return;
+    
+    const roles = (this.editForm.get('roles')?.value || []) as string[];
+    const index = roles.indexOf(role);
+    
+    if (index !== -1) {
+      roles.splice(index, 1);
+      this.editForm.patchValue({ roles });
+      
+      // Mise à jour du champ role (compatibilité)
+      if (roles.length > 0) {
+        this.editForm.patchValue({ role: roles[0] });
+      } else {
+        this.editForm.patchValue({ role: '' });
+      }
+    }
   }
   
   /**
@@ -910,6 +1034,7 @@ export class AvailabilityListComponent implements OnInit {
       skills: Array.isArray(formValues.skills) ? formValues.skills : [],
       cities: Array.isArray(formValues.cities) ? formValues.cities : [],
       sectors: Array.isArray(formValues.sectors) ? formValues.sectors : [],
+      roles: Array.isArray(formValues.roles) ? formValues.roles : [],
       // Utilise le premier type d'engagement du tableau pour le champ ancien format
       engagementType: Array.isArray(formValues.engagementTypes) && formValues.engagementTypes.length > 0 
         ? formValues.engagementTypes[0] 
@@ -918,6 +1043,10 @@ export class AvailabilityListComponent implements OnInit {
       workMode: Array.isArray(formValues.workModes) && formValues.workModes.length > 0 
         ? this.convertWorkMode(formValues.workModes[0]) 
         : 'remote',
+      // Utilise le premier rôle du tableau pour le champ role (compatibilité API)
+      role: Array.isArray(formValues.roles) && formValues.roles.length > 0 
+        ? formValues.roles[0] 
+        : (formValues.role || ''),
       // Formatage de la date
       startDate: new Date(formValues.startDate).toISOString()
     };
