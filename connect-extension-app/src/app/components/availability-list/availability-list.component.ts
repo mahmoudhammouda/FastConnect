@@ -223,26 +223,32 @@ export class AvailabilityListComponent implements OnInit {
     */
   }
   
+  /**
+   * Ouvre le modal d'ajout (méthode temporairement gardée pour compatibilité)
+   * Cette méthode sera modifiée dans une future étape
+   */
   openAddAvailabilityModal(): void {
-    // Ouvrir le modal d'ajout directement dans ce composant
-    this.showAddModal = true;
+    // Cette méthode reste vide car le modal a été supprimé
+    console.log('Cette fonctionnalité sera implémentée différemment dans une prochaine étape');
+    // À l'avenir, cette méthode pourrait rediriger vers une nouvelle page ou ouvrir un formulaire différent
   }
   
   /**
-   * Ferme le modal d'ajout
+   * Ancienne méthode de fermeture du modal (gardée pour référence)
+   * @deprecated Cette méthode n'est plus utilisée
    */
-  closeAddAvailabilityModal(): void {
+  private closeAddAvailabilityModal(): void {
+    // Méthode désactivée car le modal a été supprimé
     this.showAddModal = false;
   }
   
   /**
-   * Gère l'événement d'ajout d'une disponibilité
+   * Ancienne méthode de gestion d'ajout (gardée pour référence)
+   * @deprecated Cette méthode n'est plus utilisée
    */
-  onAvailabilityAdded(newAvailability: ConsultantAvailability): void {
-    // Recharger les disponibilités après l'ajout
+  private onAvailabilityAdded(newAvailability: ConsultantAvailability): void {
+    // Méthode désactivée car le modal a été supprimé
     this.loadAvailabilities();
-    // Fermer le modal
-    this.closeAddAvailabilityModal();
   }
   
   viewAvailability(availability: ConsultantAvailability): void {
