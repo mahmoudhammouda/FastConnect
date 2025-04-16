@@ -1,0 +1,93 @@
+              <!-- Téléphone avec sélecteur de pays -->
+              <div class="form-group">
+                <label class="form-label">Téléphone</label>
+                <div class="flex items-center relative">
+                  <!-- Bouton pour ouvrir le dropdown (comme nos autres dropdowns) -->
+                  <button type="button" 
+                         class="shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100" 
+                         (click)="togglePhoneDropdown($event)">
+                    <!-- Drapeau de la France (hard-coded pour simplifier) -->
+                    <svg fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
+                      <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                      <mask id="b" style="mask-type:luminance" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse">
+                        <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                      </mask>
+                      <g mask="url(#b)">
+                        <path fill="#0055a4" d="M0 .5h6.5v14H0z"/>
+                        <path fill="#fff" d="M6.5 .5h6.5v14H6.5z"/>
+                        <path fill="#ef4135" d="M13 .5h6.6v14H13z"/>
+                      </g>
+                    </svg>
+                    {{ selectedPhoneCountryCode }} <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                    </svg>
+                  </button>
+                  
+                  <!-- Notre propre dropdown menu (comme les autres dans notre formulaire) -->
+                  <div *ngIf="phoneDropdownOpen" class="absolute z-50 mt-28 left-0 bg-white border border-gray-300 rounded-md shadow-lg w-52 max-h-60 overflow-y-auto">
+                    <div class="py-2">
+                      <div *ngFor="let country of phoneCountries" class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer" (click)="selectPhoneCountry(country, $event)">
+                        <span class="inline-flex items-center">
+                          <!-- Drapeau de la France -->
+                          <svg *ngIf="country.code === '+33'" fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
+                            <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                            <mask id="a" style="mask-type:luminance" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse">
+                              <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                            </mask>
+                            <g mask="url(#a)">
+                              <path fill="#0055a4" d="M0 .5h6.5v14H0z"/>
+                              <path fill="#fff" d="M6.5 .5h6.5v14H6.5z"/>
+                              <path fill="#ef4135" d="M13 .5h6.6v14H13z"/>
+                            </g>
+                          </svg>
+                          
+                          <!-- Drapeau de la Belgique -->
+                          <svg *ngIf="country.code === '+32'" fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
+                            <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                            <mask id="c" style="mask-type:luminance" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse">
+                              <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                            </mask>
+                            <g mask="url(#c)">
+                              <path fill="#000" d="M0 .5h6.5v14H0z"/>
+                              <path fill="#ffda44" d="M6.5 .5h6.5v14H6.5z"/>
+                              <path fill="#d80027" d="M13 .5h6.6v14H13z"/>
+                            </g>
+                          </svg>
+                          
+                          <!-- Drapeau de la Suisse -->
+                          <svg *ngIf="country.code === '+41'" fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
+                            <rect width="19.6" height="14" y=".5" fill="#ff0000" rx="2"/>
+                            <mask id="d" style="mask-type:luminance" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse">
+                              <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                            </mask>
+                            <g mask="url(#d)">
+                              <path fill="#ff0000" d="M0 .5h19.6v14H0z"/>
+                              <path fill="#fff" d="M8.3 3.5h3v3h3v3h-3v3h-3v-3h-3v-3h3z"/>
+                            </g>
+                          </svg>
+                          
+                          <!-- Autres pays -->
+                          <svg *ngIf="!['+33', '+32', '+41'].includes(country.code)" class="h-4 w-4 me-2" fill="none" viewBox="0 0 20 15">
+                            <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                          </svg>
+                          
+                          {{ country.name }} ({{ country.code }})
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <input type="text" formControlName="consultantPhone" 
+                         class="rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5" 
+                         placeholder="Numéro de téléphone">
+                </div>
+                <small class="text-gray-500 mt-1 text-xs">Format: code pays automatiquement ajouté</small>
+              </div>                  <div class="relative w-full">
+                    <input type="tel" id="phone-input" formControlName="consultantPhone" 
+                          class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-0 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" 
+                          placeholder="612345678">
+                  </div>
+                </div>
+                <small class="text-gray-500 mt-1 text-xs">Format: code pays automatiquement ajouté</small>
+              </div>
+              

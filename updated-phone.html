@@ -186,7 +186,7 @@
                           </svg>
                           
                           <!-- Autres pays -->
-                          <svg *ngIf="!['+33', '+32', '+41'].includes(country.code)" class="h-4 w-4 me-2" fill="none" viewBox="0 0 20 15">
+                          <svg *ngIf="![''+33', '+32', '+41'].includes(country.code)" class="h-4 w-4 me-2" fill="none" viewBox="0 0 20 15">
                             <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
                           </svg>
                           
@@ -201,7 +201,16 @@
                          placeholder="Numéro de téléphone">
                 </div>
                 <small class="text-gray-500 mt-1 text-xs">Format: code pays automatiquement ajouté</small>
-              </div>              <!-- Acronyme d'identification -->
+              </div>                  <div class="relative w-full">
+                    <input type="tel" id="phone-input" formControlName="consultantPhone" 
+                          class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-0 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" 
+                          placeholder="612345678">
+                  </div>
+                </div>
+                <small class="text-gray-500 mt-1 text-xs">Format: code pays automatiquement ajouté</small>
+              </div>
+              
+              <!-- Acronyme d'identification -->
               <div class="form-group">
                 <label class="form-label">Acronyme d'identification</label>
                 <input type="text" formControlName="acronym" class="form-input">
