@@ -26,13 +26,6 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
   @Output() closeForm = new EventEmitter<void>();
   @Output() formSubmitted = new EventEmitter<ConsultantFormData>();
   @ViewChild('phoneInput') phoneInput!: ElementRef;
-
-  // Intl Tel Input instance
-  private intlTelInstance: any;
-  
-  // État du dropdown de téléphone
-  phoneDropdownOpen = false;
-  selectedCountryCode = '+33';
   
   // Formulaire principal
   consultantForm!: FormGroup;
@@ -90,154 +83,53 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   ngAfterViewInit(): void {
-    // Initialiser intl-tel-input après que la vue soit chargée
+    // Initialiser les valeurs du téléphone lorsque c'est nécessaire
     setTimeout(() => {
       if (this.phoneInput?.nativeElement) {
-        this.initIntlTelInput();
+        this.initializePhoneField();
       }
     });
   }
   
   ngOnDestroy(): void {
-    // Détruire l'instance de intlTelInput
-    if (this.intlTelInstance) {
-      this.intlTelInstance.destroy();
-    }
     this.subscriptions.unsubscribe();
   }
   
-  @ViewChild('phoneButton') phoneButton!: ElementRef;
-  
   /**
-   * Initialise le composant téléphone avec Flowbite
+   * Initialise le champ téléphone avec les valeurs existantes
    */
-  private initIntlTelInput(): void {
-    try {
-      console.log('Initialisation du composant téléphone Flowbite...');
-      
-      // Dynamiquement charger et initialiser Flowbite
-      import('flowbite').then((flowbite) => {
-        console.log('Flowbite chargé avec succès');
-
-        // Forcer l'initialisation des dropdowns
-        if (typeof window.initFlowbite === 'function') {
-          console.log('Initialisation manuelle de Flowbite');
-          window.initFlowbite();
-        } else {
-          console.log('Flowbite devrait s\'initialiser automatiquement');
+  private initializePhoneField(): void {
+    // Récupérer la valeur initiale du téléphone
+    const initialPhone = this.consultantForm.get('phone')?.value;
+    
+    if (initialPhone) {
+      // Extraire le code pays si possible
+      const match = initialPhone.match(/^\+(\d+)/);
+      if (match) {
+        const countryCode = '+' + match[1];
+        const number = initialPhone.replace(countryCode, '');
+        
+        // Mettre à jour le select avec le bon code pays
+        const selectElement = document.getElementById('country-code') as HTMLSelectElement;
+        if (selectElement) {
+          selectElement.value = countryCode;
         }
         
-        // Ajouter des gestionnaires d'événements pour les options de pays
-        setTimeout(() => {
-          const countryOptions = document.querySelectorAll('.country-option');
-          const phoneButton = document.getElementById('dropdown-phone-button');
-          
-          console.log('Options de pays trouvées:', countryOptions.length);
-          console.log('Bouton téléphone trouvé:', !!phoneButton);
-          
-          // Ajouter des écouteurs d'événements à chaque option de pays
-          countryOptions.forEach(option => {
-            option.addEventListener('click', (e) => {
-              const target = e.currentTarget as HTMLElement;
-              const countryCode = target.getAttribute('data-code');
-              const countryElement = target.querySelector('svg')?.cloneNode(true);
-              const phoneInput = this.phoneInput.nativeElement;
-              
-              console.log('Option de pays cliquée:', countryCode);
-              
-              // Mettre à jour le bouton de pays
-              if (phoneButton && countryCode) {
-                // Récupérer l'élément svg existant dans le bouton
-                const currentSvg = phoneButton.querySelector('svg:first-child');
-                
-                // Remplacer le SVG s'il existe
-                if (currentSvg && countryElement) {
-                  phoneButton.replaceChild(countryElement, currentSvg);
-                }
-                
-                // Mettre à jour le texte du code pays affiché
-                // Trouver le nœud de texte entre les deux SVG
-                let textUpdated = false;
-                for (let i = 0; i < phoneButton.childNodes.length; i++) {
-                  const node = phoneButton.childNodes[i];
-                  if (node.nodeType === Node.TEXT_NODE) {
-                    node.textContent = countryCode + ' ';
-                    textUpdated = true;
-                    break;
-                  }
-                }
-                
-                // Si aucun nœud de texte n'a été trouvé, créer et insérer un nouveau
-                if (!textUpdated) {
-                  const textNode = document.createTextNode(countryCode + ' ');
-                  // Insérer avant le deuxième SVG (flèche vers le bas)
-                  const secondSvg = phoneButton.querySelector('svg:nth-child(2)');
-                  if (secondSvg) {
-                    phoneButton.insertBefore(textNode, secondSvg);
-                  } else {
-                    phoneButton.appendChild(textNode);
-                  }
-                }
-                
-                // Mettre à jour la valeur du formulaire
-                this.updatePhoneNumberWithCountryCode(countryCode, phoneInput.value);
-              }
-            });
-          });
-          
-          // Écouter les changements sur l'input
-          this.phoneInput.nativeElement.addEventListener('input', () => {
-            // Récupérer le code pays actuel dans le texte du bouton
-            let currentCode = '+33'; // Valeur par défaut
-            
-            if (phoneButton) {
-              for (let i = 0; i < phoneButton.childNodes.length; i++) {
-                const node = phoneButton.childNodes[i];
-                if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
-                  currentCode = node.textContent.trim();
-                  break;
-                }
-              }
-            }
-            
-            this.updatePhoneNumberWithCountryCode(currentCode, this.phoneInput.nativeElement.value);
-          });
-          
-          // Initialiser avec la valeur existante si présente
-          const initialPhone = this.consultantForm.get('phone')?.value;
-          if (initialPhone) {
-            // Extraire le code pays si possible
-            const match = initialPhone.match(/^\+(\d+)/);
-            if (match) {
-              const countryCode = '+' + match[1];
-              const number = initialPhone.replace(countryCode, '');
-              
-              // Trouver l'option de pays correspondante
-              const matchingOption = Array.from(countryOptions).find(
-                opt => (opt as HTMLElement).getAttribute('data-code') === countryCode
-              ) as HTMLElement;
-              
-              if (matchingOption) {
-                // Simuler un clic pour mettre à jour l'interface
-                matchingOption.click();
-              }
-              
-              // Mettre à jour l'input avec seulement le numéro
-              this.phoneInput.nativeElement.value = number;
-            } else {
-              // Si pas de format international, juste mettre la valeur telle quelle
-              this.phoneInput.nativeElement.value = initialPhone;
-            }
-          }
-          
-          console.log('Composant téléphone initialisé avec succès');
-        }, 1000); // Délai augmenté pour s'assurer que le DOM est prêt
-      }).catch(error => {
-        console.error('Erreur lors du chargement de Flowbite:', error);
-      });
-    } catch (error) {
-      console.error("[ConsultantForm] Erreur lors de l'initialisation du composant téléphone:", error);
+        // Mettre à jour l'input avec seulement le numéro
+        this.phoneInput.nativeElement.value = number;
+      } else {
+        // Si pas de format international, juste mettre la valeur telle quelle
+        this.phoneInput.nativeElement.value = initialPhone;
+      }
     }
+    
+    // Écouter les changements sur l'input
+    this.phoneInput.nativeElement.addEventListener('input', () => {
+      const selectElement = document.getElementById('country-code') as HTMLSelectElement;
+      const countryCode = selectElement ? selectElement.value : '+33';
+      
+      this.updatePhoneNumberWithCountryCode(countryCode, this.phoneInput.nativeElement.value);
+    });
   }
   
   /**
@@ -380,90 +272,26 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
   }
   
   /**
+   * Gère le changement de code pays dans le select
+   */
+  onCountryCodeChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const countryCode = select.value;
+    
+    if (countryCode) {
+      // Récupérer le numéro actuel sans le code pays
+      const currentValue = this.phoneInput?.nativeElement.value || '';
+      const cleanNumber = currentValue.replace(/^\+\d+\s*/, '');
+      
+      // Mettre à jour le numéro avec le nouveau code pays
+      this.updatePhoneNumberWithCountryCode(countryCode, cleanNumber);
+    }
+  }
+  
+  /**
    * Vérifie si l'utilisateur est un consultant
    */
   isConsultant(): boolean {
     return this.userService.isConsultant();
-  }
-  
-  /**
-   * Bascule l'état d'ouverture du dropdown téléphone
-   */
-  togglePhoneDropdown(): void {
-    this.phoneDropdownOpen = !this.phoneDropdownOpen;
-    console.log('Toggle dropdown téléphone:', this.phoneDropdownOpen);
-  }
-  
-  /**
-   * Ferme le dropdown des pays si on clique en dehors
-   */
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    // Vérifier si le clic est à l'extérieur du dropdown et du bouton
-    const phoneButton = this.phoneButton?.nativeElement;
-    const dropdown = document.getElementById('dropdown-phone');
-    
-    if (!phoneButton?.contains(event.target as Node) && 
-        !dropdown?.contains(event.target as Node) && 
-        this.phoneDropdownOpen) {
-      this.phoneDropdownOpen = false;
-    }
-  }
-  
-  /**
-   * Sélectionne un pays dans le dropdown
-   */
-  selectCountry(event: Event, countryCode: string): void {
-    event.stopPropagation(); // Empêcher la propagation pour éviter la fermeture immédiate
-    
-    // Mettre à jour le code pays sélectionné
-    this.selectedCountryCode = countryCode;
-    
-    // Trouver les éléments DOM
-    const target = event.currentTarget as HTMLElement;
-    const countryElement = target.querySelector('svg')?.cloneNode(true);
-    const phoneButton = this.phoneButton.nativeElement;
-    const phoneInput = this.phoneInput.nativeElement;
-    
-    // Mettre à jour le bouton avec le drapeau et le code du pays sélectionné
-    if (phoneButton && countryElement) {
-      // Récupérer l'élément svg existant dans le bouton
-      const currentSvg = phoneButton.querySelector('svg:first-child');
-      
-      // Remplacer le SVG s'il existe
-      if (currentSvg) {
-        phoneButton.replaceChild(countryElement, currentSvg);
-      }
-      
-      // Mettre à jour le texte du code pays affiché
-      // Trouver le nœud de texte entre les deux SVG
-      let textUpdated = false;
-      for (let i = 0; i < phoneButton.childNodes.length; i++) {
-        const node = phoneButton.childNodes[i];
-        if (node.nodeType === Node.TEXT_NODE) {
-          node.textContent = countryCode + ' ';
-          textUpdated = true;
-          break;
-        }
-      }
-      
-      // Si aucun nœud de texte n'a été trouvé, créer et insérer un nouveau
-      if (!textUpdated) {
-        const textNode = document.createTextNode(countryCode + ' ');
-        // Insérer avant le deuxième SVG (flèche vers le bas)
-        const secondSvg = phoneButton.querySelector('svg:nth-child(2)');
-        if (secondSvg) {
-          phoneButton.insertBefore(textNode, secondSvg);
-        } else {
-          phoneButton.appendChild(textNode);
-        }
-      }
-    }
-    
-    // Mettre à jour la valeur du formulaire avec le nouveau code pays
-    this.updatePhoneNumberWithCountryCode(countryCode, phoneInput.value);
-    
-    // Fermer le dropdown
-    this.phoneDropdownOpen = false;
   }
 }
