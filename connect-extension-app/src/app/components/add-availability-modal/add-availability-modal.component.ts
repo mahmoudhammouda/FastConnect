@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ModalService } from '../../services/modal.service';
 import { ConsultantAvailabilityService } from '../../services/consultant-availability.service';
@@ -15,6 +15,10 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, ReactiveFormsModule, FormsModule]
 })
 export class AddAvailabilityModalComponent implements OnInit {
+  @Input() show: boolean = false;
+  @Output() close = new EventEmitter<void>();
+  @Output() save = new EventEmitter<ConsultantAvailability>();
+
   availabilityForm: FormGroup;
   isSubmitting = false;
   submitError: string | null = null;
@@ -278,6 +282,9 @@ export class AddAvailabilityModalComponent implements OnInit {
     // Informer le ModalService que le modal est fermé
     this.modalService.modalBackdropVisibleSubject.next(false);
     this.resetForm();
+    
+    // Émettre l'événement close pour le parent
+    this.close.emit();
   }
 
   resetForm() {
@@ -329,6 +336,14 @@ export class AddAvailabilityModalComponent implements OnInit {
         next: (response: ConsultantAvailability) => {
           console.log('Disponibilité enregistrée:', response);
           this.isSubmitting = false;
+          
+          // Émettre l'événement save pour le parent
+          this.save.emit(response);
+          
+          // Émettre l'événement close pour le parent
+          this.close.emit();
+          
+          // Fermer le modal
           this.closeModal();
           
           // Notifier qu'il faut rafraîchir les données

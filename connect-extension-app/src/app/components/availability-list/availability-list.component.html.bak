@@ -285,6 +285,17 @@
                 <input type="number" formControlName="durationInMonths" min="1" class="form-input">
               </div>
             </div>
+          </div>
+          
+          <!-- Section : Coordonnées et Liens -->
+          <div class="md:col-span-2 bg-purple-50 p-3 rounded-md mb-2">
+            <h4 class="text-sm font-semibold text-purple-700 mb-2 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 015.656 0l4 4a4 4 0 01-5.656 5.656l-1.102-1.101" />
+              </svg>
+              Coordonnées et Liens
+            </h4>
             
             <!-- URL LinkedIn -->
             <div class="form-group mb-3">
@@ -419,8 +430,9 @@
                 </div>
               </div>
               
-              <!-- Pays et Villes sur la même ligne -->
-              <div class="form-group md:col-span-2">
+              <!-- Villes (Menu déroulant) -->
+              <div class="form-group">
+                <!-- Pays et Villes sur la même ligne -->
                 <div class="flex gap-3">
                   <div class="w-1/2">
                     <label class="form-label">Pays</label>
@@ -443,39 +455,37 @@
                         </svg>
                       </button>
                   
-                      <div *ngIf="citiesDropdownOpen" class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto">
-                        <div class="p-2">
-                          <div *ngFor="let city of getAvailableCities(editForm!.get('country')?.value)" class="flex items-center py-1">
-                            <input type="checkbox" 
-                                  [id]="'edit-city-' + city"
-                                  [checked]="isCitySelected(city)"
-                                  (change)="toggleCity(city, $event)"
-                                  class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                            <label [for]="'edit-city-' + city" class="ml-2 text-sm text-gray-700">{{ city }}</label>
-                          </div>
-                          <!-- Input pour nouvelle ville -->
-                          <div class="mt-2 pt-2 border-t border-gray-200 flex items-center">
-                            <input type="text" [(ngModel)]="citiesInput" [ngModelOptions]="{standalone: true}" 
-                              class="form-input py-1 text-sm flex-1" placeholder="Nouvelle ville">
-                            <button (click)="addCitiesToForm()" class="ml-1 p-1 bg-blue-500 text-white text-xs rounded">
-                              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
+                  <div *ngIf="citiesDropdownOpen" class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                    <div class="p-2">
+                      <div *ngFor="let city of getAvailableCities(editForm!.get('country')?.value)" class="flex items-center py-1">
+                        <input type="checkbox" 
+                              [id]="'edit-city-' + city"
+                              [checked]="isCitySelected(city)"
+                              (change)="toggleCity(city, $event)"
+                              class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <label [for]="'edit-city-' + city" class="ml-2 text-sm text-gray-700">{{ city }}</label>
                       </div>
-                    </div>
-                    <div *ngIf="(editForm!.get('cities')?.value || []).length > 0" class="mt-2 flex flex-wrap gap-1">
-                      <div *ngFor="let city of editForm!.get('cities')?.value" class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-md flex items-center">
-                        {{ city }}
-                        <button (click)="removeCityFromForm(city)" class="ml-1 text-green-600 hover:text-green-800">
+                      <!-- Input pour nouvelle ville -->
+                      <div class="mt-2 pt-2 border-t border-gray-200 flex items-center">
+                        <input type="text" [(ngModel)]="citiesInput" [ngModelOptions]="{standalone: true}" 
+                          class="form-input py-1 text-sm flex-1" placeholder="Nouvelle ville">
+                        <button (click)="addCitiesToForm()" class="ml-1 p-1 bg-blue-500 text-white text-xs rounded">
                           <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                           </svg>
                         </button>
                       </div>
                     </div>
+                  </div>
+                </div>
+                <div *ngIf="(editForm!.get('cities')?.value || []).length > 0" class="mt-2 flex flex-wrap gap-1">
+                  <div *ngFor="let city of editForm!.get('cities')?.value" class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-md flex items-center">
+                    {{ city }}
+                    <button (click)="removeCityFromForm(city)" class="ml-1 text-green-600 hover:text-green-800">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                      </svg>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -510,42 +520,5 @@
         </form>
       </div>
     </div>
-  </div>
-  
-  <!-- Message si liste vide -->
-  <div *ngIf="!loading && consultantAvailabilities.length === 0" class="bg-white rounded-lg shadow p-8 text-center">
-    <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-    </svg>
-    <h3 class="text-lg font-semibold text-gray-800 mb-2">Aucun consultant disponible</h3>
-    <p class="text-gray-600 mb-4">Ajoutez de nouveaux consultants pour les voir apparaître ici.</p>
-    <button (click)="openAddAvailabilityModal()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-150">
-      Ajouter un consultant
-    </button>
-  </div>
-  </div>
-</div>
-
-<!-- Modal d'ajout -->
-<app-add-availability-modal 
-  *ngIf="showAddModal" 
-  [show]="showAddModal" 
-  (close)="closeAddAvailabilityModal()" 
-  (save)="onAvailabilityAdded($event)">
-</app-add-availability-modal>
-
-<!-- Modal de confirmation de suppression -->
-<div *ngIf="showDeleteConfirmationModal" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-  <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
-    <h3 class="text-lg font-semibold text-gray-800 mb-4">Confirmer la suppression</h3>
-    <p class="text-gray-600 mb-6">Êtes-vous sûr de vouloir supprimer ce consultant ? Cette action est définitive.</p>
-    <div class="flex justify-end gap-3">
-      <button (click)="showDeleteConfirmationModal = false" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-150">
-        Annuler
-      </button>
-      <button (click)="deleteAvailability(availabilityToDelete)" class="px-4 py-2 text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-150">
-        Supprimer
-      </button>
-    </div>
-  </div>
+  </div> <!-- Fin de scrollable-content -->
 </div>

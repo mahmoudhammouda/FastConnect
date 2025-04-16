@@ -5,13 +5,14 @@ import { ConsultantAvailabilityService } from '../../services/consultant-availab
 import { ModalService } from '../../services/modal.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AddAvailabilityModalComponent } from '../add-availability-modal/add-availability-modal.component';
 
 @Component({
   selector: 'app-availability-list',
   templateUrl: './availability-list.component.html',
   styleUrls: ['./availability-list.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule]
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, AddAvailabilityModalComponent]
 })
 export class AvailabilityListComponent implements OnInit {
   consultantAvailabilities: ConsultantAvailability[] = [];
@@ -24,6 +25,13 @@ export class AvailabilityListComponent implements OnInit {
   citiesInput: string = '';
   sectorsInput: string = '';
   workModesInput: string = '';
+  
+  // Propriétés pour le modal d'ajout
+  showAddModal: boolean = false;
+  
+  // Propriétés pour le modal de confirmation de suppression
+  showDeleteConfirmationModal: boolean = false;
+  availabilityToDelete: ConsultantAvailability | null = null;
   
   // État des dropdowns
   skillsDropdownOpen: boolean = false;
@@ -216,10 +224,25 @@ export class AvailabilityListComponent implements OnInit {
   }
   
   openAddAvailabilityModal(): void {
-    this.modalService.openAddAvailabilityModal().then(() => {
-      // Recharger les disponibilités après fermeture du modal (si ajout réussi)
-      this.loadAvailabilities();
-    });
+    // Ouvrir le modal d'ajout directement dans ce composant
+    this.showAddModal = true;
+  }
+  
+  /**
+   * Ferme le modal d'ajout
+   */
+  closeAddAvailabilityModal(): void {
+    this.showAddModal = false;
+  }
+  
+  /**
+   * Gère l'événement d'ajout d'une disponibilité
+   */
+  onAvailabilityAdded(newAvailability: ConsultantAvailability): void {
+    // Recharger les disponibilités après l'ajout
+    this.loadAvailabilities();
+    // Fermer le modal
+    this.closeAddAvailabilityModal();
   }
   
   viewAvailability(availability: ConsultantAvailability): void {
