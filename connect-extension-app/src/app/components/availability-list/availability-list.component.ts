@@ -9,6 +9,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 declare global {
   interface Window {
     initFlowbite: any;
+    flowbite: any;
+    Dropdown: any;
   }
 }
 
@@ -155,13 +157,32 @@ export class AvailabilityListComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     // Initialize flowbite dropdown menu for phone country selection
     setTimeout(() => {
-      if (typeof window !== 'undefined' && window.initFlowbite) {
-        window.initFlowbite();
+      if (typeof window !== 'undefined') {
+        // S'assurer que flowbite est correctement initialisé
+        if (window.flowbite) {
+          console.log('Initialisation directe de Flowbite dropdowns...');
+          
+          // Initialiser explicitement le dropdown pour le téléphone
+          const dropdownButton = document.getElementById('dropdown-phone-button');
+          const dropdownMenu = document.getElementById('dropdown-phone');
+          
+          if (dropdownButton && dropdownMenu && window.flowbite.initDropdowns) {
+            window.flowbite.initDropdowns(dropdownButton, dropdownMenu);
+            console.log('Dropdown de téléphone initialisé avec succès');
+          } else {
+            console.warn('Éléments de dropdown introuvables ou flowbite.initDropdowns n\'est pas disponible');
+          }
+        } else if (window.initFlowbite) {
+          window.initFlowbite();
+          console.log('Flowbite initialisé via window.initFlowbite()');
+        } else {
+          console.warn('Flowbite non disponible dans window');
+        }
       }
       
       // Ajouter les événements pour les options du pays
       this.setupPhoneCountrySelector();
-    }, 100);
+    }, 500); // Augmenter le délai pour s'assurer que le DOM est complètement chargé
   }
   
   /**
