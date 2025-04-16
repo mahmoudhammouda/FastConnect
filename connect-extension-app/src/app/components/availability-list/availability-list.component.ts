@@ -23,11 +23,13 @@ export class AvailabilityListComponent implements OnInit {
   skillsInput: string = '';
   citiesInput: string = '';
   sectorsInput: string = '';
+  workModesInput: string = '';
   
   // État des dropdowns
   skillsDropdownOpen: boolean = false;
   citiesDropdownOpen: boolean = false;
   sectorsDropdownOpen: boolean = false;
+  workModesDropdownOpen: boolean = false;
   
   // Listes disponibles
   availableSkills: string[] = [];
@@ -93,6 +95,9 @@ export class AvailabilityListComponent implements OnInit {
     { value: 'remote', label: 'Télétravail' },
     { value: 'hybrid', label: 'Hybride' }
   ];
+  
+  // Liste simplifiée pour le dropdown
+  workModesList = ['Sur site', 'Télétravail', 'Hybride', 'Flexible'];
   statuses = [
     { value: 'available', label: 'Disponible' },
     { value: 'pending', label: 'En attente' },
@@ -261,6 +266,7 @@ export class AvailabilityListComponent implements OnInit {
       durationInMonths: new FormControl(availability.durationInMonths, [Validators.required, Validators.min(1)]),
       status: new FormControl(availability.status, Validators.required),
       workMode: new FormControl(availability.workMode, Validators.required),
+      workModes: new FormControl([]),  // Nouveau champ pour la multi-sélection des modes de travail
       experienceLevel: new FormControl(availability.experienceLevel || 'intermediate', Validators.required),
       rate: new FormControl(availability.rate || 0),
       
@@ -281,6 +287,15 @@ export class AvailabilityListComponent implements OnInit {
       // Convertit une valeur unique en tableau pour le nouveau champ
       this.editForm.patchValue({ 
         engagementTypes: [availability.engagementType]
+      });
+    }
+    
+    // Initialise les modes de travail à partir de la valeur unique
+    if (availability.workMode) {
+      // Convertit une valeur unique en tableau pour le nouveau champ
+      const workModeLabel = this.getWorkModeLabel(availability.workMode);
+      this.editForm.patchValue({ 
+        workModes: [workModeLabel]
       });
     }
     
@@ -321,12 +336,14 @@ export class AvailabilityListComponent implements OnInit {
     this.citiesInput = '';
     this.sectorsInput = '';
     this.engagementTypeInput = '';
+    this.workModesInput = '';
     
     // Fermer tous les dropdowns
     this.skillsDropdownOpen = false;
     this.citiesDropdownOpen = false;
     this.sectorsDropdownOpen = false;
     this.engagementTypeDropdownOpen = false;
+    this.workModesDropdownOpen = false;
   }
   
   // État des dropdowns pour le type d'engagement
@@ -344,6 +361,7 @@ export class AvailabilityListComponent implements OnInit {
     this.citiesDropdownOpen = false;
     this.sectorsDropdownOpen = false;
     this.engagementTypeDropdownOpen = false;
+    this.workModesDropdownOpen = false;
   }
   
   /**
@@ -355,6 +373,7 @@ export class AvailabilityListComponent implements OnInit {
     this.skillsDropdownOpen = false;
     this.sectorsDropdownOpen = false;
     this.engagementTypeDropdownOpen = false;
+    this.workModesDropdownOpen = false;
   }
   
   /**
@@ -366,6 +385,7 @@ export class AvailabilityListComponent implements OnInit {
     this.skillsDropdownOpen = false;
     this.citiesDropdownOpen = false;
     this.engagementTypeDropdownOpen = false;
+    this.workModesDropdownOpen = false;
   }
   
   /**
@@ -377,6 +397,7 @@ export class AvailabilityListComponent implements OnInit {
     this.skillsDropdownOpen = false;
     this.citiesDropdownOpen = false;
     this.sectorsDropdownOpen = false;
+    this.workModesDropdownOpen = false;
   }
   
   /**
@@ -615,6 +636,129 @@ export class AvailabilityListComponent implements OnInit {
     }
   }
   
+  /**
+   * Ouvre/ferme le dropdown des modes de travail
+   */
+  toggleWorkModesDropdown(event: Event): void {
+    event.stopPropagation();
+    this.workModesDropdownOpen = !this.workModesDropdownOpen;
+    this.skillsDropdownOpen = false;
+    this.citiesDropdownOpen = false;
+    this.sectorsDropdownOpen = false;
+    this.engagementTypeDropdownOpen = false;
+  }
+  
+  /**
+   * Vérifie si un mode de travail est sélectionné
+   */
+  isWorkModeSelected(mode: string): boolean {
+    if (!this.editForm) return false;
+    
+    const workModes = this.editForm.get('workModes')?.value || [];
+    if (Array.isArray(workModes)) {
+      return workModes.includes(mode);
+    }
+    return false;
+  }
+  
+  /**
+   * Ajoute ou supprime un mode de travail
+   */
+  toggleWorkMode(mode: string, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    if (!this.editForm) return;
+    
+    let workModes = (this.editForm.get('workModes')?.value || []) as string[];
+    if (!Array.isArray(workModes)) {
+      workModes = [];
+    }
+    
+    const index = workModes.indexOf(mode);
+    
+    if (index === -1) {
+      workModes.push(mode);
+    } else {
+      workModes.splice(index, 1);
+    }
+    
+    this.editForm.patchValue({ workModes });
+    
+    // Mise à jour du champ workMode (compatibilité)
+    if (workModes.length > 0) {
+      this.editForm.patchValue({ workMode: this.convertWorkMode(workModes[0]) });
+    }
+  }
+  
+  /**
+   * Ajoute un mode de travail depuis l'input
+   */
+  addWorkModeToForm(): void {
+    if (!this.workModesInput.trim() || !this.editForm) return;
+    
+    const newMode = this.workModesInput.trim();
+    let workModes = (this.editForm.get('workModes')?.value || []) as string[];
+    
+    if (!Array.isArray(workModes)) {
+      workModes = [];
+    }
+    
+    if (newMode && !workModes.includes(newMode)) {
+      workModes.push(newMode);
+      this.editForm.patchValue({ workModes });
+      
+      // Mise à jour du champ workMode (compatibilité)
+      if (workModes.length === 1) {
+        this.editForm.patchValue({ workMode: this.convertWorkMode(newMode) });
+      }
+    }
+    
+    this.workModesInput = '';
+  }
+  
+  /**
+   * Supprime un mode de travail du formulaire
+   */
+  removeWorkModeFromForm(mode: string): void {
+    if (!this.editForm) return;
+    
+    const workModes = (this.editForm.get('workModes')?.value || []) as string[];
+    const index = workModes.indexOf(mode);
+    
+    if (index !== -1) {
+      workModes.splice(index, 1);
+      this.editForm.patchValue({ workModes });
+      
+      // Mise à jour du champ workMode (compatibilité)
+      if (workModes.length > 0) {
+        this.editForm.patchValue({ workMode: this.convertWorkMode(workModes[0]) });
+      } else {
+        this.editForm.patchValue({ workMode: 'remote' }); // Valeur par défaut
+      }
+    }
+  }
+  
+  /**
+   * Convertit un libellé de mode de travail en valeur compatible avec l'API
+   */
+  convertWorkMode(label: string): string {
+    switch(label) {
+      case 'Sur site':
+        return 'onsite';
+      case 'Télétravail':
+        return 'remote';
+      case 'Hybride':
+        return 'hybrid';
+      case 'Flexible':
+        return 'flexible';
+      default:
+        // Si le libellé ne correspond pas, on conserve le texte tel quel
+        return label.toLowerCase().replace(/\s+/g, '_');
+    }
+  }
+  
   // Sauvegarde les modifications
   saveAvailability(availabilityId: string, event?: Event): void {
     if (event) {
@@ -644,6 +788,10 @@ export class AvailabilityListComponent implements OnInit {
       engagementType: Array.isArray(formValues.engagementTypes) && formValues.engagementTypes.length > 0 
         ? formValues.engagementTypes[0] 
         : 'Freelance',
+      // Utilise le premier mode de travail du tableau pour le champ workMode (compatibilité API)
+      workMode: Array.isArray(formValues.workModes) && formValues.workModes.length > 0 
+        ? this.convertWorkMode(formValues.workModes[0]) 
+        : 'remote',
       // Formatage de la date
       startDate: new Date(formValues.startDate).toISOString()
     };
