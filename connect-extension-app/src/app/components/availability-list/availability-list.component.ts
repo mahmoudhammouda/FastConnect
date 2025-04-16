@@ -56,6 +56,17 @@ export class AvailabilityListComponent implements OnInit, AfterViewInit {
     'États-Unis': '+1',
     'Royaume-Uni': '+44'
   };
+  // État du dropdown du téléphone
+  phoneDropdownOpen: boolean = false;
+  // Pays disponibles pour le téléphone
+  phoneCountries = [
+    { name: 'France', code: '+33', flag: 'fr' },
+    { name: 'Belgique', code: '+32', flag: 'be' },
+    { name: 'Suisse', code: '+41', flag: 'ch' },
+    { name: 'Luxembourg', code: '+352', flag: 'lu' },
+    { name: 'États-Unis', code: '+1', flag: 'us' },
+    { name: 'Royaume-Uni', code: '+44', flag: 'gb' }
+  ];
   
   // Gestion du fichier CV
   selectedCvFile: File | null = null;
@@ -186,32 +197,42 @@ export class AvailabilityListComponent implements OnInit, AfterViewInit {
   }
   
   /**
-   * Configure le sélecteur de pays pour le téléphone
+   * Ouvre/ferme le dropdown du téléphone
+   */
+  togglePhoneDropdown(event: Event): void {
+    event.stopPropagation();
+    this.phoneDropdownOpen = !this.phoneDropdownOpen;
+    
+    // Fermer tous les autres dropdowns
+    this.skillsDropdownOpen = false;
+    this.citiesDropdownOpen = false;
+    this.sectorsDropdownOpen = false;
+    this.engagementTypeDropdownOpen = false;
+    this.workModesDropdownOpen = false;
+    this.rolesDropdownOpen = false;
+  }
+  
+  /**
+   * Sélectionne un pays pour le téléphone
+   */
+  selectPhoneCountry(country: any, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    this.selectedPhoneCountryCode = country.code;
+    this.phoneDropdownOpen = false;
+    
+    // Mettre à jour le numéro de téléphone dans le formulaire si besoin
+    this.updatePhoneWithCountryCode();
+  }
+  
+  /**
+   * Configure le sélecteur de pays pour le téléphone (méthode désactivée en faveur de notre implémentation manuelle)
    */
   private setupPhoneCountrySelector(): void {
-    const countryOptions = document.querySelectorAll('.country-option');
-    const dropdownButton = document.getElementById('dropdown-phone-button');
-    
-    if (countryOptions && dropdownButton) {
-      countryOptions.forEach(option => {
-        option.addEventListener('click', (event) => {
-          const target = event.currentTarget as HTMLElement;
-          const countryCode = target.getAttribute('data-code');
-          const countryText = target.textContent?.trim() || '';
-          
-          if (countryCode) {
-            this.selectedPhoneCountryCode = countryCode;
-            
-            // Mettre à jour le texte du bouton
-            const svgContent = dropdownButton.innerHTML.split('</svg>')[0] + '</svg>';
-            dropdownButton.innerHTML = svgContent + ' ' + countryCode + ' <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/></svg>';
-            
-            // Mettre à jour le numéro de téléphone dans le formulaire si besoin
-            this.updatePhoneWithCountryCode();
-          }
-        });
-      });
-    }
+    // Cette méthode n'est plus utilisée car nous avons remplacé le dropdown Flowbite par notre propre implémentation
+    console.log('Utilisation du dropdown manuel pour le sélecteur de pays');
   }
   
   /**
