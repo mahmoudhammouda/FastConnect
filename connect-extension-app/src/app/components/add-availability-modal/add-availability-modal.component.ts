@@ -142,31 +142,37 @@ export class AddAvailabilityModalComponent implements OnInit {
     
     // S'abonner aux changements de type d'engagement
     this.availabilityForm.get('engagementType')?.valueChanges.subscribe(engagementType => {
-      // Si l'engagement est de type "Salarié", on affiche le champ salaire et on masque le TJM
+      // Si l'engagement est de type "Salarié", le champ salaire est actif et le TJM est grisé
       if (engagementType === 'Salarié') {
-        this.availabilityForm.get('tjm')?.setValue('');
-        this.availabilityForm.get('tjm')?.clearValidators();
-        this.availabilityForm.get('tjm')?.updateValueAndValidity();
-        
         // Ajouter les validateurs pour salary
         this.availabilityForm.get('salary')?.setValidators([Validators.required, Validators.min(0), Validators.pattern('^[0-9]*$')]);
         this.availabilityForm.get('salary')?.updateValueAndValidity();
-      } 
-      // Si l'engagement est Freelance ou Les deux, on affiche le TJM et on masque le salaire
-      else if (engagementType === 'Freelance' || engagementType === 'Les deux') {
-        this.availabilityForm.get('salary')?.setValue('');
-        this.availabilityForm.get('salary')?.clearValidators();
-        this.availabilityForm.get('salary')?.updateValueAndValidity();
         
+        // Pour le TJM, on garde la valeur mais on retire les validateurs required
+        this.availabilityForm.get('tjm')?.clearValidators();
+        // On ajoute quand même les validateurs de format, mais pas required
+        this.availabilityForm.get('tjm')?.setValidators([Validators.min(0), Validators.pattern('^[0-9]*$')]);
+        this.availabilityForm.get('tjm')?.updateValueAndValidity();
+      } 
+      // Si l'engagement est Freelance ou Les deux, le TJM est actif et le salaire est grisé
+      else if (engagementType === 'Freelance' || engagementType === 'Les deux') {
         // Ajouter les validateurs pour tjm
         this.availabilityForm.get('tjm')?.setValidators([Validators.required, Validators.min(0), Validators.pattern('^[0-9]*$')]);
         this.availabilityForm.get('tjm')?.updateValueAndValidity();
-      }
-      // Si aucun type n'est sélectionné, on retire tous les validateurs
-      else {
-        this.availabilityForm.get('tjm')?.clearValidators();
-        this.availabilityForm.get('tjm')?.updateValueAndValidity();
+        
+        // Pour le salaire, on garde la valeur mais on retire les validateurs required
         this.availabilityForm.get('salary')?.clearValidators();
+        // On ajoute quand même les validateurs de format, mais pas required
+        this.availabilityForm.get('salary')?.setValidators([Validators.min(0), Validators.pattern('^[0-9]*$')]);
+        this.availabilityForm.get('salary')?.updateValueAndValidity();
+      }
+      // Si aucun type n'est sélectionné, on retire tous les validateurs required
+      else {
+        // On ajoute quand même les validateurs de format, mais pas required
+        this.availabilityForm.get('tjm')?.setValidators([Validators.min(0), Validators.pattern('^[0-9]*$')]);
+        this.availabilityForm.get('tjm')?.updateValueAndValidity();
+        
+        this.availabilityForm.get('salary')?.setValidators([Validators.min(0), Validators.pattern('^[0-9]*$')]);
         this.availabilityForm.get('salary')?.updateValueAndValidity();
       }
     });
