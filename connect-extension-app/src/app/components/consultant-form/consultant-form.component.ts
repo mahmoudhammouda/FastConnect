@@ -161,7 +161,7 @@ export class ConsultantFormComponent implements OnInit, OnDestroy, AfterViewInit
         }
       }, 500); // Attendre 500ms pour s'assurer que tout est bien chargé
     } catch (error) {
-      console.error('[ConsultantForm] Erreur lors de l'initialisation de intlTelInput:', error);
+      console.error("[ConsultantForm] Erreur lors de l'initialisation de intlTelInput:", error);
     }
   }
   
