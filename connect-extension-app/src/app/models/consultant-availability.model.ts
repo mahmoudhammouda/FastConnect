@@ -14,11 +14,13 @@ export interface ConsultantAvailability {
   consultantRole?: string;
   role?: string;  // Ajouté pour la compatibilité avec le add-availability-modal
   startDate: string;
-  durationInMonths: number;
+  durationInMonths?: number;  // Rendu optionel car remplacé par salary dans certains cas
   status: 'available' | 'pending' | 'inactive';
   cities: string[];
   workMode: 'onsite' | 'remote' | 'hybrid';
   rate?: number;
+  tjm?: number;   // Taux journalier pour les freelances
+  salary?: number; // Salaire minimum pour les salariés
   skills?: string[];
   description?: string;
   sectors?: string[];

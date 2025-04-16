@@ -113,6 +113,7 @@ export class AddAvailabilityModalComponent implements OnInit {
       selectedSectors: [[]],
       selectedExpertises: [[]],
       tjm: ['', [Validators.min(0), Validators.pattern('^[0-9]*$')]],
+      salary: ['', [Validators.min(0), Validators.pattern('^[0-9]*$')]],
       notes: [''],
       isSubcontractor: [false],
       subcontractorProfiles: this.fb.array([])
@@ -137,6 +138,37 @@ export class AddAvailabilityModalComponent implements OnInit {
     // S'abonner aux changements dans les villes sélectionnées
     this.availabilityForm.get('cities')?.valueChanges.subscribe(cities => {
       this.selectedCities = cities || [];
+    });
+    
+    // S'abonner aux changements de type d'engagement
+    this.availabilityForm.get('engagementType')?.valueChanges.subscribe(engagementType => {
+      // Si l'engagement est de type "Salarié", on affiche le champ salaire et on masque le TJM
+      if (engagementType === 'Salarié') {
+        this.availabilityForm.get('tjm')?.setValue('');
+        this.availabilityForm.get('tjm')?.clearValidators();
+        this.availabilityForm.get('tjm')?.updateValueAndValidity();
+        
+        // Ajouter les validateurs pour salary
+        this.availabilityForm.get('salary')?.setValidators([Validators.required, Validators.min(0), Validators.pattern('^[0-9]*$')]);
+        this.availabilityForm.get('salary')?.updateValueAndValidity();
+      } 
+      // Si l'engagement est Freelance ou Les deux, on affiche le TJM et on masque le salaire
+      else if (engagementType === 'Freelance' || engagementType === 'Les deux') {
+        this.availabilityForm.get('salary')?.setValue('');
+        this.availabilityForm.get('salary')?.clearValidators();
+        this.availabilityForm.get('salary')?.updateValueAndValidity();
+        
+        // Ajouter les validateurs pour tjm
+        this.availabilityForm.get('tjm')?.setValidators([Validators.required, Validators.min(0), Validators.pattern('^[0-9]*$')]);
+        this.availabilityForm.get('tjm')?.updateValueAndValidity();
+      }
+      // Si aucun type n'est sélectionné, on retire tous les validateurs
+      else {
+        this.availabilityForm.get('tjm')?.clearValidators();
+        this.availabilityForm.get('tjm')?.updateValueAndValidity();
+        this.availabilityForm.get('salary')?.clearValidators();
+        this.availabilityForm.get('salary')?.updateValueAndValidity();
+      }
     });
   }
   
@@ -304,6 +336,7 @@ export class AddAvailabilityModalComponent implements OnInit {
       selectedSectors: [],
       selectedExpertises: [],
       tjm: '',
+      salary: '',
       notes: '',
       isSubcontractor: false
     });

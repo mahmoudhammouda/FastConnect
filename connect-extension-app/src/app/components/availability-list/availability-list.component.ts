@@ -837,22 +837,28 @@ export class AvailabilityListComponent implements OnInit {
     return date.toISOString().split('T')[0];
   }
   
-  deleteAvailability(availability: ConsultantAvailability, event?: Event): void {
+  deleteAvailability(availability: ConsultantAvailability | null, event?: Event): void {
     if (event) {
       event.stopPropagation();
     }
     
-    if (confirm(`Êtes-vous sûr de vouloir supprimer cette disponibilité pour ${availability.consultantName} ?`)) {
-      this.consultantAvailabilityService.deleteAvailability(availability.id).subscribe({
-        next: () => {
-          // Recharger les disponibilités après la suppression
-          this.loadAvailabilities();
-        },
-        error: (error: any) => {
-          console.error('Erreur lors de la suppression de la disponibilité', error);
-        }
-      });
+    if (!availability) {
+      console.error('Impossible de supprimer une disponibilité non définie');
+      return;
     }
+    
+    this.consultantAvailabilityService.deleteAvailability(availability.id).subscribe({
+      next: () => {
+        // Recharger les disponibilités après la suppression
+        this.loadAvailabilities();
+        // Fermer le modal de confirmation
+        this.showDeleteConfirmationModal = false;
+        this.availabilityToDelete = null;
+      },
+      error: (error: any) => {
+        console.error('Erreur lors de la suppression de la disponibilité', error);
+      }
+    });
   }
   
   // Pour arrêter la propagation des événements de clic

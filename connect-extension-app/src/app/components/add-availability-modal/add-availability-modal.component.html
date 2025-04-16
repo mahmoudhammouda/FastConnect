@@ -219,14 +219,6 @@
           </div>
           
           <div class="form-grid mt-3">
-            <div class="form-group">
-              <label for="tjm">TJM (Taux Journalier Moyen)</label>
-              <input type="number" id="tjm" formControlName="tjm" class="form-control" [class.is-invalid]="availabilityForm.get('tjm')?.touched && (availabilityForm.get('tjm')?.errors?.['min'] || availabilityForm.get('tjm')?.errors?.['pattern'])">
-              <div *ngIf="availabilityForm.get('tjm')?.touched && (availabilityForm.get('tjm')?.errors?.['min'] || availabilityForm.get('tjm')?.errors?.['pattern'])" class="invalid-feedback">
-                Le TJM doit être un nombre positif
-              </div>
-            </div>
-            
             <!-- Type d'engagement -->
             <div class="form-group">
               <label for="engagementType">Type d'engagement *</label>
@@ -236,6 +228,30 @@
               </select>
               <div *ngIf="availabilityForm.get('engagementType')?.touched && availabilityForm.get('engagementType')?.invalid" class="invalid-feedback">
                 Le type d'engagement est obligatoire
+              </div>
+            </div>
+            
+            <!-- TJM pour Freelance et Les deux -->
+            <div class="form-group" *ngIf="availabilityForm.get('engagementType')?.value === 'Freelance' || availabilityForm.get('engagementType')?.value === 'Les deux'">
+              <label for="tjm">TJM (Taux Journalier Moyen) *</label>
+              <input type="number" id="tjm" formControlName="tjm" class="form-control" [class.is-invalid]="availabilityForm.get('tjm')?.touched && (availabilityForm.get('tjm')?.errors?.['min'] || availabilityForm.get('tjm')?.errors?.['pattern'] || availabilityForm.get('tjm')?.errors?.['required'])">
+              <div *ngIf="availabilityForm.get('tjm')?.touched && (availabilityForm.get('tjm')?.errors?.['min'] || availabilityForm.get('tjm')?.errors?.['pattern'])" class="invalid-feedback">
+                Le TJM doit être un nombre positif
+              </div>
+              <div *ngIf="availabilityForm.get('tjm')?.touched && availabilityForm.get('tjm')?.errors?.['required']" class="invalid-feedback">
+                Le TJM est obligatoire pour les freelances
+              </div>
+            </div>
+            
+            <!-- Salaire pour Salarié -->
+            <div class="form-group" *ngIf="availabilityForm.get('engagementType')?.value === 'Salarié'">
+              <label for="salary">Salaire minimum (€/an) *</label>
+              <input type="number" id="salary" formControlName="salary" class="form-control" [class.is-invalid]="availabilityForm.get('salary')?.touched && (availabilityForm.get('salary')?.errors?.['min'] || availabilityForm.get('salary')?.errors?.['pattern'] || availabilityForm.get('salary')?.errors?.['required'])">
+              <div *ngIf="availabilityForm.get('salary')?.touched && (availabilityForm.get('salary')?.errors?.['min'] || availabilityForm.get('salary')?.errors?.['pattern'])" class="invalid-feedback">
+                Le salaire doit être un nombre positif
+              </div>
+              <div *ngIf="availabilityForm.get('salary')?.touched && availabilityForm.get('salary')?.errors?.['required']" class="invalid-feedback">
+                Le salaire minimum est obligatoire pour les salariés
               </div>
             </div>
           </div>
