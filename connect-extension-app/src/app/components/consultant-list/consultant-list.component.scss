@@ -3,19 +3,7 @@
 
 // Conteneur principal avec effet de fond amélioré et bordure décorative
 .consultants-container {
-  background-color: #f8fafc;
-  background-image: 
-    linear-gradient(0deg, rgba(241, 245, 249, 0.5) 0%, rgba(248, 250, 252, 0.8) 100%),
-    linear-gradient(90deg, rgba(59, 130, 246, 0.03) 0%, rgba(59, 130, 246, 0.02) 100%);
-  border-radius: 0.75rem;
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  box-shadow: 
-    0 1px 3px rgba(0, 0, 0, 0.05),
-    0 4px 12px rgba(0, 0, 0, 0.02);
-  
-  @media (min-width: 768px) {
-    min-height: 70vh;
-  }
+  // La classe a été vidée de ses propriétés
 }
 
 // En-tête avec style moderne
@@ -130,7 +118,7 @@
 .consultants-list {
   display: grid;
   grid-gap: 1.5rem;
-  padding: 1.5rem;
+  padding: 0.5rem;
   
   @media (min-width: 768px) {
     grid-template-columns: 1fr;
@@ -216,12 +204,7 @@
 @media (max-width: 768px) {
   // Correction scrolling mobile
   .consultants-container {
-    height: 100% !important;
-    overflow-y: auto !important;
-    -webkit-overflow-scrolling: touch; // Pour meilleur scrolling sur iOS
-    position: relative;
-    display: flex;
-    flex-direction: column;
+    // La classe a été vidée de ses propriétés
   }
   
   // Assurer que la liste prend tout l'espace disponible
@@ -243,11 +226,7 @@
 // Animations spécifiques pour le mobile extension et mobile
 @media screen and (max-width: 600px) {
   .consultants-container {
-    border-radius: 0.5rem;
-    padding: 0.75rem;
-    box-shadow: 
-      0 2px 4px rgba(0, 0, 0, 0.04),
-      0 1px 2px rgba(0, 0, 0, 0.02);
+    // La classe a été vidée de ses propriétés
   }
   
   .consultants-list {
@@ -276,9 +255,7 @@
 // Style spécifique pour le mode extension (hauteur réduite)
 @media screen and (max-height: 600px) {
   .consultants-container {
-    min-height: auto;
-    max-height: 450px;
-    overflow-y: auto;
+    // La classe a été vidée de ses propriétés
   }
   
   // Optimisation de l'espace vertical en mode extension
