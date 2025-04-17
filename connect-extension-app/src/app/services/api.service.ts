@@ -37,10 +37,21 @@ export class ApiService {
       endpoint = '/' + endpoint;
     }
     
-    // Les URL sont configurées par environnement et ne devraient pas
-    // nécessiter de logique conditionnelle supplémentaire ici
-    // Utiliser simplement l'URL configurée dans l'environnement
+    // Ajouter le préfixe /api aux requêtes pour le backend
+    const apiPrefix = '/api';
     
+    // Éviter de dupliquer le préfixe /api s'il est déjà dans l'endpoint
+    if (!endpoint.startsWith(apiPrefix)) {
+      endpoint = apiPrefix + endpoint;
+    }
+    
+    // Si API_URL est vide, utiliser un chemin relatif (pour éviter Mixed Content)
+    if (!this.API_URL || this.API_URL === '') {
+      console.log('Utilisation de chemin relatif pour l\'API:', endpoint);
+      return endpoint;
+    }
+    
+    console.log('URL API complète:', `${this.API_URL}${endpoint}`);
     return `${this.API_URL}${endpoint}`;
   }
 

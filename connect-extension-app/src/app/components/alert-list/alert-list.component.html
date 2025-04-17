@@ -1,10 +1,10 @@
-<div class="alerts-container">
+<div class="alerts-container alert-page-container alert-main-wrapper">
   <!-- En-tête avec bouton d'ajout -->
-  <div class="flex items-center justify-between mb-4">
-    <h2 class="text-lg font-semibold">Alertes automatiques</h2>
+  <div class="flex items-center justify-between mb-4 alert-header alert-page-header">
+    <h2 class="text-lg font-semibold alert-title alert-page-title">Alertes automatiques</h2>
     <button 
       (click)="showCreateAlertForm()"
-      class="button button-primary flex items-center gap-1">
+      class="button button-primary flex items-center gap-1 alert-add-button alert-action-button">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
       </svg>
@@ -14,7 +14,7 @@
   
   <!-- Nouveau formulaire de création d'alerte - Style collapsable affiché depuis le bouton principal -->
   <div *ngIf="showNewAlertForm && !editingAlertId" 
-       class="alert-form-collapsable bg-white shadow-md rounded-lg mb-4 overflow-hidden">
+       class="alert-form-collapsable alert-create-form alert-form-container bg-white shadow-md rounded-lg mb-4 overflow-hidden">
     <div class="p-4">
       <div class="flex justify-between items-center mb-3">
         <h3 class="text-sm font-medium text-gray-700">
@@ -228,37 +228,34 @@
   </div>
   
   <!-- Message si aucune alerte -->
-  <div *ngIf="alerts.length === 0" class="p-4 bg-gray-50 rounded-lg text-center">
+  <div *ngIf="alerts.length === 0 && !showNewAlertForm" 
+       class="p-4 bg-gray-50 rounded-lg text-center alert-empty-state alert-no-data">
     <p class="text-gray-500">Aucune alerte automatique configurée.</p>
     <p class="text-gray-500 text-sm mt-1">Créez une alerte pour être notifié lorsque de nouveaux consultants correspondent à vos critères.</p>
   </div>
   
   <!-- Liste des alertes -->
-  <div *ngIf="alerts.length > 0">
-    <div *ngFor="let alert of alerts" 
-         [class.selected]="selectedAlertId === alert.id"
-         [class.has-new-consultants]="hasNewConsultants(alert.id)"
-         class="alert-item relative">
-      <div class="alert-header" (click)="selectAlert(alert.id)">
+  <div *ngIf="alerts.length > 0" class="alert-list alert-items-container">
+    <div *ngFor="let alert of alerts" class="alert-item mb-3">
+      <div class="alert-item-header">
         <!-- Contenu principal de l'alerte -->
-        <div class="flex-1">
-          <div class="flex items-center gap-2">
+        <div class="flex-1 alert-card-content">
+          <div class="flex items-center gap-2 alert-card-title-row">
             <span class="font-medium">{{ alert.name }}</span>
-            
-            <!-- Badge pour les nouveaux consultants -->
-            <div *ngIf="hasNewConsultants(alert.id)" class="badge badge-red">
-              {{ getNewConsultantCount(alert.id) }}
-            </div>
           </div>
           
           <!-- Résumé des critères -->
-          <div class="alert-criteria">
+          <div class="alert-criteria alert-card-criteria">
             {{ getCriteriaSummary(alert.criteria) }}
           </div>
         </div>
         
         <!-- Boutons d'action -->
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 alert-card-actions">
+          <!-- Badge pour les nouveaux consultants -->
+          <div *ngIf="hasNewConsultants(alert.id)" class="badge badge-red">
+            +{{ getNewConsultantCount(alert.id) }}
+          </div>
           <!-- Bouton d'édition -->
           <button 
             (click)="editAlert(alert); $event.stopPropagation()"
@@ -279,14 +276,21 @@
         </div>
       </div>
       
-      <!-- Formulaire d'édition directement sous la carte d'alerte sélectionnée -->
+      <!-- Formulaire d'édition directement sous la carte -->
       <div *ngIf="editingAlertId === alert.id" 
-           class="alert-form-collapsable bg-white shadow-md rounded-lg my-2 overflow-hidden">
-      <div class="p-4">
-        <div class="flex justify-between items-center mb-3">
-          <h3 class="text-sm font-medium text-gray-700">
-            Modifier l'alerte
-          </h3>
+           class="alert-form-collapsable alert-edit-form alert-card-edit-form bg-white shadow-md rounded-lg mb-4 overflow-hidden">
+        <div class="p-4">
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="text-sm font-medium text-gray-700">
+              Modifier l'alerte
+            </h3>
+            <button 
+              (click)="hideCreateAlertForm()" 
+              class="text-gray-400 hover:text-gray-600">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
           <button 
             (click)="hideCreateAlertForm()" 
             class="text-gray-400 hover:text-gray-600">

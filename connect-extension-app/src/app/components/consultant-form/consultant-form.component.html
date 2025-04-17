@@ -1,0 +1,283 @@
+<!-- Overlay modal backdrop -->
+<div class="modal-backdrop" (click)="closeModal()"></div>
+
+<!-- Formulaire modal -->
+<div class="modal-container">
+  <div class="modal-content">
+    <!-- En-tête du formulaire -->
+    <div class="modal-header">
+      <h2 class="modal-title">{{ isEditMode ? 'Modifier la disponibilité' : 'Ajouter une disponibilité' }}</h2>
+      <button type="button" class="close-button" (click)="closeModal()">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+    
+    <!-- Corps du formulaire -->
+    <div class="modal-body">
+      <!-- Messages d'erreur/succès -->
+      <div *ngIf="formError" class="error-message">{{ formError }}</div>
+      <div *ngIf="formSuccess" class="success-message">{{ formSuccess }}</div>
+      
+      <form [formGroup]="consultantForm" (ngSubmit)="submitForm()">
+        <!-- Informations de base -->
+        <div class="form-section">
+          <h3>Informations de base</h3>
+          
+          <div class="form-group">
+            <label for="role" class="form-label">Poste/rôle <span class="required">*</span></label>
+            <input id="role" type="text" formControlName="role" class="form-input" 
+                  placeholder="ex: Développeur Full Stack">
+          </div>
+          
+          <div class="form-group">
+            <label for="availability" class="form-label">Disponibilité <span class="required">*</span></label>
+            <select id="availability" formControlName="availability" class="form-select">
+              <option *ngFor="let option of availabilityOptions" [value]="option.value">{{ option.label }}</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="experience" class="form-label">Niveau d'expérience <span class="required">*</span></label>
+            <select id="experience" formControlName="experience" class="form-select">
+              <option *ngFor="let option of experienceOptions" [value]="option.value">{{ option.label }}</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="location" class="form-label">Localisation <span class="required">*</span></label>
+            <input id="location" type="text" formControlName="location" class="form-input" 
+                  placeholder="ex: Paris, Remote">
+          </div>
+          
+          <div class="form-group">
+            <label for="message" class="form-label">Message personnalisé</label>
+            <textarea id="message" formControlName="message" class="form-textarea" rows="3" 
+                    placeholder="Description, informations supplémentaires..."></textarea>
+          </div>
+        </div>
+        
+        <!-- Compétences -->
+        <div class="form-section">
+          <h3>Compétences & Expertises</h3>
+          
+          <div class="form-group">
+            <label class="form-label">Compétences techniques <span class="required">*</span></label>
+            <div class="input-with-button">
+              <input type="text" [(ngModel)]="skillInput" [ngModelOptions]="{standalone: true}" class="form-input" 
+                    placeholder="ex: React, Node.js, Python">
+              <button type="button" class="add-button" (click)="addSkill()">
+                <span class="material-icons">add</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="linkedinUrl" class="form-label">URL LinkedIn <span class="required">*</span></label>
+            <input id="linkedinUrl" type="text" formControlName="linkedinUrl" class="form-input"
+                  placeholder="ex: https://www.linkedin.com/in/username">
+          </div>
+          
+          <div class="form-group">
+            <label for="email" class="form-label">Email (optionnel)</label>
+            <input id="email" type="email" formControlName="email" class="form-input"
+                  placeholder="ex: contact@exemple.com">
+          </div>
+          
+          <div class="form-group">
+            <label for="phone" class="form-label">Téléphone</label>
+            <div class="grid grid-cols-12 gap-2">
+              <!-- Input pour le numéro de téléphone avec code pays -->
+              <div class="col-span-12 relative">
+                <div class="flex items-center">
+                  <!-- Bouton pour ouvrir le dropdown des pays -->
+                  <button type="button" 
+                          (click)="toggleCountryDropdown()" 
+                          class="shrink-0 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600">
+                    <ng-container [ngSwitch]="selectedCountryCode">
+                      <svg *ngSwitchCase="'+33'" fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
+                        <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                        <mask id="a" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                          <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                        </mask>
+                        <g mask="url(#a)">
+                          <path fill="#0055a4" d="M0 .5h6.5v14H0z"/>
+                          <path fill="#fff" d="M6.5 .5h6.5v14H6.5z"/>
+                          <path fill="#ef4135" d="M13 .5h6.6v14H13z"/>
+                        </g>
+                      </svg>
+                      <svg *ngSwitchCase="'+32'" fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
+                        <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                        <mask id="b" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                          <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                        </mask>
+                        <g mask="url(#b)">
+                          <path fill="#ffda44" d="M0 .5h6.5v14H0z"/>
+                          <path fill="#000" d="M6.5 .5h6.5v14H6.5z"/>
+                          <path fill="#d80027" d="M13 .5h6.6v14H13z"/>
+                        </g>
+                      </svg>
+                      <svg *ngSwitchCase="'+41'" fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
+                        <rect width="19.6" height="14" y=".5" fill="#ff0000" rx="2"/>
+                        <mask id="c" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                          <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                        </mask>
+                        <g mask="url(#c)">
+                          <path fill="#ff0000" d="M0 .5h19.6v14H0z"/>
+                          <path fill="#fff" d="M8.3 3.5h3v3h3v3h-3v3h-3v-3h-3v-3h3z"/>
+                        </g>
+                      </svg>
+                      <svg *ngSwitchDefault fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
+                        <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                      </svg>
+                    </ng-container>
+                    
+                    {{ selectedCountryCode }} 
+                    <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                    </svg>
+                  </button>
+                  
+                  <!-- Input pour le numéro de téléphone -->
+                  <input type="text" 
+                         id="phone-input" 
+                         #phoneInput 
+                         (input)="onPhoneInputChange($event)"
+                         class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-0 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" 
+                         placeholder="612345678">
+                </div>
+                
+                <!-- Dropdown menu pour les pays -->
+                <div *ngIf="countryDropdownOpen" 
+                     class="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-40 overflow-y-auto">
+                  <div class="py-2">
+                    <div class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                         (click)="selectCountry('+33')">
+                      <span class="inline-flex items-center">
+                        <svg fill="none" aria-hidden="true" viewBox="0 0 20 15" class="h-4 w-4 me-2">
+                          <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                          <mask id="a1" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                            <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                          </mask>
+                          <g mask="url(#a1)">
+                            <path fill="#0055a4" d="M0 .5h6.5v14H0z"/>
+                            <path fill="#fff" d="M6.5 .5h6.5v14H6.5z"/>
+                            <path fill="#ef4135" d="M13 .5h6.6v14H13z"/>
+                          </g>
+                        </svg>
+                        France (+33)
+                      </span>
+                    </div>
+                    <div class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                         (click)="selectCountry('+32')">
+                      <span class="inline-flex items-center">
+                        <svg fill="none" aria-hidden="true" viewBox="0 0 20 15" class="h-4 w-4 me-2">
+                          <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                          <mask id="b1" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                            <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                          </mask>
+                          <g mask="url(#b1)">
+                            <path fill="#ffda44" d="M0 .5h6.5v14H0z"/>
+                            <path fill="#000" d="M6.5 .5h6.5v14H6.5z"/>
+                            <path fill="#d80027" d="M13 .5h6.6v14H13z"/>
+                          </g>
+                        </svg>
+                        Belgique (+32)
+                      </span>
+                    </div>
+                    <div class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                         (click)="selectCountry('+41')">
+                      <span class="inline-flex items-center">
+                        <svg fill="none" aria-hidden="true" viewBox="0 0 20 15" class="h-4 w-4 me-2">
+                          <rect width="19.6" height="14" y=".5" fill="#ff0000" rx="2"/>
+                          <mask id="c1" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                            <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                          </mask>
+                          <g mask="url(#c1)">
+                            <path fill="#ff0000" d="M0 .5h19.6v14H0z"/>
+                            <path fill="#fff" d="M8.3 3.5h3v3h3v3h-3v3h-3v-3h-3v-3h3z"/>
+                          </g>
+                        </svg>
+                        Suisse (+41)
+                      </span>
+                    </div>
+                    <div class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                         (click)="selectCountry('+352')">
+                      <span class="inline-flex items-center">
+                        <svg fill="none" aria-hidden="true" viewBox="0 0 20 15" class="h-4 w-4 me-2">
+                          <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                          <mask id="d1" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                            <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                          </mask>
+                          <g mask="url(#d1)">
+                            <path fill="#fff" d="M0 .5h19.6v14H0z"/>
+                            <path fill="#00a1de" d="M0 .5h19.6v4.7H0z"/>
+                            <path fill="#ed2939" d="M0 9.8h19.6v4.7H0z"/>
+                          </g>
+                        </svg>
+                        Luxembourg (+352)
+                      </span>
+                    </div>
+                    <div class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                         (click)="selectCountry('+1')">
+                      <span class="inline-flex items-center">
+                        <svg fill="none" aria-hidden="true" viewBox="0 0 20 15" class="h-4 w-4 me-2">
+                          <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                          <mask id="e1" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                            <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                          </mask>
+                          <g mask="url(#e1)">
+                            <path fill="#fff" d="M0 .5h19.6v14H0z"/>
+                            <path fill="#d80027" d="M0 .5h19.6v1H0zM0 2.5h19.6v1H0zM0 4.5h19.6v1H0zM0 6.5h19.6v1H0zM0 8.5h19.6v1H0zM0 10.5h19.6v1H0zM0 12.5h19.6v1H0z"/>
+                            <path fill="#2e3560" d="M0 .5h8v8H0z"/>
+                            <path fill="#fff" d="M1 1.5l.707.207.5.5.5-.5.793-.207-.293.707.293.793-.793-.293-.5.5-.5-.5-.707.293.207-.793z"/>
+                          </g>
+                        </svg>
+                        États-Unis (+1)
+                      </span>
+                    </div>
+                    <div class="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                         (click)="selectCountry('+44')">
+                      <span class="inline-flex items-center">
+                        <svg fill="none" aria-hidden="true" viewBox="0 0 20 15" class="h-4 w-4 me-2">
+                          <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                          <mask id="f1" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:luminance">
+                            <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                          </mask>
+                          <g mask="url(#f1)">
+                            <path fill="#0A17A7" d="M0 .5h19.6v14H0z"/>
+                            <path fill="#fff" d="M0 .5l19.6 14M19.6 .5L0 14.5"/>
+                            <path fill="#fff" d="M9.8 .5v14M0 7.5h19.6"/>
+                            <path fill="#E52D35" d="M0 8.5h19.6v2H0z"/>
+                            <path fill="#E52D35" d="M8.2 .5h3.2v14H8.2z"/>
+                          </g>
+                        </svg>
+                        Royaume-Uni (+44)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <small class="text-gray-500 mt-1 text-xs">Format: code pays automatiquement ajouté</small>
+          </div>
+        </div>
+      </form>
+    </div>
+    
+    <!-- Pied du formulaire avec boutons -->
+    <div class="modal-footer">
+      <div class="buttons-container">
+        <button type="button" class="button secondary" (click)="closeModal()">
+          Annuler
+        </button>
+        
+        <button type="button" class="button primary" 
+                [disabled]="consultantForm.invalid || isLoading"
+                (click)="submitForm()">
+          <span *ngIf="isLoading">Chargement...</span>
+          <span *ngIf="!isLoading">{{ isEditMode ? 'Enregistrer' : 'Ajouter' }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

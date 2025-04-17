@@ -6,6 +6,7 @@ import { User } from './models/user.model';
 import { ModalService } from './services/modal.service';
 import { environment } from '../environments/environment';
 import { ConsultantService } from './services/consultant.service';
+import { ConsultantAvailabilityService } from './services/consultant-availability.service';
 
 @Component({
   selector: 'app-root',
@@ -63,7 +64,8 @@ export class AppComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     public modalService: ModalService,
-    private consultantService: ConsultantService
+    private consultantService: ConsultantService,
+    private availabilityService: ConsultantAvailabilityService
   ) {
     console.log('🔍 FastConnect initialisation:', this.debugInfo);
     
@@ -333,6 +335,21 @@ export class AppComponent implements OnInit {
    */
   isMobileView(): boolean {
     return window.innerWidth < this.mobileBreakpoint;
+  }
+  
+  /**
+   * Ouvre le formulaire d'ajout de disponibilité
+   * Cette méthode sera modifiée dans une future étape
+   */
+  openAddAvailabilityForm(): void {
+    console.log('Cette fonctionnalité sera implémentée différemment dans une prochaine étape');
+    
+    // Pour l'instant, nous redirigeons vers la page des disponibilités
+    this.router.navigate(['/availabilities']);
+    
+    // L'ancien code est commenté mais conservé pour référence
+    // this.availabilityService.initNewForm();
+    // this.modalService.open('add-availability-modal');
   }
 
   /**

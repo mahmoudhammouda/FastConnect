@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>FastConnect</title>
-  <base href="/"><!-- Modifié pour Replit -->
+  <base href="./"><!-- Base href modifiée pour compatibilité avec Chrome Extension -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -67,6 +67,121 @@
           }, 500);
         }
       }, 2000);
+    });
+    
+    // Initialiser Flowbite quand la page est chargée
+    window.addEventListener('load', () => {
+      if (typeof window.initFlowbite === 'function') {
+        window.initFlowbite();
+        console.log('Flowbite initialisé globalement');
+      }
+    });
+  </script>
+  
+  <!-- Chargement de Flowbite via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
+  
+  <!-- Script pour initialiser les dropdowns Flowbite -->
+  <script>
+    // Définir l'objet window.flowbite si nécessaire
+    if (typeof window.flowbite === 'undefined') {
+      window.flowbite = {};
+    }
+    
+    // Rendre disponible initFlowbite pour tous les composants Angular
+    window.initFlowbite = function() {
+      console.log('Initialisation globale de Flowbite...');
+      
+      // Fonction pour initialiser tous les dropdowns sur la page
+      const initAllDropdowns = function() {
+        const dropdownElements = document.querySelectorAll('[data-dropdown-toggle]');
+        console.log('Dropdowns trouvés:', dropdownElements.length);
+        
+        dropdownElements.forEach(dropdownEl => {
+          try {
+            const targetId = dropdownEl.getAttribute('data-dropdown-toggle');
+            const targetEl = document.getElementById(targetId);
+            
+            if (targetEl && typeof flowbite !== 'undefined') {
+              console.log('Initialisation du dropdown:', targetId);
+              
+              // Méthode native de Flowbite pour initialiser un dropdown
+              new window.Dropdown(targetEl, dropdownEl, {
+                placement: 'bottom',
+                triggerType: 'click',
+                offsetSkidding: 0,
+                offsetDistance: 10,
+                delay: 300
+              });
+            }
+          } catch (e) {
+            console.error('Erreur lors de l\'initialisation du dropdown:', e);
+          }
+        });
+      };
+      
+      // Pour permettre une initialisation manuelle des dropdowns
+      window.flowbite.initDropdowns = function(dropdownButton, dropdownMenu) {
+        if (dropdownButton && dropdownMenu && typeof window.Dropdown !== 'undefined') {
+          console.log('Initialisation manuelle du dropdown:', dropdownMenu.id);
+          
+          try {
+            new window.Dropdown(dropdownMenu, dropdownButton, {
+              placement: 'bottom',
+              triggerType: 'click',
+              offsetSkidding: 0,
+              offsetDistance: 10,
+              delay: 300
+            });
+            return true;
+          } catch (e) {
+            console.error('Erreur lors de l\'initialisation manuelle du dropdown:', e);
+            return false;
+          }
+        }
+        return false;
+      };
+      
+      // Initialiser tous les dropdowns existants
+      initAllDropdowns();
+      
+      // Initialiser un observateur pour surveiller les changements DOM
+      const observer = new MutationObserver(function(mutations) {
+        let shouldInit = false;
+        
+        mutations.forEach(function(mutation) {
+          if (mutation.addedNodes.length) {
+            mutation.addedNodes.forEach(function(node) {
+              if (node.nodeType === 1) { // ELEMENT_NODE
+                if (node.hasAttribute && node.hasAttribute('data-dropdown-toggle') || 
+                    node.querySelector && node.querySelector('[data-dropdown-toggle]')) {
+                  shouldInit = true;
+                }
+              }
+            });
+          }
+        });
+        
+        if (shouldInit) {
+          console.log('Nouveaux dropdowns détectés, initialisation...');
+          initAllDropdowns();
+        }
+      });
+      
+      // Observer tout le contenu de l'application
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+      
+      return true;
+    };
+    
+    // Initialisation automatique après chargement complet de la page
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        window.initFlowbite();
+      }, 500);
     });
   </script>
   

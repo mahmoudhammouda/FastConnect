@@ -48,11 +48,24 @@
         <!-- Bouton de filtres avancés -->
         <button 
           (click)="toggleFilterPanel()"
-          class="flex items-center justify-center gap-1 px-2 py-1.5 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors duration-150 h-8">
+          class="flex items-center justify-center gap-1 px-2 py-1.5 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors duration-150 h-8 mr-2">
           <svg class="h-4 w-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
           </svg>
           <span class="text-xs text-gray-600 hidden md:inline">Filtres avancés</span>
+        </button>
+        
+        <!-- Bouton d'ajout de disponibilité -->
+        <button 
+          *ngIf="isAuthenticated"
+          (click)="openAddAvailabilityForm()"
+          title="Ajouter une disponibilité"
+          class="flex items-center justify-center gap-1 px-2 py-1.5 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors duration-150 h-8 mr-2"
+        >
+          <svg class="h-4 w-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          <span class="text-xs text-gray-600 hidden md:inline">Disponibilité</span>
         </button>
         
         <!-- Bouton Profil / Connexion -->
@@ -113,15 +126,27 @@
                 Mon profil consultant
               </a>
 
-              <!-- Lien vers la liste des consultants (Disponibilités) -->
+              <!-- Lien vers la liste des consultants -->
               <a 
                 routerLink="/consultants" 
                 class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
                 (click)="toggleMenu($event)"
               >
                 <div class="flex items-center">
+                  <span class="material-icons text-blue-600 mr-2 text-sm">people</span>
+                  Liste des consultants
+                </div>
+              </a>
+
+              <!-- Lien vers la gestion des disponibilités -->
+              <a 
+                routerLink="/availabilities" 
+                class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
+                (click)="toggleMenu($event)"
+              >
+                <div class="flex items-center">
                   <span class="material-icons text-green-600 mr-2 text-sm">event_available</span>
-                  Disponibilités
+                  Mes consultants
                 </div>
               </a>
               
@@ -133,7 +158,7 @@
               >
                 <div class="flex items-center">
                   <span class="material-icons text-purple-600 mr-2 text-sm">bookmark</span>
-                  Mes listes
+                  Mes favoris
                 </div>
               </a>
               
@@ -336,6 +361,8 @@
   
   <!-- Login Modal Component -->
   <app-login></app-login>
+  
+  <!-- Add Availability Modal Component (supprimé) -->
   
   <!-- Modal Backdrop -->
   <div 

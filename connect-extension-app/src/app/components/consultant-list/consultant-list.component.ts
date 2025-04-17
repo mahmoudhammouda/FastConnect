@@ -4,13 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { ConsultantWithTags, ExperienceLevel, AvailabilityStatus } from '../../models/consultant.model';
 import { ConsultantCardComponent } from '../consultant-card/consultant-card.component';
 import { ConsultantService } from '../../services/consultant.service';
+import { UserService } from '../../services/user.service';
+import { AddAvailabilityButtonComponent } from '../add-availability-button/add-availability-button.component';
 
 @Component({
   selector: 'app-consultant-list',
   templateUrl: './consultant-list.component.html',
   styleUrls: ['./consultant-list.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, ConsultantCardComponent]
+  imports: [CommonModule, FormsModule, ConsultantCardComponent, AddAvailabilityButtonComponent]
 })
 export class ConsultantListComponent implements OnInit, OnDestroy {
   @ViewChild('consultantsList', { static: false }) consultantsList?: ElementRef;
@@ -72,13 +74,31 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
   expandedDetails: { [id: string]: boolean } = {}; // Pour contrôler l'affichage des détails
   configDropdownOpen: boolean = false;
   
+  // Authentification
+  isAuthenticated: boolean = false;
+  
   documentClickListener?: any;
   
   // Événements de sortie - nous n'en avons plus besoin car le composant est autonome
   
-  constructor(private consultantService: ConsultantService) { }
+  constructor(
+    private consultantService: ConsultantService,
+    private userService: UserService
+  ) { }
 
   ngOnInit(): void {
+    // Vérifier si l'utilisateur est authentifié
+    this.userService.getCurrentUser().subscribe({
+      next: (user) => {
+        this.isAuthenticated = !!user;
+        console.log("Utilisateur authentifié:", this.isAuthenticated);
+      },
+      error: (error) => {
+        console.error("Erreur de vérification d'authentification:", error);
+        this.isAuthenticated = false;
+      }
+    });
+    
     // Charger les données initiales
     this.loadInitialConsultants();
     

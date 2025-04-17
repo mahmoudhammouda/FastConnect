@@ -95,6 +95,7 @@
       <div class="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full text-xs font-medium border border-blue-100">
         {{ filteredConsultants.length || 0 }}
       </div>
+      <app-add-availability-button *ngIf="isAuthenticated"></app-add-availability-button>
     </div>
     
     <!-- Bouton de tri avec dropdown fonctionnel -->

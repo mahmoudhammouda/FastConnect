@@ -5,6 +5,7 @@ import { UserProfileComponent } from './components/user/profile/user-profile.com
 import { ConsultantListComponent } from './components/consultant-list/consultant-list.component';
 import { BookmarkListsComponent } from './components/bookmark-lists/bookmark-lists.component';
 import { AlertListComponent } from './components/alert-list/alert-list.component';
+import { AvailabilityListComponent } from './components/availability-list/availability-list.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AppDebugComponent } from './app.component.debug';
 
@@ -18,6 +19,9 @@ const routes: Routes = [
   
   // Gestion des alertes automatiques
   { path: 'alerts', component: AlertListComponent },
+  
+  // Gestion des disponibilités
+  { path: 'availabilities', component: AvailabilityListComponent },
   
   // Routes d'authentification
   { path: 'login', component: LoginComponent },
@@ -52,7 +56,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { 
-    useHash: true,  // Utilisation du mode hash pour une meilleure compatibilité avec Replit
+    useHash: true,  // Activation du mode hash pour éviter les problèmes de routing sur Replit
     enableTracing: false // Désactiver le traçage pour la production
   })], 
   exports: [RouterModule]

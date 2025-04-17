@@ -48,8 +48,8 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
   isBookmarked: boolean = false;
 
   @Output() linkedinClick = new EventEmitter<string>();
-  @Output() phoneClick = new EventEmitter<string | null>();
-  @Output() emailClick = new EventEmitter<string | null>();
+  @Output() phoneClick = new EventEmitter<string | undefined | null>();
+  @Output() emailClick = new EventEmitter<string | undefined | null>();
   @Output() toggleExpansion = new EventEmitter<{id: string, expanded: boolean}>();
   @Output() toggleDropdown = new EventEmitter<{id: string, event: MouseEvent}>();
   @Output() toggleMessageExpansion = new EventEmitter<{id: string, event: MouseEvent}>();
@@ -77,8 +77,10 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
 
   /**
    * Format message with highlighted hashtags
+   * Gère correctement les valeurs undefined
    */
-  formatMessage(message: string): string {
+  formatMessage(message: string | undefined): string {
+    if (!message) return '';
     return message.replace(/#(\w+)/g, '<span class="text-blue-600 text-xs font-medium hover:text-blue-800 transition-colors duration-300">#$1</span>');
   }
   
@@ -88,9 +90,10 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
    * déterminer si un message doit être tronqué
    * Algorithme optimisé pour considérer TOUS les messages comme "longs"
    * afin de toujours afficher le bouton "Voir tout le message"
+   * Gère correctement les valeurs undefined
    */
-  isMessageLong(message: string): boolean {
-    // Si le message est vide, il n'est pas long
+  isMessageLong(message: string | undefined): boolean {
+    // Si le message est vide ou undefined, il n'est pas long
     if (!message || message.trim() === '') return false;
     
     // IMPORTANT: Force la plupart des messages à être considérés comme longs
@@ -128,14 +131,14 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
     this.onLinkedInClick(url, event);
   }
 
-  onPhoneClick(phone: string | null, event: MouseEvent): void {
+  onPhoneClick(phone: string | undefined | null, event: MouseEvent): void {
     event.stopPropagation();
     if (this.consultant.phoneValidated) {
       this.phoneClick.emit(phone);
     }
   }
 
-  onEmailClick(email: string | null, event: MouseEvent): void {
+  onEmailClick(email: string | undefined | null, event: MouseEvent): void {
     event.stopPropagation();
     if (this.consultant.emailValidated) {
       this.emailClick.emit(email);
