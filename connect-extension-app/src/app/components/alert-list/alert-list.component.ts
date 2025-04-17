@@ -79,8 +79,81 @@ export class AlertListComponent implements OnInit, OnDestroy {
       })
     );
     
+    // Ajout d'alertes de test pour visualiser le défilement
+    this.addTestAlerts();
+    
     // Gestion des clics à l'extérieur des dropdowns pour les fermer
     this.addDropdownListeners();
+  }
+  
+  /**
+   * Ajoute des alertes de test pour visualiser le comportement du défilement
+   * Cette méthode est temporaire et ne doit être utilisée que pour les tests
+   */
+  private addTestAlerts(): void {
+    // Données des alertes de test
+    const testAlerts = [
+      { name: 'Développeurs JavaScript Senior à Paris', experience: ['5-10 ans'], availability: ['Disponible maintenant'], location: ['Paris'], skills: ['JavaScript', 'React', 'Node.js'], country: 'France' },
+      { name: 'Architectes Java en remote', experience: ['10+ ans'], availability: ['Disponible dans 30 jours'], location: ['Remote'], skills: ['Java', 'Spring', 'Microservices'], country: 'France' },
+      { name: 'Développeurs Python à Lyon', experience: ['3-5 ans'], availability: ['Disponible dans 30 jours', 'Disponible dans 60 jours'], location: ['Lyon'], skills: ['Python', 'Django', 'Flask'], country: 'France' },
+      { name: 'Experts DevOps en France', experience: ['5-10 ans', '10+ ans'], availability: ['Disponible maintenant'], location: ['Paris', 'Lyon', 'Bordeaux'], skills: ['Kubernetes', 'Docker', 'AWS'], country: 'France' },
+      { name: 'Développeurs .NET à Bruxelles', experience: ['Moins de 3 ans', '3-5 ans'], availability: ['Disponible maintenant'], location: ['Bruxelles'], skills: ['.NET', 'C#', 'Azure'], country: 'Belgique' },
+      { name: 'Data Scientists en Île-de-France', experience: ['5-10 ans'], availability: ['Disponible dans 30 jours'], location: ['Paris'], skills: ['Python', 'Machine Learning', 'TensorFlow'], country: 'France' },
+      { name: 'Développeurs Mobile à Toulouse', experience: ['3-5 ans', '5-10 ans'], availability: ['Disponible maintenant', 'Disponible dans 15 jours'], location: ['Toulouse'], skills: ['Swift', 'Flutter', 'React Native'], country: 'France' },
+      { name: 'Développeurs Frontend React à Nice', experience: ['Moins de 3 ans', '3-5 ans'], availability: ['Disponible dans 30 jours'], location: ['Nice'], skills: ['React', 'TypeScript', 'CSS'], country: 'France' },
+      { name: 'Experts Sécurité en France', experience: ['10+ ans'], availability: ['Disponible dans 60 jours'], location: ['Paris', 'Lyon', 'Marseille'], skills: ['Cybersécurité', 'Pentesting', 'ISO 27001'], country: 'France' },
+      { name: 'Développeurs Full Stack à Lille', experience: ['3-5 ans', '5-10 ans'], availability: ['Disponible maintenant'], location: ['Lille'], skills: ['JavaScript', 'Node.js', 'React', 'MongoDB'], country: 'France' },
+      { name: 'Ingénieurs Data à Nantes', experience: ['5-10 ans'], availability: ['Disponible dans 30 jours'], location: ['Nantes'], skills: ['Python', 'Hadoop', 'Spark'], country: 'France' },
+      { name: 'Développeurs PHP à Marseille', experience: ['3-5 ans'], availability: ['Disponible maintenant'], location: ['Marseille'], skills: ['PHP', 'Laravel', 'Symfony'], country: 'France' },
+      { name: 'UX/UI Designers en France', experience: ['5-10 ans'], availability: ['Disponible dans 30 jours'], location: ['Paris', 'Lyon', 'Bordeaux'], skills: ['Figma', 'Adobe XD', 'Design Thinking'], country: 'France' },
+      { name: 'Développeurs Blockchain à Paris', experience: ['5-10 ans', '10+ ans'], availability: ['Disponible dans 60 jours'], location: ['Paris'], skills: ['Solidity', 'Ethereum', 'Smart Contracts'], country: 'France' },
+      { name: 'Administrateurs Systèmes à Lyon', experience: ['3-5 ans', '5-10 ans'], availability: ['Disponible maintenant'], location: ['Lyon'], skills: ['Linux', 'Windows Server', 'Scripting'], country: 'France' },
+      { name: 'Développeurs Vue.js à Strasbourg', experience: ['Moins de 3 ans', '3-5 ans'], availability: ['Disponible dans 30 jours'], location: ['Strasbourg'], skills: ['Vue.js', 'JavaScript', 'CSS'], country: 'France' },
+      { name: 'Consultants SAP à Paris', experience: ['5-10 ans', '10+ ans'], availability: ['Disponible dans 60 jours'], location: ['Paris'], skills: ['SAP', 'ERP', 'ABAP'], country: 'France' },
+      { name: 'Développeurs Ruby à Bordeaux', experience: ['3-5 ans'], availability: ['Disponible maintenant'], location: ['Bordeaux'], skills: ['Ruby', 'Rails', 'PostgreSQL'], country: 'France' },
+      { name: 'Ingénieurs QA à Montpellier', experience: ['5-10 ans'], availability: ['Disponible dans 30 jours'], location: ['Montpellier'], skills: ['Test Automation', 'Selenium', 'Cypress'], country: 'France' },
+      { name: 'Développeurs Golang à Annecy', experience: ['5-10 ans'], availability: ['Disponible maintenant'], location: ['Annecy'], skills: ['Go', 'Microservices', 'Docker'], country: 'France' }
+    ];
+    
+    // Créer des alertes avec des ID uniques et des dates aléatoires
+    const now = new Date();
+    testAlerts.forEach((alertData, index) => {
+      // Générer des dates aléatoires pour la création et dernière mise à jour
+      const createdDaysAgo = Math.floor(Math.random() * 90); // 0 à 90 jours
+      const updatedDaysAgo = Math.floor(Math.random() * createdDaysAgo); // Entre 0 et createdDaysAgo jours
+      
+      const createdAt = new Date(now.getTime() - (createdDaysAgo * 24 * 60 * 60 * 1000));
+      const updatedAt = new Date(now.getTime() - (updatedDaysAgo * 24 * 60 * 60 * 1000));
+      
+      // Créer un nombre aléatoire de nouveaux consultants pour chaque alerte
+      const newConsultantCount = Math.floor(Math.random() * 5); // 0 à 4 nouveaux consultants
+      
+      // Déterminer si l'alerte a été consultée récemment
+      const hasBeenViewed = Math.random() > 0.3; // 70% de chance d'avoir été vue
+      const lastViewedAt = hasBeenViewed 
+        ? new Date(now.getTime() - (Math.floor(Math.random() * 10) * 24 * 60 * 60 * 1000)) 
+        : null;
+      
+      // Créer l'objet alerte conforme à l'interface Alert
+      const alert: Alert = {
+        id: `test-alert-${index + 1}`,
+        name: alertData.name,
+        criteria: {
+          experience: alertData.experience,
+          availability: alertData.availability,
+          location: alertData.location,
+          skills: alertData.skills,
+          country: alertData.country
+        },
+        newConsultantCount: newConsultantCount,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        lastViewedAt: lastViewedAt
+      };
+      
+      // Ajouter l'alerte à la liste
+      this.alerts.push(alert);
+    });
   }
   
   /**

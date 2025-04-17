@@ -1,0 +1,177 @@
+/* Styles pour le conteneur principal */
+.alert-page-container {
+  padding: 1rem;
+  width: 100%;
+  height: 100%;
+}
+
+/* Styles pour les titres */
+.alert-page-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0;
+}
+
+/* Styles pour l'en-tête de la page */
+.alert-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Styles pour la liste des alertes */
+.alert-list {
+  max-height: 85vh;
+  overflow-y: auto;
+  padding-right: 0.25rem; /* Pour éviter que la barre de défilement ne soit trop collée au bord */
+}
+
+/* Style pour la barre de défilement */
+.alert-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.alert-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.alert-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.alert-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Styles pour les éléments de la liste */
+.alert-card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.alert-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+.alert-card-header, .alert-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1rem;
+  cursor: pointer;
+  background-color: white;
+  border-radius: inherit;
+}
+
+.alert-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.875rem 1rem;
+  cursor: pointer;
+  background-color: white;
+  border-radius: inherit;
+}
+
+.alert-card-content {
+  flex: 1;
+}
+
+.alert-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.alert-card-title-row span {
+  font-weight: 600;
+  color: #111827;
+  font-size: 1.05rem;
+}
+
+/* Badge pour nouveaux consultants */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-red {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+/* Critères d'alerte */
+.alert-card-criteria {
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin-top: 0.25rem;
+  line-height: 1.4;
+}
+
+/* Boutons d'action */
+.alert-card-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.alert-card-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.375rem;
+  transition: all 0.15s ease;
+}
+
+.alert-card-actions button:hover {
+  background-color: #f3f4f6;
+}
+
+/* Style pour l'état vide */
+.alert-empty-state {
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  background-color: #f9fafb;
+  border: 1px dashed #d1d5db;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+}
+
+.alert-empty-state p:first-child {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+/* Styles pour les formulaires */
+.alert-form-container {
+  margin-bottom: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background-color: white;
+}
+
+.alert-create-form,
+.alert-edit-form {
+  margin-bottom: 1.5rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}

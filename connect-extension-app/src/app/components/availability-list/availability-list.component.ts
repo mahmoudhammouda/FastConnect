@@ -286,6 +286,8 @@ export class AvailabilityListComponent implements OnInit, AfterViewInit {
         consultantName: 'Marie Dupont',
         role: 'Développeur Full-Stack',
         consultantRole: 'Développeur Full-Stack',
+        title: 'Lead Developer Angular/Node.js',
+        locked: false,
         startDate: '2025-05-01T00:00:00.000Z',
         durationInMonths: 3,
         status: 'available',
@@ -305,6 +307,8 @@ export class AvailabilityListComponent implements OnInit, AfterViewInit {
         consultantName: 'Jean Martin',
         role: 'DevOps Engineer',
         consultantRole: 'DevOps Engineer',
+        title: 'Cloud Architect AWS & Kubernetes',
+        locked: true,
         startDate: '2025-06-15T00:00:00.000Z',
         durationInMonths: 6,
         status: 'pending',
@@ -324,6 +328,8 @@ export class AvailabilityListComponent implements OnInit, AfterViewInit {
         consultantName: 'Sophie Petit',
         role: 'Data Scientist',
         consultantRole: 'Data Scientist',
+        title: 'Machine Learning Specialist / Data Scientist',
+        locked: false,
         startDate: '2025-04-20T00:00:00.000Z',
         durationInMonths: 2,
         status: 'available',
@@ -338,6 +344,164 @@ export class AvailabilityListComponent implements OnInit, AfterViewInit {
         engagementType: 'Les deux'
       }
     ];
+    
+    // Ajouter plus de consultants avec des titres variés
+    mockAvailabilities.push(
+      {
+        id: '4',
+        consultantId: '104',
+        consultantName: 'Pierre Dubois',
+        role: 'Architecte Logiciel',
+        consultantRole: 'Architecte Logiciel',
+        title: 'Architecte Solutions Java/Spring',
+        locked: true,
+        startDate: '2025-05-10T00:00:00.000Z',
+        durationInMonths: 4,
+        status: 'available',
+        cities: ['Lyon', 'Grenoble'],
+        workMode: 'hybrid',
+        rate: 800,
+        skills: ['Java', 'Spring', 'Microservices', 'Oracle', 'Architecture'],
+        description: 'Architecte logiciel avec 12 ans d\'expérience, spécialisé dans la conception de systèmes distribués.',
+        sectors: ['Télécommunications', 'Banque & Finance'],
+        experienceLevel: 'expert',
+        country: 'France',
+        engagementType: 'Freelance'
+      },
+      {
+        id: '5',
+        consultantId: '105',
+        consultantName: 'Camille Laurent',
+        role: 'UX/UI Designer',
+        consultantRole: 'UX/UI Designer',
+        title: 'Lead UX Designer & Product Strategist',
+        locked: false,
+        startDate: '2025-04-15T00:00:00.000Z',
+        durationInMonths: 3,
+        status: 'available',
+        cities: ['Paris'],
+        workMode: 'onsite',
+        rate: 620,
+        skills: ['Figma', 'Adobe XD', 'Design Thinking', 'User Research', 'Prototyping'],
+        description: 'Designer UX/UI passionnée par la création d\'expériences utilisateur exceptionnelles.',
+        sectors: ['Luxe', 'Média & Divertissement'],
+        experienceLevel: 'senior',
+        country: 'France',
+        engagementType: 'Salarié'
+      },
+      {
+        id: '6',
+        consultantId: '106',
+        consultantName: 'Lucas Moreau',
+        role: 'Développeur Mobile',
+        consultantRole: 'Développeur Mobile',
+        title: 'Expert Mobile iOS & Flutter',
+        locked: true,
+        startDate: '2025-05-20T00:00:00.000Z',
+        durationInMonths: 5,
+        status: 'available',
+        cities: ['Nantes', 'Rennes'],
+        workMode: 'remote',
+        rate: 700,
+        skills: ['Swift', 'Flutter', 'Kotlin', 'Firebase', 'REST API'],
+        description: 'Développeur mobile expérimenté, spécialisé dans la création d\'applications performantes et élégantes.',
+        sectors: ['Retail & E-commerce', 'Transport & Logistique'],
+        experienceLevel: 'senior',
+        country: 'France',
+        engagementType: 'Freelance'
+      }
+    );
+    
+    // Ajouter 20 consultants supplémentaires pour tester le scrolling
+    const specialties = [
+      'Front-End', 'Back-End', 'Full-Stack', 'Mobile', 'DevOps', 'Cloud', 
+      'Data', 'BI', 'Security', 'QA', 'UX/UI', 'Product', 'Agile', 'Scrum',
+      'Architecture', 'Infrastructure', 'Database', 'API', 'Microservices', 'Blockchain'
+    ];
+    
+    const technologies = [
+      'React', 'Vue.js', 'Angular', 'Node.js', 'Python', 'Java', '.NET', 'PHP',
+      'AWS', 'Azure', 'GCP', 'Kubernetes', 'Docker', 'Terraform', 'CI/CD',
+      'SQL', 'NoSQL', 'MongoDB', 'PostgreSQL', 'GraphQL', 'REST', 'gRPC',
+      'TensorFlow', 'PyTorch', 'Elasticsearch', 'Redis', 'RabbitMQ', 'Kafka',
+      'Spring', 'Laravel', 'Django', 'Flask', 'Express', 'Next.js', 'Nuxt.js'
+    ];
+    
+    const firstNames = [
+      'Thomas', 'Emma', 'Hugo', 'Léa', 'Gabriel', 'Céline', 'Julien', 'Manon',
+      'Antoine', 'Clara', 'Nicolas', 'Camille', 'Alexandre', 'Sarah', 'Rémi',
+      'Aurélie', 'Vincent', 'Charlotte', 'Maxime', 'Julie'
+    ];
+    
+    const lastNames = [
+      'Bernard', 'Moreau', 'Robert', 'Simon', 'Durand', 'Lambert', 'Leroy', 'Roux',
+      'Girard', 'Lefebvre', 'Bertrand', 'Richard', 'Morel', 'Petit', 'Fournier',
+      'Garnier', 'Faure', 'Rousseau', 'Mercier', 'Blanc'
+    ];
+    
+    const cities = [
+      'Paris', 'Lyon', 'Marseille', 'Bordeaux', 'Lille', 'Nantes', 'Strasbourg',
+      'Toulouse', 'Nice', 'Rennes', 'Montpellier', 'Grenoble', 'Angers', 'Dijon',
+      'Reims', 'Le Havre', 'Aix-en-Provence', 'Saint-Étienne', 'Toulon', 'Annecy'
+    ];
+    
+    const sectors = [
+      'Banque & Finance', 'Assurance', 'Santé', 'Retail & E-commerce', 'Industrie',
+      'Transport & Logistique', 'Énergie', 'Télécommunications', 'Média & Divertissement',
+      'Services Publics', 'Luxe', 'Éducation', 'Agroalimentaire', 'Immobilier',
+      'Technologie & Startups'
+    ];
+    
+    // Générer 20 consultants
+    for (let i = 0; i < 20; i++) {
+      const randomSpecialty = specialties[Math.floor(Math.random() * specialties.length)];
+      const randomTech1 = technologies[Math.floor(Math.random() * technologies.length)];
+      const randomTech2 = technologies[Math.floor(Math.random() * technologies.length)];
+      const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+      const randomLastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+      const randomCity1 = cities[Math.floor(Math.random() * cities.length)];
+      const randomCity2 = cities[Math.floor(Math.random() * cities.length)];
+      const randomSector1 = sectors[Math.floor(Math.random() * sectors.length)];
+      const randomSector2 = sectors[Math.floor(Math.random() * sectors.length)];
+      
+      const skills: string[] = [];
+      // Ajouter 3 à 6 compétences aléatoires
+      const skillCount = Math.floor(Math.random() * 4) + 3;
+      for (let j = 0; j < skillCount; j++) {
+        const randomSkill = this.skillsList[Math.floor(Math.random() * this.skillsList.length)];
+        if (!skills.includes(randomSkill)) {
+          skills.push(randomSkill);
+        }
+      }
+      
+      const salary = (Math.floor(Math.random() * 40) + 50) * 10;
+      const experienceLevels = ['junior', 'intermediate', 'senior', 'expert'] as const;
+      const randomExperience = experienceLevels[Math.floor(Math.random() * experienceLevels.length)];
+      const workModes = ['onsite', 'remote', 'hybrid'] as const;
+      const randomWorkMode = workModes[Math.floor(Math.random() * workModes.length)];
+      
+      mockAvailabilities.push({
+        id: `${7 + i}`,
+        consultantId: `${107 + i}`,
+        consultantName: `${randomFirstName} ${randomLastName}`,
+        role: `Développeur ${randomSpecialty}`,
+        consultantRole: `Développeur ${randomSpecialty}`,
+        title: `${randomSpecialty === 'DevOps' || randomSpecialty === 'Cloud' || randomSpecialty === 'Security' ? 'Expert' : 'Senior'} ${randomSpecialty} ${randomTech1} / ${randomTech2}`,
+        startDate: `2025-${(Math.floor(Math.random() * 3) + 4).toString().padStart(2, '0')}-${(Math.floor(Math.random() * 28) + 1).toString().padStart(2, '0')}T00:00:00.000Z`,
+        durationInMonths: Math.floor(Math.random() * 6) + 2,
+        status: 'available',
+        cities: [randomCity1, randomCity2].filter((v, i, a) => a.indexOf(v) === i), // Remove duplicates
+        workMode: randomWorkMode as 'onsite' | 'remote' | 'hybrid',
+        rate: salary,
+        skills: skills,
+        description: `${randomSpecialty === 'UX/UI' ? 'Designer' : 'Développeur'} ${randomSpecialty} spécialisé en ${randomTech1} et ${randomTech2} avec une forte expérience dans le secteur ${randomSector1.toLowerCase()}.`,
+        sectors: [randomSector1, randomSector2].filter((v, i, a) => a.indexOf(v) === i), // Remove duplicates
+        experienceLevel: randomExperience as 'junior' | 'intermediate' | 'senior' | 'expert',
+        country: 'France',
+        engagementType: Math.random() > 0.7 ? 'Salarié' : 'Freelance',
+        locked: Math.random() > 0.7 // 30% des consultants sont verrouillés
+      });
+    }
     
     // Simuler un délai réseau pour montrer le loader
     setTimeout(() => {

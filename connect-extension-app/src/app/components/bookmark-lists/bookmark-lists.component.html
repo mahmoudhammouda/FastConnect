@@ -1,11 +1,11 @@
-<div class="bookmark-lists-container">
+<div class="bookmark-lists-container bookmark-page-container">
   <!-- En-tête avec bouton d'ajout -->
-  <div class="flex items-center justify-between mb-4">
-    <h2 class="text-lg font-semibold">Mes listes de favoris</h2>
+  <div class="flex items-center justify-between mb-4 bookmark-header">
+    <h2 class="text-lg font-semibold bookmark-title">Mes listes de favoris</h2>
     <button 
       *ngIf="!isCreatingNewList"
       (click)="startCreatingList()"
-      class="button button-primary flex items-center gap-1">
+      class="button button-primary flex items-center gap-1 bookmark-add-button">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
       </svg>
@@ -15,7 +15,7 @@
   
   <!-- Formulaire de création de nouvelle liste - Style collapsable -->
   <div *ngIf="isCreatingNewList" 
-       class="bookmark-form-collapsable bg-white shadow-md rounded-lg mb-4 overflow-hidden">
+       class="bookmark-form-collapsable bookmark-create-form bg-white shadow-md rounded-lg mb-4 overflow-hidden">
     <div class="p-4">
       <div class="flex justify-between items-center mb-3">
         <h3 class="text-sm font-medium text-gray-700">
@@ -63,7 +63,7 @@
   
   <!-- Message si aucune liste -->
   <div *ngIf="bookmarkLists.length === 0 && !isCreatingNewList" 
-       class="p-4 bg-gray-50 rounded-lg text-center">
+       class="p-4 bg-gray-50 rounded-lg text-center bookmark-empty-state">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
     </svg>
@@ -72,11 +72,11 @@
   </div>
   
   <!-- Liste des favoris -->
-  <div *ngIf="bookmarkLists.length > 0">
+  <div *ngIf="bookmarkLists.length > 0" class="bookmark-list">
     <div *ngFor="let list of bookmarkLists" 
          [class.selected]="list.id === selectedListId"
-         class="bookmark-item">
-      <div class="bookmark-header" (click)="selectList(list.id)">
+         class="bookmark-item bookmark-list-item">
+      <div class="bookmark-header bookmark-item-header" (click)="selectList(list.id)">
         <!-- Contenu principal de la liste -->
         <div class="flex-1">
           <div class="flex items-center gap-2">
@@ -100,7 +100,7 @@
         </div>
         
         <!-- Boutons d'action -->
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 bookmark-action-buttons">
           <!-- Bouton œil (voir les consultants) -->
           <button 
             (click)="consultantCounts[list.id] > 0 ? viewConsultants(list.id, $event) : $event.stopPropagation()" 
@@ -154,7 +154,7 @@
       
       <!-- Formulaire d'édition directement sous la carte -->
       <div *ngIf="editingListId === list.id" 
-           class="bookmark-form-collapsable bg-white shadow-md rounded-lg my-2 overflow-hidden">
+           class="bookmark-form-collapsable bookmark-edit-form bg-white shadow-md rounded-lg my-2 overflow-hidden">
         <div class="p-4">
           <div class="flex justify-between items-center mb-3">
             <h3 class="text-sm font-medium text-gray-700">

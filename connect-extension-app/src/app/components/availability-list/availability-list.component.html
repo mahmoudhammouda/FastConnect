@@ -1,4 +1,4 @@
-<div class="availability-list-container availability-page-container">
+<div class="availability-list-container availability-page-container w-full">
   <!-- En-tête avec bouton d'ajout -->
   <div class="flex items-center justify-between mb-4 availability-header">
     <h1 class="text-lg font-semibold availability-title">Mes Consultants</h1>
@@ -22,46 +22,63 @@
   </div>
   
   <!-- Liste des consultants -->
-  <div *ngIf="consultantAvailabilities.length > 0" class="availability-list">
+  <div *ngIf="consultantAvailabilities.length > 0" class="availability-list w-full">
     <div *ngFor="let availability of consultantAvailabilities" 
-         class="consultant-item availability-list-item mb-3 bg-white rounded-lg shadow overflow-hidden"
+         class="consultant-item availability-list-item mb-3 bg-white rounded-lg shadow overflow-hidden w-full"
          [ngClass]="{'editing': editingAvailabilityId === availability.id}">
-      <div class="consultant-header availability-item-header py-3 px-4 hover:bg-gray-50 transition-colors duration-150">
+      <div class="consultant-header availability-item-header py-3 px-4 hover:bg-gray-50 transition-colors duration-150 w-full">
         <!-- Structure similaire à l'image de référence -->
         <!-- Structure avec séparation claire texte / boutons -->
-        <div class="grid grid-cols-[1fr_auto] items-center w-full">
-          <!-- Colonne 1: informations du consultant -->
-          <div>
-            <!-- Titre actuel (affiché en premier) -->
-            <div *ngIf="availability.title" class="font-medium text-gray-800 text-lg">{{ availability.title }}</div>
-            
-            <!-- Nom du consultant (affiché en second) -->
-            <div class="font-medium text-gray-700 mt-1">{{ availability.consultantName }}</div>
-            
-            <!-- Ligne d'informations -->
-            <div class="text-xs text-gray-500 mt-1">
-              Pays: France | Exp: {{ getExperienceLabel(availability.experienceLevel) }} | Lieu: {{ availability.cities.join(', ') || 'Non spécifié' }} | Skills: {{ getSkillsString(availability.skills) }}
+        <div class="flex flex-row justify-between items-start w-full">
+          <!-- Colonne 0: Status indicator dans un badge comme demandé -->
+          <div class="flex items-center justify-center mr-3 py-1">
+            <!-- Status indicator dans le badge -->
+            <div class="consultant-badge bg-blue-50 rounded-lg flex items-center justify-center">
+              <span class="material-icons text-sm"
+                    [ngClass]="{
+                      'text-gradient animate-gradient': !availability.locked,
+                      'text-red-500': availability.locked
+                    }"
+                    [title]="availability.locked ? 'Profil verrouillé' : 'Profil accessible'">
+                {{ availability.locked ? 'lock' : 'lock_open' }}
+              </span>
             </div>
           </div>
           
-          <!-- Colonne 2: boutons d'action exactement comme sur l'image -->
-          <div class="action-buttons availability-action-buttons">
-            <button 
-              (click)="editAvailability(availability)"
-              class="text-blue-600 hover:text-blue-800" 
-              title="Modifier ce consultant">
-              <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-              </svg>
-            </button>
-            <button 
-              (click)="deleteAvailability(availability)"
-              class="text-red-600 hover:text-red-800"
-              title="Supprimer ce consultant">
-              <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
-            </button>
+          <!-- Colonne 1: informations du consultant -->
+          <div class="flex-grow min-w-0 pr-2">
+            <!-- Nom du consultant avec boutons d'action alignés horizontalement -->
+            <div class="flex items-center justify-between w-full">
+              <div class="font-medium text-gray-800 text-lg truncate">{{ availability.consultantName }}</div>
+              
+              <!-- Boutons d'action alignés avec le nom -->
+              <div class="action-buttons availability-action-buttons flex-shrink-0 ml-2">
+                <button 
+                  (click)="editAvailability(availability)"
+                  class="text-blue-600 hover:text-blue-800" 
+                  title="Modifier ce consultant">
+                  <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </button>
+                <button 
+                  (click)="deleteAvailability(availability)"
+                  class="text-red-600 hover:text-red-800"
+                  title="Supprimer ce consultant">
+                  <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Titre actuel du consultant (affiché en second) -->
+            <div *ngIf="availability.title" class="text-sm text-gray-600 mt-1 truncate">{{ availability.title }}</div>
+            
+            <!-- Ligne d'informations -->
+            <div class="text-xs text-gray-500 mt-1 truncate">
+              Pays: France | Exp: {{ getExperienceLabel(availability.experienceLevel) }} | Lieu: {{ availability.cities.join(', ') || 'Non spécifié' }} | Skills: {{ getSkillsString(availability.skills) }}
+            </div>
           </div>
         </div>
       </div>
