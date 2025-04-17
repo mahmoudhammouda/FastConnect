@@ -19,6 +19,7 @@ export class AppComponent implements OnInit {
   currentUser: User | null = null;
   isAuthenticated = false;
   currentRoute = '';
+  activeTab: string = 'consultants'; // Par défaut, l'onglet "Consultants" est actif
   menuOpen = false;
   showFilterPanel = false; // Pour gérer l'affichage du panneau de filtres
   isDebugEnabled = true; // Par défaut, le débogage est activé
@@ -85,6 +86,14 @@ export class AppComponent implements OnInit {
       this.createFloatingDebugElement();
       this.updateFloatingDebugVisibility();
     }, 1000);
+  }
+
+  /**
+   * Gère le changement d'onglet dans la navbar
+   * @param tab Le nouvel onglet actif
+   */
+  onTabChange(tab: string) {
+    this.activeTab = tab;
   }
 
   ngOnInit(): void {

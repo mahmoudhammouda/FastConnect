@@ -26,19 +26,20 @@
   </div>
 
   <div class="w-full max-w-3xl mx-auto flex flex-col h-full">
-    <!-- Header Style LinkedIn - sans nom d'application - optimisé pour mobile -->
-    <div class="bg-white p-2 shadow-sm z-40 mt-8 sticky top-0">
-      <div class="flex items-center justify-between space-x-2 px-1">
+    <!-- Navigation principale avec onglets Consultants/Missions -->
+    <app-navbar (tabChange)="onTabChange($event)" class="mt-8 fc-main-tabs"></app-navbar><!-- Header Style LinkedIn - sans nom d'application - optimisé pour mobile -->
+    <div class="bg-white shadow-sm z-40 sticky top-0 fc-search-header" style="padding: 0.5rem;">
+      <div class="flex items-center justify-between space-x-2 px-1 fc-search-container">
         <!-- Barre de recherche style LinkedIn (sans padding latéral) -->
-        <div class="relative flex-grow">
+        <div class="relative flex-grow fc-search-wrapper">
           <input 
             type="text" 
             [(ngModel)]="searchText"
             (keyup)="onSearchTextChange()"
             placeholder="Rechercher un consultant..." 
-            class="w-full pl-8 pr-2 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm bg-gray-50"
+            class="w-full pl-8 pr-2 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm bg-gray-50 fc-search-input"
           >
-          <div class="absolute inset-y-0 left-2 flex items-center pointer-events-none">
+          <div class="absolute inset-y-0 left-2 flex items-center pointer-events-none fc-search-icon">
             <svg class="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
             </svg>
@@ -354,8 +355,28 @@
     
     <!-- Espace pour le mode mobile lorsque le panneau de filtres est ouvert -->
     <div [ngClass]="{'pt-0': !showFilterPanel, 'pt-0 md:pt-0': showFilterPanel, 'pt-[420px]': showFilterPanel && isMobileView()}" class="transition-all duration-300 ease-in-out">
-      <!-- Route principale (consultants ou autre contenu) -->
-      <router-outlet></router-outlet>
+      <!-- Contenu conditionnel basé sur l'onglet actif -->
+      <div [ngSwitch]="activeTab">
+        <!-- Onglet Consultants - affiche le router-outlet normal -->
+        <div *ngSwitchCase="'consultants'">
+          <!-- Route principale (consultants) -->
+          <router-outlet></router-outlet>
+        </div>
+
+        <!-- Onglet Missions - à implémenter -->
+        <div *ngSwitchCase="'missions'" class="p-4">
+          <div class="bg-white p-6 rounded-lg shadow-sm">
+            <h2 class="text-xl font-semibold mb-4">Gestion des missions</h2>
+            <p class="text-gray-600 mb-4">Cette fonctionnalité sera disponible prochainement. Vous pourrez bientôt gérer les missions de vos consultants.</p>
+            <div class="flex items-center p-4 bg-blue-50 rounded-md">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p class="text-sm text-blue-700">N'hésitez pas à nous contacter pour toute suggestion concernant cette nouvelle fonctionnalité.</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   

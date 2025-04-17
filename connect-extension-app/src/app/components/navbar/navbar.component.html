@@ -1,0 +1,16 @@
+<div class="navbar-container fc-tabs-wrapper">
+  <nav class="flex rtl:space-x-reverse fc-tabs-navigation" aria-label="Tabs">
+    <a class="-mb-px py-3 px-4 text-sm font-medium text-center border border-b-transparent rounded-t-sm fc-tab fc-consultants-tab" 
+       [class.active-tab]="activeTab === 'consultants'"
+       [class.inactive-tab]="activeTab !== 'consultants'"
+       (click)="setActiveTab('consultants')">
+      Consultants
+    </a>
+    <a class="-mb-px py-3 px-4 text-sm font-medium text-center border-b rounded-t-sm fc-tab fc-missions-tab" 
+       [class.active-tab]="activeTab === 'missions'"
+       [class.inactive-tab]="activeTab !== 'missions'"
+       (click)="setActiveTab('missions')">
+      Missions
+    </a>
+  </nav>
+</div>

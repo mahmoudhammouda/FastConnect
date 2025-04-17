@@ -18,6 +18,7 @@ import { ConsultantFormComponent } from './components/consultant-form/consultant
 import { BookmarkListsComponent } from './components/bookmark-lists/bookmark-lists.component';
 // (Référence à AddAvailabilityModalComponent supprimée)
 import { AvailabilityListComponent } from './components/availability-list/availability-list.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { AvailabilityListComponent } from './components/availability-list/availa
     ConsultantFormComponent,
     BookmarkListsComponent,
     // (Référence à AddAvailabilityModalComponent supprimée)
-    AvailabilityListComponent // Composant de liste des disponibilités
+    AvailabilityListComponent, // Composant de liste des disponibilités
+    NavbarComponent // Composant de navigation
   ],
   providers: [
     // Intercepteur HTTP pour ajouter le token à toutes les requêtes
