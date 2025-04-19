@@ -1,21 +1,21 @@
 <!-- Version desktop du composant (masquée sur mobile) -->
 <div class="fc-consultant-card bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow transition-all duration-300 hidden md:block" data-consultant-card="true">
   <!-- En-tête avec informations principales -->
-  <div class="p-3 fc-card-header">
+  <div class="p-4 fc-card-header">
     <div class="flex items-start justify-between">
       <!-- Partie gauche: Avatar et informations principales -->
-      <div class="flex items-start space-x-3">
+      <div class="flex items-start space-x-4">
         <!-- Indicateur de statut et avatar -->
-        <div class="flex-shrink-0">
+        <div class="flex-shrink-0 fc-consultant-avatar-container">
           <div class="relative">
             <!-- Avatar avec indicateur de disponibilité -->
-            <div class="h-10 w-10 rounded-full flex items-center justify-center border border-gray-200 text-gray-600"
+            <div class="h-12 w-12 rounded-full flex items-center justify-center border border-gray-200 text-gray-600 fc-consultant-avatar"
                  [ngClass]="{
                    'bg-green-100 text-green-800': consultant.availability === 0,
                    'bg-yellow-100 text-yellow-800': consultant.availability === 1,
                    'bg-red-100 text-red-800': consultant.availability === 2
                  }">
-              <span class="material-icons text-base">
+              <span class="material-icons text-lg">
                 {{ consultant.locked ? 'lock' : 'person' }}
               </span>
               <!-- Badge d'ID -->
@@ -26,141 +26,156 @@
           </div>
         </div>
 
-        <!-- Informations principales (format mobile adapté pour desktop) -->
-        <div class="flex-1 min-w-0">
+        <!-- Informations principales -->
+        <div class="flex-1 min-w-0 fc-consultant-info">
           <!-- Rôle du consultant -->
-          <h3 class="text-sm font-semibold text-gray-900 truncate flex items-center">
+          <h3 class="text-base font-semibold text-gray-900 truncate flex items-center fc-consultant-role">
             <span>{{ consultant.role }}</span>
             <!-- Indicateur pulsant pour disponibilité immédiate -->
-            <div *ngIf="consultant.availability === 0" class="ml-1.5 w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+            <div *ngIf="consultant.availability === 0" class="ml-2 w-2 h-2 rounded-full bg-green-500 animate-pulse fc-availability-indicator"></div>
           </h3>
           
           <!-- Niveau d'expérience -->
-          <div class="flex items-center mt-0.5 mb-0.5">
-            <div class="flex space-x-0.5 items-end h-2.5 mr-1.5">
+          <div class="flex items-center mt-1 mb-1 fc-experience-level">
+            <div class="flex space-x-0.5 items-end h-3 mr-2 fc-experience-bars">
               <div *ngFor="let i of [1, 2, 3]" 
-                   class="w-1 rounded-full transition-all duration-300"
+                   class="w-1.5 rounded-full transition-all duration-300"
                    [ngClass]="{
                      'bg-blue-500': i <= getSeniorityBars(consultant.experience), 
                      'bg-gray-200': i > getSeniorityBars(consultant.experience),
-                     'h-1': i === 1,
-                     'h-1.5': i === 2,
-                     'h-2': i === 3
+                     'h-1.5': i === 1,
+                     'h-2': i === 2,
+                     'h-2.5': i === 3
                    }">
               </div>
             </div>
-            <span class="text-xs text-gray-600">{{ getExperienceLabel(consultant.experience) }}</span>
+            <span class="text-xs text-gray-600 fc-experience-label">{{ getExperienceLabel(consultant.experience) }}</span>
           </div>
           
           <!-- Localisation -->
-          <p class="text-xs text-gray-500 truncate">
-            <ng-container *ngFor="let location of getLocations(consultant); let last = last">
-              <span>{{ location.trim() }}</span>
-              <span *ngIf="!last" class="mx-1">•</span>
-            </ng-container>
+          <p class="text-xs text-gray-500 truncate fc-consultant-location">
+            <span class="fc-locations-list">
+              <ng-container *ngFor="let location of getLocations(consultant); let last = last">
+                <span>{{ location.trim() }}</span>
+                <span *ngIf="!last" class="mx-1">•</span>
+              </ng-container>
+            </span>
           </p>
         </div>
       </div>
 
-      <!-- Partie droite: Bookmark uniquement (comme en mobile) -->
-      <button 
-        (click)="toggleBookmarkDropdown($event, consultant.id)" 
-        class="flex items-center justify-center h-7 w-7 rounded-full text-gray-400 hover:text-blue-700 transition-all duration-200"
-        title="Ajouter aux favoris">
-        <span class="material-icons text-sm" [class.text-blue-700]="isBookmarked">
-          bookmark
-        </span>
-      </button>
+      <!-- Partie droite: Actions -->
+      <div class="flex space-x-2 fc-card-actions">
+        <!-- Marque-page -->
+        <button 
+          (click)="toggleBookmarkDropdown($event, consultant.id)" 
+          class="flex items-center justify-center h-8 w-8 rounded-full hover:bg-gray-100 text-gray-400 hover:text-blue-700 transition-all duration-200 fc-bookmark-action"
+          title="Ajouter aux favoris">
+          <span class="material-icons" [class.text-blue-700]="isBookmarked">
+            bookmark
+          </span>
+        </button>
+
+        <!-- Email -->
+        <a *ngIf="consultant.email && consultant.emailValidated" 
+           [href]="'mailto:' + consultant.email" 
+           target="_blank" 
+           class="flex items-center justify-center h-8 w-8 rounded-full hover:bg-gray-100 text-gray-400 hover:text-blue-700 transition-all duration-200 fc-email-action"
+           title="Envoyer un email">
+          <span class="material-icons">email</span>
+        </a>
+
+        <!-- Téléphone -->
+        <a *ngIf="consultant.phone && consultant.phoneValidated" 
+           [href]="'tel:' + consultant.phone" 
+           target="_blank" 
+           class="flex items-center justify-center h-8 w-8 rounded-full hover:bg-gray-100 text-gray-400 hover:text-blue-700 transition-all duration-200 fc-phone-action"
+           title="Appeler le consultant">
+          <span class="material-icons">phone</span>
+        </a>
+
+        <!-- LinkedIn -->
+        <a *ngIf="consultant.linkedinUrl && consultant.linkedinValidated" 
+           [href]="consultant.linkedinUrl" 
+           target="_blank" 
+           class="flex items-center justify-center h-8 w-8 rounded-full hover:bg-gray-100 text-gray-400 hover:text-blue-700 transition-all duration-200 fc-linkedin-action"
+           title="Voir le profil LinkedIn">
+          <span class="material-icons">link</span>
+        </a>
+      </div>
     </div>
-    
-    <!-- Compétences principales (max 3, comme en mobile) -->
-    <div class="mt-2">
-      <div class="flex flex-wrap gap-1">
-        <span *ngFor="let skill of consultant.skills.slice(0, 3)" 
-              class="bg-gray-100 text-gray-700 text-xs font-medium px-1.5 py-0.5 rounded-full">
+
+    <!-- Compétences principales (max 4) -->
+    <div class="mt-3 fc-skills-section">
+      <div class="flex flex-wrap gap-1.5 fc-skills-container">
+        <span *ngFor="let skill of consultant.skills.slice(0, 4)" 
+              class="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded-full transition-all duration-200 hover:bg-gray-200 fc-skill-tag">
           {{ skill }}
         </span>
-        <span *ngIf="consultant.skills.length > 3" 
-              class="bg-blue-100 text-blue-700 text-xs font-medium px-1.5 py-0.5 rounded-full cursor-pointer"
+        <span *ngIf="consultant.skills.length > 4" 
+              class="bg-blue-100 text-blue-700 text-xs font-medium px-2 py-0.5 rounded-full cursor-pointer hover:bg-blue-200 transition-all duration-200 fc-more-skills"
               (click)="onToggleDetailsExpansion(consultant.id, $event)">
-          +{{ consultant.skills.length - 3 }}
+          +{{ consultant.skills.length - 4 }}
         </span>
       </div>
     </div>
   </div>
 
-  <!-- Message preview avec structure identique au mobile -->
-  <div class="px-3 py-2 border-t border-gray-100 bg-gray-50 text-xs fc-message-preview">
-    <div class="relative fc-message-container">
-      <div class="text-gray-600 max-h-16 overflow-hidden fc-message-content" [innerHTML]="formatMessage(consultant.message)" [ngClass]="{'truncated': !messageExpanded}"></div>
+  <!-- Section message preview -->
+  <div class="px-4 py-3 border-t border-gray-100 bg-gray-50 fc-message-preview">
+    <h3 class="text-sm font-medium text-gray-800 mb-1">Message</h3>
+    <div class="relative">
+      <div class="text-sm text-gray-600 fc-consultant-message" [innerHTML]="formatMessage(consultant.message)" [ngClass]="{'truncated': !messageExpanded}"></div>
       <div *ngIf="!messageExpanded && isMessageLong(consultant.message)" 
-           class="bg-gradient-overlay-mobile fc-message-overlay"
+           class="bg-gradient-overlay"
            (click)="onToggleMessageExpansion(consultant.id, $event)">
       </div>
     </div>
-  </div>
-  
-  <!-- Footer avec actions et boutons (comme en mobile) -->
-  <div class="px-3 py-2 border-t border-gray-100 flex justify-between items-center fc-card-footer">
-    <!-- Bouton détails -->
-    <button 
-      (click)="onToggleDetailsExpansion(consultant.id, $event)" 
-      class="text-xs font-medium text-blue-600 hover:text-blue-800 px-2 py-1 rounded-md bg-blue-50 border border-blue-200 fc-details-button">
-      {{ detailsExpanded ? 'Masquer les détails' : 'Voir les détails' }}
-    </button>
-    
-    <!-- Actions de contact -->
-    <div class="flex space-x-1.5 fc-contact-actions">
-      <!-- Email -->
-      <a *ngIf="consultant.email && consultant.emailValidated" [href]="'mailto:' + consultant.email" target="_blank" 
-         class="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 fc-email-action">
-        <span class="material-icons text-sm">email</span>
-      </a>
-      
-      <!-- Téléphone -->
-      <a *ngIf="consultant.phone && consultant.phoneValidated" [href]="'tel:' + consultant.phone" target="_blank" 
-         class="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 fc-phone-action">
-        <span class="material-icons text-sm">phone</span>
-      </a>
-      
-      <!-- LinkedIn -->
-      <a *ngIf="consultant.linkedinUrl && consultant.linkedinValidated" [href]="consultant.linkedinUrl" target="_blank" 
-         class="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 fc-linkedin-action">
-        <span class="material-icons text-sm">link</span>
-      </a>
+    <div class="flex justify-between gap-2 mt-2">
+      <!-- Bouton pour voir tout le message -->
+      <button *ngIf="isMessageLong(consultant.message)"
+             (click)="onToggleMessageExpansion(consultant.id, $event)"
+             class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 px-2 py-1 border border-blue-300 rounded-md bg-blue-50 fc-expand-message-btn">
+        {{ messageExpanded ? 'Réduire le message' : 'Voir tout le message' }}
+      </button>
+      <!-- Bouton pour voir les détails -->
+      <button (click)="onToggleDetailsExpansion(consultant.id, $event)"
+             class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline focus:outline-none transition-colors duration-300 px-2 py-1 border border-blue-300 rounded-md bg-blue-50 fc-expand-details-btn">
+        {{ detailsExpanded ? 'Masquer les détails' : 'Voir les détails' }}
+      </button>
     </div>
   </div>
   
-  <!-- Section détails version desktop (adaptée du mobile) -->
-  <div *ngIf="detailsExpanded" class="px-3 py-2 border-t border-gray-100 bg-gray-50 fc-expanded-details">
+  <!-- Section détails (visible uniquement si détails étendus) -->
+  <div *ngIf="detailsExpanded" class="px-4 py-3 border-t border-gray-100 bg-gray-50 fc-expanded-details">
     <!-- Secteurs d'activité -->
-    <div class="mb-2 fc-sectors-section" *ngIf="consultant.sectors && consultant.sectors.length > 0">
-      <h4 class="text-xs font-medium text-gray-800 mb-1 fc-section-title">Secteurs</h4>
-      <div class="flex flex-wrap gap-1 fc-sectors-container">
+    <div class="mb-3" *ngIf="consultant.sectors && consultant.sectors.length > 0">
+      <h3 class="text-sm font-medium text-gray-800 mb-1">Secteurs d'activité</h3>
+      <div class="flex flex-wrap gap-1.5">
         <span *ngFor="let sector of consultant.sectors" 
-              class="bg-blue-50 text-blue-700 text-xs font-medium px-1.5 py-0.5 rounded-full fc-sector-tag">
+              class="bg-blue-50 text-blue-700 text-xs font-medium px-2 py-0.5 rounded-full fc-sector-tag">
           {{ sector }}
         </span>
       </div>
     </div>
     
     <!-- Toutes les compétences -->
-    <div class="mb-2 fc-skills-section">
-      <h4 class="text-xs font-medium text-gray-800 mb-1 fc-section-title">Compétences</h4>
-      <div class="flex flex-wrap gap-1 fc-skills-container">
+    <div class="mb-3">
+      <h3 class="text-sm font-medium text-gray-800 mb-1">Compétences techniques</h3>
+      <div class="flex flex-wrap gap-1.5">
         <span *ngFor="let skill of consultant.skills" 
-              class="bg-gray-100 text-gray-700 text-xs font-medium px-1.5 py-0.5 rounded-full fc-skill-tag">
+              class="bg-gray-100 text-gray-700 text-xs font-medium px-2 py-0.5 rounded-full fc-skill-tag">
           {{ skill }}
         </span>
       </div>
     </div>
     
     <!-- Expertises -->
-    <div class="fc-expertises-section" *ngIf="consultant.expertises && consultant.expertises.length > 0">
-      <h4 class="text-xs font-medium text-gray-800 mb-1 fc-section-title">Expertises</h4>
-      <div class="flex flex-wrap gap-1 fc-expertises-container">
+    <div class="mb-3" *ngIf="consultant.expertises && consultant.expertises.length > 0">
+      <h3 class="text-sm font-medium text-gray-800 mb-1">Expertises</h3>
+      <div class="flex flex-wrap gap-1.5">
         <span *ngFor="let expertise of consultant.expertises" 
-              class="bg-green-50 text-green-700 text-xs font-medium px-1.5 py-0.5 rounded-full fc-expertise-tag">
+              class="bg-green-50 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full fc-expertise-tag">
           {{ expertise }}
         </span>
       </div>

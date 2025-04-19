@@ -1,44 +1,58 @@
-<!-- Sorting Dropdown -->
-<div class="flex justify-between items-center mx-4 my-3 fc-sort-section">
-  <div class="relative fc-sort-dropdown-container">
-    <button (click)="$event.stopPropagation()" class="flex items-center text-sm text-gray-600 hover:text-blue-500 focus:outline-none fc-sort-button">
-      <span class="fc-sort-label">Trier par : {{ getSortLabel() }}</span>
-      <svg class="w-4 h-4 ml-1 fc-sort-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-      </svg>
-    </button>
-    <div *ngIf="sortDropdownOpen" class="absolute z-10 mt-2 w-48 bg-white rounded-md shadow-lg p-2 fc-sort-dropdown-menu">
-      <div *ngFor="let option of sortOptions" 
-           (click)="selectedSortOrder = option.value; sortDropdownOpen = false; applyFilters()" 
-           class="px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-gray-100 fc-sort-option"
-           [class.text-blue-500]="selectedSortOrder === option.value">
-        {{ option.label }}
+<!-- Section de recherche et tri comme dans contact-list -->
+<div class="bg-white p-4 rounded-lg shadow-sm mb-4 fc-sort-section">
+  <div class="flex flex-col space-y-4">
+    <!-- Titre et options de tri -->
+    <div class="flex justify-between items-center">
+      <h3 class="text-sm font-medium text-gray-700">Consultants disponibles</h3>
+      
+      <div class="relative fc-sort-dropdown-container">
+        <button (click)="$event.stopPropagation()" class="flex items-center text-sm text-gray-600 hover:text-blue-500 focus:outline-none transition-colors duration-200 fc-sort-button">
+          <span class="fc-sort-label">Trier par: {{ getSortLabel() }}</span>
+          <svg class="w-4 h-4 ml-1 fc-sort-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div *ngIf="sortDropdownOpen" class="absolute z-30 right-0 mt-2 w-48 bg-white rounded-md shadow-lg p-2 border border-gray-100 fc-sort-dropdown-menu">
+          <div *ngFor="let option of sortOptions" 
+               (click)="selectedSortOrder = option.value; sortDropdownOpen = false; applyFilters()" 
+               class="px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-gray-100 fc-sort-option"
+               [class.text-blue-500]="selectedSortOrder === option.value"
+               [class.font-medium]="selectedSortOrder === option.value">
+            {{ option.label }}
+          </div>
+        </div>
       </div>
+    </div>
+    
+    <!-- Informations sur le nombre de consultants et état du chargement (DEBUG) -->
+    <div class="text-xs text-gray-500 flex items-center space-x-2" *ngIf="!isLoading">
+      <span>{{ filteredConsultants.length }} consultant(s) affiché(s)</span>
+      <span *ngIf="hasMoreData" class="text-blue-500">(Scroll pour charger plus)</span>
     </div>
   </div>
 </div>
 
-<!-- Desktop View -->
-<div #consultantsList class="flex-1 overflow-y-auto h-full hidden md:block consultants-container scrollbar-custom fc-desktop-view" style="min-height: 70vh; max-height: calc(100vh - 150px);" (scroll)="onScroll($event)">
+<!-- Vue Bureau avec design harmonisé comme dans contact-list -->
+<div #consultantsList class="flex-1 overflow-y-auto h-full hidden md:block consultants-container scrollbar-custom fc-desktop-view" (scroll)="onScroll($event)">
   <!-- L'en-tête avec le nombre de consultants a été supprimé -->
 
   
-  <!-- Loader animé amélioré -->
+  <!-- Loader animé identique à la page contacts -->
   <div *ngIf="isLoading" class="loading-container py-10 fc-loading-section">
-    <div class="flex fc-loading-container">
+    <div class="flex items-center justify-center space-x-2 fc-loading-container">
       <div class="loader-dot fc-loader-dot"></div>
       <div class="loader-dot fc-loader-dot"></div>
       <div class="loader-dot fc-loader-dot"></div>
     </div>
   </div>
 
-  <!-- Message "Aucun consultant" amélioré -->
-  <div *ngIf="!isLoading && filteredConsultants?.length === 0" class="flex flex-col justify-center items-center h-64 bg-white rounded-lg border border-gray-100 shadow-sm p-6 fc-empty-state">
-    <div class="text-center text-gray-500 fc-empty-state-content">
-      <div class="material-icons text-5xl mb-3 text-gray-300 fc-empty-state-icon">search_off</div>
-      <p class="text-lg font-semibold mb-2 fc-empty-state-title">Aucun consultant trouvé</p>
-      <p class="text-sm text-gray-400 max-w-md fc-empty-state-message">Essayez de modifier vos critères de recherche ou vos filtres pour obtenir plus de résultats.</p>
-    </div>
+  <!-- Message "Aucun consultant" avec design épuré -->
+  <div *ngIf="!isLoading && filteredConsultants?.length === 0" class="mx-4 my-8 flex flex-col justify-center items-center h-64 bg-white rounded-lg shadow-sm p-8 fc-empty-state">
+    <svg class="mx-auto h-12 w-12 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+    </svg>
+    <h3 class="mt-4 text-lg font-medium text-gray-900">Aucun consultant trouvé</h3>
+    <p class="mt-2 text-sm text-gray-500 text-center max-w-md">Essayez de modifier vos critères de recherche ou vos filtres pour obtenir plus de résultats.</p>
   </div>
 
   <!-- Message d'erreur redessiné -->
@@ -55,20 +69,20 @@
   </div>
 
   <!-- Liste des consultants avec grille adaptative et espacement amélioré -->
-  <div class="consultants-list gap-6 fc-consultants-grid">
-    <app-consultant-card *ngFor="let consultant of filteredConsultants; let i = index" 
-                    [consultant]="consultant"
-                    [expanded]="isExpanded(consultant.id, '')"
-                    [messageExpanded]="isExpanded(consultant.id, '-message')"
-                    [detailsExpanded]="isDetailsExpanded(consultant.id)"
-                    [dropdownOpen]="isDropdownOpen(consultant.id)"
-                    (toggleExpansion)="handleToggleExpansion($event, consultant.id)"
-                    [class.animate-fade-in]="i >= filteredConsultants.length - pageSize"
-                    [style.animation-delay.ms]="(i % pageSize) * 100"
-                    (toggleMessageExpansion)="handleToggleMessageExpansion($event, consultant.id)"
-                    (toggleDetailsExpansion)="handleToggleDetailsExpansion($event, consultant.id)"
-                    (toggleDropdown)="handleToggleDropdown($event, consultant.id)"
-                    class="fc-consultant-card-wrapper">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 p-3 fc-consultants-grid">
+    <app-consultant-card 
+      *ngFor="let consultant of filteredConsultants; let i = index" 
+      [consultant]="consultant"
+      [expanded]="isExpanded(consultant.id, '')"
+      [messageExpanded]="isExpanded(consultant.id, '-message')"
+      [detailsExpanded]="isDetailsExpanded(consultant.id)"
+      [dropdownOpen]="isDropdownOpen(consultant.id)"
+      (toggleExpansion)="handleToggleExpansion($event, consultant.id)"
+      (toggleMessageExpansion)="handleToggleMessageExpansion($event, consultant.id)"
+      (toggleDetailsExpansion)="handleToggleDetailsExpansion($event, consultant.id)"
+      (toggleDropdown)="handleToggleDropdown($event, consultant.id)"
+      class="animate-fade-in bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md fc-consultant-card-wrapper"
+      [style.animation-delay.ms]="(i % pageSize) * 50">
     </app-consultant-card>
   </div>
 
@@ -83,18 +97,24 @@
 </div>
 
 <!-- Version mobile du composant avec design moderne et épuré -->
-<div class="block md:hidden h-full overflow-y-auto consultants-container px-0 pb-16 fc-mobile-view fc-mobile-container" #consultantsListMobile (scroll)="onScroll($event)">
-  <!-- En-tête mobile simplifié sans compteur -->
-  <div class="px-4 py-3 mb-0 bg-white border-b border-gray-100 fc-mobile-header">
-    <div class="flex items-center gap-2 fc-mobile-header-content">
-      <app-add-availability-button *ngIf="isAuthenticated" class="fc-add-availability"></app-add-availability-button>
-    </div>
-    
-    <!-- Bouton de tri avec dropdown fonctionnel -->
-    <div class="relative z-20 fc-mobile-sort-container">
-      <button (click)="toggleSortDropdown($event)" class="flex items-center gap-1 text-xs font-medium text-gray-600 bg-gray-50 px-2 py-1 rounded-full border border-gray-100 fc-mobile-sort-button">
-        <span class="material-icons text-sm fc-mobile-sort-icon">sort</span>
-        <span class="fc-mobile-sort-label">{{ getSortLabel() }}</span>
+<div class="block md:hidden h-full overflow-y-auto consultants-container px-0 pb-16 fc-mobile-view fc-mobile-container scrollbar-custom" #consultantsListMobile (scroll)="onScroll($event)">
+  <!-- En-tête mobile épuré et fonctionnel -->
+  <div class="px-4 py-3 mb-2 bg-white shadow-sm fc-mobile-header">
+    <div class="flex flex-col space-y-2 fc-mobile-header-content">
+      <!-- Titre, compteur et bouton d'ajout -->
+      <div class="flex justify-between items-center">
+        <h3 class="text-sm font-medium text-gray-700">Consultants</h3>
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-gray-500" *ngIf="!isLoading">{{ filteredConsultants.length }}</span>
+          <app-add-availability-button *ngIf="isAuthenticated" class="fc-add-availability"></app-add-availability-button>
+        </div>
+      </div>
+      
+      <!-- Bouton de tri avec dropdown fonctionnel -->
+      <div class="relative z-20 fc-mobile-sort-container">
+        <button (click)="toggleSortDropdown($event)" class="flex items-center gap-1 text-xs font-medium text-gray-600 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100 fc-mobile-sort-button">
+          <span class="material-icons text-sm fc-mobile-sort-icon">sort</span>
+          <span class="fc-mobile-sort-label">{{ getSortLabel() }}</span>
       </button>
       
       <!-- Menu déroulant de tri pour mobile -->
@@ -121,58 +141,56 @@
       </div>
     </div>
 
-    <!-- Message "Aucun consultant" pour mobile avec design moderne -->
-    <div *ngIf="!isLoading && filteredConsultants?.length === 0" class="flex flex-col justify-center items-center h-64 bg-white mx-0 py-8 px-4 mt-2 fc-mobile-empty-state">
-      <div class="text-center text-gray-500 fc-mobile-empty-content">
-        <div class="material-icons text-3xl mb-2 text-gray-300 fc-mobile-empty-icon">search_off</div>
-        <p class="text-base font-semibold mb-1 fc-mobile-empty-title">Aucun consultant trouvé</p>
-        <p class="text-xs text-gray-400 fc-mobile-empty-message">Modifiez vos filtres pour plus de résultats</p>
-      </div>
+    <!-- Message "Aucun consultant" pour mobile avec design épuré -->
+    <div *ngIf="!isLoading && filteredConsultants?.length === 0" class="flex flex-col justify-center items-center h-64 bg-white mx-3 my-4 py-8 px-4 rounded-lg shadow-sm fc-mobile-empty-state">
+      <svg class="mx-auto h-10 w-10 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+      <h3 class="mt-3 text-base font-medium text-gray-900">Aucun consultant trouvé</h3>
+      <p class="mt-1 text-sm text-gray-500 text-center">Modifiez vos filtres pour plus de résultats</p>
     </div>
 
-    <!-- Message d'erreur pour mobile avec design moderne -->
-    <div *ngIf="errorMessage" class="error-message py-6 px-4 my-2 flex flex-col items-center bg-white rounded-lg mx-3 fc-mobile-error-state">
-      <div class="text-center fc-mobile-error-content">
-        <div class="material-icons text-3xl mb-2 fc-mobile-error-icon">error_outline</div>
-        <p class="text-base font-semibold mb-1 fc-mobile-error-title">Erreur de chargement</p>
-        <p class="text-xs mb-3 fc-mobile-error-message">Problème lors de la récupération des données</p>
-        <button (click)="loadInitialConsultants()" class="retry-button flex items-center justify-center gap-1 text-xs fc-mobile-retry-button">
-          <span class="material-icons text-xs fc-mobile-retry-icon">refresh</span>
-          <span class="fc-mobile-retry-text">Réessayer</span>
-        </button>
-      </div>
+    <!-- Message d'erreur pour mobile avec design épuré -->
+    <div *ngIf="errorMessage" class="py-6 px-4 my-4 flex flex-col items-center bg-white rounded-lg mx-3 shadow-sm fc-mobile-error-state">
+      <svg class="w-10 h-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <h3 class="mt-3 text-base font-medium text-gray-900">Erreur de chargement</h3>
+      <p class="mt-1 text-sm text-gray-500 text-center">Problème lors de la récupération des données</p>
+      <button (click)="loadInitialConsultants()" class="mt-4 px-4 py-2 bg-blue-500 text-white text-xs rounded-md shadow-sm hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 transition-colors fc-mobile-retry-button">
+        <span class="flex items-center gap-1">
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          Réessayer
+        </span>
+      </button>
     </div>
   </div>
 
-  <!-- Liste de consultants pour mobile avec animations et espacement amélioré -->
-  <div *ngIf="filteredConsultants?.length > 0" class="space-y-6 px-3 py-4 bg-white fc-mobile-card-container fc-mobile-consultants-list">
-    <app-consultant-card *ngFor="let consultant of filteredConsultants; let i = index" 
-                    [consultant]="consultant" 
-                    [expanded]="isExpanded(consultant.id, '')"
-                    [detailsExpanded]="isDetailsExpanded(consultant.id)"
-                    [messageExpanded]="isExpanded(consultant.id, '-message')"
-                    [dropdownOpen]="isDropdownOpen(consultant.id)"
-                    (toggleExpansion)="handleToggleExpansion($event, consultant.id)"
-                    (toggleMessageExpansion)="handleToggleMessageExpansion($event, consultant.id)"
-                    (toggleDropdown)="handleToggleDropdown($event, consultant.id)"
-                    (toggleDetailsExpansion)="handleToggleDetailsExpansion($event, consultant.id)"
-                    class="animate-fade-in fc-mobile-consultant-card">
+  <!-- Liste de consultants pour mobile avec design amélioré -->
+  <div *ngIf="filteredConsultants?.length > 0" class="px-3 py-4 fc-mobile-card-container fc-mobile-consultants-list">
+    <app-consultant-card 
+      *ngFor="let consultant of filteredConsultants; let i = index" 
+      [consultant]="consultant" 
+      [expanded]="isExpanded(consultant.id, '')"
+      [detailsExpanded]="isDetailsExpanded(consultant.id)"
+      [messageExpanded]="isExpanded(consultant.id, '-message')"
+      [dropdownOpen]="isDropdownOpen(consultant.id)"
+      (toggleExpansion)="handleToggleExpansion($event, consultant.id)"
+      (toggleMessageExpansion)="handleToggleMessageExpansion($event, consultant.id)"
+      (toggleDropdown)="handleToggleDropdown($event, consultant.id)"
+      (toggleDetailsExpansion)="handleToggleDetailsExpansion($event, consultant.id)"
+      class="animate-fade-in bg-white rounded-lg shadow-sm mb-4 overflow-hidden transition-all duration-200 fc-mobile-consultant-card"
+      [style.animation-delay.ms]="(i % pageSize) * 50">
     </app-consultant-card>
     
-    <!-- Indicateur de fin de liste (mobile) -->
-    <div *ngIf="!hasMoreData" class="end-of-list mt-4 fc-mobile-end-list-indicator">
-      <div class="flex items-center justify-center gap-2 opacity-60 fc-mobile-end-list-content">
-        <div class="w-8 h-px bg-gray-300 fc-mobile-end-list-line"></div>
-        <span class="text-xs text-gray-500 fc-mobile-end-list-text">Fin de la liste</span>
-        <div class="w-8 h-px bg-gray-300 fc-mobile-end-list-line"></div>
-      </div>
-    </div>
-    <!-- Indicateur de fin de liste pour mobile avec design moderne -->
-    <div *ngIf="!hasMoreData && filteredConsultants.length > 0" class="end-of-list py-6 bg-gray-50/50 mt-2">
-      <div class="flex items-center justify-center gap-2">
-        <div class="w-8 h-px bg-gray-300"></div>
-        <span class="text-xs">Fin de la liste</span>
-        <div class="w-8 h-px bg-gray-300"></div>
+    <!-- Indicateur de fin de liste pour mobile avec design épuré -->
+    <div *ngIf="!hasMoreData && filteredConsultants.length > 0" class="py-6 mt-4 fc-mobile-end-list-indicator">
+      <div class="flex items-center justify-center gap-3">
+        <div class="w-12 h-px bg-gray-200"></div>
+        <span class="text-xs text-gray-500">Fin de la liste</span>
+        <div class="w-12 h-px bg-gray-200"></div>
       </div>
     </div>
   </div>

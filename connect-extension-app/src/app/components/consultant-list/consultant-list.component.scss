@@ -1,69 +1,35 @@
 // Styles pour consultant-list.component
-// Design élégant et moderne pour la liste des consultants
+// Variables
+$primary-blue: #3b82f6;
+$primary-hover: #2563eb;
+$background-light: #f8fafc;
+$border-light: #e2e8f0;
+$text-dark: #1f2937;
+$text-medium: #4b5563;
+$text-light: #6b7280;
 
-// Conteneur principal avec effet de fond amélioré et bordure décorative
+// Conteneur principal
 .consultants-container {
-  background-color: #f8fafc;
-  min-height: 100%;
+  padding: 0.5rem;
   position: relative;
-  overflow-y: auto;
+  display: block;
+  height: calc(100vh - 150px); /* Hauteur calculée pour tenir compte du header */
+  overflow-y: auto; /* Activation du défilement vertical */
+  background-color: #f8fafc;
+  z-index: 1;
 }
 
-// En-tête avec style moderne
-.consultants-header {
-  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
-  border-bottom: 1px solid rgba(59, 130, 246, 0.1);
-  
-  h2 {
-    font-weight: 600;
-    color: #1e40af;
-  }
-}
-
-// Animation du loader
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-.loading-container {
-  min-height: 200px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  .loader-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: #3b82f6;
-    margin: 0 4px;
-    display: inline-block;
-    animation: bounce 1.2s infinite ease-in-out;
-    
-    &:nth-child(2) {
-      animation-delay: 0.2s;
-      background-color: #60a5fa;
-    }
-    
-    &:nth-child(3) {
-      animation-delay: 0.4s;
-      background-color: #93c5fd;
-    }
-  }
-}
-
-// Styles de la barre de scrolling
-.scrollbar-custom::-webkit-scrollbar {
+/* Styles pour la barre de défilement */
+.consultants-container::-webkit-scrollbar {
   width: 6px;
 }
 
-.scrollbar-custom::-webkit-scrollbar-track {
+.consultants-container::-webkit-scrollbar-track {
   background: #f1f5f9;
   border-radius: 6px;
 }
 
-.scrollbar-custom::-webkit-scrollbar-thumb {
+.consultants-container::-webkit-scrollbar-thumb {
   background-color: #cbd5e1;
   border-radius: 6px;
   
@@ -72,228 +38,145 @@
   }
 }
 
-// Section de filtres avec design élégant
-.filters-section {
-  background-color: white;
-  border-bottom: 1px solid #e2e8f0;
-  
-  .filter-title {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: #334155;
-  }
-  
-  .filter-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
-    color: #3b82f6;
-    background-color: #eff6ff;
-    border: 1px solid #dbeafe;
-    border-radius: 0.25rem;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    
-    &:hover {
-      background-color: #dbeafe;
-      border-color: #bfdbfe;
-    }
-    
-    &.active {
-      background-color: #3b82f6;
-      border-color: #2563eb;
-      color: white;
-    }
-    
-    .filter-count {
-      background-color: white;
-      color: #3b82f6;
-      font-size: 0.625rem;
-      border-radius: 999px;
-      padding: 0.125rem 0.375rem;
-      margin-left: 0.375rem;
-    }
-  }
-}
-
-// Conteneur des cartes consultants avec espacement amélioré
-.consultants-list {
-  display: grid;
-  grid-gap: 1.5rem;
-  padding: 0.5rem;
-  
-  @media (min-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-  
-  @media (min-width: 1024px) {
-    grid-template-columns: repeat(auto-fill, minmax(600px, 1fr));
-  }
-  
-  // Style spécifique pour chaque app-consultant-card avec séparation visuelle renforcée
-  app-consultant-card {
-    margin-bottom: 1.5rem;
-    display: block;
-    position: inherit; /* Modifié de 'relative' à 'inherit' pour résoudre le problème de chevauchement */
-    
-    // Ligne séparatrice décorative sous chaque carte
-    &::after {
-      content: '';
-      position: absolute;
-      bottom: -0.75rem;
-      left: 5%;
-      width: 90%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(203, 213, 225, 0.8), transparent);
-    }
-    
-    // Effet d'élévation avec ombre portée au survol
-    &:hover {
-      transform: translateY(-3px);
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-  }
-}
-
-// Message d'erreur avec style attentionné
-.error-message {
+// Section de tri
+.fc-sort-section {
+  margin-bottom: 1rem;
   border-radius: 0.5rem;
-  background-color: #fee2e2;
-  border: 1px solid #fecaca;
-  color: #b91c1c;
-  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.fc-sort-dropdown-container {
+  position: relative;
+}
+
+.fc-sort-button {
+  transition: color 0.2s ease;
   
   &:hover {
-    background-color: #fecaca;
+    color: $primary-blue;
   }
+}
+
+.fc-sort-dropdown-menu {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
+  z-index: 30;
+}
+
+.fc-sort-option {
+  transition: background-color 0.2s ease;
+}
+
+// Grille responsive des consultants
+.fc-consultants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  z-index: 2;
+  position: relative;
+  padding: 0.5rem;
+}
+
+// Cartes consultants
+.fc-consultant-card-wrapper {
+  transition: all 0.2s ease;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  position: relative;
+  min-height: 100px;
+  display: block;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// États vides et erreurs
+.fc-empty-state {
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.fc-error-state {
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.fc-retry-button {
+  transition: all 0.2s ease;
   
-  .retry-button {
-    background-color: #ef4444;
-    color: white;
-    border-radius: 0.25rem;
-    padding: 0.25rem 0.75rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    
-    &:hover {
-      background-color: #dc2626;
-    }
+  &:hover {
+    background-color: $primary-hover;
   }
 }
 
-// Indicator de fin de liste
-.end-of-list {
-  padding: 1.5rem;
-  text-align: center;
-  color: #64748b;
-  font-size: 0.875rem;
-  background: linear-gradient(180deg, transparent, rgba(241, 245, 249, 0.8));
+// Indicateur fin de liste
+.fc-end-list-indicator {
+  color: $text-light;
+  margin: 1rem 0;
 }
 
-// Animation d'apparition en fondu
+// Animation de fondu
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-// Appliqué aux consultants pendant qu'ils se chargent
 .animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
-// Corrections scrolling mobile et animations
+// Loader animation
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 0;
+}
+
+.loader-dot {
+  background-color: $primary-blue;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin: 0 4px;
+  animation: bounce 1.4s infinite ease-in-out both;
+  
+  &:nth-child(1) {
+    animation-delay: -0.32s;
+  }
+  
+  &:nth-child(2) {
+    animation-delay: -0.16s;
+  }
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+// Styles pour mobile
 @media (max-width: 768px) {
-  // Correction scrolling mobile
-  .consultants-container, .fc-mobile-container {
-    height: 100%;
-    position: relative;
-    overflow-y: auto;
+  .fc-mobile-view {
+    padding-bottom: 4rem;
+    background-color: #f8fafc;
   }
   
-  // Assurer que la liste prend tout l'espace disponible
-  .space-y-0, .fc-mobile-content-wrapper {
-    flex: 1;
-    overflow-y: auto;
+  .fc-mobile-header {
+    margin-bottom: 0.5rem;
   }
   
-  // Fixer l'en-tête
-  .consultants-header, .fc-mobile-header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background-color: white;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  }
-  
-  // Styles spécifiques pour les boutons mobiles
-  .fc-mobile-sort-button {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: #4b5563;
-    background-color: #f9fafb;
-    padding: 0.25rem 0.5rem;
-    border-radius: 9999px;
-    border: 1px solid #e5e7eb;
+  .fc-mobile-consultant-card {
+    margin-bottom: 0.75rem;
     
-    &:hover {
-      background-color: #f3f4f6;
-    }
-  }
-  
-  // Dropdown de tri en mode mobile
-  .fc-mobile-sort-dropdown {
-    position: absolute;
-    right: 0;
-    margin-top: 0.5rem;
-    width: 11rem;
-    background-color: white;
-    border-radius: 0.375rem;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    z-index: 30;
-  }
-  
-  // Options dans le dropdown
-  .fc-mobile-sort-option {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.75rem;
-    cursor: pointer;
-    border-radius: 0.25rem;
-    
-    &:hover {
-      background-color: #f9fafb;
-    }
-    
-    &.active {
-      color: #3b82f6;
-      font-weight: 500;
-    }
-  }
-}
-
-// Animations spécifiques pour le mobile extension et mobile
-@media screen and (max-width: 600px) {
-  .consultants-container, .fc-mobile-container {
-    height: 100%;
-    position: relative;
-    overflow-y: auto;
-  }
-  
-  .consultants-list, .fc-mobile-consultants-list {
-    grid-gap: 1rem;
-    padding: 0.75rem;
-  }
-  
-  // Augmenter l'espacement entre les cartes en mode mobile
-  .space-y-6 > *, .fc-mobile-card-container > * {
-    margin-bottom: 1.25rem;
-    position: inherit; /* Modifié de 'relative' à 'inherit' pour résoudre le problème de chevauchement */
-    
-    // Séparateur visuel entre les cartes en mode mobile
     &::after {
       content: '';
       position: absolute;
@@ -314,7 +197,9 @@
     height: 16rem;
     background-color: white;
     padding: 2rem 1rem;
-    margin-top: 0.5rem;
+    margin: 0.75rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     
     .fc-mobile-empty-icon {
       font-size: 2.5rem;
@@ -339,9 +224,10 @@
   // État d'erreur mobile
   .fc-mobile-error-state {
     padding: 1.5rem 1rem;
-    margin: 0.5rem 0.75rem;
+    margin: 0.75rem;
     background-color: white;
     border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     
     .fc-mobile-error-icon {
       font-size: 2rem;
@@ -369,18 +255,10 @@
     }
   }
   
-  // Chargement mobile
-  .fc-mobile-loading {
-    padding: 1.5rem 1rem;
-    background-color: white;
-    display: flex;
-    justify-content: center;
-    
-    .fc-mobile-loader-dot {
-      width: 10px;
-      height: 10px;
-      margin: 0 3px;
-    }
+  .fc-mobile-loader-dot {
+    width: 10px;
+    height: 10px;
+    margin: 0 3px;
   }
 }
 

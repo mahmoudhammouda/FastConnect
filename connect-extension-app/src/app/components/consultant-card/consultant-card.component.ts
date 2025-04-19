@@ -46,6 +46,14 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
   bookmarkMessageTimeout: any;
   // Pour savoir si un consultant est déjà dans au moins une liste de favoris
   isBookmarked: boolean = false;
+  
+  /**
+   * Getter pour accéder à l'URL LinkedIn du consultant via la propriété linkedin
+   * (pour compatibilité avec les templates qui utilisent consultant.linkedin)
+   */
+  get linkedin(): string {
+    return this.consultant?.linkedinUrl || '';
+  }
 
   @Output() linkedinClick = new EventEmitter<string>();
   @Output() phoneClick = new EventEmitter<string | undefined | null>();
@@ -117,6 +125,21 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
     
     return false;
     */
+  }
+
+  /**
+   * Retourne un tableau des emplacements/localisations du consultant
+   * @param consultant Le consultant dont on veut récupérer les emplacements
+   * @returns Un tableau de chaînes de caractères représentant les emplacements
+   */
+  getLocations(consultant: ConsultantWithTags): string[] {
+    if (!consultant.location) return [];
+    
+    // Dans notre modèle, location est une chaîne de caractères
+    // La diviser par virgules pour obtenir un tableau de localisations
+    const locationStr = consultant.location as string;
+    return locationStr.split(',').map(loc => loc.trim()).filter(loc => loc.length > 0);
+  
   }
 
   onLinkedInClick(url: string, event: MouseEvent): void {
