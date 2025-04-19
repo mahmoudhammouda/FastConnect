@@ -363,6 +363,12 @@
           <router-outlet></router-outlet>
         </div>
 
+        <!-- Onglet Contacts - affiche les contacts recruteurs -->
+        <div *ngSwitchCase="'contacts'">
+          <!-- Route des contacts -->
+          <router-outlet></router-outlet>
+        </div>
+        
         <!-- Onglet Missions - à implémenter -->
         <div *ngSwitchCase="'missions'" class="p-4">
           <div class="bg-white p-6 rounded-lg shadow-sm">

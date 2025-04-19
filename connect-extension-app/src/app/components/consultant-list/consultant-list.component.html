@@ -83,7 +83,7 @@
 </div>
 
 <!-- Version mobile du composant avec design moderne et épuré -->
-<div class="block md:hidden h-full overflow-y-auto consultants-container px-0 pb-16 fc-mobile-view" #consultantsListMobile (scroll)="onScroll($event)">
+<div class="block md:hidden h-full overflow-y-auto consultants-container px-0 pb-16 fc-mobile-view fc-mobile-container" #consultantsListMobile (scroll)="onScroll($event)">
   <!-- En-tête mobile simplifié sans compteur -->
   <div class="px-4 py-3 mb-0 bg-white border-b border-gray-100 fc-mobile-header">
     <div class="flex items-center gap-2 fc-mobile-header-content">
@@ -91,79 +91,89 @@
     </div>
     
     <!-- Bouton de tri avec dropdown fonctionnel -->
-    <div class="relative z-20">
-      <button (click)="toggleSortDropdown($event)" class="flex items-center gap-1 text-xs font-medium text-gray-600 bg-gray-50 px-2 py-1 rounded-full border border-gray-100">
-        <span class="material-icons text-sm">sort</span>
-        <span>{{ getSortLabel() }}</span>
+    <div class="relative z-20 fc-mobile-sort-container">
+      <button (click)="toggleSortDropdown($event)" class="flex items-center gap-1 text-xs font-medium text-gray-600 bg-gray-50 px-2 py-1 rounded-full border border-gray-100 fc-mobile-sort-button">
+        <span class="material-icons text-sm fc-mobile-sort-icon">sort</span>
+        <span class="fc-mobile-sort-label">{{ getSortLabel() }}</span>
       </button>
       
       <!-- Menu déroulant de tri pour mobile -->
-      <div *ngIf="sortDropdownOpen" class="absolute right-0 mt-2 w-44 bg-white rounded-md shadow-lg p-1 border border-gray-200 z-30">
+      <div *ngIf="sortDropdownOpen" class="absolute right-0 mt-2 w-44 bg-white rounded-md shadow-lg p-1 border border-gray-200 z-30 fc-mobile-sort-dropdown">
         <div *ngFor="let option of sortOptions" 
              (click)="selectSortOption(option.value, $event)" 
-             class="px-3 py-2 text-xs rounded-md cursor-pointer hover:bg-gray-100"
+             class="px-3 py-2 text-xs rounded-md cursor-pointer hover:bg-gray-100 fc-mobile-sort-option"
              [class.text-blue-500]="selectedSortOrder === option.value"
-             [class.font-medium]="selectedSortOrder === option.value">
+             [class.fc-mobile-sort-option-active]="selectedSortOrder === option.value">
           {{ option.label }}
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Loader animé pour mobile -->
-  <div *ngIf="isLoading" class="loading-container py-6 px-4 flex justify-center bg-white">
-    <div class="flex">
-      <div class="loader-dot"></div>
-      <div class="loader-dot"></div>
-      <div class="loader-dot"></div>
+  <!-- Contenu principal mobile -->
+  <div class="fc-mobile-content-wrapper">
+    <!-- Loader animé pour mobile -->
+    <div *ngIf="isLoading" class="loading-container py-6 px-4 flex justify-center bg-white fc-mobile-loading">
+      <div class="flex fc-mobile-loading-container">
+        <div class="loader-dot fc-mobile-loader-dot"></div>
+        <div class="loader-dot fc-mobile-loader-dot"></div>
+        <div class="loader-dot fc-mobile-loader-dot"></div>
+      </div>
     </div>
-  </div>
 
-  <!-- Message "Aucun consultant" pour mobile avec design moderne -->
-  <div *ngIf="!isLoading && filteredConsultants?.length === 0" class="flex flex-col justify-center items-center h-64 bg-white mx-0 py-8 px-4 mt-2">
-    <div class="text-center text-gray-500">
-      <div class="material-icons text-3xl mb-2 text-gray-300">search_off</div>
-      <p class="text-base font-semibold mb-1">Aucun consultant trouvé</p>
-      <p class="text-xs text-gray-400">Modifiez vos filtres pour plus de résultats</p>
+    <!-- Message "Aucun consultant" pour mobile avec design moderne -->
+    <div *ngIf="!isLoading && filteredConsultants?.length === 0" class="flex flex-col justify-center items-center h-64 bg-white mx-0 py-8 px-4 mt-2 fc-mobile-empty-state">
+      <div class="text-center text-gray-500 fc-mobile-empty-content">
+        <div class="material-icons text-3xl mb-2 text-gray-300 fc-mobile-empty-icon">search_off</div>
+        <p class="text-base font-semibold mb-1 fc-mobile-empty-title">Aucun consultant trouvé</p>
+        <p class="text-xs text-gray-400 fc-mobile-empty-message">Modifiez vos filtres pour plus de résultats</p>
+      </div>
     </div>
-  </div>
 
-  <!-- Message d'erreur pour mobile avec design moderne -->
-  <div *ngIf="errorMessage" class="error-message py-6 px-4 my-2 flex flex-col items-center bg-white rounded-lg mx-3">
-    <div class="text-center">
-      <div class="material-icons text-3xl mb-2">error_outline</div>
-      <p class="text-base font-semibold mb-1">Erreur de chargement</p>
-      <p class="text-xs mb-3">Problème lors de la récupération des données</p>
-      <button (click)="loadInitialConsultants()" class="retry-button flex items-center justify-center gap-1 text-xs">
-        <span class="material-icons text-xs">refresh</span>
-        <span>Réessayer</span>
-      </button>
+    <!-- Message d'erreur pour mobile avec design moderne -->
+    <div *ngIf="errorMessage" class="error-message py-6 px-4 my-2 flex flex-col items-center bg-white rounded-lg mx-3 fc-mobile-error-state">
+      <div class="text-center fc-mobile-error-content">
+        <div class="material-icons text-3xl mb-2 fc-mobile-error-icon">error_outline</div>
+        <p class="text-base font-semibold mb-1 fc-mobile-error-title">Erreur de chargement</p>
+        <p class="text-xs mb-3 fc-mobile-error-message">Problème lors de la récupération des données</p>
+        <button (click)="loadInitialConsultants()" class="retry-button flex items-center justify-center gap-1 text-xs fc-mobile-retry-button">
+          <span class="material-icons text-xs fc-mobile-retry-icon">refresh</span>
+          <span class="fc-mobile-retry-text">Réessayer</span>
+        </button>
+      </div>
     </div>
   </div>
 
   <!-- Liste de consultants pour mobile avec animations et espacement amélioré -->
-  <div class="space-y-0">
+  <div *ngIf="filteredConsultants?.length > 0" class="space-y-6 px-3 py-4 bg-white fc-mobile-card-container fc-mobile-consultants-list">
     <app-consultant-card *ngFor="let consultant of filteredConsultants; let i = index" 
-                      [consultant]="consultant"
-                      [expanded]="isExpanded(consultant.id, '')"
-                      [messageExpanded]="isExpanded(consultant.id, '-message')"
-                      [detailsExpanded]="isDetailsExpanded(consultant.id)"
-                      [dropdownOpen]="isDropdownOpen(consultant.id)"
-                      (toggleExpansion)="handleToggleExpansion($event, consultant.id)"
-                      [class.animate-fade-in]="i >= filteredConsultants.length - pageSize"
-                      [style.animation-delay.ms]="(i % pageSize) * 100"
-                      (toggleMessageExpansion)="handleToggleMessageExpansion($event, consultant.id)"
-                      (toggleDetailsExpansion)="handleToggleDetailsExpansion($event, consultant.id)"
-                      (toggleDropdown)="handleToggleDropdown($event, consultant.id)">
+                    [consultant]="consultant" 
+                    [expanded]="isExpanded(consultant.id, '')"
+                    [detailsExpanded]="isDetailsExpanded(consultant.id)"
+                    [messageExpanded]="isExpanded(consultant.id, '-message')"
+                    [dropdownOpen]="isDropdownOpen(consultant.id)"
+                    (toggleExpansion)="handleToggleExpansion($event, consultant.id)"
+                    (toggleMessageExpansion)="handleToggleMessageExpansion($event, consultant.id)"
+                    (toggleDropdown)="handleToggleDropdown($event, consultant.id)"
+                    (toggleDetailsExpansion)="handleToggleDetailsExpansion($event, consultant.id)"
+                    class="animate-fade-in fc-mobile-consultant-card">
     </app-consultant-card>
-  </div>
-
-  <!-- Indicateur de fin de liste pour mobile avec design moderne -->
-  <div *ngIf="!hasMoreData && filteredConsultants.length > 0" class="end-of-list py-6 bg-gray-50/50 mt-2">
-    <div class="flex items-center justify-center gap-2">
-      <div class="w-8 h-px bg-gray-300"></div>
-      <span class="text-xs">Fin de la liste</span>
-      <div class="w-8 h-px bg-gray-300"></div>
+    
+    <!-- Indicateur de fin de liste (mobile) -->
+    <div *ngIf="!hasMoreData" class="end-of-list mt-4 fc-mobile-end-list-indicator">
+      <div class="flex items-center justify-center gap-2 opacity-60 fc-mobile-end-list-content">
+        <div class="w-8 h-px bg-gray-300 fc-mobile-end-list-line"></div>
+        <span class="text-xs text-gray-500 fc-mobile-end-list-text">Fin de la liste</span>
+        <div class="w-8 h-px bg-gray-300 fc-mobile-end-list-line"></div>
+      </div>
+    </div>
+    <!-- Indicateur de fin de liste pour mobile avec design moderne -->
+    <div *ngIf="!hasMoreData && filteredConsultants.length > 0" class="end-of-list py-6 bg-gray-50/50 mt-2">
+      <div class="flex items-center justify-center gap-2">
+        <div class="w-8 h-px bg-gray-300"></div>
+        <span class="text-xs">Fin de la liste</span>
+        <div class="w-8 h-px bg-gray-300"></div>
+      </div>
     </div>
   </div>
 </div>

@@ -1,0 +1,183 @@
+<div class="fc-contacts-container scrollbar-custom">
+  <!-- Section de recherche et filtres -->
+  <div class="bg-white p-4 rounded-lg shadow-sm mb-4 fc-contacts-search-section">
+    <form [formGroup]="searchForm" class="space-y-4">
+      <!-- Barre de recherche principale -->
+      <div class="relative fc-search-wrapper">
+        <input
+          type="text"
+          formControlName="keyword"
+          placeholder="Rechercher par nom, entreprise, poste ou besoins..."
+          class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 fc-search-input"
+        />
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Filtres de recherche avancée -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3 fc-filter-options">
+        <!-- Filtre par secteur -->
+        <div class="fc-filter-group">
+          <label class="block text-xs font-medium text-gray-600 mb-1">Secteur</label>
+          <select
+            formControlName="sector"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 fc-filter-select"
+          >
+            <option value="">Tous les secteurs</option>
+            <option *ngFor="let sector of sectors" [value]="sector">{{ sector }}</option>
+          </select>
+        </div>
+
+        <!-- Filtre par rôle -->
+        <div class="fc-filter-group">
+          <label class="block text-xs font-medium text-gray-600 mb-1">Rôle</label>
+          <select
+            formControlName="role"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 fc-filter-select"
+          >
+            <option value="">Tous les rôles</option>
+            <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+          </select>
+        </div>
+
+        <!-- Filtre par pays -->
+        <div class="fc-filter-group">
+          <label class="block text-xs font-medium text-gray-600 mb-1">Pays</label>
+          <select
+            formControlName="country"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 fc-filter-select"
+          >
+            <option value="">Tous les pays</option>
+            <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+          </select>
+        </div>
+
+        <!-- Filtre par ville -->
+        <div class="fc-filter-group">
+          <label class="block text-xs font-medium text-gray-600 mb-1">Ville</label>
+          <select
+            formControlName="city"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 fc-filter-select"
+          >
+            <option value="">Toutes les villes</option>
+            <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Bouton de réinitialisation des filtres -->
+      <div class="flex justify-end">
+        <button
+          type="button"
+          (click)="resetFilters()"
+          class="px-4 py-2 text-xs bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none fc-reset-button"
+        >
+          Réinitialiser les filtres
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loader animé -->
+  <div *ngIf="isLoading" class="flex justify-center items-center py-20 fc-loading-section">
+    <div class="flex space-x-2">
+      <div class="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
+      <div class="w-3 h-3 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+      <div class="w-3 h-3 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+    </div>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="errorMessage" class="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4 mb-4 fc-error-message">
+    <div class="flex items-center">
+      <svg class="h-5 w-5 text-red-400 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+      </svg>
+      <p>{{ errorMessage }}</p>
+    </div>
+  </div>
+
+  <!-- Message "Aucun contact" -->
+  <div *ngIf="!isLoading && filteredContacts?.length === 0 && !errorMessage" class="bg-white rounded-lg p-8 text-center mb-4 fc-empty-state">
+    <svg class="mx-auto h-12 w-12 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+    </svg>
+    <h3 class="mt-4 text-lg font-medium text-gray-900">Aucun contact trouvé</h3>
+    <p class="mt-1 text-sm text-gray-500">Essayez de modifier vos critères de recherche pour trouver des contacts pertinents.</p>
+  </div>
+
+  <!-- Données de débogage et actions (temporaire) -->
+  <div class="bg-gray-100 p-4 my-4 rounded-lg border border-gray-300">
+    <p>Nombre total de contacts: <strong>{{ contacts?.length || 0 }}</strong></p>
+    <p>Contacts filtrés: <strong>{{ filteredContacts?.length || 0 }}</strong></p>
+    <p>État de chargement: <strong>{{ isLoading ? 'En cours...' : 'Terminé' }}</strong></p>
+    <div class="mt-3 p-2 bg-white rounded">
+      <p class="font-semibold">Premier contact (si disponible):</p>
+      <pre *ngIf="filteredContacts?.length > 0" class="text-xs mt-2 p-2 bg-gray-50 rounded overflow-auto max-h-32">{{ filteredContacts[0] | json }}</pre>
+      <p *ngIf="filteredContacts?.length === 0" class="text-xs mt-2 p-2 bg-red-50 rounded">Aucun contact disponible</p>
+      <button (click)="forceRefreshContacts()" class="mt-3 px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600">
+        Forcer le rafraîchissement
+      </button>
+    </div>
+  </div>
+
+  <!-- Grille de contacts -->
+  <div *ngIf="!isLoading && filteredContacts?.length > 0" class="fc-contacts-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;">
+    <!-- Carte de contact -->
+    <div *ngFor="let contact of filteredContacts" class="bg-white rounded-lg shadow-sm overflow-hidden fc-contact-card animate-fade-in">
+      <div class="p-4">
+        <!-- En-tête avec photo et informations de base -->
+        <div class="flex items-start space-x-4">
+          <!-- Photo de profil -->
+          <div class="flex-shrink-0">
+            <!-- Utilisation des initiales comme avatar par défaut -->
+            <div class="h-14 w-14 rounded-full flex items-center justify-center bg-blue-100 text-blue-800 font-semibold border border-gray-200 fc-contact-photo">
+              {{ contact.firstName?.charAt(0) }}{{ contact.lastName?.charAt(0) }}
+            </div>
+          </div>
+          
+          <!-- Informations principales -->
+          <div class="flex-1 min-w-0">
+            <h3 class="text-base font-semibold text-gray-900 truncate fc-contact-name">{{ contact.firstName }} {{ contact.lastName }}</h3>
+            <p class="text-sm text-gray-600 truncate fc-contact-title">{{ contact.title }}</p>
+            <p class="text-xs text-gray-500 fc-contact-company">{{ contact.company }}</p>
+            <p class="text-xs text-gray-500 fc-contact-location">{{ contact.city }}, {{ contact.country }}</p>
+          </div>
+
+          <!-- Bouton LinkedIn -->
+          <div>
+            <button (click)="openLinkedIn(contact.linkedinUrl)" class="text-blue-700 hover:text-blue-900 focus:outline-none fc-linkedin-button">
+              <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Informations sur les besoins de recrutement -->
+        <div *ngIf="contact.recruitmentNeeds" class="mt-4 p-3 bg-blue-50 rounded-md fc-recruitment-section">
+          <h4 class="text-xs font-medium text-blue-800 mb-1">Besoins de recrutement</h4>
+          <p class="text-xs text-blue-700">{{ contact.recruitmentNeeds }}</p>
+        </div>
+        
+        <!-- Missions disponibles -->
+        <div *ngIf="contact.missions && contact.missions.length > 0" class="mt-3 fc-missions-section">
+          <h4 class="text-xs font-medium text-gray-700 mb-1">Missions</h4>
+          <div class="flex flex-wrap gap-1">
+            <span *ngFor="let mission of contact.missions" class="px-2 py-1 text-xs bg-gray-100 text-gray-800 rounded-full fc-mission-tag">{{ mission }}</span>
+          </div>
+        </div>
+        
+        <!-- Tags/mots-clés -->
+        <div *ngIf="contact.tags && contact.tags.length > 0" class="mt-3 fc-tags-section">
+          <div class="flex flex-wrap gap-1">
+            <span *ngFor="let tag of contact.tags" class="px-2 py-1 text-2xs bg-gray-50 text-gray-500 rounded-full fc-tag">{{ tag }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -12,5 +12,11 @@
        (click)="setActiveTab('missions')">
       Missions
     </a>
+    <a class="-mb-px py-3 px-4 text-sm font-medium text-center border-b rounded-t-sm fc-tab fc-contacts-tab" 
+       [class.active-tab]="activeTab === 'contacts'"
+       [class.inactive-tab]="activeTab !== 'contacts'"
+       (click)="setActiveTab('contacts')">
+      Contacts
+    </a>
   </nav>
 </div>

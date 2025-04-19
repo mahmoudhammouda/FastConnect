@@ -29,13 +29,20 @@ export class NavbarComponent implements OnInit {
       this.activeTab = tab;
       this.tabChange.emit(tab);
       
-      // Mettre à jour l'URL avec l'onglet actif (sans rechargement de page)
-      this.router.navigate([], {
-        relativeTo: this.route,
-        queryParams: { tab: tab },
-        queryParamsHandling: 'merge',
-        skipLocationChange: false
-      });
+      // Naviguer vers la route correspondante en fonction de l'onglet
+      switch (tab) {
+        case 'consultants':
+          this.router.navigate(['/consultants']);
+          break;
+        case 'missions':
+          this.router.navigate(['/missions']);
+          break;
+        case 'contacts':
+          this.router.navigate(['/contacts']);
+          break;
+        default:
+          this.router.navigate(['/consultants']);
+      }
     }
   }
 }

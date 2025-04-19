@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './components/auth/login/login.component';
 import { UserProfileComponent } from './components/user/profile/user-profile.component';
 import { ConsultantListComponent } from './components/consultant-list/consultant-list.component';
+import { ContactListComponent } from './components/contact-list/contact-list.component';
 import { BookmarkListsComponent } from './components/bookmark-lists/bookmark-lists.component';
 import { AlertListComponent } from './components/alert-list/alert-list.component';
 import { AvailabilityListComponent } from './components/availability-list/availability-list.component';
@@ -13,6 +14,9 @@ const routes: Routes = [
   // Route principale - consultants list
   { path: '', component: ConsultantListComponent }, // Route principale directe vers la liste des consultants
   { path: 'consultants', component: ConsultantListComponent }, // Route alternative
+  
+  // Gestion des contacts recruteurs
+  { path: 'contacts', component: ContactListComponent },
   
   // Gestion des favoris
   { path: 'bookmarks', component: BookmarkListsComponent },

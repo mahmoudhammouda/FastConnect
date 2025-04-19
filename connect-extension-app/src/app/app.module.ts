@@ -8,6 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ConsultantCardComponent } from './components/consultant-card/consultant-card.component';
 import { ConsultantListComponent } from './components/consultant-list/consultant-list.component';
+import { ContactListComponent } from './components/contact-list/contact-list.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { UserProfileComponent } from './components/user/profile/user-profile.component';
 import { AuthInterceptor } from './services/auth.interceptor';
