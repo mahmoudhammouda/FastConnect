@@ -39,7 +39,23 @@ export class ConsultantService {
       'Société Générale', 'Crédit Agricole', 'AXA', 'Engie', 'EDF', 'L\'Oréal', 'Carrefour', 
       'Google', 'Microsoft', 'Amazon', 'Apple', 'Facebook', 'Twitter', 'Airbnb', 'Uber', 
       'Doctolib', 'Deezer', 'Blablacar', 'OVH', 'Thales', 'Atos', 'IBM', 'HP', 'Dell', 
-      'Allianz', 'Axa', 'MAIF', 'La Poste', 'Air France', 'RATP', 'SNCF'
+      'Assurance', 'MAIF', 'La Poste', 'Air France', 'RATP', 'SNCF'
+    ];
+    
+    // Prénoms pour générer des consultants
+    const firstNames = [
+      'Thomas', 'Nicolas', 'Julien', 'David', 'Pierre', 'Alexandre', 'Antoine', 'Vincent', 'Maxime', 'Guillaume',
+      'Sophie', 'Émilie', 'Julie', 'Céline', 'Marine', 'Camille', 'Laura', 'Pauline', 'Aurélie', 'Sarah',
+      'Sébastien', 'Éric', 'Mathieu', 'Olivier', 'François', 'Jérôme', 'Stéphane', 'Christophe', 'Patrick', 'Philippe',
+      'Caroline', 'Nathalie', 'Isabelle', 'Catherine', 'Sandrine', 'Valérie', 'Stéphanie', 'Virginie', 'Hélène', 'Anne'
+    ];
+    
+    // Noms de famille pour générer des consultants
+    const lastNames = [
+      'Martin', 'Bernard', 'Thomas', 'Petit', 'Robert', 'Richard', 'Durand', 'Dubois', 'Moreau', 'Laurent',
+      'Simon', 'Michel', 'Lefebvre', 'Leroy', 'Roux', 'David', 'Bertrand', 'Morel', 'Fournier', 'Girard',
+      'Bonnet', 'Dupont', 'Lambert', 'Fontaine', 'Rousseau', 'Vincent', 'Muller', 'Lefevre', 'Faure', 'Andre',
+      'Mercier', 'Blanc', 'Guerin', 'Boyer', 'Garnier', 'Chevalier', 'Francois', 'Legrand', 'Gauthier', 'Garcia'
     ];
     
     const skillsPool = [
@@ -79,7 +95,7 @@ export class ConsultantService {
       
       "Bonjour,\n\nExpert en solutions #cloud et #cybersécurité, je suis passionné par les technologies émergentes et la sécurisation des infrastructures critiques.\n\nProfil :\n- +10 ans d'expérience en sécurité des SI\n- Certifications CISSP et AWS Security Specialist\n- Spécialiste des normes ISO27001 et RGPD\n\nRécemment, j'ai dirigé des audits de sécurité pour des entreprises du CAC 40 et implémenté des stratégies de défense qui ont réduit les incidents de 75%.\n\nDisponible immédiatement pour des missions d'audit ou de conseil stratégique.\n\n#security #compliance #audit #training",
       
-      "Bonjour à tous,\n\nDéveloppeur full-stack avec 8 ans d'expérience en #javascript #react #nodejs, je recherche de nouveaux défis techniques.\n\nMes compétences :\n- Architecture microservices\n- Optimisation de performance\n- Certifié AWS Solutions Architect et MongoDB Developer\n\nMa dernière réalisation : refonte complète d'une plateforme e-commerce (10M+ visiteurs) avec mise en place d'une architecture JAMstack qui a amélioré les temps de chargement de 300%.\n\nDisponible dès juillet pour des projets innovants.\n\n#fullstack #performance #architecture #ecommerce",
+      "Bonjour à tous,\n\nDéveloppeur full-stack avec 8 ans d'expérience en développement #javascript #react #nodejs, je recherche de nouveaux défis techniques.\n\nMes compétences :\n- Architecture microservices\n- Optimisation de performance\n- Certifié AWS Solutions Architect et MongoDB Developer\n\nMa dernière réalisation : refonte complète d'une plateforme e-commerce (10M+ visiteurs) avec mise en place d'une architecture JAMstack qui a amélioré les temps de chargement de 300%.\n\nDisponible dès juillet pour des projets innovants.\n\n#fullstack #performance #architecture #ecommerce",
       
       "Bonjour,\n\nData Scientist spécialisé #MachineLearning et #DeepLearning, je suis actuellement disponible pour des missions en remote.\n\nMon parcours :\n- PhD en Intelligence Artificielle (École Polytechnique)\n- Expert TensorFlow, PyTorch et scikit-learn\n- Spécialiste en modèles prédictifs et détection de fraudes\n\nMon projet récent : système de détection de fraude financière avec réduction des faux positifs de 60% tout en maintenant un taux de détection >95%.\n\nÀ la recherche d'opportunités à fort impact social ou environnemental.\n\n#DataScience #AI #analytics #python",
       
@@ -113,6 +129,10 @@ export class ConsultantService {
       
       // Generate random message
       const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+      
+      // Sélection aléatoire de prénom et nom
+      const randomFirstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+      const randomLastName = lastNames[Math.floor(Math.random() * lastNames.length)];
       
       // Génération d'emplacements multiples pour certains consultants (1 à 3 lieux)
       let consultantLocations = randomLocation;
@@ -165,6 +185,8 @@ export class ConsultantService {
                  
       this.mockData.push({
         id: `100${i}`,
+        firstName: randomFirstName,
+        lastName: randomLastName,
         role: randomRole,
         linkedinUrl: 'https://www.linkedin.com/in/example',
         phone: locked ? undefined : '+33 6 12 34 56 78',

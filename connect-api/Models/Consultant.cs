@@ -26,6 +26,8 @@ namespace ConnectExtension.Backend.Models
     public class Consultant
     {
         public string Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string Role { get; set; }
         public string LinkedinUrl { get; set; }
         public string? Phone { get; set; }

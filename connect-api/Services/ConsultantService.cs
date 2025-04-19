@@ -84,11 +84,25 @@ namespace ConnectExtension.Backend.Services
             
             // Entreprises pour les expériences professionnelles
             var companies = new string[] {
-                "Accenture", "Capgemini", "Sopra Steria", "SNCF", "Orange", "Total", "BNP Paribas", 
-                "Société Générale", "Crédit Agricole", "AXA", "Engie", "EDF", "L'Oréal", "Carrefour", 
-                "Google", "Microsoft", "Amazon", "Apple", "Facebook", "Twitter", "Airbnb", "Uber", 
-                "Doctolib", "Deezer", "Blablacar", "OVH", "Thales", "Atos", "IBM", "HP", "Dell", 
-                "Allianz", "Axa", "MAIF", "La Poste", "Air France", "RATP", "SNCF"
+                "Accenture", "Capgemini", "Sopra Steria", "Atos", "CGI", "KPMG", "Deloitte", "EY", "PwC", 
+                "Alten", "Altran", "Wavestone", "Devoteam", "OVHcloud", "Thalès", "Orange Business Services",
+                "Econocom", "SII", "Umanis", "Claranet", "Aubay", "Zenika", "OCTO Technology", "Ippon Technologies"
+            };
+            
+            // Prénoms pour générer des consultants
+            var firstNames = new string[] {
+                "Thomas", "Nicolas", "Julien", "David", "Pierre", "Alexandre", "Antoine", "Vincent", "Maxime", "Guillaume",
+                "Sophie", "Émilie", "Julie", "Céline", "Marine", "Camille", "Laura", "Pauline", "Aurélie", "Sarah",
+                "Sébastien", "Éric", "Mathieu", "Olivier", "François", "Jérôme", "Stéphane", "Christophe", "Patrick", "Philippe",
+                "Caroline", "Nathalie", "Isabelle", "Catherine", "Sandrine", "Valérie", "Stéphanie", "Virginie", "Hélène", "Anne"
+            };
+            
+            // Noms de famille pour générer des consultants
+            var lastNames = new string[] {
+                "Martin", "Bernard", "Thomas", "Petit", "Robert", "Richard", "Durand", "Dubois", "Moreau", "Laurent",
+                "Simon", "Michel", "Lefebvre", "Leroy", "Roux", "David", "Bertrand", "Morel", "Fournier", "Girard",
+                "Bonnet", "Dupont", "Lambert", "Fontaine", "Rousseau", "Vincent", "Muller", "Lefevre", "Faure", "Andre",
+                "Mercier", "Blanc", "Guerin", "Boyer", "Garnier", "Chevalier", "Francois", "Legrand", "Gauthier", "Garcia"
             };
             
             var skillsPool = new string[] {
@@ -216,9 +230,15 @@ namespace ConnectExtension.Backend.Services
                 var hasEmail = random.Next(10) < 9; // 90% chance of having an email
                 var locked = random.Next(10) < 2; // 20% chance of being locked
                 
+                // Sélection aléatoire de prénom et nom
+                var firstName = firstNames[random.Next(firstNames.Length)];
+                var lastName = lastNames[random.Next(lastNames.Length)];
+                
                 consultants.Add(new Consultant
                 {
                     Id = (1000 + i).ToString(),
+                    FirstName = firstName,
+                    LastName = lastName,
                     Role = role,
                     LinkedinUrl = $"https://www.linkedin.com/in/consultant-{1000 + i}",
                     Phone = hasPhone ? $"+33 {random.Next(6, 8)} {random.Next(10, 100)} {random.Next(10, 100)} {random.Next(10, 100)}" : null,
