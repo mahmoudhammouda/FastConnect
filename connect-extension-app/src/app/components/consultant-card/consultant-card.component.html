@@ -90,12 +90,14 @@
   </div>
 
   <!-- Message preview avec structure identique au mobile -->
-  <div class="px-3 py-2 border-t border-gray-100 bg-gray-50 text-xs fc-message-preview">
-    <div class="relative fc-message-container">
-      <div class="text-gray-600 max-h-16 overflow-hidden fc-message-content" [innerHTML]="formatMessage(consultant.message)" [ngClass]="{'truncated': !messageExpanded}"></div>
-      <div *ngIf="!messageExpanded && isMessageLong(consultant.message)" 
-           class="bg-gradient-overlay-mobile fc-message-overlay"
-           (click)="onToggleMessageExpansion(consultant.id, $event)">
+  <div class="px-3 py-2 border-t border-gray-100 bg-gray-50 text-xs fc-message-preview" (click)="openMessageModal($event, consultant.message)">
+    <div class="relative fc-message-container cursor-pointer">
+      <div class="text-gray-600 max-h-16 overflow-hidden fc-message-content" [innerHTML]="formatMessage(consultant.message)"></div>
+      <div *ngIf="isMessageLong(consultant.message)" 
+           class="bg-gradient-overlay-mobile fc-message-overlay">
+      </div>
+      <div *ngIf="isMessageLong(consultant.message)" class="absolute bottom-0 right-0 text-xs text-blue-600 font-medium bg-gray-50 px-1 rounded-sm fc-read-more-hint">
+        Voir plus...
       </div>
     </div>
   </div>
@@ -109,25 +111,46 @@
       {{ detailsExpanded ? 'Masquer les détails' : 'Voir les détails' }}
     </button>
     
-    <!-- Actions de contact -->
+    <!-- Actions de contact (toujours visibles, mais grisées si non disponibles) -->
     <div class="flex space-x-1.5 fc-contact-actions">
-      <!-- Email -->
-      <a *ngIf="consultant.email && consultant.emailValidated" [href]="'mailto:' + consultant.email" target="_blank" 
+      <!-- Email (accessible ou grisé) -->
+      <a *ngIf="consultant.email && consultant.emailValidated; else disabledEmailBtn" 
+         [href]="'mailto:' + consultant.email" 
+         target="_blank" 
          class="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 fc-email-action">
         <span class="material-icons text-sm">email</span>
       </a>
+      <ng-template #disabledEmailBtn>
+        <div class="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 text-gray-300 cursor-not-allowed fc-email-action-disabled">
+          <span class="material-icons text-sm">email</span>
+        </div>
+      </ng-template>
       
-      <!-- Téléphone -->
-      <a *ngIf="consultant.phone && consultant.phoneValidated" [href]="'tel:' + consultant.phone" target="_blank" 
+      <!-- Téléphone (accessible ou grisé) -->
+      <a *ngIf="consultant.phone && consultant.phoneValidated; else disabledPhoneBtn" 
+         [href]="'tel:' + consultant.phone" 
+         target="_blank" 
          class="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 fc-phone-action">
         <span class="material-icons text-sm">phone</span>
       </a>
+      <ng-template #disabledPhoneBtn>
+        <div class="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 text-gray-300 cursor-not-allowed fc-phone-action-disabled">
+          <span class="material-icons text-sm">phone</span>
+        </div>
+      </ng-template>
       
-      <!-- LinkedIn -->
-      <a *ngIf="consultant.linkedinUrl && consultant.linkedinValidated" [href]="consultant.linkedinUrl" target="_blank" 
+      <!-- LinkedIn (accessible ou grisé) -->
+      <a *ngIf="consultant.linkedinUrl && consultant.linkedinValidated; else disabledLinkedinBtn" 
+         [href]="consultant.linkedinUrl" 
+         target="_blank" 
          class="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 fc-linkedin-action">
         <span class="material-icons text-sm">link</span>
       </a>
+      <ng-template #disabledLinkedinBtn>
+        <div class="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 text-gray-300 cursor-not-allowed fc-linkedin-action-disabled">
+          <span class="material-icons text-sm">link</span>
+        </div>
+      </ng-template>
     </div>
   </div>
   
@@ -165,6 +188,17 @@
         </span>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Modal pour afficher le message complet -->
+<div *ngIf="isMessageModalOpen" class="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center fc-message-modal" (click)="closeMessageModal($event)">
+  <div class="bg-white rounded-lg p-4 max-w-lg w-full max-h-[80vh] overflow-y-auto m-4 relative fc-message-modal-content" (click)="$event.stopPropagation()">
+    <button class="absolute top-2 right-2 text-gray-500 hover:text-gray-800 transition-colors duration-200 fc-modal-close" (click)="closeMessageModal($event)">
+      <span class="material-icons">close</span>
+    </button>
+    <h3 class="text-lg font-semibold text-gray-900 mb-2 fc-modal-title">Message du consultant</h3>
+    <div class="text-sm text-gray-700 fc-modal-message-content" [innerHTML]="currentModalMessage"></div>
   </div>
 </div>
 
@@ -256,12 +290,14 @@
   </div>
   
   <!-- Message preview mobile -->
-  <div class="px-3 py-2 border-t border-gray-100 bg-gray-50 text-xs">
-    <div class="relative">
-      <div class="text-gray-600 max-h-16 overflow-hidden" [innerHTML]="formatMessage(consultant.message)" [ngClass]="{'truncated': !messageExpanded}"></div>
-      <div *ngIf="!messageExpanded && isMessageLong(consultant.message)" 
-           class="bg-gradient-overlay-mobile"
-           (click)="onToggleMessageExpansion(consultant.id, $event)">
+  <div class="px-3 py-2 border-t border-gray-100 bg-gray-50 text-xs" (click)="openMessageModal($event, consultant.message)">
+    <div class="relative cursor-pointer">
+      <div class="text-gray-600 max-h-16 overflow-hidden" [innerHTML]="formatMessage(consultant.message)"></div>
+      <div *ngIf="isMessageLong(consultant.message)" 
+           class="bg-gradient-overlay-mobile">
+      </div>
+      <div *ngIf="isMessageLong(consultant.message)" class="absolute bottom-0 right-0 text-xs text-blue-600 font-medium bg-gray-50 px-1 rounded-sm">
+        Voir plus...
       </div>
     </div>
   </div>
@@ -275,25 +311,46 @@
       {{ detailsExpanded ? 'Masquer les détails' : 'Voir les détails' }}
     </button>
     
-    <!-- Actions de contact -->
+    <!-- Actions de contact (toujours visibles, mais grisées si non disponibles) -->
     <div class="flex space-x-1.5 fc-mobile-contact-actions">
-      <!-- Email -->
-      <a *ngIf="consultant.email && consultant.emailValidated" [href]="'mailto:' + consultant.email" target="_blank" 
+      <!-- Email (accessible ou grisé) -->
+      <a *ngIf="consultant.email && consultant.emailValidated; else disabledMobileEmailBtn" 
+         [href]="'mailto:' + consultant.email" 
+         target="_blank" 
          class="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 fc-mobile-email-action">
         <span class="material-icons text-sm">email</span>
       </a>
+      <ng-template #disabledMobileEmailBtn>
+        <div class="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 text-gray-300 cursor-not-allowed fc-mobile-email-action-disabled">
+          <span class="material-icons text-sm">email</span>
+        </div>
+      </ng-template>
       
-      <!-- Téléphone -->
-      <a *ngIf="consultant.phone && consultant.phoneValidated" [href]="'tel:' + consultant.phone" target="_blank" 
+      <!-- Téléphone (accessible ou grisé) -->
+      <a *ngIf="consultant.phone && consultant.phoneValidated; else disabledMobilePhoneBtn" 
+         [href]="'tel:' + consultant.phone" 
+         target="_blank" 
          class="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 fc-mobile-phone-action">
         <span class="material-icons text-sm">phone</span>
       </a>
+      <ng-template #disabledMobilePhoneBtn>
+        <div class="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 text-gray-300 cursor-not-allowed fc-mobile-phone-action-disabled">
+          <span class="material-icons text-sm">phone</span>
+        </div>
+      </ng-template>
       
-      <!-- LinkedIn -->
-      <a *ngIf="consultant.linkedinUrl && consultant.linkedinValidated" [href]="consultant.linkedinUrl" target="_blank" 
+      <!-- LinkedIn (accessible ou grisé) -->
+      <a *ngIf="consultant.linkedinUrl && consultant.linkedinValidated; else disabledMobileLinkedinBtn" 
+         [href]="consultant.linkedinUrl" 
+         target="_blank" 
          class="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 fc-mobile-linkedin-action">
         <span class="material-icons text-sm">link</span>
       </a>
+      <ng-template #disabledMobileLinkedinBtn>
+        <div class="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 text-gray-300 cursor-not-allowed fc-mobile-linkedin-action-disabled">
+          <span class="material-icons text-sm">link</span>
+        </div>
+      </ng-template>
     </div>
   </div>
   

@@ -38,6 +38,35 @@ $text-light: #6b7280;
   }
 }
 
+// Isoler les cartes consultants pour éviter les effets indésirables
+.fc-consultants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+// Isoler chaque carte pour qu'elle n'affecte pas ses voisines
+.fc-consultant-card-wrapper {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start; // Empêche l'étirement vertical
+}
+
+// S'assurer que l'expansion des détails n'affecte pas le layout
+:host ::ng-deep app-consultant-card {
+  .fc-expanded-details {
+    position: relative;
+    z-index: 1;
+  }
+}
+
 // Section de tri
 .fc-sort-section {
   margin-bottom: 1rem;

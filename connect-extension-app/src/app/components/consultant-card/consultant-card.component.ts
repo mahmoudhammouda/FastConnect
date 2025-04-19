@@ -47,6 +47,10 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
   // Pour savoir si un consultant est déjà dans au moins une liste de favoris
   isBookmarked: boolean = false;
   
+  // Propriétés pour la modal d'affichage du message complet
+  isMessageModalOpen: boolean = false;
+  currentModalMessage: string = '';
+  
   /**
    * Getter pour accéder à l'URL LinkedIn du consultant via la propriété linkedin
    * (pour compatibilité avec les templates qui utilisent consultant.linkedin)
@@ -223,9 +227,40 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
     this.toggleDropdown.emit({id: consultantId, event});
   }
 
+  /**
+   * Ouvre la modale pour afficher le message complet
+   * @param event L'événement de clic
+   * @param message Le message à afficher dans la modale
+   */
+  openMessageModal(event: MouseEvent, message: string | undefined): void {
+    // N'ouvrir la modale que si le message est long
+    if (this.isMessageLong(message)) {
+      event.stopPropagation();
+      this.currentModalMessage = this.formatMessage(message);
+      this.isMessageModalOpen = true;
+      
+      // Bloquer le scroll du body quand la modale est ouverte
+      document.body.style.overflow = 'hidden';
+    }
+  }
+  
+  /**
+   * Ferme la modale d'affichage du message
+   * @param event L'événement de clic
+   */
+  closeMessageModal(event: MouseEvent): void {
+    event.stopPropagation();
+    this.isMessageModalOpen = false;
+    
+    // Rétablir le scroll du body
+    document.body.style.overflow = 'auto';
+  }
+  
+  // Méthode dépréciée, gardée pour la compatibilité arrière
   onToggleMessageExpansion(id: string, event: MouseEvent): void {
     event.stopPropagation();
-    this.toggleMessageExpansion.emit({id, event});
+    // Ouvrir la modale au lieu de simplement émettre l'événement
+    this.openMessageModal(event, this.consultant.message);
   }
 
   onToggleDetailsExpansion(id: string, event: MouseEvent): void {
