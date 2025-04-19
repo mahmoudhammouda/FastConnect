@@ -1,13 +1,12 @@
-<div class="navbar-container fc-tabs-wrapper">
+<div class="navbar-container fc-tabs-wrapper" style="border-bottom: none; background-color: #09213b; border-top-left-radius: 8px; border-top-right-radius: 8px; box-shadow: #f8fafc73 5px 5px 30px 0px;">
   <nav class="flex rtl:space-x-reverse fc-tabs-navigation" aria-label="Tabs">
-    <a class="-mb-px py-3 px-4 text-sm font-medium text-center rounded-t-sm fc-tab fc-consultants-tab" 
+    <a class="-mb-px py-3 px-4 text-sm font-medium text-center fc-tab fc-consultants-tab" 
        [class.active-tab]="activeTab === 'consultants'"
        [class.inactive-tab]="activeTab !== 'consultants'"
        [ngStyle]="{
          'background-color': activeTab === 'consultants' ? '#05203c' : '', 
          'color': activeTab === 'consultants' ? 'white' : '',
-         'border': activeTab === 'consultants' ? '1px solid #05203c' : '1px solid #e5e7eb',
-         'border-bottom': activeTab === 'consultants' ? 'none' : '1px solid #e5e7eb'
+         'border': 'none'
        }" 
        (click)="setActiveTab('consultants')">
       <div class="flex items-center justify-center">
@@ -15,14 +14,14 @@
         Consultants
       </div>
     </a>
-    <a class="-mb-px py-3 px-4 text-sm font-medium text-center rounded-t-sm fc-tab fc-missions-tab" 
+    <a class="-mb-px py-3 px-4 text-sm font-medium text-center fc-tab fc-missions-tab" 
        [class.active-tab]="activeTab === 'missions'"
        [class.inactive-tab]="activeTab !== 'missions'"
        [ngStyle]="{
          'background-color': activeTab === 'missions' ? '#05203c' : '', 
          'color': activeTab === 'missions' ? 'white' : '',
-         'border': activeTab === 'missions' ? '1px solid #05203c' : '1px solid #e5e7eb',
-         'border-bottom': activeTab === 'missions' ? 'none' : '1px solid #e5e7eb'
+         'border': 'none',
+         'border-left': '1px solid rgba(255, 255, 255, 0.2)'
        }" 
        (click)="setActiveTab('missions')">
       <div class="flex items-center justify-center">
@@ -30,14 +29,14 @@
         Missions
       </div>
     </a>
-    <a class="-mb-px py-3 px-4 text-sm font-medium text-center rounded-t-sm fc-tab fc-contacts-tab" 
+    <a class="-mb-px py-3 px-4 text-sm font-medium text-center fc-tab fc-contacts-tab" 
        [class.active-tab]="activeTab === 'contacts'"
        [class.inactive-tab]="activeTab !== 'contacts'"
        [ngStyle]="{
          'background-color': activeTab === 'contacts' ? '#05203c' : '', 
          'color': activeTab === 'contacts' ? 'white' : '',
-         'border': activeTab === 'contacts' ? '1px solid #05203c' : '1px solid #e5e7eb',
-         'border-bottom': activeTab === 'contacts' ? 'none' : '1px solid #e5e7eb'
+         'border': 'none',
+         'border-left': '1px solid rgba(255, 255, 255, 0.2)'
        }" 
        (click)="setActiveTab('contacts')">
       <div class="flex items-center justify-center">

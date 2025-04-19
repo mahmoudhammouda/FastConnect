@@ -1,36 +1,4 @@
-<!-- Section de recherche et tri comme dans contact-list -->
-<div class="bg-white p-4 rounded-lg shadow-sm mb-4 fc-sort-section">
-  <div class="flex flex-col space-y-4">
-    <!-- Titre et options de tri -->
-    <div class="flex justify-between items-center">
-      <h3 class="text-sm font-medium text-gray-700">Consultants disponibles</h3>
-      
-      <div class="relative fc-sort-dropdown-container">
-        <button (click)="$event.stopPropagation()" class="flex items-center text-sm text-gray-600 hover:text-blue-500 focus:outline-none transition-colors duration-200 fc-sort-button">
-          <span class="fc-sort-label">Trier par: {{ getSortLabel() }}</span>
-          <svg class="w-4 h-4 ml-1 fc-sort-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-          </svg>
-        </button>
-        <div *ngIf="sortDropdownOpen" class="absolute z-30 right-0 mt-2 w-48 bg-white rounded-md shadow-lg p-2 border border-gray-100 fc-sort-dropdown-menu">
-          <div *ngFor="let option of sortOptions" 
-               (click)="selectedSortOrder = option.value; sortDropdownOpen = false; applyFilters()" 
-               class="px-3 py-2 text-sm rounded-md cursor-pointer hover:bg-gray-100 fc-sort-option"
-               [class.text-blue-500]="selectedSortOrder === option.value"
-               [class.font-medium]="selectedSortOrder === option.value">
-            {{ option.label }}
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Informations sur le nombre de consultants et état du chargement (DEBUG) -->
-    <div class="text-xs text-gray-500 flex items-center space-x-2" *ngIf="!isLoading">
-      <span>{{ filteredConsultants.length }} consultant(s) affiché(s)</span>
-      <span *ngIf="hasMoreData" class="text-blue-500">(Scroll pour charger plus)</span>
-    </div>
-  </div>
-</div>
+
 
 <!-- Vue Bureau avec design harmonisé comme dans contact-list -->
 <div #consultantsList class="flex-1 overflow-y-auto h-full hidden md:block consultants-container scrollbar-custom fc-desktop-view" (scroll)="onScroll($event)">
