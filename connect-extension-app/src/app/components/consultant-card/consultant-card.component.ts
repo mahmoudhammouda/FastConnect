@@ -65,7 +65,8 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
   @Output() toggleExpansion = new EventEmitter<{id: string, expanded: boolean}>();
   @Output() toggleDropdown = new EventEmitter<{id: string, event: MouseEvent}>();
   @Output() toggleMessageExpansion = new EventEmitter<{id: string, event: MouseEvent}>();
-  @Output() toggleDetailsExpansion = new EventEmitter<{id: string, event: MouseEvent}>(); // Nouvel événement pour afficher/masquer les détails
+  @Output() toggleDetailsExpansion = new EventEmitter<{id: string, event: MouseEvent}>();
+  @Output() showMessageModal = new EventEmitter<{message: string}>(); // Nouvel événement pour afficher/masquer les détails
   
   constructor(public bookmarkService: BookmarkService) {}
 
@@ -228,38 +229,23 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Ouvre la modale pour afficher le message complet
+   * Émet un événement pour ouvrir la modale de message au niveau parent
    * @param event L'événement de clic
    * @param message Le message à afficher dans la modale
    */
   openMessageModal(event: MouseEvent, message: string | undefined): void {
-    // N'ouvrir la modale que si le message est long
+    // N'émettre l'événement que si le message est long
     if (this.isMessageLong(message)) {
       event.stopPropagation();
-      this.currentModalMessage = this.formatMessage(message);
-      this.isMessageModalOpen = true;
-      
-      // Bloquer le scroll du body quand la modale est ouverte
-      document.body.style.overflow = 'hidden';
+      const formattedMessage = this.formatMessage(message || '');
+      this.showMessageModal.emit({ message: formattedMessage });
     }
   }
   
-  /**
-   * Ferme la modale d'affichage du message
-   * @param event L'événement de clic
-   */
-  closeMessageModal(event: MouseEvent): void {
-    event.stopPropagation();
-    this.isMessageModalOpen = false;
-    
-    // Rétablir le scroll du body
-    document.body.style.overflow = 'auto';
-  }
-  
-  // Méthode dépréciée, gardée pour la compatibilité arrière
+  // Méthode pour la compatibilité avec l'API existante
   onToggleMessageExpansion(id: string, event: MouseEvent): void {
     event.stopPropagation();
-    // Ouvrir la modale au lieu de simplement émettre l'événement
+    // Utilise la nouvelle méthode pour émettre l'événement vers le parent
     this.openMessageModal(event, this.consultant.message);
   }
 
