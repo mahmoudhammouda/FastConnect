@@ -9,17 +9,17 @@
         <div class="flex-shrink-0">
           <div class="relative">
             <!-- Avatar avec indicateur de disponibilité et initiales (fond noir, texte blanc) -->
-            <div class="h-10 w-10 rounded-full flex items-center justify-center border border-gray-200 bg-black text-white">
+            <div class="h-10 w-10 rounded-full flex items-center justify-center border border-gray-200 bg-black text-white fc-consultant-avatar">
               <!-- Initiales du consultant -->
-              <span class="text-sm font-semibold">
+              <span class="text-sm font-semibold fc-consultant-initials">
                 {{ consultant.firstName?.charAt(0) }}{{ consultant.lastName?.charAt(0) }}
               </span>
-              <!-- Indicateur de disponibilité (petit cercle coloré) -->
-              <div class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full border border-white"
+              <!-- Indicateur de disponibilité (petit cercle coloré sur l'orbite de l'avatar) -->
+              <div class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border border-white fc-availability-indicator"
                    [ngClass]="{
-                     'bg-green-500': consultant.availability === 0,
-                     'bg-yellow-500': consultant.availability === 1,
-                     'bg-red-500': consultant.availability === 2
+                     'bg-green-500 fc-status-available': consultant.availability === 0,
+                     'bg-yellow-500 fc-status-soon': consultant.availability === 1,
+                     'bg-red-500 fc-status-unavailable': consultant.availability === 2
                    }">
               </div>
             </div>
@@ -29,12 +29,12 @@
         <!-- Informations principales (format mobile adapté pour desktop) -->
         <div class="flex-1 min-w-0">
           <!-- Rôle du consultant et référence ID -->
-          <h3 class="text-sm font-semibold text-gray-900 truncate flex items-center">
-            <span>{{ consultant.role }}</span>
+          <h3 class="text-sm font-semibold text-gray-900 truncate flex items-center fc-consultant-header">
+            <span class="fc-consultant-role">{{ consultant.role }}</span>
             <!-- Référence ID -->
             <span class="ml-1.5 text-xs text-gray-500 fc-consultant-ref">#{{ consultant.id }}</span>
             <!-- Indicateur pulsant pour disponibilité immédiate -->
-            <div *ngIf="consultant.availability === 0" class="ml-1.5 w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
+            <div *ngIf="consultant.availability === 0" class="ml-1.5 w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse fc-pulse-indicator"></div>
           </h3>
           
           <!-- Niveau d'expérience -->
@@ -51,14 +51,14 @@
                    }">
               </div>
             </div>
-            <span class="text-xs text-gray-600">{{ getExperienceLabel(consultant.experience) }}</span>
+            <span class="text-xs text-gray-600 fc-experience-label">{{ getExperienceLabel(consultant.experience) }}</span>
           </div>
           
           <!-- Localisation -->
-          <p class="text-xs text-gray-500 truncate">
+          <p class="text-xs text-gray-500 truncate fc-consultant-locations">
             <ng-container *ngFor="let location of getLocations(consultant); let last = last">
-              <span>{{ location.trim() }}</span>
-              <span *ngIf="!last" class="mx-1">•</span>
+              <span class="fc-location-item">{{ location.trim() }}</span>
+              <span *ngIf="!last" class="mx-1 fc-location-separator">•</span>
             </ng-container>
           </p>
         </div>
@@ -67,8 +67,8 @@
       <!-- Partie droite: cadenas et bookmark -->
       <div class="flex items-center space-x-2">
         <!-- Icône de cadenas (verrouillé/déverrouillé) -->
-        <div class="flex items-center justify-center h-7 w-7 rounded-full text-gray-400 hover:text-blue-700 transition-all duration-200">
-          <span class="material-icons text-sm" [class.text-blue-700]="consultant.locked">
+        <div class="flex items-center justify-center h-7 w-7 rounded-full text-gray-400 hover:text-blue-700 transition-all duration-200 fc-lock-icon-container">
+          <span class="material-icons text-sm fc-lock-icon" [class.text-blue-700]="consultant.locked" [class.fc-locked]="consultant.locked" [class.fc-unlocked]="!consultant.locked">
             {{ consultant.locked ? 'lock' : 'lock_open' }}
           </span>
         </div>
@@ -76,9 +76,9 @@
         <!-- Bouton bookmark -->
         <button 
           (click)="toggleBookmarkDropdown($event, consultant.id)" 
-          class="flex items-center justify-center h-7 w-7 rounded-full text-gray-400 hover:text-blue-700 transition-all duration-200"
+          class="flex items-center justify-center h-7 w-7 rounded-full text-gray-400 hover:text-blue-700 transition-all duration-200 fc-bookmark-button"
           title="Ajouter aux favoris">
-          <span class="material-icons text-sm" [class.text-blue-700]="isBookmarked">
+          <span class="material-icons text-sm fc-bookmark-icon" [class.text-blue-700]="isBookmarked" [class.fc-bookmarked]="isBookmarked">
             bookmark
           </span>
         </button>
@@ -86,14 +86,14 @@
     </div>
     
     <!-- Compétences principales (max 3, comme en mobile) -->
-    <div class="mt-2">
-      <div class="flex flex-wrap gap-1">
+    <div class="mt-2 fc-skills-preview">
+      <div class="flex flex-wrap gap-1 fc-skills-list">
         <span *ngFor="let skill of consultant.skills.slice(0, 3)" 
-              class="bg-gray-100 text-gray-700 text-xs font-medium px-1.5 py-0.5 rounded-full">
+              class="bg-gray-100 text-gray-700 text-xs font-medium px-1.5 py-0.5 rounded-full fc-skill-tag">
           {{ skill }}
         </span>
         <span *ngIf="consultant.skills.length > 3" 
-              class="bg-blue-100 text-blue-700 text-xs font-medium px-1.5 py-0.5 rounded-full cursor-pointer"
+              class="bg-blue-100 text-blue-700 text-xs font-medium px-1.5 py-0.5 rounded-full fc-skill-more"
               (click)="onToggleDetailsExpansion(consultant.id, $event)">
           +{{ consultant.skills.length - 3 }}
         </span>
@@ -216,17 +216,17 @@
         <div class="flex-shrink-0">
           <div class="relative">
             <!-- Avatar avec fond noir et texte blanc pour les initiales -->
-            <div class="h-10 w-10 rounded-full flex items-center justify-center border border-gray-200 bg-black text-white">
+            <div class="h-10 w-10 rounded-full flex items-center justify-center border border-gray-200 bg-black text-white fc-consultant-avatar-mobile">
               <!-- Initiales du consultant -->
-              <span class="text-sm font-semibold">
+              <span class="text-sm font-semibold fc-consultant-initials-mobile">
                 {{ consultant.firstName?.charAt(0) }}{{ consultant.lastName?.charAt(0) }}
               </span>
-              <!-- Indicateur de disponibilité (petit cercle coloré) -->
-              <div class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full border border-white"
+              <!-- Indicateur de disponibilité (petit cercle coloré sur l'orbite de l'avatar) -->
+              <div class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border border-white fc-availability-indicator-mobile"
                    [ngClass]="{
-                     'bg-green-500': consultant.availability === 0,
-                     'bg-yellow-500': consultant.availability === 1,
-                     'bg-red-500': consultant.availability === 2
+                     'bg-green-500 fc-status-available': consultant.availability === 0,
+                     'bg-yellow-500 fc-status-soon': consultant.availability === 1,
+                     'bg-red-500 fc-status-unavailable': consultant.availability === 2
                    }">
               </div>
             </div>
@@ -235,7 +235,7 @@
         
         <!-- Infos principales version mobile -->
         <div class="flex-1 min-w-0">
-          <h3 class="text-sm font-semibold text-gray-900 truncate flex items-center">
+          <h3 class="text-sm font-semibold text-gray-900 truncate flex items-center fc-consultant-header-mobile">
             <span>{{ consultant.role }}</span>
             <!-- Référence ID -->
             <span class="ml-1.5 text-xs text-gray-500 fc-consultant-ref">#{{ consultant.id }}</span>
@@ -243,8 +243,8 @@
           </h3>
           
           <!-- Expérience en version mobile -->
-          <div class="flex items-center mt-0.5 mb-0.5">
-            <div class="flex space-x-0.5 items-end h-2.5 mr-1.5">
+          <div class="flex items-center mt-0.5 mb-0.5 fc-experience-container-mobile">
+            <div class="flex space-x-0.5 items-end h-2.5 mr-1.5 fc-experience-bars-mobile">
               <div *ngFor="let i of [1, 2, 3]" 
                    class="w-1 rounded-full transition-all duration-300"
                    [ngClass]="{
@@ -272,8 +272,8 @@
       <!-- Actions mobile: cadenas et bookmark -->
       <div class="flex items-center space-x-2">
         <!-- Icône de cadenas (verrouillé/déverrouillé) -->
-        <div class="flex items-center justify-center h-7 w-7 rounded-full text-gray-400 hover:text-blue-700 transition-all duration-200">
-          <span class="material-icons text-sm" [class.text-blue-700]="consultant.locked">
+        <div class="flex items-center justify-center h-7 w-7 rounded-full text-gray-400 hover:text-blue-700 transition-all duration-200 fc-lock-icon-container">
+          <span class="material-icons text-sm fc-lock-icon" [class.text-blue-700]="consultant.locked" [class.fc-locked]="consultant.locked" [class.fc-unlocked]="!consultant.locked">
             {{ consultant.locked ? 'lock' : 'lock_open' }}
           </span>
         </div>

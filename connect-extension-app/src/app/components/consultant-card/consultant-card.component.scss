@@ -502,6 +502,27 @@
   }
 }
 
+// Styles pour les indicateurs de disponibilité sur l'orbite de l'avatar
+.fc-availability-indicator,
+.fc-availability-indicator-mobile {
+  margin-right: 2px;
+  margin-bottom: 2px; // Valeurs ajustées pour positionner exactement sur l'orbite de l'avatar
+  transition: all 0.2s ease-in-out;
+}
+
+// États de disponibilité
+.fc-status-available {
+  box-shadow: 0 0 4px rgba(16, 185, 129, 0.5); // Ombre verte pour renforcer la visibilité
+}
+
+.fc-status-soon {
+  box-shadow: 0 0 4px rgba(251, 191, 36, 0.5); // Ombre jaune pour renforcer la visibilité
+}
+
+.fc-status-unavailable {
+  box-shadow: 0 0 4px rgba(239, 68, 68, 0.5); // Ombre rouge pour renforcer la visibilité
+}
+
 // Styles pour la modale des messages
 .fc-message-modal {
   opacity: 0;
