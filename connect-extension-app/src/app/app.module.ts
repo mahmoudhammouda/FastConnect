@@ -8,6 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ConsultantCardComponent } from './components/consultant-card/consultant-card.component';
 import { ConsultantListComponent } from './components/consultant-list/consultant-list.component';
+import { ContactListComponent } from './components/contact-list/contact-list.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { UserProfileComponent } from './components/user/profile/user-profile.component';
 import { AuthInterceptor } from './services/auth.interceptor';
@@ -18,6 +19,7 @@ import { ConsultantFormComponent } from './components/consultant-form/consultant
 import { BookmarkListsComponent } from './components/bookmark-lists/bookmark-lists.component';
 // (Référence à AddAvailabilityModalComponent supprimée)
 import { AvailabilityListComponent } from './components/availability-list/availability-list.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,8 @@ import { AvailabilityListComponent } from './components/availability-list/availa
     ConsultantFormComponent,
     BookmarkListsComponent,
     // (Référence à AddAvailabilityModalComponent supprimée)
-    AvailabilityListComponent // Composant de liste des disponibilités
+    AvailabilityListComponent, // Composant de liste des disponibilités
+    NavbarComponent // Composant de navigation
   ],
   providers: [
     // Intercepteur HTTP pour ajouter le token à toutes les requêtes
