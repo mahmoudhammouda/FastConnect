@@ -109,6 +109,21 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
     // Charger tous les consultants pour extraire les filtres (en parallèle)
     this.loadAllConsultantsForFiltering();
     
+    // S'abonner aux filtres provenant du composant fc-app
+    this.consultantService.filters$.subscribe(filters => {
+      console.log('ConsultantListComponent a reçu de nouveaux filtres:', filters);
+      if (filters) {
+        this.searchText = filters.searchText || '';
+        this.selectedExperience = filters.experience || 'all';
+        this.selectedAvailability = filters.availability || 'all';
+        this.selectedLocation = filters.location || 'all';
+        this.selectedSkills = filters.skills || [];
+        
+        // Appliquer les filtres
+        this.applyFilters();
+      }
+    });
+    
     // Ajouter un écouteur de clic global pour fermer les dropdowns
     this.documentClickListener = () => {
       Object.keys(this.dropdownOpen).forEach(key => {

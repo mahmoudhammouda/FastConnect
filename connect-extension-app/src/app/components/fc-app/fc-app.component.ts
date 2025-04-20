@@ -163,6 +163,8 @@ export class FcAppComponent implements OnInit {
     this.showFilterPanel = !this.showFilterPanel;
   }
 
+  // Note: Les méthodes de gestion des filtres existent déjà plus bas dans la classe
+
   toggleMenu(event?: Event): void {
     if (event) {
       event.stopPropagation();

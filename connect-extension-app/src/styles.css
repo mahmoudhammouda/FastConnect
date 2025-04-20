@@ -41,6 +41,22 @@ app-root {
   min-height: 100vh;
 }
 
+/* Largeur constante pour fc-app-container sur toutes les routes */
+.fc-app-container {
+  width: 60rem !important;
+  max-width: 60rem !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Ajuster la largeur en mode mobile */
+@media (max-width: 768px) {
+  .fc-app-container {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
 /* Custom components with Tailwind */
 @layer components {
   .consultant-card {
