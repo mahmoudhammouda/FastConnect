@@ -20,6 +20,7 @@ import { BookmarkListsComponent } from './components/bookmark-lists/bookmark-lis
 // (Référence à AddAvailabilityModalComponent supprimée)
 import { AvailabilityListComponent } from './components/availability-list/availability-list.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { FcAppComponent } from './components/fc-app/fc-app.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     BookmarkListsComponent,
     // (Référence à AddAvailabilityModalComponent supprimée)
     AvailabilityListComponent, // Composant de liste des disponibilités
-    NavbarComponent // Composant de navigation
+    NavbarComponent, // Composant de navigation
+    FcAppComponent // Composant principal de l'application FastConnect
   ],
   providers: [
     // Intercepteur HTTP pour ajouter le token à toutes les requêtes

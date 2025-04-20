@@ -1,4 +1,4 @@
-<div class="flex justify-center w-full h-screen flex-col overflow-hidden fc-main-container">
+<div class="flex flex-col min-h-screen overflow-x-hidden bg-gradient-to-b from-blue-900 to-blue-800 fc-landing-container">
   <!-- DÉBOGEUR STATIQUE -->
   <div id="header-debug-bar" class="fc-debug-bar" *ngIf="isDebugEnabled" style="position: fixed; top: 0; left: 0; right: 0; background-color: #2563eb; color: white; padding: 5px; text-align: center; font-size: 14px; z-index: 9999;">
     FastConnect v1.0 - Environnement: {{ debugInfo.environment }} - Base: {{ debugInfo.baseHref }}
@@ -26,413 +26,102 @@
     </button>
   </div>
 
-  <div class="w-full max-w-3xl mx-auto flex flex-col h-full fc-app-content-wrapper" style="border-bottom: 15px solid #0d223a;">
-    <!-- Header avec dégradé bleu -->
-    <div class="sc-lkqHmb jGRPmR fc-gradient-header" style="
-    position: absolute;
-    width: 100%;
-    height: 250px;
-    top: -60px;
-    left: 0px;
-    background-image: linear-gradient(to right top, rgb(12, 124, 180), rgb(0, 84, 140));
-"><div data-test="header" class="sc-gxMtzJ iqMPYP fc-top-header" style="
-    position: relative;
-    z-index: 3;
-    box-sizing: border-box;
-    display: flex;
-    -webkit-box-align: center;
-    align-items: center;
-    height: 60px;
-    padding: 10px 16px;
-"><div class="sc-kTUwUJ dtaUPZ fc-header-menu-container" style="
-    position: relative;
-"><button data-test="menu-button" type="button" class="sc-elJkPf exPXUC fc-menu-button" style="
-    display: flex;
-    -webkit-box-pack: center;
-    justify-content: center;
-    -webkit-box-align: center;
-    align-items: center;
-    width: 32px;
-    height: 32px;
-    margin-left: 8px;
-    padding: 0px;
-    background-color: transparent;
-    border: 0px;
-    border-radius: 50%;
-    cursor: pointer;
-"><img src="chrome-extension://hoklmmgfnpapgjgcpechhaamimifchmp/images/more-horizontal.svg" alt="Menu" class="fc-menu-icon" style="
-    margin-right: auto;
-"></button></div></div></div>
-    
-    <!-- Navigation principale avec onglets Consultants/Missions -->
-    <app-navbar (tabChange)="onTabChange($event)" class="mt-8 fc-main-tabs relative z-10"></app-navbar><!-- Header Style LinkedIn - sans nom d'application - optimisé pour mobile -->
-    <div class="shadow-sm z-40 sticky top-0 fc-search-header fc-app-search-bar" style="padding: 0.5rem; background: #05203c;">
-      <div class="flex items-center justify-between space-x-2 px-1 fc-search-container fc-action-bar">
-        <!-- Barre de recherche style LinkedIn (sans padding latéral) -->
-        <div class="relative flex-grow fc-search-wrapper fc-search-input-container">
-          <input 
-            type="text" 
-            [(ngModel)]="searchText"
-            (keyup)="onSearchTextChange()"
-            placeholder="Rechercher un consultant..." 
-            class="w-full pl-8 pr-2 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500 text-sm bg-gray-50 fc-search-input fc-consultants-search fc-search-text-input"
-          >
-          <div class="absolute inset-y-0 left-2 flex items-center pointer-events-none fc-search-icon fc-search-magnifier fc-search-icon-svg">
-            <svg class="h-5 w-5 text-gray-500 fc-user-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-            </svg>
-          </div>
-        </div>
-        
-        <!-- Bouton de filtres avancés -->
+  <!-- Header de la landing page -->
+  <header class="bg-transparent pt-6 pb-4 px-4 md:px-8 fc-landing-header">
+    <div class="container mx-auto flex justify-between items-center">
+      <div class="flex items-center space-x-2 fc-logo-container">
+        <img src="assets/logo.png" alt="FastConnect Logo" class="h-10 w-auto fc-logo" onerror="this.src='https://via.placeholder.com/50x50/0054c0/ffffff?text=FC'; this.onerror='';"> 
+        <span class="text-white font-bold text-xl">FastConnect</span>
+      </div>
+      
+      <nav class="hidden md:flex items-center space-x-6 fc-landing-nav">
+        <a href="#" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm">Accueil</a>
+        <a href="#features" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm">Fonctionnalités</a>
+        <a href="#about" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm">À propos</a>
+        <a href="#contact" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm">Contact</a>
+      </nav>
+      
+      <!-- Bouton d'authentification pour la landing page -->
+      <div class="flex items-center space-x-2">
         <button 
-          (click)="toggleFilterPanel()"
-          class="flex items-center justify-center gap-1 px-2 py-1.5 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors duration-150 h-8 fc-filter-toggle-btn fc-filter-button"
-        >
-          <svg class="h-4 w-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
-          </svg>
-          <span class="text-xs text-gray-600 hidden md:inline">Filtres avancés</span>
+          *ngIf="!isAuthenticated"
+          (click)="openLoginModal()"
+          class="bg-white text-blue-900 px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-50 transition-colors duration-200 fc-landing-login-btn">
+          Connexion
         </button>
-        
-        <!-- Bouton d'ajout de disponibilité -->
         <button 
           *ngIf="isAuthenticated"
-          (click)="openAddAvailabilityForm()"
-          title="Ajouter une disponibilité"
-          class="flex items-center justify-center gap-1 px-2 py-1.5 rounded-md bg-gray-50 hover:bg-gray-100 transition-colors duration-150 h-8 mr-2 fc-add-availability-btn fc-add-availability-button"
-        >
-          <svg class="h-4 w-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          (click)="toggleMenu($event)"
+          class="bg-white text-blue-900 px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-50 transition-colors duration-200 flex items-center fc-landing-user-btn">
+          <span class="mr-2">{{ currentUser?.firstName || 'Mon compte' }}</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
           </svg>
-          <span class="text-xs text-gray-600 hidden md:inline">Disponibilité</span>
         </button>
         
-        <!-- Bouton Profil / Connexion -->
-        <div class="flex items-center">
-          <!-- User not authenticated -->
-          <div *ngIf="!isAuthenticated" class="fc-unauthenticated-container fc-user-not-authenticated">
-            <button 
-              (click)="openLoginModal()" 
-              class="rounded-full p-1 bg-white hover:bg-gray-50 border border-gray-300 flex items-center justify-center w-8 h-8 fc-user-icon-button fc-login-button"
-            >
-              <svg class="h-5 w-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-              </svg>
-            </button>
-          </div>
-          
-          <!-- User authenticated -->
-          <div *ngIf="isAuthenticated" class="relative fc-authenticated-container fc-user-authenticated">
-            <button 
-              (click)="toggleMenu($event)" 
-              class="rounded-full p-0 flex items-center justify-center overflow-hidden w-8 h-8 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-150 focus:outline-none fc-user-avatar-button fc-user-avatar"
-              aria-expanded="false"
-            >
-              {{ getInitials() }}
-            </button>
-            
-            <!-- Dropdown Menu -->
-            <div 
-              *ngIf="menuOpen" 
-              class="profile-menu absolute right-0 mt-2 w-40 md:w-48 bg-white rounded-md shadow-lg py-1 z-50 ring-1 ring-black ring-opacity-5 fc-profile-dropdown fc-user-menu fc-dropdown-menu"
-            >
-              <a 
-                routerLink="/profile" 
-                class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150 fc-profile-link fc-user-profile-link"
-                (click)="toggleMenu($event)"
-              >
-                <div class="flex items-center">
-                  <span class="material-icons text-gray-600 mr-2 text-sm">person</span>
-                  Mon profil
-                </div>
-              </a>
-
-              <!-- Liens spécifiques au rôle -->
-              <a 
-                *ngIf="currentUser?.role === 'admin'" 
-                routerLink="/admin" 
-                class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
-                (click)="toggleMenu($event)"
-              >
-                Administration
-              </a>
-              
-              <a 
-                *ngIf="currentUser?.role === 'consultant'" 
-                routerLink="/consultant-profile" 
-                class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
-                (click)="toggleMenu($event)"
-              >
-                Mon profil consultant
-              </a>
-
-              <!-- Lien vers la liste des consultants -->
-              <a 
-                routerLink="/consultants" 
-                class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
-                (click)="toggleMenu($event)"
-              >
-                <div class="flex items-center">
-                  <span class="material-icons text-blue-600 mr-2 text-sm">people</span>
-                  Liste des consultants
-                </div>
-              </a>
-
-              <!-- Lien vers la gestion des disponibilités -->
-              <a 
-                routerLink="/availabilities" 
-                class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
-                (click)="toggleMenu($event)"
-              >
-                <div class="flex items-center">
-                  <span class="material-icons text-green-600 mr-2 text-sm">event_available</span>
-                  Mes consultants
-                </div>
-              </a>
-              
-              <!-- Lien vers les favoris -->
-              <a 
-                routerLink="/bookmarks" 
-                class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
-                (click)="toggleMenu($event)"
-              >
-                <div class="flex items-center">
-                  <span class="material-icons text-purple-600 mr-2 text-sm">bookmark</span>
-                  Mes favoris
-                </div>
-              </a>
-              
-              <!-- Lien vers les alertes automatiques -->
-              <a 
-                routerLink="/alerts" 
-                class="block px-3 md:px-4 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-100 transition duration-150"
-                (click)="toggleMenu($event)"
-              >
-                <div class="flex items-center">
-                  <span class="material-icons text-orange-600 mr-2 text-sm">notifications</span>
-                  Mes alertes
-                </div>
-              </a>
-              
-              <div class="border-t border-gray-100 my-1"></div>
-              <button 
-                (click)="logout()" 
-                class="block w-full text-left px-3 md:px-4 py-2 text-xs md:text-sm text-red-600 hover:bg-gray-100 transition duration-150"
-              >
-                <div class="flex items-center">
-                  <span class="material-icons text-red-600 mr-2 text-sm">logout</span>
-                  Déconnexion
-                </div>
-              </button>
-            </div>
-          </div>
+        <!-- Menu déroulant pour les utilisateurs authentifiés -->
+        <div 
+          *ngIf="menuOpen && isAuthenticated" 
+          class="absolute right-4 md:right-8 mt-40 w-48 bg-white rounded-md shadow-lg py-1 z-50 ring-1 ring-black ring-opacity-5 fc-landing-dropdown">
+          <!-- Options du menu identiques à celles de fc-app -->
+          <a routerLink="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" (click)="toggleMenu($event)">
+            Mon profil
+          </a>
+          <a routerLink="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" (click)="toggleMenu($event)">
+            Tableau de bord
+          </a>
+          <div class="border-t border-gray-100 my-1"></div>
+          <button (click)="logout()" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+            Déconnexion
+          </button>
         </div>
       </div>
+    </div>
+  </header>
+    
+  <!-- Contenu principal de la landing page -->
+  <main class="flex-grow flex flex-col items-center justify-center py-12 px-4 md:px-8">
+    <!-- Section d'introduction -->
+    <div class="text-center mb-12 fc-landing-intro">
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Découvrez les meilleurs consultants IT</h1>
+      <p class="text-xl text-blue-100 max-w-3xl mx-auto">Une plateforme intuitive pour connecter les recruteurs aux consultants disponibles.</p>
     </div>
     
-    <!-- Panneau de filtres avancés - collapsable depuis la navbar -->
-    <div class="fc-advanced-filters-section">
-    <div 
-      [ngClass]="{'filter-panel-show': showFilterPanel, 'filter-panel-hide': !showFilterPanel}"
-      class="w-full bg-white shadow-md filter-panel py-4 px-4 overflow-hidden border-t md:border-t border-gray-200">
-      <div class="space-y-4 max-w-3xl mx-auto">
-        <div class="flex justify-between items-center">
-          <h3 class="font-medium text-sm text-gray-700">Filtres avancés</h3>
-          <button 
-            (click)="toggleFilterPanel()" 
-            class="text-gray-400 hover:text-gray-600">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-        </div>
-        
-        <!-- Filtres - Ligne unique pour desktop/tablette/extension, vertical pour mobile -->
-        <!-- Version desktop: affichage sur une ligne (4 colonnes) -->
-        <div class="hidden md:flex md:flex-row md:gap-3 md:items-end">
-          <div class="flex-1 min-w-0">
-            <label class="block text-xs font-medium text-gray-600 mb-1.5">Expérience</label>
-            <select 
-              [(ngModel)]="selectedExperience"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
-              <option value="all">Tout niveau</option>
-              <option *ngFor="let exp of experienceOptions" [value]="exp.value">{{ exp.label }}</option>
-            </select>
-          </div>
-          
-          <div class="flex-1 min-w-0">
-            <label class="block text-xs font-medium text-gray-600 mb-1.5">Disponibilité</label>
-            <select 
-              [(ngModel)]="selectedAvailability"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
-              <option value="all">Toutes</option>
-              <option *ngFor="let avail of availabilityOptions" [value]="avail.value">{{ avail.label }}</option>
-            </select>
-          </div>
-          
-          <div class="flex-1 min-w-0">
-            <label class="block text-xs font-medium text-gray-600 mb-1.5">Localisation</label>
-            <select 
-              [(ngModel)]="selectedLocation"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
-              <option value="all">Toutes</option>
-              <option *ngFor="let location of availableLocations" [value]="location">{{ location }}</option>
-            </select>
-          </div>
-          
-          <div class="flex-1 min-w-0 relative">
-            <label class="block text-xs font-medium text-gray-600 mb-1.5">Compétences</label>
-            <div 
-              (click)="toggleSkillsDropdown($event)"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer flex justify-between items-center">
-              <span>{{ selectedSkills.length ? selectedSkills.length + ' compétence(s)' : 'Compétences' }}</span>
-              <svg class="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </div>
-            <!-- Dropdown Panel for Skills -->
-            <div 
-              *ngIf="skillsDropdownOpen"
-              class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto skill-dropdown-desktop">
-              <div class="p-2">
-                <div *ngFor="let skill of availableSkills" class="flex items-center py-1">
-                  <input 
-                    type="checkbox" 
-                    [id]="'skill-' + skill"
-                    [checked]="isSkillSelected(skill)"
-                    (change)="toggleSkill(skill); $event.stopPropagation()"
-                    (click)="$event.stopPropagation()"
-                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                  <label 
-                    [for]="'skill-' + skill" 
-                    class="ml-2 text-sm text-gray-700 cursor-pointer" 
-                    (click)="$event.stopPropagation()">{{ skill }}</label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Version mobile: affichage vertical (1 colonne) -->
-        <div class="grid grid-cols-1 gap-4 md:hidden">
-          <div class="mb-2">
-            <label class="block text-xs font-medium text-gray-600 mb-1.5">Expérience</label>
-            <select 
-              [(ngModel)]="selectedExperience"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
-              <option value="all">Tout niveau</option>
-              <option *ngFor="let exp of experienceOptions" [value]="exp.value">{{ exp.label }}</option>
-            </select>
-          </div>
-          
-          <div class="mb-2">
-            <label class="block text-xs font-medium text-gray-600 mb-1.5">Disponibilité</label>
-            <select 
-              [(ngModel)]="selectedAvailability"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
-              <option value="all">Toutes</option>
-              <option *ngFor="let avail of availabilityOptions" [value]="avail.value">{{ avail.label }}</option>
-            </select>
-          </div>
-          
-          <div class="mb-2">
-            <label class="block text-xs font-medium text-gray-600 mb-1.5">Localisation</label>
-            <select 
-              [(ngModel)]="selectedLocation"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500">
-              <option value="all">Toutes</option>
-              <option *ngFor="let location of availableLocations" [value]="location">{{ location }}</option>
-            </select>
-          </div>
-          
-          <div class="mb-2 relative">
-            <label class="block text-xs font-medium text-gray-600 mb-1.5">Compétences</label>
-            <div 
-              (click)="toggleMobileSkillsDropdown($event)"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer flex justify-between items-center">
-              <span>{{ selectedSkills.length ? selectedSkills.length + ' compétence(s)' : 'Compétences' }}</span>
-              <svg class="h-4 w-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-              </svg>
-            </div>
-            <!-- Dropdown Panel for Skills - Mobile -->
-            <div 
-              *ngIf="mobileSkillsDropdownOpen"
-              class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto skill-dropdown-mobile">
-              <div class="p-2">
-                <div *ngFor="let skill of availableSkills" class="flex items-center py-1">
-                  <input 
-                    type="checkbox" 
-                    [id]="'mobile-skill-' + skill"
-                    [checked]="isSkillSelected(skill)"
-                    (change)="toggleSkill(skill); $event.stopPropagation()"
-                    (click)="$event.stopPropagation()"
-                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                  <label 
-                    [for]="'mobile-skill-' + skill" 
-                    class="ml-2 text-sm text-gray-700 cursor-pointer"
-                    (click)="$event.stopPropagation()">{{ skill }}</label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="pt-3 flex justify-end space-x-3">
-          <button 
-            (click)="resetAllFilters()"
-            class="px-4 py-2 text-xs text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors duration-150">
-            Réinitialiser
-          </button>
-          <button 
-            (click)="applyAdvancedFilters()"
-            class="px-4 py-2 text-xs text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors duration-150">
-            Appliquer
-          </button>
-        </div>
-      </div>
+    <!-- Composant app-fc-app intégré au centre -->
+    <div class="mx-auto bg-white rounded-lg shadow-xl overflow-hidden fc-app-container" style="max-width: 60rem; border-top-left-radius: 8px; border-top-right-radius: 8px; box-shadow: #f8fafc73 5px 5px 30px 0px;">
+      <app-fc-app [context]="'landing-page'" [compactMode]="false"></app-fc-app>
     </div>
-    
-    <!-- Espace pour le mode mobile lorsque le panneau de filtres est ouvert -->
-    <div [ngClass]="{'pt-0': !showFilterPanel, 'pt-0 md:pt-0': showFilterPanel, 'pt-[420px]': showFilterPanel && isMobileView()}" class="transition-all duration-300 ease-in-out fc-main-content-area">
-      <!-- Contenu conditionnel basé sur l'onglet actif -->
-      <!-- FC-DYNAMIC-CONTENT-START - Marque le début de la zone de contenu dynamique qui pourrait être extraite -->
-      <div [ngSwitch]="activeTab" class="fc-tabs-content">
-        <!-- Onglet Consultants - affiche le router-outlet normal -->
-        <div *ngSwitchCase="'consultants'" class="fc-consultants-tab-content">
-          <!-- Route principale (consultants) -->
-          <router-outlet></router-outlet>
-        </div>
-
-        <!-- Onglet Contacts - affiche les contacts recruteurs -->
-        <div *ngSwitchCase="'contacts'" class="fc-contacts-tab-content">
-          <!-- Route des contacts -->
-          <router-outlet></router-outlet>
-        </div>
-        
-        <!-- Onglet Missions - à implémenter -->
-        <div *ngSwitchCase="'missions'" class="p-4 fc-missions-tab-content">
-          <div class="bg-white p-6 rounded-lg shadow-sm fc-missions-placeholder">
-            <h2 class="text-xl font-semibold mb-4">Gestion des missions</h2>
-            <p class="text-gray-600 mb-4">Cette fonctionnalité sera disponible prochainement. Vous pourrez bientôt gérer les missions de vos consultants.</p>
-            <div class="flex items-center p-4 bg-blue-50 rounded-md">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <p class="text-sm text-blue-700">N'hésitez pas à nous contacter pour toute suggestion concernant cette nouvelle fonctionnalité.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  </main>
   
-  <!-- Footer - Pour l'instant vide mais pourra contenir des éléments de navigation, mode mobile, etc. -->
+  <!-- Pied de page simple -->
+  <footer class="bg-blue-950 text-white py-8 px-4 md:px-8 fc-landing-footer">
+    <div class="container mx-auto">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="mb-4 md:mb-0">
+          <p class="text-sm">&copy; 2023 FastConnect. Tous droits réservés.</p>
+        </div>
+        <div class="flex space-x-4">
+          <a href="#" class="text-blue-300 hover:text-white transition-colors duration-200">
+            <span class="sr-only">Twitter</span>
+            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
+            </svg>
+          </a>
+          <a href="#" class="text-blue-300 hover:text-white transition-colors duration-200">
+            <span class="sr-only">LinkedIn</span>
+            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
   <div class="fc-footer-container"></div>
 
   <!-- FC-MODALS-SECTION-START - Section des modales qui pourrait être extraite -->
-  <!-- Login Modal Component -->
+, on doit ex  <!-- Login Modal Component -->
   <app-login></app-login>
   
   <!-- Add Availability Modal Component (supprimé) -->

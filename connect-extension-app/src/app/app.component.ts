@@ -7,6 +7,9 @@ import { ModalService } from './services/modal.service';
 import { environment } from '../environments/environment';
 import { ConsultantService } from './services/consultant.service';
 import { ConsultantAvailabilityService } from './services/consultant-availability.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { FcAppComponent } from './components/fc-app/fc-app.component';
 
 @Component({
   selector: 'app-root',
