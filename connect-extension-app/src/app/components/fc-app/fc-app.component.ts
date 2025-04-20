@@ -185,7 +185,7 @@ export class FcAppComponent implements OnInit {
   }
 
   openLoginModal(): void {
-    this.modalService.open('login-modal');
+    this.modalService.openLoginModal();
   }
 
   logout(): void {
