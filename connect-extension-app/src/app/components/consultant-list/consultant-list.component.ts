@@ -77,6 +77,10 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
   // Authentification
   isAuthenticated: boolean = false;
   
+  // Variables pour la modale des messages
+  isMessageModalOpen: boolean = false;
+  currentModalMessage: string = '';
+  
   documentClickListener?: any;
   
   // Événements de sortie - nous n'en avons plus besoin car le composant est autonome
@@ -710,5 +714,35 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
     
     // Basculer l'état du dropdown actuel
     this.dropdownOpen[id] = !this.dropdownOpen[id];
+  }
+  
+  /**
+   * Gère l'ouverture de la modale des messages
+   * @param message Le message formaté à afficher dans la modale
+   */
+  openMessageModal(message: string): void {
+    this.currentModalMessage = message;
+    this.isMessageModalOpen = true;
+    // Bloquer le scroll du body quand la modale est ouverte
+    document.body.style.overflow = 'hidden';
+  }
+  
+  /**
+   * Gère la fermeture de la modale des messages
+   * @param event L'événement de clic
+   */
+  closeMessageModal(event: MouseEvent): void {
+    event.stopPropagation();
+    this.isMessageModalOpen = false;
+    // Rétablir le scroll du body
+    document.body.style.overflow = 'auto';
+  }
+  
+  /**
+   * Gère l'événement showMessageModal émis par les cartes consultant
+   * @param event L'événement contenant le message à afficher
+   */
+  handleShowMessageModal(event: {message: string}): void {
+    this.openMessageModal(event.message);
   }
 }

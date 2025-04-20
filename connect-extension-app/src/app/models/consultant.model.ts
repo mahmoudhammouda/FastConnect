@@ -38,6 +38,8 @@ export interface Experience {
  */
 export interface Consultant {
   id: string;                        // Identifiant unique
+  firstName: string;                 // Prénom du consultant
+  lastName: string;                  // Nom du consultant
   role: string;                      // Poste/rôle du consultant
   skills: string[];                  // Compétences techniques
   location: string;                  // Localisation

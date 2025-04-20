@@ -46,6 +46,18 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
   bookmarkMessageTimeout: any;
   // Pour savoir si un consultant est déjà dans au moins une liste de favoris
   isBookmarked: boolean = false;
+  
+  // Propriétés pour la modal d'affichage du message complet
+  isMessageModalOpen: boolean = false;
+  currentModalMessage: string = '';
+  
+  /**
+   * Getter pour accéder à l'URL LinkedIn du consultant via la propriété linkedin
+   * (pour compatibilité avec les templates qui utilisent consultant.linkedin)
+   */
+  get linkedin(): string {
+    return this.consultant?.linkedinUrl || '';
+  }
 
   @Output() linkedinClick = new EventEmitter<string>();
   @Output() phoneClick = new EventEmitter<string | undefined | null>();
@@ -53,7 +65,8 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
   @Output() toggleExpansion = new EventEmitter<{id: string, expanded: boolean}>();
   @Output() toggleDropdown = new EventEmitter<{id: string, event: MouseEvent}>();
   @Output() toggleMessageExpansion = new EventEmitter<{id: string, event: MouseEvent}>();
-  @Output() toggleDetailsExpansion = new EventEmitter<{id: string, event: MouseEvent}>(); // Nouvel événement pour afficher/masquer les détails
+  @Output() toggleDetailsExpansion = new EventEmitter<{id: string, event: MouseEvent}>();
+  @Output() showMessageModal = new EventEmitter<{message: string}>(); // Nouvel événement pour afficher/masquer les détails
   
   constructor(public bookmarkService: BookmarkService) {}
 
@@ -117,6 +130,21 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
     
     return false;
     */
+  }
+
+  /**
+   * Retourne un tableau des emplacements/localisations du consultant
+   * @param consultant Le consultant dont on veut récupérer les emplacements
+   * @returns Un tableau de chaînes de caractères représentant les emplacements
+   */
+  getLocations(consultant: ConsultantWithTags): string[] {
+    if (!consultant.location) return [];
+    
+    // Dans notre modèle, location est une chaîne de caractères
+    // La diviser par virgules pour obtenir un tableau de localisations
+    const locationStr = consultant.location as string;
+    return locationStr.split(',').map(loc => loc.trim()).filter(loc => loc.length > 0);
+  
   }
 
   onLinkedInClick(url: string, event: MouseEvent): void {
@@ -200,9 +228,25 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
     this.toggleDropdown.emit({id: consultantId, event});
   }
 
+  /**
+   * Émet un événement pour ouvrir la modale de message au niveau parent
+   * @param event L'événement de clic
+   * @param message Le message à afficher dans la modale
+   */
+  openMessageModal(event: MouseEvent, message: string | undefined): void {
+    // N'émettre l'événement que si le message est long
+    if (this.isMessageLong(message)) {
+      event.stopPropagation();
+      const formattedMessage = this.formatMessage(message || '');
+      this.showMessageModal.emit({ message: formattedMessage });
+    }
+  }
+  
+  // Méthode pour la compatibilité avec l'API existante
   onToggleMessageExpansion(id: string, event: MouseEvent): void {
     event.stopPropagation();
-    this.toggleMessageExpansion.emit({id, event});
+    // Utilise la nouvelle méthode pour émettre l'événement vers le parent
+    this.openMessageModal(event, this.consultant.message);
   }
 
   onToggleDetailsExpansion(id: string, event: MouseEvent): void {

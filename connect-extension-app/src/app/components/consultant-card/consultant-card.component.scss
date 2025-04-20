@@ -490,7 +490,7 @@
   }
 }
 
-// Animation de fondu pour les dropdowns
+// Animation de fondu pour les dropdowns et modales
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -499,6 +499,79 @@
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+// Styles pour les indicateurs de disponibilité sur l'orbite de l'avatar
+.fc-availability-indicator,
+.fc-availability-indicator-mobile {
+  margin-right: 2px;
+  margin-bottom: 2px; // Valeurs ajustées pour positionner exactement sur l'orbite de l'avatar
+  transition: all 0.2s ease-in-out;
+}
+
+// États de disponibilité
+.fc-status-available {
+  box-shadow: 0 0 4px rgba(16, 185, 129, 0.5); // Ombre verte pour renforcer la visibilité
+}
+
+.fc-status-soon {
+  box-shadow: 0 0 4px rgba(251, 191, 36, 0.5); // Ombre jaune pour renforcer la visibilité
+}
+
+.fc-status-unavailable {
+  box-shadow: 0 0 4px rgba(239, 68, 68, 0.5); // Ombre rouge pour renforcer la visibilité
+}
+
+// Styles pour la modale des messages
+.fc-message-modal {
+  opacity: 0;
+  animation: fadeIn 0.2s ease-out forwards;
+  backdrop-filter: blur(2px);
+  z-index: 9999;
+  
+  .fc-message-modal-content {
+    max-width: 90%;
+    width: 550px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    animation: fadeIn 0.3s ease-out forwards;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+  }
+  
+  .fc-modal-close {
+    transition: all 0.2s ease;
+    border-radius: 50%;
+    padding: 4px;
+    
+    &:hover {
+      background-color: #f3f4f6;
+      transform: scale(1.1);
+    }
+  }
+  
+  .fc-modal-message-content {
+    max-height: 60vh;
+    overflow-y: auto;
+    line-height: 1.6;
+    
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 3px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+      
+      &:hover {
+        background: #94a3b8;
+      }
+    }
   }
 }
 
