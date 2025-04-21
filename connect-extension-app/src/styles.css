@@ -57,6 +57,11 @@ app-root {
   }
 }
 
+/* Style pour l'avatar des consultants */
+.fc-consultant-avatar {
+  box-shadow: rgba(9, 37, 64, 0.2) 0px 2px 4px;
+}
+
 /* Custom components with Tailwind */
 @layer components {
   .consultant-card {

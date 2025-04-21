@@ -50,6 +50,7 @@
       (toggleDetailsExpansion)="handleToggleDetailsExpansion($event, consultant.id)"
       (toggleDropdown)="handleToggleDropdown($event, consultant.id)"
       (showMessageModal)="handleShowMessageModal($event)"
+      (openBookmarkModal)="handleOpenBookmarkModal($event)"
       class="animate-fade-in bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md fc-consultant-card-wrapper"
       [style.animation-delay.ms]="(i % pageSize) * 50">
     </app-consultant-card>

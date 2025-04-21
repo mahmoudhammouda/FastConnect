@@ -355,5 +355,64 @@
     (click)="modalService.closeAllModals()"
   ></div>
   
+  <!-- Modal pour les favoris/bookmarks avec fond semi-transparent -->
+  <div *ngIf="isBookmarkModalVisible"
+       class="fc-bookmark-modal-container fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 fade-in">
+    <div class="fc-bookmark-modal bg-white rounded-lg shadow-xl max-w-md w-full mx-4 overflow-hidden" (click)="$event.stopPropagation()">
+      <!-- En-tête du modal -->
+      <div class="p-4 bg-gray-100 border-b border-gray-200 flex justify-between items-center">
+        <h3 class="text-lg font-semibold text-gray-800">Ajouter aux favoris</h3>
+        <button (click)="closeBookmarkModal()" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+      
+      <!-- Corps du modal -->
+      <div class="p-4">
+        <!-- Liste des listes de favoris -->
+        <div *ngIf="bookmarkLists.length > 0" class="mb-4">
+          <p class="text-sm text-gray-600 mb-2">Sélectionner une liste :</p>
+          <div class="max-h-60 overflow-y-auto border border-gray-200 rounded-md">
+            <div *ngFor="let list of bookmarkLists" class="border-b border-gray-200 last:border-b-0">
+              <label class="flex items-center space-x-3 px-3 py-2.5 hover:bg-gray-50 cursor-pointer">
+                <input type="checkbox" 
+                       [checked]="isConsultantInList(list.id)" 
+                       (change)="toggleBookmarkInList(list.id, $event)" 
+                       class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                <span class="text-sm font-medium text-gray-700">{{ list.name }}</span>
+                <span class="text-xs text-gray-500 ml-auto">{{ list.consultantIds.length }} consultant(s)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Créer une nouvelle liste -->
+        <div class="pt-3 border-t border-gray-200">
+          <p class="text-sm text-gray-600 mb-2">Créer une nouvelle liste :</p>
+          <div class="flex">
+            <input type="text" 
+                   [(ngModel)]="newBookmarkListName" 
+                   class="flex-grow text-sm border border-gray-300 rounded-l px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
+                   placeholder="Nom de la liste">
+            <button (click)="createNewBookmarkList()" 
+                    [disabled]="!newBookmarkListName.trim()" 
+                    [ngClass]="{'bg-blue-600 hover:bg-blue-700': newBookmarkListName.trim(), 'bg-gray-300 cursor-not-allowed': !newBookmarkListName.trim()}" 
+                    class="px-4 py-2 text-white rounded-r focus:outline-none">
+              <span class="material-icons text-sm">add</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Pied du modal -->
+      <div class="p-4 bg-gray-50 border-t border-gray-200 flex justify-end">
+        <button (click)="closeBookmarkModal()" 
+                class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 focus:outline-none">
+          Fermer
+        </button>
+      </div>
+    </div>
+  </div>
+  
   <!-- Le modal de connexion est géré par modalService.openLoginModal() et est déjà inclus dans l'application globale -->
 </div>

@@ -7,6 +7,7 @@ import { ModalService } from '../../services/modal.service';
 import { environment } from '../../../environments/environment';
 import { ConsultantService } from '../../services/consultant.service';
 import { ConsultantAvailabilityService } from '../../services/consultant-availability.service';
+import { BookmarkService } from '../../services/bookmark.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -65,12 +66,19 @@ export class FcAppComponent implements OnInit {
     { value: '2', label: 'Non disponible' }
   ];
 
+  // Propriétés pour le modal de bookmarks
+  isBookmarkModalVisible: boolean = false;
+  bookmarkLists: any[] = [];
+  newBookmarkListName: string = '';
+  currentConsultantId: string | null = null;
+
   constructor(
     private authService: AuthService,
     private router: Router,
     public modalService: ModalService,
     private consultantService: ConsultantService,
-    private availabilityService: ConsultantAvailabilityService
+    private availabilityService: ConsultantAvailabilityService,
+    private bookmarkService: BookmarkService
   ) {}
 
   /**
@@ -87,6 +95,14 @@ export class FcAppComponent implements OnInit {
       this.isAuthenticated = state.isAuthenticated;
       this.currentUser = state.user;
     });
+
+    // Écouter l'événement d'ouverture du modal bookmark
+    window.addEventListener('fastconnect-open-bookmark-modal', ((event: CustomEvent) => {
+      const { consultantId } = event.detail;
+      if (consultantId) {
+        this.openBookmarkModal(consultantId);
+      }
+    }) as EventListener);
 
     // Charger les options de filtres
     this.loadFilterOptions();
@@ -188,6 +204,71 @@ export class FcAppComponent implements OnInit {
 
   openLoginModal(): void {
     this.modalService.openLoginModal();
+  }
+  
+  /**
+   * Ouvre le modal des bookmarks pour un consultant spécifique
+   * @param consultantId ID du consultant à ajouter aux favoris
+   */
+  openBookmarkModal(consultantId: string): void {
+    this.currentConsultantId = consultantId;
+    this.bookmarkLists = this.bookmarkService.getBookmarkLists();
+    this.newBookmarkListName = '';
+    this.isBookmarkModalVisible = true;
+  }
+  
+  /**
+   * Ferme le modal des bookmarks
+   */
+  closeBookmarkModal(): void {
+    this.isBookmarkModalVisible = false;
+    this.currentConsultantId = null;
+  }
+  
+  /**
+   * Vérifie si le consultant actuel est dans une liste spécifique
+   * @param listId ID de la liste à vérifier
+   * @returns true si le consultant est dans la liste
+   */
+  isConsultantInList(listId: string): boolean {
+    if (!this.currentConsultantId) return false;
+    const list = this.bookmarkLists.find(l => l.id === listId);
+    return list ? list.consultantIds.includes(this.currentConsultantId) : false;
+  }
+  
+  /**
+   * Ajoute ou retire le consultant actuel d'une liste
+   * @param listId ID de la liste
+   * @param event Événement du changement de case à cocher
+   */
+  toggleBookmarkInList(listId: string, event: Event): void {
+    if (!this.currentConsultantId) return;
+    
+    const target = event.target as HTMLInputElement;
+    if (target.checked) {
+      this.bookmarkService.addConsultantToList(listId, this.currentConsultantId);
+    } else {
+      this.bookmarkService.removeConsultantFromList(listId, this.currentConsultantId);
+    }
+    
+    // Mettre à jour la liste des favoris
+    this.bookmarkLists = this.bookmarkService.getBookmarkLists();
+  }
+  
+  /**
+   * Crée une nouvelle liste de favoris et y ajoute le consultant actuel
+   */
+  createNewBookmarkList(): void {
+    if (!this.newBookmarkListName.trim() || !this.currentConsultantId) return;
+    
+    this.bookmarkService.createBookmarkList(
+      this.newBookmarkListName.trim(), 
+      this.currentConsultantId
+    );
+    
+    // Réinitialiser le champ et mettre à jour la liste
+    this.newBookmarkListName = '';
+    this.bookmarkLists = this.bookmarkService.getBookmarkLists();
   }
 
   logout(): void {
