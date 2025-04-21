@@ -64,24 +64,14 @@
         </div>
       </div>
 
-      <!-- Partie droite: cadenas et bookmark -->
-      <div class="flex items-center space-x-2">
+      <!-- Partie droite: icône de cadenas uniquement -->
+      <div class="flex items-center">
         <!-- Icône de cadenas (verrouillé/déverrouillé) -->
         <div class="flex items-center justify-center h-7 w-7 rounded-full text-gray-400 hover:text-blue-700 transition-all duration-200 fc-lock-icon-container">
           <span class="material-icons text-sm fc-lock-icon" [class.text-blue-700]="consultant.locked" [class.fc-locked]="consultant.locked" [class.fc-unlocked]="!consultant.locked">
             {{ consultant.locked ? 'lock' : 'lock_open' }}
           </span>
         </div>
-        
-        <!-- Bouton bookmark -->
-        <button 
-          (click)="toggleBookmarkDropdown($event, consultant.id)" 
-          class="flex items-center justify-center h-7 w-7 rounded-full text-gray-400 hover:text-blue-700 transition-all duration-200 fc-bookmark-button"
-          title="Ajouter aux favoris">
-          <span class="material-icons text-sm fc-bookmark-icon" [class.text-blue-700]="isBookmarked" [class.fc-bookmarked]="isBookmarked">
-            bookmark
-          </span>
-        </button>
       </div>
     </div>
     
@@ -125,6 +115,15 @@
     
     <!-- Actions de contact (toujours visibles, mais grisées si non disponibles) -->
     <div class="flex space-x-1.5 fc-contact-actions">
+      <!-- Bouton bookmark (déplacé ici pour être avec les autres boutons d'action) -->
+      <button 
+        (click)="toggleBookmarkDropdown($event, consultant.id)" 
+        class="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 fc-bookmark-action"
+        title="Ajouter aux favoris">
+        <span class="material-icons text-sm" [class.text-blue-700]="isBookmarked">
+          {{ isBookmarked ? 'bookmark' : 'bookmark_border' }}
+        </span>
+      </button>
       <!-- Email (accessible ou grisé) -->
       <a *ngIf="consultant.email && consultant.emailValidated; else disabledEmailBtn" 
          [href]="'mailto:' + consultant.email" 
@@ -203,6 +202,8 @@
   </div>
 </div>
 
+<!-- Le modal pour les favoris sera géré par le service de modal -->
+<!-- Le contenu du modal est maintenant dans fc-app.component pour un usage global -->
 
 
 <!-- Version mobile du composant (visible uniquement sur mobile) -->
@@ -269,7 +270,7 @@
         </div>
       </div>
       
-      <!-- Actions mobile: cadenas et bookmark -->
+      <!-- Actions mobile: seulement cadenas -->
       <div class="flex items-center space-x-2">
         <!-- Icône de cadenas (verrouillé/déverrouillé) -->
         <div class="flex items-center justify-center h-7 w-7 rounded-full text-gray-400 hover:text-blue-700 transition-all duration-200 fc-lock-icon-container">
@@ -277,16 +278,6 @@
             {{ consultant.locked ? 'lock' : 'lock_open' }}
           </span>
         </div>
-        
-        <!-- Bouton bookmark mobile -->
-        <button 
-          (click)="toggleBookmarkDropdown($event, consultant.id)" 
-          class="flex items-center justify-center h-7 w-7 rounded-full text-gray-400 hover:text-blue-700 transition-all duration-200 fc-mobile-bookmark-action"
-          title="Ajouter aux favoris">
-          <span class="material-icons text-sm" [class.text-blue-700]="isBookmarked">
-            bookmark
-          </span>
-        </button>
       </div>
     </div>
     
@@ -330,6 +321,15 @@
     
     <!-- Actions de contact (toujours visibles, mais grisées si non disponibles) -->
     <div class="flex space-x-1.5 fc-mobile-contact-actions">
+      <!-- Bouton bookmark mobile -->
+      <button 
+        (click)="toggleBookmarkDropdown($event, consultant.id)" 
+        class="flex items-center justify-center h-7 w-7 rounded-full bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 fc-mobile-bookmark-action"
+        title="Ajouter aux favoris">
+        <span class="material-icons text-sm" [class.text-blue-700]="isBookmarked">
+          {{ isBookmarked ? 'bookmark' : 'bookmark_border' }}
+        </span>
+      </button>
       <!-- Email (accessible ou grisé) -->
       <a *ngIf="consultant.email && consultant.emailValidated; else disabledMobileEmailBtn" 
          [href]="'mailto:' + consultant.email" 

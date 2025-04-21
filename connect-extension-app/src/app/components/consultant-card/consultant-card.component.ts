@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef, Inject, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ConsultantWithTags, ExperienceLevel } from '../../models/consultant.model';
@@ -6,6 +6,7 @@ import { BookmarkList, BookmarkState } from '../../models/bookmark.model';
 import { BookmarkService } from '../../services/bookmark.service';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-consultant-card',
@@ -64,11 +65,12 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
   @Output() emailClick = new EventEmitter<string | undefined | null>();
   @Output() toggleExpansion = new EventEmitter<{id: string, expanded: boolean}>();
   @Output() toggleDropdown = new EventEmitter<{id: string, event: MouseEvent}>();
-  @Output() toggleMessageExpansion = new EventEmitter<{id: string, event: MouseEvent}>();
+  @Output() closeActionsDropdown = new EventEmitter<string>();
   @Output() toggleDetailsExpansion = new EventEmitter<{id: string, event: MouseEvent}>();
   @Output() showMessageModal = new EventEmitter<{message: string}>(); // Nouvel événement pour afficher/masquer les détails
+  @Output() openBookmarkModal = new EventEmitter<string>(); // Événement pour ouvrir le modal des bookmarks
   
-  constructor(public bookmarkService: BookmarkService) {}
+  constructor(public bookmarkService: BookmarkService, private injector: Injector) {}
 
   /**
    * Get the experience level as 1-3 bars
@@ -347,60 +349,17 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
    * @param event L'événement de clic
    * @param consultantId ID du consultant
    */
+  /**
+   * Déclenche un événement pour ouvrir le modal de bookmarks au niveau parent
+   * @param event L'événement du clic
+   * @param consultantId L'ID du consultant à ajouter aux favoris
+   */
   toggleBookmarkDropdown(event: MouseEvent, consultantId: string): void {
     event.stopPropagation();
     
-    // Mise à jour de la liste des favoris
-    this.bookmarkLists = this.bookmarkService.getBookmarkLists();
-    
-    // Détermine si la dropdown doit être ouverte ou fermée
-    if (this.bookmarkDropdownOpen === consultantId) {
-      this.bookmarkDropdownOpen = null; // Fermer si déjà ouvert
-      this.isCreatingNewList = false;
-      this.newListName = '';
-    } else {
-      // Ouvrir pour ce consultant
-      this.bookmarkDropdownOpen = consultantId;
-      
-      // Ferme les autres menus pour éviter les conflits d'interface
-      this.mobileActionsOpen = null; // Ferme le menu d'actions mobile
-      this.activeDropdownId = null; // Ferme le menu des 3 points desktop
-      
-      // Calcule et applique la position exacte de la dropdown
-      setTimeout(() => {
-        const buttonElement = event.currentTarget as HTMLElement;
-        const buttonRect = buttonElement.getBoundingClientRect();
-        const dropdown = document.querySelector('.bookmark-dropdown') as HTMLElement;
-        
-        if (dropdown) {
-          // IMPORTANT: Positionnement vertical toujours en-dessous du bouton
-          dropdown.style.top = `${buttonRect.bottom + 5}px`; // +5px pour un petit espace
-          
-          // Aligner précisément le coin supérieur droit de la dropdown sous le coin inférieur droit du bouton
-          dropdown.style.left = `${buttonRect.right}px`;
-          dropdown.style.transform = 'translateX(-100%)'; // Décaler la dropdown de sa propre largeur vers la gauche
-          
-          // Forcer l'affichage vers le bas en vérifiant que la dropdown ne dépasse pas le haut de l'écran
-          const dropdownRect = dropdown.getBoundingClientRect();
-          if (dropdownRect.top < 10) { // Si la dropdown est trop haute (près du haut de l'écran)
-            dropdown.style.top = '10px'; // La placer avec une marge minimale en haut
-          }
-          
-          // Assurons-nous que la dropdown ne sort pas de l'écran à gauche
-          if (buttonRect.right - dropdown.offsetWidth < 10) {
-            dropdown.style.left = '10px'; // Marge minimale à gauche
-          }
-          
-          // S'assurer que la dropdown ne sort pas de l'écran à droite
-          const maxWidth = window.innerWidth - 20; // 20px de marge totale
-          dropdown.style.maxWidth = `${maxWidth}px`;
-          
-          // Log pour débogage
-          console.log("[ConsultantCard] Dropdown bookmark repositionnée", 
-            { top: dropdown.style.top, left: dropdown.style.left, buttonRight: buttonRect.right });
-        }
-      }, 0);
-    }
+    // Émettre un événement pour que le composant parent ouvre le modal
+    this.openBookmarkModal.emit(consultantId);
+    console.log("[ConsultantCard] Événement d'ouverture du modal bookmark émis pour le consultant", consultantId);
   }
   
   /**

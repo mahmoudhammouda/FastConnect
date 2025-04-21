@@ -12,6 +12,13 @@ export class ConsultantService {
   private mockData: Consultant[] = [];
   private refreshSubject = new Subject<void>();
   public refresh$ = this.refreshSubject.asObservable();
+  private filtersSubject = new Subject<any>();
+  public filters$ = this.filtersSubject.asObservable();
+  
+  // Stocker les emplacements disponibles pour les filtres
+  private locationsCache: string[] = [];
+  // Stocker les compétences disponibles pour les filtres
+  private skillsCache: string[] = [];
 
   constructor(private apiService: ApiService) { 
     console.log('ConsultantService initialized');
@@ -316,6 +323,87 @@ export class ConsultantService {
   /**
    * Filter consultants based on search criteria
    */
+  /**
+   * Récupère toutes les localisations disponibles
+   * @returns Observable contenant un tableau de localisations
+   */
+  getAvailableLocations(): Observable<string[]> {
+    // Si les localisations sont déjà en cache, les retourner
+    if (this.locationsCache.length > 0) {
+      return of(this.locationsCache);
+    }
+    
+    // Sinon, récupérer tous les consultants et extraire les localisations uniques
+    return this.getConsultants().pipe(
+      map(consultants => {
+        // Extraire toutes les localisations et les aplatir en une seule liste
+        const allLocations = consultants
+          .map(consultant => consultant.location.split(',').map(loc => loc.trim()))
+          .flat();
+        
+        // Filtrer les localisations uniques
+        const uniqueLocations = [...new Set(allLocations)].filter(loc => loc.length > 0);
+        
+        // Trier les localisations par ordre alphabétique
+        const sortedLocations = uniqueLocations.sort((a, b) => a.localeCompare(b));
+        
+        // Mettre en cache pour les prochaines requêtes
+        this.locationsCache = sortedLocations;
+        
+        return sortedLocations;
+      }),
+      catchError(error => {
+        console.error('[ConsultantService] Erreur lors de la récupération des localisations:', error);
+        return of([]);
+      })
+    );
+  }
+  
+  /**
+   * Récupère toutes les compétences disponibles
+   * @returns Observable contenant un tableau de compétences
+   */
+  getAvailableSkills(): Observable<string[]> {
+    // Si les compétences sont déjà en cache, les retourner
+    if (this.skillsCache.length > 0) {
+      return of(this.skillsCache);
+    }
+    
+    // Sinon, récupérer tous les consultants et extraire les compétences uniques
+    return this.getConsultants().pipe(
+      map(consultants => {
+        // Extraire toutes les compétences et les aplatir en une seule liste
+        const allSkills = consultants
+          .map(consultant => consultant.skills)
+          .flat();
+        
+        // Filtrer les compétences uniques
+        const uniqueSkills = [...new Set(allSkills)].filter(skill => skill.length > 0);
+        
+        // Trier les compétences par ordre alphabétique
+        const sortedSkills = uniqueSkills.sort((a, b) => a.localeCompare(b));
+        
+        // Mettre en cache pour les prochaines requêtes
+        this.skillsCache = sortedSkills;
+        
+        return sortedSkills;
+      }),
+      catchError(error => {
+        console.error('[ConsultantService] Erreur lors de la récupération des compétences:', error);
+        return of([]);
+      })
+    );
+  }
+  
+  /**
+   * Met à jour les filtres et notifie les abonnés
+   * @param filters Objet contenant les filtres à appliquer
+   */
+  updateFilters(filters: any): void {
+    console.log('[ConsultantService] Mise à jour des filtres:', filters);
+    this.filtersSubject.next(filters);
+  }
+
   filterConsultants(
     consultants: ConsultantWithTags[], 
     searchText?: string, 
