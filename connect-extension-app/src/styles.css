@@ -86,6 +86,17 @@ app-root {
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* Styles pour la galaxie d'avatars de consultants */
+.fc-galaxy-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.fc-galaxy-center {
+  z-index: 10;
+  box-shadow: 0 0 30px rgba(37, 99, 235, 0.5);
+}
+
 /* Styles responsive pour le layout à deux colonnes */
 @media (max-width: 1023px) {
   .fc-app-column {
