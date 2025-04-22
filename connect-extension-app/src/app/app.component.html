@@ -80,7 +80,7 @@
   </header>
   
   <!-- Layout à deux colonnes (section principale) -->
-  <div class="flex flex-col lg:flex-row h-screen pt-24 fc-split-layout">
+  <div class="flex flex-col lg:flex-row h-screen pt-24 fc-split-layout bg-gradient-to-b from-blue-950 to-blue-900">
     <!-- Colonne de gauche (35%) - Fixe avec messages de valeur -->
     <div class="w-full lg:w-[35%] py-10 px-8 lg:px-10 fc-value-column fixed top-24 left-0 h-[calc(100vh-96px)] lg:visible invisible flex flex-col justify-center overflow-y-auto">
       <div class="space-y-10 text-white fc-value-content">
@@ -100,22 +100,7 @@
               <div class="fc-orbit fc-orbit-2" title="Réseau secondaire"></div>
               <div class="fc-orbit fc-orbit-3" title="Nouveaux contacts FastConnect"></div>
               
-              <!-- Consultant au centre -->
-              <div class="fc-central-consultant absolute">
-                <div class="fc-avatar w-16 h-16 bg-gradient-to-br from-blue-800 to-indigo-900 rounded-full flex items-center justify-center text-white text-2xl font-bold z-20 border-2 border-blue-300" title="John Doe, Consultant IT">
-                  JD
-                </div>
-                <!-- Badge de disponibilité (vert) -->
-                <div class="absolute bottom-0 right-0 w-5 h-5 bg-green-500 rounded-full border-2 border-white z-30" title="Disponible pour de nouvelles missions"></div>
-                <!-- Badge LinkedIn pour le consultant central -->
-                <div class="absolute bottom-0 left-0 w-6 h-6 bg-[#0A66C2] rounded-full border-2 border-white z-40 flex items-center justify-center">
-                  <i class="fab fa-linkedin text-white"></i>
-                </div>
-                <!-- Texte sous le consultant -->
-                <div class="absolute -bottom-8 w-full text-center text-xs text-white font-semibold">
-                  Vous êtes ici
-                </div>
-              </div>
+
               
               <!-- Système d'orbites -->
               <div class="fc-orbital-layout relative w-full h-full">
@@ -137,61 +122,26 @@
                       <i class="fab fa-linkedin-in text-white text-[10px]"></i>
                     </div>
                   </div>
-                  <!-- Texte sous le consultant -->
-                  <div class="absolute -bottom-8 w-full text-center text-xs text-white font-semibold">
-                    Vous êtes ici
-                  </div>
+
                 </div>
                 
-                <!-- Avatar CS sur l'orbite 2 (45° - haut droite) -->
-                <div class="fc-orbital-item fc-orbital-level-2 absolute" style="left: calc(50% + 85px); top: calc(50% - 85px);">
+                <!-- Avatar CS en haut (90°) -->
+                <div class="fc-orbital-item fc-orbital-level-2 absolute" style="left: 50%; top: calc(50% - 80px);">
                   <div class="fc-avatar-wrapper fc-avatar-commercial">
                     <div class="fc-avatar-container w-10 h-10 rounded-full border-2 border-blue-600 overflow-hidden">
                       <img src="assets/avatars/recruiter3.jpg" alt="Recruteur" class="fc-avatar-image w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/men/33.jpg'; this.onerror='';">
                     </div>
-                    <div class="fc-avatar-linkedin absolute -top-2 -right-2 bg-[#0A66C2] rounded-md w-5 h-5 flex items-center justify-center border border-white">
-                      <i class="fab fa-linkedin-in text-white text-[8px]"></i>
-                    </div>
-                    <div class="fc-avatar-badge absolute -bottom-1 -right-1 bg-white rounded-md px-1 py-0.5 text-[10px] font-bold border border-gray-300 shadow-sm">CS</div>
+
                   </div>
                   
                   <!-- Message avec positionnement adapté -->
                   <div class="fc-message-wrapper fc-message-position-top">
                     <div class="fc-message-container">
                       <div class="fc-message-header">
-                        <div class="fc-message-icon fc-message-icon-opportunity">
-                          <i class="fas fa-briefcase text-white text-[8px]"></i>
+                        <div class="fc-message-icon" style="background-color: #0A66C2;">
+                          <i class="fab fa-linkedin-in text-white text-[9px]"></i>
                         </div>
-                        <span class="fc-message-title">Poste à pourvoir</span>
-                      </div>
-                      <div class="fc-message-content">
-                        Consultant Senior Back-end pour banque d'investissement.
-                      </div>
-                    </div>
-                    <div class="fc-message-arrow"></div>
-                  </div>
-                </div>
-                
-                <!-- Avatar AXA sur l'orbite 2 (225° - bas gauche) -->
-                <div class="fc-orbital-item fc-orbital-level-2 absolute" style="left: calc(50% - 85px); top: calc(50% + 85px);">
-                  <div class="fc-avatar-wrapper fc-avatar-commercial">
-                    <div class="fc-avatar-container w-10 h-10 rounded-full border-2 border-blue-600 overflow-hidden">
-                      <img src="assets/avatars/recruiter2.jpg" alt="Recruteur" class="fc-avatar-image w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/men/42.jpg'; this.onerror='';">
-                    </div>
-                    <div class="fc-avatar-linkedin absolute -top-2 -right-2 bg-[#0A66C2] rounded-md w-5 h-5 flex items-center justify-center border border-white">
-                      <i class="fab fa-linkedin-in text-white text-[8px]"></i>
-                    </div>
-                    <div class="fc-avatar-badge absolute -bottom-1 -right-1 bg-white rounded-md px-1 py-0.5 text-[10px] font-bold border border-gray-300 shadow-sm">AXA</div>
-                  </div>
-                  
-                  <!-- Message avec positionnement adapté -->
-                  <div class="fc-message-wrapper fc-message-position-left">
-                    <div class="fc-message-container">
-                      <div class="fc-message-header">
-                        <div class="fc-message-icon fc-message-icon-mission">
-                          <i class="fas fa-bullseye text-white text-[8px]"></i>
-                        </div>
-                        <span class="fc-message-title">Nouvelle mission</span>
+                        <span class="fc-message-title">Opportunité</span>
                       </div>
                       <div class="fc-message-content">
                         Mission de transformation digitale sur 12 mois.
@@ -200,27 +150,23 @@
                     <div class="fc-message-arrow"></div>
                   </div>
                 </div>
-                
-                <!-- Avatar SG sur l'orbite 3 (0° - droite) -->
-                <div class="fc-orbital-item fc-orbital-level-3 absolute" style="left: calc(50% + 170px); top: 50%;">
+                                <!-- Avatar SG en bas à droite (315°) -->
+                <div class="fc-orbital-item fc-orbital-level-2 absolute" style="left: calc(50% + 70px); top: calc(50% + 70px);">
                   <div class="fc-avatar-wrapper fc-avatar-commercial">
                     <div class="fc-avatar-container w-10 h-10 rounded-full border-2 border-blue-600 overflow-hidden">
                       <img src="assets/avatars/recruiter1.jpg" alt="Recruteur" class="fc-avatar-image w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/women/23.jpg'; this.onerror='';">
                     </div>
-                    <div class="fc-avatar-linkedin absolute -top-2 -right-2 bg-[#0A66C2] rounded-md w-5 h-5 flex items-center justify-center border border-white">
-                      <i class="fab fa-linkedin-in text-white text-[8px]"></i>
-                    </div>
-                    <div class="fc-avatar-badge absolute -bottom-1 -right-1 bg-white rounded-md px-1 py-0.5 text-[10px] font-bold border border-gray-300 shadow-sm">SG</div>
+
                   </div>
                   
                   <!-- Message avec positionnement adapté -->
                   <div class="fc-message-wrapper fc-message-position-right">
                     <div class="fc-message-container">
                       <div class="fc-message-header">
-                        <div class="fc-message-icon fc-message-icon-mission">
-                          <i class="fas fa-bullseye text-white text-[8px]"></i>
+                        <div class="fc-message-icon" style="background-color: #0A66C2;">
+                          <i class="fab fa-linkedin-in text-white text-[9px]"></i>
                         </div>
-                        <span class="fc-message-title">Nouvelle mission</span>
+                        <span class="fc-message-title">Mission</span>
                       </div>
                       <div class="fc-message-content">
                         Lead technique pour refonte application bancaire.
@@ -230,29 +176,26 @@
                   </div>
                 </div>
                 
-                <!-- Avatar TH sur l'orbite 3 (180° - gauche) -->
-                <div class="fc-orbital-item fc-orbital-level-3 absolute" style="left: calc(50% - 170px); top: 50%;">
+                <!-- Avatar AXA en bas à gauche (225°) -->
+                <div class="fc-orbital-item fc-orbital-level-2 absolute" style="left: calc(50% - 70px); top: calc(50% + 70px);">
                   <div class="fc-avatar-wrapper fc-avatar-commercial">
                     <div class="fc-avatar-container w-10 h-10 rounded-full border-2 border-blue-600 overflow-hidden">
-                      <img src="assets/avatars/recruiter4.jpg" alt="Recruteur" class="fc-avatar-image w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/women/64.jpg'; this.onerror='';">
+                      <img src="assets/avatars/recruiter2.jpg" alt="Recruteur" class="fc-avatar-image w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/men/85.jpg'; this.onerror='';">
                     </div>
-                    <div class="fc-avatar-linkedin absolute -top-2 -right-2 bg-[#0A66C2] rounded-md w-5 h-5 flex items-center justify-center border border-white">
-                      <i class="fab fa-linkedin-in text-white text-[8px]"></i>
-                    </div>
-                    <div class="fc-avatar-badge absolute -bottom-1 -right-1 bg-white rounded-md px-1 py-0.5 text-[10px] font-bold border border-gray-300 shadow-sm">TH</div>
+
                   </div>
                   
                   <!-- Message avec positionnement adapté -->
                   <div class="fc-message-wrapper fc-message-position-left">
                     <div class="fc-message-container">
                       <div class="fc-message-header">
-                        <div class="fc-message-icon fc-message-icon-developer">
-                          <i class="fas fa-code text-white text-[8px]"></i>
+                        <div class="fc-message-icon" style="background-color: #0A66C2;">
+                          <i class="fab fa-linkedin-in text-white text-[9px]"></i>
                         </div>
-                        <span class="fc-message-title">Recherche développeur</span>
+                        <span class="fc-message-title">Mission</span>
                       </div>
                       <div class="fc-message-content">
-                        Besoin d'un expert React/Node.js pour projet critique.
+                        Mission de transformation digitale sur 12 mois.
                       </div>
                     </div>
                     <div class="fc-message-arrow"></div>
@@ -266,8 +209,8 @@
               <div class="fc-connection-lines"></div>
               </div>
               <div class="fc-consultant-info text-white mb-6">
-                <h2 class="text-xl text-blue-200 mb-4">Accédez aux recruteurs au-delà de votre cercle habituel</h2>
-                <p class="text-blue-100 mb-2 text-sm">FastConnect vous connecte aux recruteurs qui recherchent vos compétences, même s'ils ne font pas partie de votre réseau existant.</p>
+                <h2 class="text-xl text-blue-200 mb-4">Accédez aux missions au-delà de votre cercle habituel</h2>
+                <p class="text-blue-100 mb-2 text-sm">FastConnect vous connecte aux recruteurs/commerciaux/apporteurs d'affaires qui recherchent vos compétences, même s'ils ne font pas partie de votre réseau existant.</p>
               </div>
             
           <div class="fc-consultant-steps bg-blue-800 bg-opacity-30 rounded-xl p-5 flex flex-col items-start text-left mb-8 w-full">
@@ -307,7 +250,7 @@
     </div>
     
     <!-- Colonne de droite (65%) - Fixe avec l'application principale -->
-    <div class="w-full lg:w-[65%] lg:ml-[35%] fixed right-0 bottom-24 h-[calc(100vh-220px-64px)] fc-app-column fc-right-column" style="background: transparent; top: 220px;">
+    <div class="w-full lg:w-[65%] lg:ml-[35%] fixed right-0 bottom-24 h-[calc(100vh-220px-64px)] fc-app-column fc-right-column" style="background: transparent; top: 280px;">
       <div class="h-full flex items-center justify-center p-4 lg:p-8 relative z-10 fc-app-wrapper">
         <!-- Intégration du composant app-fc-app avec la classe fc-app-container originale -->
         <div class="mx-auto bg-white rounded-lg shadow-xl overflow-hidden fc-app-container" style="max-width: 60rem; border-top-left-radius: 8px; border-top-right-radius: 8px; box-shadow: #f8fafc73 5px 5px 30px 0px;">

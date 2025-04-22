@@ -249,18 +249,18 @@ app-root {
 }
 
 .fc-orbit-1 {
-  width: 140px;
-  height: 140px;
+  width: 100px;
+  height: 100px;
 }
 
 .fc-orbit-2 {
-  width: 240px;
-  height: 240px;
+  width: 170px;
+  height: 170px;
 }
 
 .fc-orbit-3 {
-  width: 340px;
-  height: 340px;
+  width: 240px;
+  height: 240px;
 }
 
 .fc-central-consultant {
@@ -292,126 +292,149 @@ app-root {
 /* Message styling */
 .fc-message-wrapper {
   position: absolute;
-  width: 180px;
+  width: 140px;
   opacity: 0.95;
   pointer-events: none;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.1));
 }
 
 .fc-orbit-avatar-container:hover .fc-message-wrapper {
   opacity: 1;
+  transform: translateY(-2px);
+  filter: drop-shadow(0 5px 12px rgba(0, 0, 0, 0.15));
 }
 
 /* Position des messages par rapport à l'avatar */
 .fc-message-position-top {
-  bottom: calc(100% + 15px);
+  bottom: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%);
 }
 
 .fc-message-position-right {
-  left: calc(100% + 15px);
+  left: calc(100% + 12px);
   top: 50%;
   transform: translateY(-50%);
 }
 
 .fc-message-position-bottom {
-  top: calc(100% + 15px);
+  top: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%);
 }
 
 .fc-message-position-left {
-  right: calc(100% + 15px);
+  right: calc(100% + 12px);
   top: 50%;
   transform: translateY(-50%);
 }
 
 .fc-message-container {
   background-color: white;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.05);
+  padding: 10px 12px;
   position: relative;
   z-index: 2;
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95);
 }
 
 .fc-message-header {
   display: flex;
   align-items: center;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.6);
 }
 
 .fc-message-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  margin-right: 6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  margin-right: 8px;
   color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.fc-message-icon-opportunity { background-color: #4361ee; }
-.fc-message-icon-mission { background-color: #7209b7; }
-.fc-message-icon-developer { background-color: #f4a261; }
+.fc-message-icon-opportunity { 
+  background: linear-gradient(135deg, #4361ee, #3a56d4); 
+}
+
+.fc-message-icon-mission { 
+  background: linear-gradient(135deg, #7209b7, #6710a0); 
+}
+
+.fc-message-icon-developer { 
+  background: linear-gradient(135deg, #f4a261, #e38f50); 
+}
 
 .fc-message-title {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   margin: 0;
-  color: #344054;
+  color: #1e293b;
+  letter-spacing: -0.01em;
 }
 
 .fc-message-content {
-  font-size: 10px;
-  line-height: 1.4;
-  color: #475467;
+  font-size: 11px;
+  line-height: 1.5;
+  color: #64748b;
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 /* Message arrow */
 .fc-message-arrow {
   position: absolute;
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   background-color: white;
-  border-left: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
+  border-left: 1px solid rgba(226, 232, 240, 0.8);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
   transform: rotate(45deg);
   z-index: 1;
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95);
 }
 
 .fc-message-position-top .fc-message-arrow {
-  bottom: -5px;
+  bottom: -6px;
   left: 50%;
-  margin-left: -5px;
+  margin-left: -6px;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.02);
 }
 
 .fc-message-position-right .fc-message-arrow {
-  left: -5px;
+  left: -6px;
   top: 50%;
-  margin-top: -5px;
+  margin-top: -6px;
   transform: rotate(45deg);
-  border-left: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
   border-right: none;
   border-top: none;
+  box-shadow: -1px 1px 2px rgba(0, 0, 0, 0.02);
 }
 
 .fc-message-position-bottom .fc-message-arrow {
-  top: -5px;
+  top: -6px;
   left: 50%;
-  margin-left: -5px;
+  margin-left: -6px;
   transform: rotate(225deg);
+  box-shadow: -2px -2px 2px rgba(0, 0, 0, 0.02);
 }
 
 .fc-message-position-left .fc-message-arrow {
-  right: -5px;
+  right: -6px;
   top: 50%;
-  margin-top: -5px;
+  margin-top: -6px;
   transform: rotate(225deg);
+  box-shadow: 2px -1px 2px rgba(0, 0, 0, 0.02);
 }
 
 /* Style LinkedIn professionnel */
