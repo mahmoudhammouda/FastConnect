@@ -57,6 +57,67 @@ app-root {
   }
 }
 
+/* Styles pour la structure à deux colonnes de la landing page */
+.fc-split-layout {
+  position: relative;
+}
+
+/* Styles pour la colonne de valeur fixe */
+.fc-value-column {
+  position: fixed;
+  z-index: 5;
+  overflow-y: auto;
+}
+
+/* Style du contenu de valeur pour s'assurer qu'il ne touche pas le footer */
+.fc-value-content {
+  padding-bottom: 120px;
+}
+
+/* Styles pour la colonne de l'application */
+.fc-app-column {
+  transition: all 0.3s ease;
+}
+
+/* Style de l'en-tête fixe */
+.fc-landing-header {
+  background: linear-gradient(to bottom, rgba(30, 58, 138, 1), rgba(30, 58, 138, 0.9));
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Styles responsive pour le layout à deux colonnes */
+@media (max-width: 1023px) {
+  .fc-app-column {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    height: auto !important;
+    min-height: 600px;
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+  
+  .fc-split-layout {
+    height: auto !important;
+    padding-top: 6rem !important;
+  }
+  
+  .fc-mobile-value-content {
+    margin-top: 0 !important;
+  }
+  
+  .fc-landing-header {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}
+
+/* Améliorer la lisibilité du texte dans la colonne de valeur */
+.fc-value-section {
+  max-width: 600px;
+}
+
 /* Style pour l'avatar des consultants */
 .fc-consultant-avatar {
   box-shadow: rgba(9, 37, 64, 0.2) 0px 2px 4px;

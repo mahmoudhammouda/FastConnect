@@ -1,4 +1,4 @@
-<div class="flex flex-col min-h-screen overflow-x-hidden bg-gradient-to-b from-blue-900 to-blue-800 fc-landing-container">
+<div class="flex flex-col min-h-screen overflow-x-hidden bg-gradient-to-b from-blue-950 to-blue-900 fc-landing-container">
   <!-- DÉBOGEUR STATIQUE -->
   <div id="header-debug-bar" class="fc-debug-bar" *ngIf="isDebugEnabled" style="position: fixed; top: 0; left: 0; right: 0; background-color: #2563eb; color: white; padding: 5px; text-align: center; font-size: 14px; z-index: 9999;">
     FastConnect v1.0 - Environnement: {{ debugInfo.environment }} - Base: {{ debugInfo.baseHref }}
@@ -26,23 +26,23 @@
     </button>
   </div>
 
-  <!-- Header de la landing page -->
-  <header class="bg-transparent pt-6 pb-4 px-4 md:px-8 fc-landing-header">
-    <div class="container mx-auto flex justify-between items-center">
+  <!-- Header de la landing page (navbar fixe) -->
+  <header class="bg-gradient-to-b from-blue-950 to-blue-900 pt-6 pb-4 px-4 md:px-8 fc-landing-header fixed top-0 left-0 right-0 z-20">
+    <div class="container mx-auto flex justify-between items-center fc-header-container">
       <div class="flex items-center space-x-2 fc-logo-container">
         <img src="assets/logo.png" alt="FastConnect Logo" class="h-10 w-auto fc-logo" onerror="this.src='https://via.placeholder.com/50x50/0054c0/ffffff?text=FC'; this.onerror='';"> 
-        <span class="text-white font-bold text-xl">FastConnect</span>
+        <span class="text-white font-bold text-xl fc-brand-name">FastConnect</span>
       </div>
       
       <nav class="hidden md:flex items-center space-x-6 fc-landing-nav">
-        <a href="#" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm">Accueil</a>
-        <a href="#features" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm">Fonctionnalités</a>
-        <a href="#about" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm">À propos</a>
-        <a href="#contact" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm">Contact</a>
+        <a href="#" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm fc-nav-link fc-nav-home">Accueil</a>
+        <a href="#features" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm fc-nav-link fc-nav-features">Fonctionnalités</a>
+        <a href="#about" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm fc-nav-link fc-nav-about">À propos</a>
+        <a href="#contact" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm fc-nav-link fc-nav-contact">Contact</a>
       </nav>
       
       <!-- Bouton d'authentification pour la landing page -->
-      <div class="flex items-center space-x-2">
+      <div class="flex items-center space-x-2 fc-auth-actions">
         <button 
           *ngIf="!isAuthenticated"
           (click)="openLoginModal()"
@@ -53,8 +53,8 @@
           *ngIf="isAuthenticated"
           (click)="toggleMenu($event)"
           class="bg-white text-blue-900 px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-50 transition-colors duration-200 flex items-center fc-landing-user-btn">
-          <span class="mr-2">{{ currentUser?.firstName || 'Mon compte' }}</span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <span class="mr-2 fc-user-name">{{ currentUser?.firstName || 'Mon compte' }}</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fc-dropdown-arrow" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
           </svg>
         </button>
@@ -64,56 +64,116 @@
           *ngIf="menuOpen && isAuthenticated" 
           class="absolute right-4 md:right-8 mt-40 w-48 bg-white rounded-md shadow-lg py-1 z-50 ring-1 ring-black ring-opacity-5 fc-landing-dropdown">
           <!-- Options du menu identiques à celles de fc-app -->
-          <a routerLink="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" (click)="toggleMenu($event)">
+          <a routerLink="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 fc-dropdown-item fc-profile-link" (click)="toggleMenu($event)">
             Mon profil
           </a>
-          <a routerLink="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" (click)="toggleMenu($event)">
+          <a routerLink="/dashboard" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 fc-dropdown-item fc-dashboard-link" (click)="toggleMenu($event)">
             Tableau de bord
           </a>
-          <div class="border-t border-gray-100 my-1"></div>
-          <button (click)="logout()" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+          <div class="border-t border-gray-100 my-1 fc-dropdown-divider"></div>
+          <button (click)="logout()" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 fc-dropdown-item fc-logout-btn">
             Déconnexion
           </button>
         </div>
       </div>
     </div>
   </header>
-    
-  <!-- Contenu principal de la landing page -->
-  <main class="flex-grow flex flex-col items-center justify-center py-12 px-4 md:px-8">
-    <!-- Section d'introduction -->
-    <div class="text-center mb-12 fc-landing-intro">
-      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Découvrez les meilleurs consultants IT</h1>
-      <p class="text-xl text-blue-100 max-w-3xl mx-auto">Une plateforme intuitive pour connecter les recruteurs aux consultants disponibles.</p>
-    </div>
-    
-    <!-- Composant app-fc-app intégré au centre -->
-    <div class="mx-auto bg-white rounded-lg shadow-xl overflow-hidden fc-app-container" style="max-width: 60rem; border-top-left-radius: 8px; border-top-right-radius: 8px; box-shadow: #f8fafc73 5px 5px 30px 0px;">
-      <app-fc-app [context]="'landing-page'" [compactMode]="false"></app-fc-app>
-    </div>
-  </main>
   
-  <!-- Pied de page simple -->
-  <footer class="bg-blue-950 text-white py-8 px-4 md:px-8 fc-landing-footer">
-    <div class="container mx-auto">
-      <div class="flex flex-col md:flex-row justify-between items-center">
-        <div class="mb-4 md:mb-0">
-          <p class="text-sm">&copy; 2023 FastConnect. Tous droits réservés.</p>
+  <!-- Layout à deux colonnes (section principale) -->
+  <div class="flex flex-col lg:flex-row h-screen pt-24 fc-split-layout">
+    <!-- Colonne de gauche (35%) - Fixe avec messages de valeur -->
+    <div class="w-full lg:w-[35%] py-10 px-8 lg:px-10 fc-value-column fixed top-24 left-0 h-[calc(100vh-96px)] lg:visible invisible flex flex-col justify-center overflow-y-auto">
+      <div class="space-y-10 text-white fc-value-content">
+        <!-- Section pour les consultants (simplifiée) -->
+        <section class="fc-consultant-section mb-6 flex flex-col items-center text-center">
+          <div class="fc-consultant-hero flex flex-col items-center mb-5">
+            <div class="bg-blue-500 rounded-full p-4 mb-4 drop-shadow-lg">
+              <span class="material-icons text-white text-4xl">person_search</span>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-3">Consultants IT</h1>
+            <h2 class="text-xl text-blue-200 mb-2">Faites-vous remarquer par les recruteurs en un clic !</h2>
+          </div>
+          
+          <div class="fc-consultant-steps bg-blue-800 bg-opacity-30 rounded-xl p-5 flex flex-col items-start text-left mb-8 w-full">
+            <ol class="space-y-4 text-blue-100">
+              <li class="flex items-center">
+                <span class="flex-shrink-0 h-7 w-7 rounded-full bg-blue-600 text-white flex items-center justify-center mr-3 font-semibold">1</span>
+                <div>
+                  <span class="text-white font-semibold">Indiquez votre disponibilité</span>
+                  <p class="text-xs text-blue-200 mt-1">et vos compétences clés en quelques clics</p>
+                </div>
+              </li>
+              <li class="flex items-center">
+                <span class="flex-shrink-0 h-7 w-7 rounded-full bg-blue-600 text-white flex items-center justify-center mr-3 font-semibold">2</span>
+                <div>
+                  <span class="text-white font-semibold">Choisissez votre niveau d'anonymat</span>
+                  <p class="text-xs text-blue-200 mt-1">vous contrôlez quand et à qui révéler votre profil</p>
+                </div>
+              </li>
+              <li class="flex items-center">
+                <span class="flex-shrink-0 h-7 w-7 rounded-full bg-blue-600 text-white flex items-center justify-center mr-3 font-semibold">3</span>
+                <div>
+                  <span class="text-white font-semibold">Soyez visible immédiatement</span>
+                  <p class="text-xs text-blue-200 mt-1">auprès des recruteurs à la recherche de vos talents</p>
+                </div>
+              </li>
+            </ol>
+          </div>
+          
+          <div class="fc-consultant-cta flex flex-col items-center w-full">
+            <button class="bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg px-6 py-3 shadow-lg text-lg mb-2 transition-all duration-200 w-full">
+              Je publie ma disponibilité
+            </button>
+            <span class="text-xs text-blue-300">Gratuit et rapide • Plus de visibilité = plus d'opportunités</span>
+          </div>
+        </section>
+      </div>
+    </div>
+    
+    <!-- Colonne de droite (65%) - Fixe avec l'application principale -->
+    <div class="w-full lg:w-[65%] lg:ml-[35%] fixed right-0 bottom-24 h-[calc(100vh-220px-64px)] fc-app-column fc-right-column" style="background: transparent; top: 220px;">
+      <div class="h-full flex items-center justify-center p-4 lg:p-8 relative z-10 fc-app-wrapper">
+        <!-- Intégration du composant app-fc-app avec la classe fc-app-container originale -->
+        <div class="mx-auto bg-white rounded-lg shadow-xl overflow-hidden fc-app-container" style="max-width: 60rem; border-top-left-radius: 8px; border-top-right-radius: 8px; box-shadow: #f8fafc73 5px 5px 30px 0px;">
+          <app-fc-app [context]="'landing-page'" [compactMode]="false" class="fc-app-instance"></app-fc-app>
         </div>
-        <div class="flex space-x-4">
-          <a href="#" class="text-blue-300 hover:text-white transition-colors duration-200">
-            <span class="sr-only">Twitter</span>
-            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
-            </svg>
-          </a>
-          <a href="#" class="text-blue-300 hover:text-white transition-colors duration-200">
-            <span class="sr-only">LinkedIn</span>
-            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-            </svg>
-          </a>
-        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Version mobile de la colonne de valeur (uniquement visible sur mobile) -->
+  <div class="lg:hidden block w-full mt-24 pt-4 px-4 pb-8 bg-blue-900 fc-mobile-value-content">
+    <div class="space-y-6 text-white">
+      <div class="fc-intro-section-mobile">
+        <h2 class="text-xl font-bold mb-2 text-blue-200 fc-intro-title-mobile">Consultants IT</h2>
+        <p class="text-sm mb-3 fc-intro-text-mobile">Faites-vous remarquer par les recruteurs en un clic !</p>
+      </div>
+
+      <div class="fc-cta-section-mobile bg-gradient-to-r from-blue-600 to-indigo-700 p-4 rounded-lg shadow-lg text-center">
+        <button class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-lg text-sm font-semibold shadow-md transition-all duration-200 fc-cta-button-mobile">
+          Je publie ma disponibilité
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- FOOTER (en bas de page) -->
+  <footer class="bg-blue-950 text-white py-4 px-4 md:px-8 fc-landing-footer fixed bottom-0 left-0 right-0 h-16">
+    <div class="container mx-auto flex justify-between items-center fc-footer-container">
+      <div class="fc-copyright-block">
+        <p class="text-xs fc-copyright-text">&copy; 2023 FastConnect. Tous droits réservés.</p>
+      </div>
+      <div class="flex space-x-4 fc-social-links">
+        <a href="#" class="text-blue-300 hover:text-white transition-colors duration-200 fc-social-link">
+          <svg class="h-4 w-4 fc-social-icon" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
+          </svg>
+        </a>
+        <a href="#" class="text-blue-300 hover:text-white transition-colors duration-200 fc-social-link">
+          <svg class="h-4 w-4 fc-social-icon" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+          </svg>
+        </a>
       </div>
     </div>
   </footer>
