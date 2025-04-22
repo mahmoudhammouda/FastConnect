@@ -86,12 +86,395 @@ app-root {
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Styles pour la galaxie d'avatars de consultants */
+/* Styles pour la section consultant avec une visualisation en galaxie */
 .fc-galaxy-container {
   position: relative;
+}
+
+/* Orbites pour la visualisation en galaxie */
+.fc-orbit {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+  transition: all 0.3s ease;
+}
+
+.fc-orbit-1 {
+  border: 1px dashed rgba(59, 130, 246, 0.6);
+  width: 220px;
+  height: 220px;
+  left: calc(50% - 110px);
+  top: calc(50% - 110px);
+  animation: orbitPulse 4s infinite alternate;
+}
+
+.fc-orbit-2 {
+  border: 1px dashed rgba(37, 99, 235, 0.5);
+  width: 380px;
+  height: 380px;
+  left: calc(50% - 190px);
+  top: calc(50% - 190px);
+  animation: orbitPulse 6s infinite alternate-reverse;
+}
+
+.fc-orbit-3 {
+  border: 1px dashed rgba(79, 70, 229, 0.4);
+  width: 540px;
+  height: 540px;
+  left: calc(50% - 270px);
+  top: calc(50% - 270px);
+  animation: orbitPulse 8s infinite alternate;
+}
+
+@keyframes orbitPulse {
+  0% {
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.1);
+    opacity: 0.7;
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    opacity: 1;
+  }
+}
+
+/* Style pour les badges des clients */
+.fc-client-badge {
+  transition: all 0.2s ease;
+  transform: scale(0.9);
+  pointer-events: none;
+}
+
+.fc-orbit-avatar:hover .fc-client-badge {
+  transform: scale(1.1);
+}
+
+/* Style pour les bulles de messages LinkedIn */
+.fc-linkedin-message {
+  opacity: 0.85;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  transform: scale(0.95);
+  max-width: 180px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 25;
+}
+
+.fc-orbit-avatar:hover .fc-linkedin-message {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Animation d'apparition des messages */
+@keyframes messageFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+  100% {
+    opacity: 0.85;
+    transform: translateY(0) scale(0.95);
+  }
+}
+
+.fc-linkedin-message {
+  animation: messageFadeIn 0.5s forwards;
+}
+
+.fc-central-consultant {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 30;
+}
+
+/* Styles pour les avatars */
+.fc-orbit-avatar {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.fc-orbit-avatar:hover {
+  transform: scale(1.2);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  z-index: 40 !important;
+}
+
+/* Style pour l'icône LinkedIn */
+.fc-linkedin-icon {
+  color: #0A66C2;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.fc-linkedin-icon:hover {
+  transform: scale(1.2);
+  color: #0077B5;
+}
+
+/* Style pour les badges LinkedIn sur les avatars */
+.fc-linkedin-badge {
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  background-color: #0077b5;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  z-index: 10;
+  transition: transform 0.2s;
+}
+
+.fc-orbit-avatar:hover .fc-linkedin-badge {
+  transform: scale(1.2);
+}
+
+/* Styles pour le système d'orbites et les avatars */
+.fc-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+}
+
+.fc-orbit-1 {
+  width: 140px;
+  height: 140px;
+}
+
+.fc-orbit-2 {
+  width: 240px;
+  height: 240px;
+}
+
+.fc-orbit-3 {
+  width: 340px;
+  height: 340px;
+}
+
+.fc-central-consultant {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 30;
+}
+
+.fc-orbit-avatar-container {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  transition: all 0.2s ease-in-out;
+}
+
+.fc-orbit-avatar-container:hover {
+  z-index: 40;
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* Styling des avatars recruteurs */
+.fc-recruiter-avatar {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Message styling */
+.fc-message-wrapper {
+  position: absolute;
+  width: 180px;
+  opacity: 0.95;
+  pointer-events: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.fc-orbit-avatar-container:hover .fc-message-wrapper {
+  opacity: 1;
+}
+
+/* Position des messages par rapport à l'avatar */
+.fc-message-position-top {
+  bottom: calc(100% + 15px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.fc-message-position-right {
+  left: calc(100% + 15px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.fc-message-position-bottom {
+  top: calc(100% + 15px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.fc-message-position-left {
+  right: calc(100% + 15px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.fc-message-container {
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 8px 10px;
+  position: relative;
+  z-index: 2;
+}
+
+.fc-message-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.fc-message-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-right: 6px;
+  color: white;
+}
+
+.fc-message-icon-opportunity { background-color: #4361ee; }
+.fc-message-icon-mission { background-color: #7209b7; }
+.fc-message-icon-developer { background-color: #f4a261; }
+
+.fc-message-title {
+  font-size: 11px;
+  font-weight: 600;
+  margin: 0;
+  color: #344054;
+}
+
+.fc-message-content {
+  font-size: 10px;
+  line-height: 1.4;
+  color: #475467;
+}
+
+/* Message arrow */
+.fc-message-arrow {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: white;
+  border-left: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  transform: rotate(45deg);
+  z-index: 1;
+}
+
+.fc-message-position-top .fc-message-arrow {
+  bottom: -5px;
+  left: 50%;
+  margin-left: -5px;
+}
+
+.fc-message-position-right .fc-message-arrow {
+  left: -5px;
+  top: 50%;
+  margin-top: -5px;
+  transform: rotate(45deg);
+  border-left: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  border-right: none;
+  border-top: none;
+}
+
+.fc-message-position-bottom .fc-message-arrow {
+  top: -5px;
+  left: 50%;
+  margin-left: -5px;
+  transform: rotate(225deg);
+}
+
+.fc-message-position-left .fc-message-arrow {
+  right: -5px;
+  top: 50%;
+  margin-top: -5px;
+  transform: rotate(225deg);
+}
+
+/* Style LinkedIn professionnel */
+.fc-linkedin-message .flex {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.fc-linkedin-message span {
+  font-weight: bold;
+  color: #0A66C2;
+  font-size: 11px;
+  font-family: Arial, sans-serif;
+}
+
+/* Masquer en responsive */
+@media (max-width: 768px) {
+  .fc-linkedin-message {
+    display: none;
+  }
+}
+
+/* Positionnement pour les avatars pour permettre le badge */
+.fc-orbit-avatar {
+  position: absolute;
+  border-radius: 50%;
+  overflow: visible;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 30;
+}
+
+/* Conteneur d'image à l'intérieur de l'avatar */
+.fc-orbit-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
   overflow: hidden;
 }
 
+/* Animation de pulsation pour l'avatar central */
+@keyframes pulse-glow {
+  0% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+}
+
+.fc-consultant-center .animate-pulse {
+  animation: pulse-glow 3s infinite ease-in-out;
+}
+
+/* Styles pour la galaxie d'avatars de consultants */
 .fc-galaxy-center {
   z-index: 10;
   box-shadow: 0 0 30px rgba(37, 99, 235, 0.5);

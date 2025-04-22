@@ -85,102 +85,191 @@
     <div class="w-full lg:w-[35%] py-10 px-8 lg:px-10 fc-value-column fixed top-24 left-0 h-[calc(100vh-96px)] lg:visible invisible flex flex-col justify-center overflow-y-auto">
       <div class="space-y-10 text-white fc-value-content">
         <!-- Section pour les consultants (simplifiée) -->
-        <section class="fc-consultant-section mb-6 flex flex-col items-center text-center">
+        <div class="fc-consultant-section mb-6 flex flex-col items-center text-center">
           <div class="fc-consultant-hero flex flex-col items-center mb-5">
-            <div class="fc-galaxy-container relative w-72 h-72 mb-6 flex items-center justify-center">
-              <!-- Légende -->
-              <div class="absolute top-0 right-0 bg-blue-900 bg-opacity-70 rounded-md p-2 z-40 text-xs text-white">
-                <div class="flex items-center mb-1">
-                  <div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
-                  <span>Vous (Consultant)</span>
-                </div>
-                <div class="flex items-center mb-1">
-                  <div class="w-3 h-3 border border-blue-400 rounded-full mr-2"></div>
-                  <span>Connexions directes</span>
-                </div>
-                <div class="flex items-center mb-1">
-                  <div class="w-3 h-3 border border-blue-600 rounded-full mr-2"></div>
-                  <span>Réseau étendu</span>
-                </div>
-                <div class="flex items-center">
-                  <div class="w-3 h-3 border border-indigo-500 rounded-full mr-2"></div>
-                  <span>Nouvelles opportunités</span>
-                </div>
-              </div>
+            <div class="fc-galaxy-container relative w-80 h-80 mb-6 flex items-center justify-center">
+
               
-              <!-- Orbites (3 cercles concentriques) -->
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 600 600" class="absolute left-0 top-0 w-full h-full z-10 select-none">
-                <g stroke-width="1.5" opacity="0.6">
-                  <circle cx="300" cy="300" r="90" stroke="#3B82F6" stroke-dasharray="4,4"></circle>
-                  <circle cx="300" cy="300" r="170" stroke="#2563EB"></circle>
-                  <circle cx="300" cy="300" r="250" stroke="#4F46E5"></circle>
-                </g>
-              </svg>
+              <!-- Légende -->
+
+              
+
+              
+              <!-- Cercles d'orbites -->
+              <div class="fc-orbit fc-orbit-1" title="Contacts directs"></div>
+              <div class="fc-orbit fc-orbit-2" title="Réseau secondaire"></div>
+              <div class="fc-orbit fc-orbit-3" title="Nouveaux contacts FastConnect"></div>
               
               <!-- Consultant au centre -->
-              <div class="fc-consultant-center absolute bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full w-16 h-16 z-20 shadow-lg shadow-blue-900/50 border-2 border-white flex items-center justify-center overflow-hidden">
-                <img src="assets/avatars/consultant.jpg" alt="Consultant" class="w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/men/85.jpg'; this.onerror='';">
-              </div>
-              
-              <!-- Orbit 1: Recruteurs connus (réseau direct) -->
-              <div class="fc-orbit-item">
-                <!-- Orbit 1, Position 1 -->
-                <div class="fc-orbit-avatar absolute w-10 h-10 rounded-full overflow-hidden shadow-md z-30 border-2 border-blue-400" style="left: calc(50% + 90px - 20px); top: calc(50% - 20px);">
-                  <img src="assets/avatars/recruiter1.jpg" alt="Recruteur" class="w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/women/44.jpg'; this.onerror='';"> 
+              <div class="fc-central-consultant absolute">
+                <div class="fc-avatar w-16 h-16 bg-gradient-to-br from-blue-800 to-indigo-900 rounded-full flex items-center justify-center text-white text-2xl font-bold z-20 border-2 border-blue-300" title="John Doe, Consultant IT">
+                  JD
                 </div>
-                
-                <!-- Orbit 1, Position 2 -->
-                <div class="fc-orbit-avatar absolute w-10 h-10 rounded-full overflow-hidden shadow-md z-30 border-2 border-blue-400" style="left: calc(50% - 90px*0.5 - 20px); top: calc(50% + 90px*0.866 - 20px);">
-                  <img src="assets/avatars/recruiter2.jpg" alt="Recruteur" class="w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/men/32.jpg'; this.onerror='';"> 
+                <!-- Badge de disponibilité (vert) -->
+                <div class="absolute bottom-0 right-0 w-5 h-5 bg-green-500 rounded-full border-2 border-white z-30" title="Disponible pour de nouvelles missions"></div>
+                <!-- Badge LinkedIn pour le consultant central -->
+                <div class="absolute bottom-0 left-0 w-6 h-6 bg-[#0A66C2] rounded-full border-2 border-white z-40 flex items-center justify-center">
+                  <i class="fab fa-linkedin text-white"></i>
                 </div>
-              </div>
-              
-              <!-- Orbit 2: Recruteurs de deuxième niveau -->
-              <div class="fc-orbit-item">
-                <!-- Orbit 2, Position 1 -->
-                <div class="fc-orbit-avatar absolute w-10 h-10 rounded-full overflow-hidden shadow-md z-30 border-2 border-blue-600" style="left: calc(50% + 170px*0.5 - 20px); top: calc(50% - 170px*0.866 - 20px);">
-                  <img src="assets/avatars/recruiter3.jpg" alt="Recruteur" class="w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/women/28.jpg'; this.onerror='';"> 
-                </div>
-                
-                <!-- Orbit 2, Position 2 -->
-                <div class="fc-orbit-avatar absolute w-10 h-10 rounded-full overflow-hidden shadow-md z-30 border-2 border-blue-600" style="left: calc(50% - 170px - 20px); top: calc(50% - 20px);">
-                  <img src="assets/avatars/recruiter4.jpg" alt="Recruteur" class="w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/men/55.jpg'; this.onerror='';"> 
-                </div>
-                
-                <!-- Orbit 2, Position 3 -->
-                <div class="fc-orbit-avatar absolute w-10 h-10 rounded-full overflow-hidden shadow-md z-30 border-2 border-blue-600" style="left: calc(50% + 170px*0.5 - 20px); top: calc(50% + 170px*0.866 - 20px);">
-                  <img src="assets/avatars/recruiter5.jpg" alt="Recruteur" class="w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/women/29.jpg'; this.onerror='';"> 
+                <!-- Texte sous le consultant -->
+                <div class="absolute -bottom-8 w-full text-center text-xs text-white font-semibold">
+                  Vous êtes ici
                 </div>
               </div>
               
-              <!-- Orbit 3: Nouveaux recruteurs (hors réseau) avec FastConnect -->
-              <div class="fc-orbit-item">
-                <!-- Orbit 3, Position 1 -->
-                <div class="fc-orbit-avatar absolute w-10 h-10 rounded-full overflow-hidden shadow-md z-30 border-2 border-indigo-500" style="left: calc(50% + 250px*0.866 - 20px); top: calc(50% - 250px*0.5 - 20px);">
-                  <img src="assets/avatars/recruiter6.jpg" alt="Recruteur" class="w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/men/71.jpg'; this.onerror='';"> 
+              <!-- Système d'orbites -->
+              <div class="fc-orbital-layout relative w-full h-full">
+                <!-- Cercles d'orbites concentriques -->
+                <div class="fc-orbit fc-orbit-1" title="Contacts directs"></div>
+                <div class="fc-orbit fc-orbit-2" title="Réseau secondaire"></div>
+                <div class="fc-orbit fc-orbit-3" title="Nouveaux contacts FastConnect"></div>
+                
+                <!-- Consultant au centre -->
+                <div class="fc-central-consultant">
+                  <div class="fc-avatar-wrapper fc-avatar-consultant">
+                    <div class="fc-avatar-container w-16 h-16 bg-gradient-to-br from-blue-800 to-indigo-900 rounded-full flex items-center justify-center text-white text-2xl font-bold border-2 border-blue-300">
+                      <div class="fc-avatar-image flex justify-center items-center">JD</div>
+                    </div>
+                    <!-- Badge de disponibilité (vert) -->
+                    <div class="fc-avatar-badge absolute bottom-0 right-0 w-5 h-5 bg-green-500 rounded-full border-2 border-white z-10" title="Disponible pour de nouvelles missions"></div>
+                    <!-- Badge LinkedIn pour le consultant central -->
+                    <div class="fc-avatar-linkedin absolute bottom-0 left-0 w-6 h-6 bg-[#0A66C2] rounded-full border-2 border-white z-10 flex items-center justify-center">
+                      <i class="fab fa-linkedin-in text-white text-[10px]"></i>
+                    </div>
+                  </div>
+                  <!-- Texte sous le consultant -->
+                  <div class="absolute -bottom-8 w-full text-center text-xs text-white font-semibold">
+                    Vous êtes ici
+                  </div>
                 </div>
                 
-                <!-- Orbit 3, Position 2 -->
-                <div class="fc-orbit-avatar absolute w-10 h-10 rounded-full overflow-hidden shadow-md z-30 border-2 border-indigo-500" style="left: calc(50% - 250px*0.866 - 20px); top: calc(50% + 250px*0.5 - 20px);">
-                  <img src="assets/avatars/recruiter7.jpg" alt="Recruteur" class="w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/women/66.jpg'; this.onerror='';"> 
+                <!-- Avatar CS sur l'orbite 2 (45° - haut droite) -->
+                <div class="fc-orbital-item fc-orbital-level-2 absolute" style="left: calc(50% + 85px); top: calc(50% - 85px);">
+                  <div class="fc-avatar-wrapper fc-avatar-commercial">
+                    <div class="fc-avatar-container w-10 h-10 rounded-full border-2 border-blue-600 overflow-hidden">
+                      <img src="assets/avatars/recruiter3.jpg" alt="Recruteur" class="fc-avatar-image w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/men/33.jpg'; this.onerror='';">
+                    </div>
+                    <div class="fc-avatar-linkedin absolute -top-2 -right-2 bg-[#0A66C2] rounded-md w-5 h-5 flex items-center justify-center border border-white">
+                      <i class="fab fa-linkedin-in text-white text-[8px]"></i>
+                    </div>
+                    <div class="fc-avatar-badge absolute -bottom-1 -right-1 bg-white rounded-md px-1 py-0.5 text-[10px] font-bold border border-gray-300 shadow-sm">CS</div>
+                  </div>
+                  
+                  <!-- Message avec positionnement adapté -->
+                  <div class="fc-message-wrapper fc-message-position-top">
+                    <div class="fc-message-container">
+                      <div class="fc-message-header">
+                        <div class="fc-message-icon fc-message-icon-opportunity">
+                          <i class="fas fa-briefcase text-white text-[8px]"></i>
+                        </div>
+                        <span class="fc-message-title">Poste à pourvoir</span>
+                      </div>
+                      <div class="fc-message-content">
+                        Consultant Senior Back-end pour banque d'investissement.
+                      </div>
+                    </div>
+                    <div class="fc-message-arrow"></div>
+                  </div>
                 </div>
                 
-                <!-- Orbit 3, Position 3 -->
-                <div class="fc-orbit-avatar absolute w-10 h-10 rounded-full overflow-hidden shadow-md z-30 border-2 border-indigo-500" style="left: calc(50% + 250px*0.5 - 20px); top: calc(50% + 250px*0.866 - 20px);">
-                  <img src="assets/avatars/recruiter8.jpg" alt="Recruteur" class="w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/men/81.jpg'; this.onerror='';"> 
+                <!-- Avatar AXA sur l'orbite 2 (225° - bas gauche) -->
+                <div class="fc-orbital-item fc-orbital-level-2 absolute" style="left: calc(50% - 85px); top: calc(50% + 85px);">
+                  <div class="fc-avatar-wrapper fc-avatar-commercial">
+                    <div class="fc-avatar-container w-10 h-10 rounded-full border-2 border-blue-600 overflow-hidden">
+                      <img src="assets/avatars/recruiter2.jpg" alt="Recruteur" class="fc-avatar-image w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/men/42.jpg'; this.onerror='';">
+                    </div>
+                    <div class="fc-avatar-linkedin absolute -top-2 -right-2 bg-[#0A66C2] rounded-md w-5 h-5 flex items-center justify-center border border-white">
+                      <i class="fab fa-linkedin-in text-white text-[8px]"></i>
+                    </div>
+                    <div class="fc-avatar-badge absolute -bottom-1 -right-1 bg-white rounded-md px-1 py-0.5 text-[10px] font-bold border border-gray-300 shadow-sm">AXA</div>
+                  </div>
+                  
+                  <!-- Message avec positionnement adapté -->
+                  <div class="fc-message-wrapper fc-message-position-left">
+                    <div class="fc-message-container">
+                      <div class="fc-message-header">
+                        <div class="fc-message-icon fc-message-icon-mission">
+                          <i class="fas fa-bullseye text-white text-[8px]"></i>
+                        </div>
+                        <span class="fc-message-title">Nouvelle mission</span>
+                      </div>
+                      <div class="fc-message-content">
+                        Mission de transformation digitale sur 12 mois.
+                      </div>
+                    </div>
+                    <div class="fc-message-arrow"></div>
+                  </div>
                 </div>
                 
-                <!-- Orbit 3, Position 4 -->
-                <div class="fc-orbit-avatar absolute w-10 h-10 rounded-full overflow-hidden shadow-md z-30 border-2 border-indigo-500" style="left: calc(50% - 20px); top: calc(50% - 250px - 20px);">
-                  <img src="assets/avatars/recruiter9.jpg" alt="Recruteur" class="w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/women/52.jpg'; this.onerror='';"> 
+                <!-- Avatar SG sur l'orbite 3 (0° - droite) -->
+                <div class="fc-orbital-item fc-orbital-level-3 absolute" style="left: calc(50% + 170px); top: 50%;">
+                  <div class="fc-avatar-wrapper fc-avatar-commercial">
+                    <div class="fc-avatar-container w-10 h-10 rounded-full border-2 border-blue-600 overflow-hidden">
+                      <img src="assets/avatars/recruiter1.jpg" alt="Recruteur" class="fc-avatar-image w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/women/23.jpg'; this.onerror='';">
+                    </div>
+                    <div class="fc-avatar-linkedin absolute -top-2 -right-2 bg-[#0A66C2] rounded-md w-5 h-5 flex items-center justify-center border border-white">
+                      <i class="fab fa-linkedin-in text-white text-[8px]"></i>
+                    </div>
+                    <div class="fc-avatar-badge absolute -bottom-1 -right-1 bg-white rounded-md px-1 py-0.5 text-[10px] font-bold border border-gray-300 shadow-sm">SG</div>
+                  </div>
+                  
+                  <!-- Message avec positionnement adapté -->
+                  <div class="fc-message-wrapper fc-message-position-right">
+                    <div class="fc-message-container">
+                      <div class="fc-message-header">
+                        <div class="fc-message-icon fc-message-icon-mission">
+                          <i class="fas fa-bullseye text-white text-[8px]"></i>
+                        </div>
+                        <span class="fc-message-title">Nouvelle mission</span>
+                      </div>
+                      <div class="fc-message-content">
+                        Lead technique pour refonte application bancaire.
+                      </div>
+                    </div>
+                    <div class="fc-message-arrow"></div>
+                  </div>
+                </div>
+                
+                <!-- Avatar TH sur l'orbite 3 (180° - gauche) -->
+                <div class="fc-orbital-item fc-orbital-level-3 absolute" style="left: calc(50% - 170px); top: 50%;">
+                  <div class="fc-avatar-wrapper fc-avatar-commercial">
+                    <div class="fc-avatar-container w-10 h-10 rounded-full border-2 border-blue-600 overflow-hidden">
+                      <img src="assets/avatars/recruiter4.jpg" alt="Recruteur" class="fc-avatar-image w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/women/64.jpg'; this.onerror='';">
+                    </div>
+                    <div class="fc-avatar-linkedin absolute -top-2 -right-2 bg-[#0A66C2] rounded-md w-5 h-5 flex items-center justify-center border border-white">
+                      <i class="fab fa-linkedin-in text-white text-[8px]"></i>
+                    </div>
+                    <div class="fc-avatar-badge absolute -bottom-1 -right-1 bg-white rounded-md px-1 py-0.5 text-[10px] font-bold border border-gray-300 shadow-sm">TH</div>
+                  </div>
+                  
+                  <!-- Message avec positionnement adapté -->
+                  <div class="fc-message-wrapper fc-message-position-left">
+                    <div class="fc-message-container">
+                      <div class="fc-message-header">
+                        <div class="fc-message-icon fc-message-icon-developer">
+                          <i class="fas fa-code text-white text-[8px]"></i>
+                        </div>
+                        <span class="fc-message-title">Recherche développeur</span>
+                      </div>
+                      <div class="fc-message-content">
+                        Besoin d'un expert React/Node.js pour projet critique.
+                      </div>
+                    </div>
+                    <div class="fc-message-arrow"></div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <h1 class="text-3xl font-bold text-white mb-2">Élargissez votre réseau</h1>
-            <h2 class="text-xl text-blue-200 mb-4">Accédez aux recruteurs au-delà de votre cercle habituel</h2>
-            <p class="text-blue-100 mb-2 text-sm">FastConnect vous connecte aux recruteurs qui recherchent vos compétences, même s'ils ne font pas partie de votre réseau existant.</p>
-          </div>
-          
+              
+              <!-- Autres avatars des commerciaux seront ajoutés ici un par un -->
+              
+              <!-- Indications de connexion -->
+              <div class="fc-connection-lines"></div>
+              </div>
+              <div class="fc-consultant-info text-white mb-6">
+                <h2 class="text-xl text-blue-200 mb-4">Accédez aux recruteurs au-delà de votre cercle habituel</h2>
+                <p class="text-blue-100 mb-2 text-sm">FastConnect vous connecte aux recruteurs qui recherchent vos compétences, même s'ils ne font pas partie de votre réseau existant.</p>
+              </div>
+            
           <div class="fc-consultant-steps bg-blue-800 bg-opacity-30 rounded-xl p-5 flex flex-col items-start text-left mb-8 w-full">
             <ol class="space-y-4 text-blue-100">
               <li class="flex items-center">
@@ -213,7 +302,7 @@
             </button>
             <span class="text-xs text-blue-300">Gratuit et rapide • Plus de visibilité = plus d'opportunités</span>
           </div>
-        </section>
+        </div>
       </div>
     </div>
     
@@ -268,7 +357,7 @@
   <div class="fc-footer-container"></div>
 
   <!-- FC-MODALS-SECTION-START - Section des modales qui pourrait être extraite -->
-, on doit ex  <!-- Login Modal Component -->
+  <!-- Login Modal Component -->
   <app-login></app-login>
   
   <!-- Add Availability Modal Component (supprimé) -->
