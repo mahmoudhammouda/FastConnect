@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService } from './services/auth.service';
@@ -17,7 +17,7 @@ import { FcAppComponent } from './components/fc-app/fc-app.component';
   styleUrls: ['./app.component.css'],
   standalone: false
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'FastConnect';
   currentUser: User | null = null;
   isAuthenticated = false;
@@ -41,6 +41,17 @@ export class AppComponent implements OnInit {
   availableLocations: string[] = [];
   availableSkills: string[] = []; // Pour stocker les compétences disponibles
   
+  // Information de débogage
+  debugInfo = {
+    environment: '',
+    baseHref: '',
+    location: '',
+    apiUrl: '',
+    routerUrl: '',
+    isExtension: false,
+    appStartTime: ''
+  };
+  
   // États pour les dropdowns de compétences
   skillsDropdownOpen = false;
   mobileSkillsDropdownOpen = false;
@@ -54,26 +65,24 @@ export class AppComponent implements OnInit {
     { value: '1', label: 'Disponible prochainement' },
     { value: '2', label: 'Non disponible' }
   ];
-  debugInfo = {
-    baseHref: document.getElementsByTagName('base')[0]?.getAttribute('href') || 'undefined',
-    location: window.location.href,
-    environment: environment.envName || 'undefined',
-    apiUrl: environment.apiUrl || 'undefined',
-    routerUrl: '',
-    isExtension: environment.isExtension,
-    appStartTime: new Date().toISOString()
-  };
 
   constructor(
-    private authService: AuthService,
     private router: Router,
-    public modalService: ModalService,
+    private authService: AuthService,
     private consultantService: ConsultantService,
+    public modalService: ModalService,
     private availabilityService: ConsultantAvailabilityService
   ) {
     console.log('🔍 FastConnect initialisation:', this.debugInfo);
     
-    // Vérifier si le débogage est désactivé dans le localStorage
+    // S'abonner aux événements de navigation pour suivre la route actuelle
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      this.currentRoute = event.url;
+    });
+    
+    // Vérifier si le mode débogage est activé
     const savedDebugState = localStorage.getItem('fastconnect-debug-enabled');
     if (savedDebugState !== null) {
       this.isDebugEnabled = savedDebugState === 'true';
@@ -83,169 +92,58 @@ export class AppComponent implements OnInit {
     if (savedFloatingDebugState !== null) {
       this.showFloatingDebug = savedFloatingDebugState === 'true';
     }
-    
-    // Créer un élément pour le débogage visuel flottant
-    setTimeout(() => {
-      this.createFloatingDebugElement();
-      this.updateFloatingDebugVisibility();
-    }, 1000);
   }
 
+  ngOnInit(): void {
+    // Initialisation des informations de débogage
+    this.debugInfo = {
+      environment: environment.production ? 'Production' : 'Développement',
+      baseHref: document.baseURI,
+      location: window.location.href,
+      apiUrl: environment.apiUrl || '',
+      routerUrl: this.router.url,
+      isExtension: false,
+      appStartTime: new Date().toLocaleTimeString()
+    };
+    
+    // Attendre que le DOM soit chargé puis positionner le système orbital
+    setTimeout(() => {
+      this.positionOrbitalSystem();
+      // Ajouter un écouteur d'événement pour le redimensionnement de la fenêtre
+      window.addEventListener('resize', () => {
+        this.positionOrbitalSystem();
+      });
+    }, 500);
+    
+    // Observer les changements d'état d'authentification
+    this.authService.authState$.subscribe(state => {
+      this.isAuthenticated = state.isAuthenticated;
+      this.currentUser = state.user;
+    });
+    
+    // Pour le débogage, vérifier l'état d'authentification actuel
+    // La méthode checkAuthState n'existe pas dans AuthService
+    // this.authService.checkAuthState();
+    
+    // Récupérer les paramètres de recherche enregistrés
+    const savedSearchParams = localStorage.getItem('fastconnect-search-params');
+    if (savedSearchParams) {
+      const params = JSON.parse(savedSearchParams);
+      this.searchText = params.searchText || '';
+    }
+  }
+  
+  ngOnDestroy(): void {
+    // Supprimer l'écouteur d'événement pour éviter les fuites de mémoire
+    window.removeEventListener('resize', () => this.positionOrbitalSystem());
+  }
+  
   /**
    * Gère le changement d'onglet dans la navbar
    * @param tab Le nouvel onglet actif
    */
   onTabChange(tab: string) {
     this.activeTab = tab;
-  }
-
-  ngOnInit(): void {
-    // Observer les changements d'état d'authentification
-    this.authService.authState$.subscribe(state => {
-      this.isAuthenticated = state.isAuthenticated;
-      this.currentUser = state.user;
-    });
-
-    // Observer les changements de route
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: any) => {
-      this.currentRoute = event.url;
-      this.menuOpen = false; // Fermer le menu à chaque changement de route
-    });
-    
-    // Charger les données pour les filtres
-    this.loadFilterOptions();
-  }
-  
-  /**
-   * Charge les options disponibles pour les filtres
-   */
-  loadFilterOptions(): void {
-    this.consultantService.getConsultants().subscribe(consultants => {
-      // Extraire les localisations disponibles
-      const locationsSet = new Set<string>();
-      
-      // Extraire les compétences disponibles
-      const skillsSet = new Set<string>();
-      
-      consultants.forEach(consultant => {
-        // Traitement des localisations
-        if (consultant.location) {
-          const locations = consultant.location.split(',').map(loc => loc.trim());
-          locations.forEach(location => {
-            locationsSet.add(location);
-          });
-        }
-        
-        // Traitement des compétences
-        if (consultant.skills && Array.isArray(consultant.skills)) {
-          // Si skills est déjà un tableau, on peut directement itérer dessus
-          consultant.skills.forEach((skill: string) => {
-            if (skill) skillsSet.add(skill.trim());
-          });
-        }
-      });
-      
-      this.availableLocations = Array.from(locationsSet).sort();
-      this.availableSkills = Array.from(skillsSet).sort();
-    });
-  }
-  
-  /**
-   * Gère le changement de texte dans la barre de recherche
-   */
-  onSearchTextChange(): void {
-    // On émet un événement pour le composant de liste de consultants
-    // qui utilisera cette valeur pour le filtrage
-    const searchParams = {
-      searchText: this.searchText
-    };
-    // Passer les paramètres de recherche via localStorage
-    localStorage.setItem('fastconnect-search-params', JSON.stringify(searchParams));
-    // Émettre un événement custom pour notifier les composants
-    window.dispatchEvent(new CustomEvent('fastconnect-search-updated'));
-  }
-  
-  /**
-   * Gère l'application des filtres avancés
-   */
-  applyAdvancedFilters(): void {
-    // On stocke les paramètres de filtrage que le composant de liste récupérera
-    const filterParams = {
-      searchText: this.searchText,
-      selectedExperience: this.selectedExperience,
-      selectedAvailability: this.selectedAvailability,
-      selectedLocation: this.selectedLocation,
-      selectedSkills: this.selectedSkills // Ajout des compétences sélectionnées
-    };
-    localStorage.setItem('fastconnect-filter-params', JSON.stringify(filterParams));
-    
-    // Émettre un événement custom pour notifier les composants
-    window.dispatchEvent(new CustomEvent('fastconnect-filters-updated'));
-    
-    // Fermer le panneau de filtres
-    this.showFilterPanel = false;
-  }
-  
-  /**
-   * Réinitialise tous les filtres
-   */
-  resetAllFilters(): void {
-    this.searchText = '';
-    this.selectedExperience = 'all';
-    this.selectedAvailability = 'all';
-    this.selectedLocation = 'all';
-    this.selectedSkills = []; // Vider les compétences sélectionnées
-    
-    // Appliquer les filtres réinitialisés
-    this.applyAdvancedFilters();
-  }
-  
-  /**
-   * Crée l'élément de débogage flottant
-   */
-  createFloatingDebugElement(): void {
-    // Supprimer l'ancien élément s'il existe
-    const existingDebugElement = document.getElementById('floating-debug-info');
-    if (existingDebugElement) {
-      document.body.removeChild(existingDebugElement);
-    }
-    
-    // Créer un nouvel élément
-    this.debugElement = document.createElement('div');
-    this.debugElement.id = 'floating-debug-info';
-    this.debugElement.style.position = 'fixed';
-    this.debugElement.style.bottom = '10px';
-    this.debugElement.style.left = '10px';
-    this.debugElement.style.padding = '10px';
-    this.debugElement.style.background = 'rgba(0,0,0,0.7)';
-    this.debugElement.style.color = 'white';
-    this.debugElement.style.fontSize = '12px';
-    this.debugElement.style.fontFamily = 'monospace';
-    this.debugElement.style.zIndex = '9999';
-    this.debugElement.style.borderRadius = '5px';
-    this.debugElement.style.transition = 'transform 0.3s ease';
-    this.debugElement.style.display = this.showFloatingDebug ? 'block' : 'none';
-    this.debugElement.innerHTML = `
-      <strong>DEBUGGER</strong><br>
-      Base: ${this.debugInfo.baseHref}<br>
-      URL: ${this.debugInfo.location}<br>
-      Env: ${this.debugInfo.environment}<br>
-      API: ${this.debugInfo.apiUrl}<br>
-      Ext: ${this.debugInfo.isExtension}<br>
-      Time: ${this.debugInfo.appStartTime}<br>
-    `;
-    document.body.appendChild(this.debugElement);
-  }
-  
-  /**
-   * Met à jour la visibilité de l'élément de débogage flottant
-   */
-  updateFloatingDebugVisibility(): void {
-    if (!this.debugElement) return;
-    
-    this.debugElement.style.display = this.showFloatingDebug ? 'block' : 'none';
   }
   
   /**
@@ -254,12 +152,6 @@ export class AppComponent implements OnInit {
   toggleDebugMode(): void {
     this.isDebugEnabled = !this.isDebugEnabled;
     localStorage.setItem('fastconnect-debug-enabled', this.isDebugEnabled.toString());
-    
-    // Mettre à jour les éléments visuels de débogage
-    const headerDebug = document.getElementById('header-debug-bar');
-    if (headerDebug) {
-      headerDebug.style.display = this.isDebugEnabled ? 'block' : 'none';
-    }
   }
   
   /**
@@ -268,12 +160,31 @@ export class AppComponent implements OnInit {
   toggleFloatingDebug(): void {
     this.showFloatingDebug = !this.showFloatingDebug;
     localStorage.setItem('fastconnect-floating-debug', this.showFloatingDebug.toString());
-    this.updateFloatingDebugVisibility();
   }
-
+  
   /**
-   * Active ou désactive le panneau de filtres
+   * Positionne le système orbital au coin supérieur gauche du composant fc-app-container
    */
+  positionOrbitalSystem(): void {
+    // Récupérer les éléments du DOM
+    const appContainer = document.querySelector('.fc-app-container');
+    const orbitalSystem = document.getElementById('orbital-system');
+    
+    if (appContainer && orbitalSystem) {
+      // Récupérer la position du coin supérieur gauche du fc-app-container
+      const rect = appContainer.getBoundingClientRect();
+      
+      // Calculer la position par rapport à la page
+      const topPosition = rect.top - 30; // Légèrement au-dessus du coin
+      const leftPosition = rect.left - 30; // Légèrement à gauche du coin
+      
+      // Appliquer la position au système orbital
+      orbitalSystem.style.position = 'fixed';
+      orbitalSystem.style.top = `${topPosition}px`;
+      orbitalSystem.style.left = `${leftPosition}px`;
+    }
+  }
+  
   toggleFilterPanel(): void {
     this.showFilterPanel = !this.showFilterPanel;
   }

@@ -239,35 +239,60 @@ app-root {
 }
 
 /* Styles pour le système d'orbites et les avatars */
+.fc-orbital-layout {
+  position: absolute;
+  pointer-events: none;
+  z-index: 40;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#orbital-system {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 280px;
+}
+
 .fc-orbit {
   position: absolute;
-  top: 50%;
-  left: 50%;
   border-radius: 50%;
-  transform: translate(-50%, -50%);
   border: 1px dashed rgba(255, 255, 255, 0.3);
+  /* Cercles positionnés exactement au coin */
+  top: 0;
+  left: 0;
+  transform: none;
 }
 
 .fc-orbit-1 {
   width: 100px;
   height: 100px;
+  top: 0;
+  left: 0;
 }
 
 .fc-orbit-2 {
   width: 170px;
   height: 170px;
+  top: 0;
+  left: 0;
 }
 
 .fc-orbit-3 {
   width: 240px;
   height: 240px;
+  top: 0;
+  left: 0;
 }
 
 .fc-central-consultant {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  transform: none;
   z-index: 30;
 }
 
@@ -307,27 +332,27 @@ app-root {
 
 /* Position des messages par rapport à l'avatar */
 .fc-message-position-top {
-  bottom: calc(100% + 12px);
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: calc(100% + 8px);
+  left: 0;
+  transform: translateX(0);
 }
 
 .fc-message-position-right {
-  left: calc(100% + 12px);
-  top: 50%;
-  transform: translateY(-50%);
+  left: calc(100% + 8px);
+  top: 0;
+  transform: translateY(0);
 }
 
 .fc-message-position-bottom {
-  top: calc(100% + 12px);
-  left: 50%;
-  transform: translateX(-50%);
+  top: calc(100% + 8px);
+  left: 0;
+  transform: translateX(0);
 }
 
 .fc-message-position-left {
-  right: calc(100% + 12px);
-  top: 50%;
-  transform: translateY(-50%);
+  right: calc(100% + 8px);
+  top: 0;
+  transform: translateY(0);
 }
 
 .fc-message-container {

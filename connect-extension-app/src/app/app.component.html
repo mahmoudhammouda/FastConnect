@@ -26,38 +26,96 @@
     </button>
   </div>
 
-  <!-- Header de la landing page (navbar fixe) -->
-  <header class="bg-gradient-to-b from-blue-950 to-blue-900 pt-6 pb-4 px-4 md:px-8 fc-landing-header fixed top-0 left-0 right-0 z-20">
-    <div class="container mx-auto flex justify-between items-center fc-header-container">
-      <div class="flex items-center space-x-2 fc-logo-container">
-        <img src="assets/logo.png" alt="FastConnect Logo" class="h-10 w-auto fc-logo" onerror="this.src='https://via.placeholder.com/50x50/0054c0/ffffff?text=FC'; this.onerror='';"> 
-        <span class="text-white font-bold text-xl fc-brand-name">FastConnect</span>
+  <!-- Header de la landing page (navbar fixe, style bleu marine) -->
+  <header class="bg-[#1d2b5b] fixed top-0 left-0 right-0 z-40 h-16 fc-landing-header shadow-md">
+    <div class="container mx-auto h-full flex items-center justify-between px-4 md:px-8 fc-header-container">
+      <!-- Logo à gauche avec nom FastConnect et nouveau Logo SVG plus grand et plus clair -->
+      <div class="flex items-center fc-logo-block">
+        <!-- Logo SVG adaptable à tout fond (taille réduite) -->
+        <div class="relative h-12 w-16 mr-3">
+          <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" class="h-full w-full">
+            <!-- Cercle extérieur avec ombre pour meilleure lisibilité -->
+            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+            
+            <!-- Fond du logo avec légère transparence pour adaptation aux fonds -->
+            <circle cx="60" cy="60" r="56" fill="#1d2b5b" fill-opacity="0.2" />
+            
+            <!-- Orbites statiques avec bordure plus épaisse pour visibilité -->
+            <ellipse cx="60" cy="60" rx="50" ry="50" fill="none" stroke="#4F46E5" stroke-width="3" stroke-dasharray="8,4" filter="url(#glow)" />
+            <ellipse cx="60" cy="60" rx="32" ry="32" fill="none" stroke="#60A5FA" stroke-width="2.5" stroke-dasharray="6,3" filter="url(#glow)" />
+            
+            <!-- Nœud central plus grand et lumineux -->
+            <circle cx="60" cy="60" r="12" fill="#2EFFA1" filter="url(#glow)" />
+            
+            <!-- Nœuds du réseau avec contour pour visibilité -->
+            <circle cx="25" cy="45" r="8" fill="#A855F7" stroke="#FFFFFF" stroke-width="1.5" />
+            <circle cx="95" cy="35" r="8" fill="#A855F7" stroke="#FFFFFF" stroke-width="1.5" />
+            <circle cx="90" cy="90" r="8" fill="#A855F7" stroke="#FFFFFF" stroke-width="1.5" />
+            
+            <!-- Lignes de connexion plus visibles avec épaisseur variable -->
+            <line x1="60" y1="60" x2="25" y2="45" stroke="#818CF8" stroke-width="3" />
+            <line x1="60" y1="60" x2="95" y2="35" stroke="#818CF8" stroke-width="3" />
+            <line x1="60" y1="60" x2="90" y2="90" stroke="#818CF8" stroke-width="3" />
+            
+            <!-- Points de connexion (petites bulles sur les lignes) -->
+            <circle cx="42" cy="52" r="3" fill="#FFFFFF" class="animate-ping" style="animation-duration: 3s" />
+            <circle cx="78" cy="48" r="3" fill="#FFFFFF" class="animate-ping" style="animation-duration: 4s" />
+            <circle cx="75" cy="75" r="3" fill="#FFFFFF" class="animate-ping" style="animation-duration: 3.5s" />
+            
+            <!-- Effet de brillance au centre -->
+            <circle cx="60" cy="60" r="8" fill="#FFFFFF" fill-opacity="0.5" class="animate-pulse" style="animation-duration: 2s" />
+          </svg>
+        </div>
+        
+        <!-- Nom FastConnect en plus grand -->
+        <span class="text-white font-bold text-xl tracking-tight">FastConnect</span>
       </div>
       
-      <nav class="hidden md:flex items-center space-x-6 fc-landing-nav">
-        <a href="#" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm fc-nav-link fc-nav-home">Accueil</a>
-        <a href="#features" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm fc-nav-link fc-nav-features">Fonctionnalités</a>
-        <a href="#about" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm fc-nav-link fc-nav-about">À propos</a>
-        <a href="#contact" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm fc-nav-link fc-nav-contact">Contact</a>
+      <!-- Navigation au centre -->
+      <nav class="hidden md:flex items-center space-x-8 fc-nav-links">
+        <a href="#" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm font-medium fc-nav-link">Accueil</a>
+        <a href="#" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm font-medium fc-nav-link">Fonctionnalités</a>
+        <a href="#" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm font-medium fc-nav-link">À propos</a>
+        <a href="#" class="text-white hover:text-blue-200 transition-colors duration-200 text-sm font-medium fc-nav-link">Contact</a>
       </nav>
       
-      <!-- Bouton d'authentification pour la landing page -->
-      <div class="flex items-center space-x-2 fc-auth-actions">
-        <button 
-          *ngIf="!isAuthenticated"
-          (click)="openLoginModal()"
-          class="bg-white text-blue-900 px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-50 transition-colors duration-200 fc-landing-login-btn">
-          Connexion
-        </button>
-        <button 
-          *ngIf="isAuthenticated"
-          (click)="toggleMenu($event)"
-          class="bg-white text-blue-900 px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-50 transition-colors duration-200 flex items-center fc-landing-user-btn">
-          <span class="mr-2 fc-user-name">{{ currentUser?.firstName || 'Mon compte' }}</span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 fc-dropdown-arrow" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-          </svg>
-        </button>
+      <!-- Bouton Connexion à droite (style blanc) -->
+      <div class="flex items-center space-x-3">
+        <!-- Bouton de téléchargement Chrome Store amélioré avec popover -->
+        <div class="relative group">
+          <a href="#" class="bg-gradient-to-r from-[#2EFFA1] to-[#25D789] hover:from-[#29EB95] hover:to-[#20C27D] text-black px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center mr-3 shadow-lg transform hover:scale-105">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 group-hover:animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z"></path>
+              <path d="M12 12h.01"></path>
+              <path d="M12 8v4"></path>
+            </svg>
+            Télécharger sur Chrome Store
+          </a>
+          
+          <!-- Popover qui s'affiche au survol -->
+          <div class="absolute left-1/2 transform -translate-x-1/2 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out z-50">
+            <div class="bg-black bg-opacity-80 backdrop-blur-sm p-4 rounded-lg shadow-lg border border-gray-600">
+              <!-- Flèche du popover -->
+              <div class="absolute -top-2 left-1/2 transform -translate-x-1/2 w-4 h-4 rotate-45 bg-black bg-opacity-80"></div>
+              
+              <!-- Contenu du popover -->
+              <div class="text-white text-sm">
+                <h3 class="font-bold text-green-400 mb-1">Pourquoi installer l'extension ?</h3>
+                <ul class="list-disc pl-4 space-y-1 text-gray-200">
+                  <li>Accédez directement aux profils des consultants depuis LinkedIn</li>
+                  <li>Recevez des alertes quand de nouveaux profils correspondent à vos recherches</li>
+                  <li>Gagnez un temps précieux dans vos recherches de talents IT</li>
+                </ul>
+                <p class="mt-2 text-xs text-gray-300 italic">Installation rapide en 2 clics. Compatible avec tous les navigateurs basés sur Chromium.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <a href="#" class="bg-white text-[#1d2b5b] hover:bg-gray-100 px-5 py-2 rounded font-semibold transition-all duration-200 fc-nav-cta shadow-sm">Connexion</a>
         
         <!-- Menu déroulant pour les utilisateurs authentifiés -->
         <div 
@@ -82,134 +140,66 @@
   <!-- Layout à deux colonnes (section principale) -->
   <div class="flex flex-col lg:flex-row h-screen pt-24 fc-split-layout bg-gradient-to-b from-blue-950 to-blue-900">
     <!-- Colonne de gauche (35%) - Fixe avec messages de valeur -->
-    <div class="w-full lg:w-[35%] py-10 px-8 lg:px-10 fc-value-column fixed top-24 left-0 h-[calc(100vh-96px)] lg:visible invisible flex flex-col justify-center overflow-y-auto">
-      <div class="space-y-10 text-white fc-value-content">
-        <!-- Section pour les consultants (simplifiée) -->
-        <div class="fc-consultant-section mb-6 flex flex-col items-center text-center">
-          <div class="fc-consultant-hero flex flex-col items-center mb-5">
-            <div class="fc-galaxy-container relative w-80 h-80 mb-6 flex items-center justify-center">
-
-              
-              <!-- Légende -->
-
-              
-
-              
-              <!-- Cercles d'orbites -->
-              <div class="fc-orbit fc-orbit-1" title="Contacts directs"></div>
-              <div class="fc-orbit fc-orbit-2" title="Réseau secondaire"></div>
-              <div class="fc-orbit fc-orbit-3" title="Nouveaux contacts FastConnect"></div>
-              
-
-              
-              <!-- Système d'orbites -->
-              <div class="fc-orbital-layout relative w-full h-full">
-                <!-- Cercles d'orbites concentriques -->
-                <div class="fc-orbit fc-orbit-1" title="Contacts directs"></div>
-                <div class="fc-orbit fc-orbit-2" title="Réseau secondaire"></div>
-                <div class="fc-orbit fc-orbit-3" title="Nouveaux contacts FastConnect"></div>
+    <div class="w-full lg:w-[35%] py-5 px-8 lg:px-10 fc-value-column fixed top-24 left-0 h-[calc(100vh-96px)] lg:visible invisible flex flex-col justify-center overflow-y-auto">
+      <div class="space-y-8 text-white fc-value-content">
+        <!-- Section pour les consultants avec visualisation plus compacte et informative -->
+        <div class="fc-consultant-section mb-3 flex flex-col items-center text-center">
+          <div class="relative w-full h-auto">
+            <div class="fc-networking-header mb-1">
+              <h3 class="text-xl font-bold text-white">Votre réseau élargi</h3>
+            </div>
+            
+            <!-- Visualisation compact du réseau -->
+            <div class="fc-network-visualization relative py-3 flex justify-center items-center">
+              <!-- Réseau compact -->
+              <div class="fc-network-compact flex items-center justify-center">
+                <!-- Recruteur gauche -->
+                <div class="fc-recruiter-avatar mr-3 relative">
+                  <div class="w-10 h-10 rounded-full border-2 border-blue-400 overflow-hidden shadow-md">
+                    <img src="assets/avatars/recruiter1.jpg" alt="Recruteur" class="w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/women/23.jpg'; this.onerror='';">
+                  </div>
+                  <!-- Badge LinkedIn -->
+                  <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-[#0A66C2] rounded-full flex items-center justify-center border border-white">
+                    <i class="fab fa-linkedin-in text-white text-[6px]"></i>
+                  </div>
+                </div>
+                
+                <!-- Ligne de connexion gauche -->
+                <div class="w-8 h-0.5 bg-gradient-to-r from-blue-500 to-blue-400"></div>
                 
                 <!-- Consultant au centre -->
-                <div class="fc-central-consultant">
-                  <div class="fc-avatar-wrapper fc-avatar-consultant">
-                    <div class="fc-avatar-container w-16 h-16 bg-gradient-to-br from-blue-800 to-indigo-900 rounded-full flex items-center justify-center text-white text-2xl font-bold border-2 border-blue-300">
-                      <div class="fc-avatar-image flex justify-center items-center">JD</div>
-                    </div>
-                    <!-- Badge de disponibilité (vert) -->
-                    <div class="fc-avatar-badge absolute bottom-0 right-0 w-5 h-5 bg-green-500 rounded-full border-2 border-white z-10" title="Disponible pour de nouvelles missions"></div>
-                    <!-- Badge LinkedIn pour le consultant central -->
-                    <div class="fc-avatar-linkedin absolute bottom-0 left-0 w-6 h-6 bg-[#0A66C2] rounded-full border-2 border-white z-10 flex items-center justify-center">
-                      <i class="fab fa-linkedin-in text-white text-[10px]"></i>
-                    </div>
+                <div class="relative z-20 mx-1">
+                  <div class="w-14 h-14 bg-gradient-to-br from-blue-800 to-indigo-900 rounded-full flex items-center justify-center text-white text-xl font-bold border-2 border-blue-300 shadow-lg">
+                    <div class="flex justify-center items-center">JD</div>
                   </div>
-
+                  <!-- Badge de disponibilité (vert) -->
+                  <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white" title="Disponible pour de nouvelles missions"></div>
                 </div>
                 
-                <!-- Avatar CS en haut (90°) -->
-                <div class="fc-orbital-item fc-orbital-level-2 absolute" style="left: 50%; top: calc(50% - 80px);">
-                  <div class="fc-avatar-wrapper fc-avatar-commercial">
-                    <div class="fc-avatar-container w-10 h-10 rounded-full border-2 border-blue-600 overflow-hidden">
-                      <img src="assets/avatars/recruiter3.jpg" alt="Recruteur" class="fc-avatar-image w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/men/33.jpg'; this.onerror='';">
-                    </div>
-
-                  </div>
-                  
-                  <!-- Message avec positionnement adapté -->
-                  <div class="fc-message-wrapper fc-message-position-top">
-                    <div class="fc-message-container">
-                      <div class="fc-message-header">
-                        <div class="fc-message-icon" style="background-color: #0A66C2;">
-                          <i class="fab fa-linkedin-in text-white text-[9px]"></i>
-                        </div>
-                        <span class="fc-message-title">Opportunité</span>
-                      </div>
-                      <div class="fc-message-content">
-                        Mission de transformation digitale sur 12 mois.
-                      </div>
-                    </div>
-                    <div class="fc-message-arrow"></div>
-                  </div>
-                </div>
-                                <!-- Avatar SG en bas à droite (315°) -->
-                <div class="fc-orbital-item fc-orbital-level-2 absolute" style="left: calc(50% + 70px); top: calc(50% + 70px);">
-                  <div class="fc-avatar-wrapper fc-avatar-commercial">
-                    <div class="fc-avatar-container w-10 h-10 rounded-full border-2 border-blue-600 overflow-hidden">
-                      <img src="assets/avatars/recruiter1.jpg" alt="Recruteur" class="fc-avatar-image w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/women/23.jpg'; this.onerror='';">
-                    </div>
-
-                  </div>
-                  
-                  <!-- Message avec positionnement adapté -->
-                  <div class="fc-message-wrapper fc-message-position-right">
-                    <div class="fc-message-container">
-                      <div class="fc-message-header">
-                        <div class="fc-message-icon" style="background-color: #0A66C2;">
-                          <i class="fab fa-linkedin-in text-white text-[9px]"></i>
-                        </div>
-                        <span class="fc-message-title">Mission</span>
-                      </div>
-                      <div class="fc-message-content">
-                        Lead technique pour refonte application bancaire.
-                      </div>
-                    </div>
-                    <div class="fc-message-arrow"></div>
-                  </div>
-                </div>
+                <!-- Ligne de connexion droite -->
+                <div class="w-8 h-0.5 bg-gradient-to-l from-blue-500 to-blue-400"></div>
                 
-                <!-- Avatar AXA en bas à gauche (225°) -->
-                <div class="fc-orbital-item fc-orbital-level-2 absolute" style="left: calc(50% - 70px); top: calc(50% + 70px);">
-                  <div class="fc-avatar-wrapper fc-avatar-commercial">
-                    <div class="fc-avatar-container w-10 h-10 rounded-full border-2 border-blue-600 overflow-hidden">
-                      <img src="assets/avatars/recruiter2.jpg" alt="Recruteur" class="fc-avatar-image w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/men/85.jpg'; this.onerror='';">
-                    </div>
-
+                <!-- Recruteur droite -->
+                <div class="fc-recruiter-avatar ml-3 relative">
+                  <div class="w-10 h-10 rounded-full border-2 border-blue-400 overflow-hidden shadow-md">
+                    <img src="assets/avatars/recruiter2.jpg" alt="Recruteur" class="w-full h-full object-cover" onerror="this.src='https://randomuser.me/api/portraits/men/85.jpg'; this.onerror='';">
                   </div>
-                  
-                  <!-- Message avec positionnement adapté -->
-                  <div class="fc-message-wrapper fc-message-position-left">
-                    <div class="fc-message-container">
-                      <div class="fc-message-header">
-                        <div class="fc-message-icon" style="background-color: #0A66C2;">
-                          <i class="fab fa-linkedin-in text-white text-[9px]"></i>
-                        </div>
-                        <span class="fc-message-title">Mission</span>
-                      </div>
-                      <div class="fc-message-content">
-                        Mission de transformation digitale sur 12 mois.
-                      </div>
-                    </div>
-                    <div class="fc-message-arrow"></div>
+                  <!-- Badge LinkedIn -->
+                  <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-[#0A66C2] rounded-full flex items-center justify-center border border-white">
+                    <i class="fab fa-linkedin-in text-white text-[6px]"></i>
                   </div>
                 </div>
               </div>
-              
-              <!-- Autres avatars des commerciaux seront ajoutés ici un par un -->
-              
-              <!-- Indications de connexion -->
-              <div class="fc-connection-lines"></div>
-              </div>
+            </div>
+            
+            <!-- Statistique de connexion -->
+            <div class="text-center mb-2">
+              <p class="text-blue-100 text-sm leading-tight">FastConnect étend votre réseau avec <span class="text-blue-300 font-semibold">+250%</span> de recruteurs par rapport à LinkedIn</p>
+            </div>
+            
+          </div>
               <div class="fc-consultant-info text-white mb-6">
-                <h2 class="text-xl text-blue-200 mb-4">Accédez aux missions au-delà de votre cercle habituel</h2>
+                <h2 class="text-xl text-blue-200 mb-8">Accédez aux missions au-delà de votre cercle habituel</h2>
                 <p class="text-blue-100 mb-2 text-sm">FastConnect vous connecte aux recruteurs/commerciaux/apporteurs d'affaires qui recherchent vos compétences, même s'ils ne font pas partie de votre réseau existant.</p>
               </div>
             
@@ -240,17 +230,34 @@
           </div>
           
           <div class="fc-consultant-cta flex flex-col items-center w-full">
-            <button class="bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg px-6 py-3 shadow-lg text-lg mb-2 transition-all duration-200 w-full">
+            <button class="bg-gradient-to-r from-[#2EFFA1] to-[#25D789] hover:from-[#29EB95] hover:to-[#20C27D] text-black font-semibold rounded-full px-6 py-3.5 shadow-lg text-base mb-2 transition-all duration-300 w-full transform hover:scale-[1.02] flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
               Je publie ma disponibilité
             </button>
             <span class="text-xs text-blue-300">Gratuit et rapide • Plus de visibilité = plus d'opportunités</span>
+              
+              <!-- Preuve sociale - Compteur de connections -->
+              <div class="image-text-header flex items-center mt-3">
+                <div class="ic-header-wrapper flex relative">
+                  <img src="https://cdn.prod.website-files.com/66bc9b5ac1c7e7e42c268a48/66c468ec3623dc709d6d2cda_Checkbox-2.svg" loading="lazy" alt="" class="ic-36x36-header" style="border: 3px solid white; border-radius: 50%; width: 36px; height: 36px;">
+                  <img src="https://cdn.prod.website-files.com/66bc9b5ac1c7e7e42c268a48/66c468ec5a76dcda1d14780b_Checkbox-1.svg" loading="lazy" alt="" class="ic-36x36-header" style="border: 3px solid white; border-radius: 50%; width: 36px; height: 36px; margin-left: -10px;">
+                  <img src="https://cdn.prod.website-files.com/66bc9b5ac1c7e7e42c268a48/66c468ed9728c2071a64e754_Horizontal%20Container.svg" loading="lazy" alt="" class="ic-36x36-header" style="border: 3px solid white; border-radius: 50%; width: 36px; height: 36px; margin-left: -10px;">
+                  <img src="https://cdn.prod.website-files.com/66bc9b5ac1c7e7e42c268a48/66c468ecdeb4ab250d9458e6_Checkbox.svg" loading="lazy" alt="" class="ic-36x36-header" style="border: 3px solid white; border-radius: 50%; width: 36px; height: 36px; margin-left: -10px;">
+                </div>
+                <div class="max-w-260 ml-3" style="max-width: 280px;">
+                  <div class="text-white text-sm font-medium leading-tight">Déjà 1 625 000 connexions ce mois-ci</div>
+                </div>
+              </div>
           </div>
         </div>
       </div>
     </div>
     
     <!-- Colonne de droite (65%) - Fixe avec l'application principale -->
-    <div class="w-full lg:w-[65%] lg:ml-[35%] fixed right-0 bottom-24 h-[calc(100vh-220px-64px)] fc-app-column fc-right-column" style="background: transparent; top: 280px;">
+    <div class="w-full lg:w-[65%] lg:ml-[35%] fixed right-0 bottom-24 h-[calc(100vh-220px-64px)] fc-app-column fc-right-column" style="background: transparent; top: 380px;">
       <div class="h-full flex items-center justify-center p-4 lg:p-8 relative z-10 fc-app-wrapper">
         <!-- Intégration du composant app-fc-app avec la classe fc-app-container originale -->
         <div class="mx-auto bg-white rounded-lg shadow-xl overflow-hidden fc-app-container" style="max-width: 60rem; border-top-left-radius: 8px; border-top-right-radius: 8px; box-shadow: #f8fafc73 5px 5px 30px 0px;">
