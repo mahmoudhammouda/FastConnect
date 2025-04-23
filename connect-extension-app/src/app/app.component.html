@@ -1,4 +1,6 @@
 <div class="flex flex-col min-h-screen overflow-x-hidden bg-gradient-to-b from-blue-950 to-blue-900 fc-landing-container">
+  <!-- Conteneur principal limitant la largeur du site et le centrant -->
+  <div class="relative w-full max-w-6xl mx-auto">
   <!-- DÉBOGEUR STATIQUE -->
   <div id="header-debug-bar" class="fc-debug-bar" *ngIf="isDebugEnabled" style="position: fixed; top: 0; left: 0; right: 0; background-color: #2563eb; color: white; padding: 5px; text-align: center; font-size: 14px; z-index: 9999;">
     FastConnect v1.0 - Environnement: {{ debugInfo.environment }} - Base: {{ debugInfo.baseHref }}
@@ -28,6 +30,7 @@
 
   <!-- Header de la landing page (navbar fixe, style bleu marine) -->
   <header class="bg-[#1d2b5b] fixed top-0 left-0 right-0 z-40 h-16 fc-landing-header shadow-md">
+    <!-- Container limité en largeur pour centrer le header -->
     <div class="container mx-auto h-full flex items-center justify-between px-4 md:px-8 fc-header-container">
       <!-- Logo à gauche avec nom FastConnect et nouveau Logo SVG plus grand et plus clair -->
       <div class="flex items-center fc-logo-block">
@@ -140,7 +143,7 @@
   <!-- Layout à deux colonnes (section principale) -->
   <div class="flex flex-col lg:flex-row h-screen pt-24 fc-split-layout bg-gradient-to-b from-blue-950 to-blue-900">
     <!-- Colonne de gauche (35%) - Fixe avec messages de valeur -->
-    <div class="w-full lg:w-[35%] py-5 px-8 lg:px-10 fc-value-column fixed top-24 left-0 h-[calc(100vh-96px)] lg:visible invisible flex flex-col justify-center overflow-y-auto">
+    <div class="w-full lg:w-[35%] py-5 px-8 lg:px-10 fc-value-column fixed top-24 h-[calc(100vh-96px)] lg:visible invisible flex flex-col justify-center overflow-y-auto" style="left: calc(50% - 680px); max-width: 510px;">
       <div class="space-y-8 text-white fc-value-content">
         <!-- Section pour les consultants avec visualisation plus compacte et informative -->
         <div class="fc-consultant-section mb-3 flex flex-col items-center text-center">
@@ -257,7 +260,7 @@
     </div>
     
     <!-- Colonne de droite (65%) - Fixe avec l'application principale -->
-    <div class="w-full lg:w-[65%] lg:ml-[35%] fixed right-0 bottom-24 h-[calc(100vh-220px-64px)] fc-app-column fc-right-column" style="background: transparent; top: 380px;">
+    <div class="w-full lg:w-[65%] fixed bottom-24 h-[calc(100vh-220px-64px)] fc-app-column fc-right-column" style="background: transparent; top: 380px; left: calc(50% - 680px + 520px); max-width: 848px;">
       <div class="h-full flex items-center justify-center p-4 lg:p-8 relative z-10 fc-app-wrapper">
         <!-- Intégration du composant app-fc-app avec la classe fc-app-container originale -->
         <div class="mx-auto bg-white rounded-lg shadow-xl overflow-hidden fc-app-container" style="max-width: 60rem; border-top-left-radius: 8px; border-top-right-radius: 8px; box-shadow: #f8fafc73 5px 5px 30px 0px;">
@@ -318,4 +321,5 @@
     class="fixed inset-0 bg-black bg-opacity-50 z-40 fc-modal-backdrop"
     (click)="modalService.closeAllModals()"
   ></div>
+  </div> <!-- Fermeture du conteneur principal avec largeur limitée -->
 </div>
