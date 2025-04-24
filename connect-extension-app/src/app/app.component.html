@@ -144,6 +144,7 @@
   <div class="flex flex-col lg:flex-row h-screen pt-24 fc-split-layout bg-gradient-to-b from-blue-950 to-blue-900">
     <!-- Colonne de gauche (35%) - Fixe avec messages de valeur -->
     <div class="w-full lg:w-[35%] py-5 px-8 lg:px-10 fc-value-column fixed top-24 h-[calc(100vh-96px)] lg:visible invisible flex flex-col justify-center overflow-y-auto" style="left: calc(50% - 680px); max-width: 510px;">
+
       <div class="space-y-8 text-white fc-value-content">
         <!-- Section pour les consultants avec visualisation plus compacte et informative -->
         <div class="fc-consultant-section mb-3 flex flex-col items-center text-center">
@@ -332,4 +333,31 @@
     (click)="modalService.closeAllModals()"
   ></div>
   </div> <!-- Fermeture du conteneur principal avec largeur limitée -->
+  
+  <!-- Styles responsives pour gérer les différentes tailles d'écran -->
+  <style>
+    /* Ajuste l'espacement entre colonnes quand la largeur est entre 1224px et 1450px */
+    @media (min-width: 1224px) and (max-width: 1450px) {
+      .fc-value-column {
+        left: calc(50% - 600px) !important; /* Réduit la distance du centre */
+        max-width: 450px !important;       /* Réduit légèrement la largeur */
+      }
+      .fc-right-column {
+        left: calc(50% - 600px + 460px) !important; /* Ajuste la colonne droite en conséquence */
+        max-width: 750px !important;      /* Légèrement plus étroite */
+      }
+    }
+    
+    /* Mode intermédiaire en dessous de 1224px - colonne gauche masquée, droite optimisée */
+    @media (min-width: 992px) and (max-width: 1223px) {
+      .fc-value-column.lg\:visible {
+        display: none !important;         /* Cache complètement la colonne gauche */
+      }
+      .fc-right-column {
+        left: 50% !important;             /* Centre la colonne droite */
+        transform: translateX(-50%) !important;
+        max-width: 90% !important;        /* Utilise presque toute la largeur */
+      }
+    }
+  </style>
 </div>
