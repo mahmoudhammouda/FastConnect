@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, SimpleChanges } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
@@ -20,7 +20,7 @@ import { NavbarComponent } from '../navbar/navbar.component';
   templateUrl: './fc-app.component.html',
   styleUrl: './fc-app.component.css'
 })
-export class FcAppComponent implements OnInit {
+export class FcAppComponent implements OnInit, OnChanges {
   /**
    * Définit le contexte dans lequel le composant est utilisé
    * Valeurs possibles : 'landing-page', 'extension', 'standalone', 'embedded'
@@ -111,6 +111,19 @@ export class FcAppComponent implements OnInit {
     this.applyContextStyles();
     
     console.log(`FC-App component initialized in ${this.context} context with compactMode=${this.compactMode}`);
+  }
+
+  /**
+   * Détecte les changements des propriétés d'entrée
+   * @param changes Les changements détectés
+   */
+  ngOnChanges(changes: SimpleChanges): void {
+    // Vérifier si la propriété compactMode a changé
+    if (changes['compactMode']) {
+      // Appliquer les styles immédiatement quand compactMode change
+      setTimeout(() => this.applyContextStyles(), 0);
+      console.log('Mode compact changé :', this.compactMode);
+    }
   }
 
   /**
@@ -325,7 +338,7 @@ export class FcAppComponent implements OnInit {
       case 'landing-page':
         // Styles pour l'intégration dans une landing page
         container.style.margin = '0';
-        container.style.padding = this.compactMode ? '0.5rem' : '1rem';
+        container.style.padding = this.compactMode ? '0rem' : '1rem';
         break;
         
       case 'extension':
