@@ -29,8 +29,12 @@ export class AppComponent implements OnInit, OnDestroy {
   showFloatingDebug = false; // Le débogueur flottant est désactivé par défaut
   debugElement: HTMLElement | null = null;
   
+  // Référence à l'écouteur d'événement de redimensionnement
+  private resizeListener: (() => void) | null = null;
+  
   // Taille d'écran pour déterminer si on est en mobile ou desktop
   private mobileBreakpoint = 768;
+  private columnBreakpoint = 1224; // Breakpoint quand la colonne gauche disparaît
   
   // Variables pour les filtres dans le style LinkedIn
   searchText: string = '';
@@ -49,7 +53,9 @@ export class AppComponent implements OnInit, OnDestroy {
     apiUrl: '',
     routerUrl: '',
     isExtension: false,
-    appStartTime: ''
+    appStartTime: '',
+    userAgent: '',
+    loggedInUser: ''
   };
   
   // États pour les dropdowns de compétences
@@ -65,6 +71,19 @@ export class AppComponent implements OnInit, OnDestroy {
     { value: '1', label: 'Disponible prochainement' },
     { value: '2', label: 'Non disponible' }
   ];
+
+  // Propriété pour stocker le mode compact actuel
+  private _compactMode: boolean = false;
+  
+  // Méthode pour détecter si on doit activer le mode compact
+  isCompactMode(): boolean {
+    return this._compactMode;
+  }
+  
+  // Méthode pour mettre à jour l'état du mode compact
+  private updateCompactMode(): void {
+    this._compactMode = window.innerWidth < this.columnBreakpoint || this.debugInfo.isExtension;
+  }
 
   constructor(
     private router: Router,
@@ -98,14 +117,23 @@ export class AppComponent implements OnInit, OnDestroy {
     // Initialisation des informations de débogage
     this.debugInfo = {
       environment: environment.production ? 'Production' : 'Développement',
-      baseHref: document.baseURI,
+      baseHref: document.querySelector('base')?.getAttribute('href') || '/',
       location: window.location.href,
-      apiUrl: environment.apiUrl || '',
-      routerUrl: this.router.url,
-      isExtension: false,
-      appStartTime: new Date().toLocaleTimeString()
+      apiUrl: environment.apiUrl,
+      routerUrl: '',
+      isExtension: environment.isExtension,
+      appStartTime: new Date().toLocaleTimeString(),
+      userAgent: window.navigator.userAgent,
+      loggedInUser: ''
     };
     
+    // Initialiser le mode compact au démarrage
+    this.updateCompactMode();
+    
+    // Ajouter un écouteur d'événement pour les changements de taille de fenêtre
+    this.resizeListener = () => this.updateCompactMode();
+    window.addEventListener('resize', this.resizeListener);
+
     // Attendre que le DOM soit chargé puis positionner le système orbital
     setTimeout(() => {
       this.positionOrbitalSystem();
@@ -134,6 +162,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
+    // Nettoyage de l'écouteur d'événement de redimensionnement
+    if (this.resizeListener) {
+      window.removeEventListener('resize', this.resizeListener);
+      this.resizeListener = null;
+    }
     // Supprimer l'écouteur d'événement pour éviter les fuites de mémoire
     window.removeEventListener('resize', () => this.positionOrbitalSystem());
   }

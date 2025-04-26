@@ -128,7 +128,16 @@
           </div>
         </div>
 
-        <a href="#" class="bg-white text-[#1d2b5b] hover:bg-gray-100 px-5 py-2 rounded font-semibold transition-all duration-200 fc-nav-cta shadow-sm">Connexion</a>
+        <!-- Version desktop du bouton de connexion -->
+        <a href="#" class="hidden md:inline-block bg-white text-[#1d2b5b] hover:bg-gray-100 px-5 py-2 rounded font-semibold transition-all duration-200 fc-nav-cta shadow-sm">Connexion</a>
+        
+        <!-- Version mobile du bouton de connexion (icône uniquement) -->
+        <a href="#" class="md:hidden inline-flex bg-white text-[#1d2b5b] hover:bg-gray-100 p-2 rounded-full items-center justify-center w-9 h-9 transition-all duration-200 fc-nav-cta shadow-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </a>
         
         <!-- Menu déroulant pour les utilisateurs authentifiés -->
         <div 
@@ -303,8 +312,8 @@
     <div class="w-full lg:w-[65%] fixed bottom-24 h-[calc(100vh-220px-64px)] fc-app-column fc-right-column fc-consultants-container" style="background: transparent; top: 380px; left: calc(50% - 680px + 520px); max-width: 848px;">
       <div class="h-full flex items-center justify-center relative z-10 fc-app-wrapper">
         <!-- Intégration du composant app-fc-app avec la classe fc-app-container originale -->
-        <div class="mx-auto bg-white rounded-lg shadow-xl overflow-hidden fc-app-container fc-consultants-list-wrapper" style="max-width: 60rem; border-top-left-radius: 8px; border-top-right-radius: 8px; box-shadow: #f8fafc73 5px 5px 30px 0px;">
-          <app-fc-app [context]="'landing-page'" [compactMode]="false" class="fc-app-instance"></app-fc-app>
+        <div class="mx-auto bg-white shadow-xl overflow-hidden fc-app-container fc-consultants-list-wrapper" style="max-width: 60rem; border-top-left-radius: 8px; border-top-right-radius: 8px; box-shadow: #f8fafc73 5px 5px 30px 0px;">
+          <app-fc-app [context]="'landing-page'" [compactMode]="isCompactMode()" class="fc-app-instance"></app-fc-app>
         </div>
       </div>
     </div>
@@ -412,6 +421,8 @@
         width: 100% !important;
         max-width: 100% !important;
         border:unset;
+        border-top-left-radius: 0px!important;
+       border-top-right-radius: 0px!important;
       }
       
       /* Supprime le fond blanc en mode mobile */
