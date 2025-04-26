@@ -288,7 +288,7 @@
     
     <!-- Colonne de droite (65%) - Fixe avec l'application principale -->
     <div class="w-full lg:w-[65%] fixed bottom-24 h-[calc(100vh-220px-64px)] fc-app-column fc-right-column fc-consultants-container" style="background: transparent; top: 380px; left: calc(50% - 680px + 520px); max-width: 848px;">
-      <div class="h-full flex items-center justify-center lg:p-8 relative z-10 fc-app-wrapper">
+      <div class="h-full flex items-center justify-center relative z-10 fc-app-wrapper">
         <!-- Intégration du composant app-fc-app avec la classe fc-app-container originale -->
         <div class="mx-auto bg-white rounded-lg shadow-xl overflow-hidden fc-app-container fc-consultants-list-wrapper" style="max-width: 60rem; border-top-left-radius: 8px; border-top-right-radius: 8px; box-shadow: #f8fafc73 5px 5px 30px 0px;">
           <app-fc-app [context]="'landing-page'" [compactMode]="false" class="fc-app-instance"></app-fc-app>
@@ -375,7 +375,7 @@
     @media (max-width: 1223px) {
       .fc-app-column, .fc-right-column {
         position: fixed !important;
-        top: 6rem !important;
+        top: 4rem !important; /* 4rem = h-16, hauteur exacte du header */
         bottom: auto !important;
         right: auto !important;
         left: 50% !important;
@@ -386,15 +386,25 @@
         margin-left: 0 !important;
         transform: translateX(-50%) !important;
       }
-      
+      .fc-split-layout {
+        height: auto !important;
+        padding-top: 4rem !important; /* Aligne avec le header */
+      }
       
       .fc-value-column.lg\:visible, .fc-left-column.lg\:visible {
         display: none !important;         /* Cache complètement la colonne gauche */
       }
       /* Assure que la colonne des consultants utilise toute la largeur en mode mobile */
-      .fc-app-container {
+      .fc-app-container, .fc-consultants-list-wrapper {
         width: 100% !important;
         max-width: 100% !important;
+        border:unset;
+      }
+      
+      /* Supprime le fond blanc en mode mobile */
+      .fc-consultants-list-wrapper {
+        background-color: transparent !important;
+        box-shadow: none !important;
       }
     }
   </style>
