@@ -141,7 +141,7 @@
   </header>
   
   <!-- Layout à deux colonnes (section principale) -->
-  <div class="flex flex-col lg:flex-row h-screen pt-24 fc-split-layout bg-gradient-to-b from-blue-950 to-blue-900">
+  <div class="flex flex-col lg:flex-row h-screen pt-24 fc-split-layout fc-main-container bg-gradient-to-b from-blue-950 to-blue-900">
    
     <!-- Layout left sun element -->
     <div class="elementor-element elementor-element-8e2d365 e-con-full home-hero-bg-left e-flex e-con e-child" data-id="8e2d365" data-element_type="container" style="
@@ -172,7 +172,7 @@
 
 
     <!-- Colonne de gauche (35%) - Fixe avec messages de valeur -->
-    <div class="w-full lg:w-[35%] py-5 px-8 lg:px-10 fc-value-column fixed top-24 h-[calc(100vh-96px)] lg:visible invisible flex flex-col justify-center overflow-y-auto" style="left: calc(50% - 680px); max-width: 510px;">
+    <div class="w-full lg:w-[35%] py-5 px-8 lg:px-10 fc-value-column fc-left-column fixed top-24 h-[calc(100vh-96px)] lg:visible invisible flex flex-col justify-center overflow-y-auto" style="left: calc(50% - 680px); max-width: 510px;overflow: hidden;">
 
       <div class="space-y-8 text-white fc-value-content">
         <!-- Section pour les consultants avec visualisation plus compacte et informative -->
@@ -290,31 +290,28 @@
     </div>
     
     <!-- Colonne de droite (65%) - Fixe avec l'application principale -->
-    <div class="w-full lg:w-[65%] fixed bottom-24 h-[calc(100vh-220px-64px)] fc-app-column fc-right-column" style="background: transparent; top: 380px; left: calc(50% - 680px + 520px); max-width: 848px;">
+    <div class="w-full lg:w-[65%] fixed bottom-24 h-[calc(100vh-220px-64px)] fc-app-column fc-right-column fc-consultants-container" style="background: transparent; top: 380px; left: calc(50% - 680px + 520px); max-width: 848px;">
       <div class="h-full flex items-center justify-center p-4 lg:p-8 relative z-10 fc-app-wrapper">
         <!-- Intégration du composant app-fc-app avec la classe fc-app-container originale -->
-        <div class="mx-auto bg-white rounded-lg shadow-xl overflow-hidden fc-app-container" style="max-width: 60rem; border-top-left-radius: 8px; border-top-right-radius: 8px; box-shadow: #f8fafc73 5px 5px 30px 0px;">
+        <div class="mx-auto bg-white rounded-lg shadow-xl overflow-hidden fc-app-container fc-consultants-list-wrapper" style="max-width: 60rem; border-top-left-radius: 8px; border-top-right-radius: 8px; box-shadow: #f8fafc73 5px 5px 30px 0px;">
           <app-fc-app [context]="'landing-page'" [compactMode]="false" class="fc-app-instance"></app-fc-app>
         </div>
       </div>
     </div>
   </div>
   
-  <!-- Version mobile de la colonne de valeur (uniquement visible sur mobile) -->
-  <div class="lg:hidden block w-full mt-24 pt-4 px-4 pb-8 bg-blue-900 fc-mobile-value-content">
-    <div class="space-y-6 text-white">
-      <div class="fc-intro-section-mobile">
-        <h2 class="text-xl font-bold mb-2 text-blue-200 fc-intro-title-mobile">Consultants IT</h2>
-        <p class="text-sm mb-3 fc-intro-text-mobile">Faites-vous remarquer par les recruteurs en un clic !</p>
-      </div>
-
-      <!-- Conteneur vide pour l'espacement, le bouton a été déplacé -->
-      <div class="h-6"></div>
-    </div>
-  </div>
+ 
   
-  <!-- Bouton flottant "Je publie ma disponibilité" en mode mobile -->
-  <div class="lg:hidden fixed bottom-20 left-0 right-0 z-50 fc-mobile-cta-floating">
+  <!-- Bouton flottant "Je publie ma disponibilité" en mode mobile/responsive -->
+  <div class="fixed bottom-20 left-0 right-0 z-50 fc-mobile-cta-floating">
+    <!-- Style pour contrôler la visibilité du bouton flottant -->
+    <style>
+      @media (min-width: 1224px) {
+        .fc-mobile-cta-floating {
+          display: none !important;
+        }
+      }
+    </style>
     <div class="container mx-auto px-4">
       <button class="bg-gradient-to-r from-[#2EFFA1] to-[#25D789] hover:from-[#29EB95] hover:to-[#20C27D] text-black font-semibold rounded-full px-6 py-3.5 shadow-lg text-base w-full transform hover:scale-[1.02] flex items-center justify-center backdrop-blur-sm bg-opacity-90">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -367,7 +364,7 @@
   <style>
     /* Ajuste l'espacement entre colonnes quand la largeur est entre 1224px et 1450px */
     @media (min-width: 1224px) and (max-width: 1450px) {
-      .fc-value-column {
+      .fc-value-column, .fc-left-column {
         left: calc(50% - 600px) !important; /* Réduit la distance du centre */
         max-width: 450px !important;       /* Réduit légèrement la largeur */
       }
@@ -379,14 +376,18 @@
     
     /* Mode responsive en dessous de 1224px - disposition fluide */
     @media (max-width: 1223px) {
-      .fc-app-column {
-        position: relative !important;
-        top: auto !important;
+      .fc-app-column, .fc-right-column {
+        position: fixed !important;
+        top: 6rem !important;
+        bottom: auto !important;
         right: auto !important;
+        left: 50% !important;
         height: auto !important;
         min-height: 600px;
         width: 100% !important;
+        max-width: 90% !important;
         margin-left: 0 !important;
+        transform: translateX(-50%) !important;
       }
       
       .fc-split-layout {
@@ -394,14 +395,13 @@
         padding-top: 6rem !important;
       }
       
-      .fc-value-column.lg\:visible {
+      .fc-value-column.lg\:visible, .fc-left-column.lg\:visible {
         display: none !important;         /* Cache complètement la colonne gauche */
       }
-      
-      .fc-right-column {
-        left: auto !important;
-        transform: none !important;
-        max-width: 100% !important;        /* Utilise toute la largeur */
+      /* Assure que la colonne des consultants utilise toute la largeur en mode mobile */
+      .fc-app-container {
+        width: 100% !important;
+        max-width: 100% !important;
       }
     }
   </style>
