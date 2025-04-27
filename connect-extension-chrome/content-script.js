@@ -73,9 +73,8 @@
         z-index: 9999;
         display: flex;
         flex-direction: column;
-        transform: translateX(420px);
+        transform: translateX(100%);
         transition: transform 0.5s ease-in-out;
-        resize: horizontal;
       }
       
       .fc-resize-handle {
@@ -94,7 +93,7 @@
       }
       
       .fc-sidebar.visible {
-        transform: translateX(0);
+        transform: translateX(0) !important;
       }
       
       /* Styles de l'en-tête */
@@ -178,12 +177,8 @@
     title.appendChild(titleImg);
     title.appendChild(titleText);
     
-    const closeButton = document.createElement('button');
-    closeButton.className = 'fc-close-button';
-    closeButton.textContent = '×';
-    
+    // Plus besoin du bouton de fermeture car le bouton FC sert maintenant à ouvrir/fermer
     header.appendChild(title);
-    header.appendChild(closeButton);
     
     // Créer l'iframe
     const iframe = document.createElement('iframe');
@@ -209,27 +204,29 @@
     
     shadowRoot.appendChild(sidebar);
     
-    return { toggleButton, sidebar, closeButton };
+    return { toggleButton, sidebar };
   }
   
   // Configuration des gestionnaires d'événements
   function setupEvents(elements) {
-    const { toggleButton, sidebar, closeButton } = elements;
+    const { toggleButton, sidebar } = elements;
     const resizeHandle = sidebar.querySelector('.fc-resize-handle');
     
-    // Fonction pour ouvrir le panneau
-    function openSidebar() {
-      sidebar.classList.add('visible');
-    }
-    
-    // Fonction pour fermer le panneau
-    function closeSidebar() {
-      sidebar.classList.remove('visible');
+    // Fonction pour basculer l'état du panneau (ouvrir/fermer)
+    function toggleSidebar() {
+      if (sidebar.classList.contains('visible')) {
+        // Fermer le panneau
+        sidebar.style.transform = `translateX(100%)`;
+        sidebar.classList.remove('visible');
+      } else {
+        // Ouvrir le panneau
+        sidebar.style.transform = 'translateX(0)';
+        sidebar.classList.add('visible');
+      }
     }
     
     // Ajouter les écouteurs d'événements
-    toggleButton.addEventListener('click', openSidebar);
-    closeButton.addEventListener('click', closeSidebar);
+    toggleButton.addEventListener('click', toggleSidebar);
     
     // Gestion du redimensionnement du panneau
     let isResizing = false;
@@ -268,7 +265,7 @@
     // Gestionnaire d'événement pour la touche Échap
     document.addEventListener('keydown', function(event) {
       if (event.key === 'Escape' && sidebar.classList.contains('visible')) {
-        closeSidebar();
+        toggleSidebar();
       }
     });
   }
