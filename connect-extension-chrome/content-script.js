@@ -25,25 +25,27 @@
     style.textContent = `
       /* Styles du bouton toggle */
       .fc-toggle-button {
-        position: fixed;
-        right: 20px;
-        top: 100px;
-        width: 40px;
-        height: 40px;
-        background-color: white;
-        border-radius: 50%;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        position: absolute;
+        left: -44px;
+        top: 110px;
         z-index: 9998;
         display: flex;
-        align-items: center;
         justify-content: center;
         cursor: pointer;
-        transition: all 0.3s ease;
+        background: #0d223a;
+        border-radius: 15px 0px 0px 15px;
+        padding: 10px 12px;
+        align-items: center;
+        opacity: 1;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        transition: opacity 0.3s ease;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
       }
       
       .fc-toggle-button:hover {
-        transform: scale(1.1);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        opacity: 0.9;
       }
       
       .fc-toggle-button.hidden {
@@ -70,7 +72,7 @@
         display: flex;
         flex-direction: column;
         transform: translateX(420px);
-        transition: transform 0.3s ease;
+        transition: transform 0.5s ease-in-out;
       }
       
       .fc-sidebar.visible {
@@ -131,11 +133,7 @@
     // Créer le bouton toggle
     const toggleButton = document.createElement('div');
     toggleButton.className = 'fc-toggle-button';
-    
-    const toggleImg = document.createElement('img');
-    toggleImg.src = chrome.runtime.getURL('icon.png');
-    toggleImg.alt = 'FastConnect';
-    toggleButton.appendChild(toggleImg);
+    toggleButton.textContent = 'FC';
     
     // Créer le panneau latéral
     const sidebar = document.createElement('div');
@@ -170,11 +168,13 @@
     iframe.className = 'fc-iframe';
     iframe.src = chrome.runtime.getURL('sidebar.html');
     
+    // Ajouter le bouton toggle au panneau latéral
+    sidebar.appendChild(toggleButton);
+    
     // Assembler tous les éléments
     sidebar.appendChild(header);
     sidebar.appendChild(iframe);
     
-    shadowRoot.appendChild(toggleButton);
     shadowRoot.appendChild(sidebar);
     
     return { toggleButton, sidebar, closeButton };
@@ -187,13 +187,11 @@
     // Fonction pour ouvrir le panneau
     function openSidebar() {
       sidebar.classList.add('visible');
-      toggleButton.classList.add('hidden');
     }
     
     // Fonction pour fermer le panneau
     function closeSidebar() {
       sidebar.classList.remove('visible');
-      toggleButton.classList.remove('hidden');
     }
     
     // Ajouter les écouteurs d'événements
