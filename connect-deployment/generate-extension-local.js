@@ -221,6 +221,14 @@ function generateExtension() {
             logMessage('✅ background.js copié', 'green');
         }
         
+        // Copier le content-script.js
+        const contentScriptSrc = path.join(config.extensionDir, 'content-script.js');
+        if (fs.existsSync(contentScriptSrc)) {
+            const contentScriptDest = path.join(config.outputDir, 'content-script.js');
+            fs.copyFileSync(contentScriptSrc, contentScriptDest);
+            logMessage('✅ content-script.js copié', 'green');
+        }
+        
         // 4. Copier les fichiers de build Angular
         logMessage('Étape 4: Copie des fichiers de build...', 'yellow');
         copyFileOrDirectory(config.buildOutputDir, config.outputDir);
