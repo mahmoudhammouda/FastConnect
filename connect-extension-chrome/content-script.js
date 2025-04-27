@@ -65,6 +65,8 @@
         top: 0;
         right: 0;
         width: 400px;
+        min-width: 300px;
+        max-width: 800px;
         height: 100vh;
         background-color: white;
         box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
@@ -73,6 +75,22 @@
         flex-direction: column;
         transform: translateX(420px);
         transition: transform 0.5s ease-in-out;
+        resize: horizontal;
+      }
+      
+      .fc-resize-handle {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 6px;
+        height: 100%;
+        cursor: ew-resize;
+        background-color: transparent;
+        z-index: 10000;
+      }
+      
+      .fc-resize-handle:hover {
+        background-color: rgba(0, 0, 0, 0.1);
       }
       
       .fc-sidebar.visible {
@@ -139,6 +157,10 @@
     const sidebar = document.createElement('div');
     sidebar.className = 'fc-sidebar';
     
+    // Créer la poignée de redimensionnement
+    const resizeHandle = document.createElement('div');
+    resizeHandle.className = 'fc-resize-handle';
+    
     // Créer l'en-tête
     const header = document.createElement('div');
     header.className = 'fc-sidebar-header';
@@ -167,13 +189,23 @@
     const iframe = document.createElement('iframe');
     iframe.className = 'fc-iframe';
     iframe.src = chrome.runtime.getURL('sidebar.html');
+    iframe.style.width = '100%'; // S'assurer que l'iframe s'adapte au redimensionnement
     
     // Ajouter le bouton toggle au panneau latéral
     sidebar.appendChild(toggleButton);
     
+    // Ajouter la poignée de redimensionnement
+    sidebar.appendChild(resizeHandle);
+    
     // Assembler tous les éléments
     sidebar.appendChild(header);
     sidebar.appendChild(iframe);
+    
+    // Restaurer la largeur sauvegardée si elle existe
+    const savedWidth = localStorage.getItem('fcSidebarWidth');
+    if (savedWidth) {
+      sidebar.style.width = savedWidth + 'px';
+    }
     
     shadowRoot.appendChild(sidebar);
     
@@ -183,6 +215,7 @@
   // Configuration des gestionnaires d'événements
   function setupEvents(elements) {
     const { toggleButton, sidebar, closeButton } = elements;
+    const resizeHandle = sidebar.querySelector('.fc-resize-handle');
     
     // Fonction pour ouvrir le panneau
     function openSidebar() {
@@ -197,6 +230,40 @@
     // Ajouter les écouteurs d'événements
     toggleButton.addEventListener('click', openSidebar);
     closeButton.addEventListener('click', closeSidebar);
+    
+    // Gestion du redimensionnement du panneau
+    let isResizing = false;
+    let startX, startWidth;
+    
+    resizeHandle.addEventListener('mousedown', function(e) {
+      isResizing = true;
+      startX = e.clientX;
+      startWidth = parseInt(getComputedStyle(sidebar).width, 10);
+      
+      document.addEventListener('mousemove', resizePanel);
+      document.addEventListener('mouseup', stopResize);
+      e.preventDefault();
+    });
+    
+    function resizePanel(e) {
+      if (!isResizing) return;
+      
+      // Calculer la nouvelle largeur (noter que nous déplaçons dans la direction opposée, donc on soustrait)
+      const newWidth = startWidth - (e.clientX - startX);
+      
+      // Appliquer des limites min/max
+      if (newWidth >= 300 && newWidth <= 800) {
+        sidebar.style.width = newWidth + 'px';
+        // Sauvegarder la largeur pour qu'elle persiste
+        localStorage.setItem('fcSidebarWidth', newWidth);
+      }
+    }
+    
+    function stopResize() {
+      isResizing = false;
+      document.removeEventListener('mousemove', resizePanel);
+      document.removeEventListener('mouseup', stopResize);
+    }
     
     // Gestionnaire d'événement pour la touche Échap
     document.addEventListener('keydown', function(event) {
