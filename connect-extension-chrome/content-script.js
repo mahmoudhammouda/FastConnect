@@ -26,7 +26,7 @@
       /* Styles du bouton toggle */
       .fc-toggle-button {
         position: absolute;
-        left: -44px;
+        left: -46px;
         top: 110px;
         z-index: 9998;
         display: flex;
@@ -40,8 +40,34 @@
         color: white;
         font-weight: bold;
         font-size: 18px;
-        transition: opacity 0.3s ease;
+        transition: all 0.3s ease;
         box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+      }
+      
+      /* Styles pour la notification */
+      .fc-notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: #ff4757;
+        color: white;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        font-size: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        border: 1px solid white;
+        opacity: 0;
+        transform: scale(0);
+        transition: all 0.3s ease;
+      }
+      
+      .fc-notification-badge.visible {
+        opacity: 1;
+        transform: scale(1);
       }
       
       .fc-toggle-button:hover {
@@ -152,6 +178,12 @@
     toggleButton.className = 'fc-toggle-button';
     toggleButton.textContent = 'FC';
     
+    // Créer le badge de notification
+    const notificationBadge = document.createElement('div');
+    notificationBadge.className = 'fc-notification-badge';
+    notificationBadge.textContent = '0';
+    toggleButton.appendChild(notificationBadge);
+    
     // Créer le panneau latéral
     const sidebar = document.createElement('div');
     sidebar.className = 'fc-sidebar';
@@ -204,12 +236,12 @@
     
     shadowRoot.appendChild(sidebar);
     
-    return { toggleButton, sidebar };
+    return { toggleButton, sidebar, notificationBadge };
   }
   
   // Configuration des gestionnaires d'événements
   function setupEvents(elements) {
-    const { toggleButton, sidebar } = elements;
+    const { toggleButton, sidebar, notificationBadge } = elements;
     const resizeHandle = sidebar.querySelector('.fc-resize-handle');
     
     // Fonction pour basculer l'état du panneau (ouvrir/fermer)
@@ -282,6 +314,18 @@
     
     // Configurer les événements
     setupEvents(elements);
+    
+    // Fonction pour mettre à jour le compteur de notifications (exemple)
+    window.updateFCNotificationCount = function(count) {
+      const badge = elements.notificationBadge;
+      if (count > 0) {
+        badge.textContent = count > 99 ? '99+' : count.toString();
+        badge.classList.add('visible');
+      } else {
+        badge.textContent = '0';
+        badge.classList.remove('visible');
+      }
+    };
     
     console.log('FastConnect: Extension initialisée avec succès');
   }
