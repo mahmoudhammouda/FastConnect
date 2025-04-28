@@ -234,7 +234,7 @@ Le modèle de données central est le **Consultant** avec les propriétés suiva
    ```
 
 4. **CORS et sécurité**
-   - La politique de sécurité du contenu (CSP) du manifest.json est configurée pour permettre les scripts inline et les connexions externes
+   - La politique de sécurité du contenu (CSP) du `manifest.json` interdit désormais les scripts inline (`'unsafe-inline'`) afin de respecter les exigences du Chrome Web Store, tout en autorisant `'self'` et `'wasm-unsafe-eval'` pour permettre l'exécution des bundles Angular et WebAssembly.
    - CORS doit être configuré dans le backend pour permettre les requêtes depuis l'extension
 
 5. **Développement cross-platform**
