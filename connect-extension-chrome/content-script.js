@@ -1,6 +1,9 @@
 // FastConnect LinkedIn Sidebar Integration avec Shadow DOM
 
 (function() {
+  // Variable pour suivre si l'extension a déjà été initialisée
+  let isInitialized = false;
+  
   // Si nous ne sommes pas sur LinkedIn, ne rien faire
   if (!window.location.hostname.includes('linkedin.com')) {
     return;
@@ -473,6 +476,14 @@
   
   // Initialisation de l'extension
   function initialize() {
+    // Vérifier si l'extension est déjà initialisée
+    if (isInitialized || document.getElementById('fc-shadow-host')) {
+      console.log('FastConnect: Extension déjà initialisée, ignorant l\'appel');
+      return;
+    }
+    
+    // Marquer l'extension comme initialisée
+    isInitialized = true;
     console.log('FastConnect: Initialisation de l\'extension...');
     
     // Créer le shadow DOM
@@ -501,11 +512,17 @@
   
   // Démarrer l'initialisation lorsque le DOM est prêt
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initialize);
+    document.addEventListener('DOMContentLoaded', initialize, { once: true });
   } else {
     initialize();
   }
   
   // Sécurité supplémentaire pour s'assurer que l'extension est initialisée
-  setTimeout(initialize, 2000);
+  // S'exécute une seule fois et seulement si l'extension n'est pas déjà initialisée
+  setTimeout(function() {
+    if (!isInitialized && !document.getElementById('fc-shadow-host')) {
+      console.log('FastConnect: Tentative d\'initialisation tardive');
+      initialize();
+    }
+  }, 2000);
 })();
