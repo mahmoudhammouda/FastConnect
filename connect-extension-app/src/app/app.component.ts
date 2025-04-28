@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService } from './services/auth.service';
@@ -10,6 +10,8 @@ import { ConsultantAvailabilityService } from './services/consultant-availabilit
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FcAppComponent } from './components/fc-app/fc-app.component';
+import { DOCUMENT } from '@angular/common';
+import { PLATFORM_ID } from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -85,12 +87,18 @@ export class AppComponent implements OnInit, OnDestroy {
     this._compactMode = window.innerWidth < this.columnBreakpoint || this.debugInfo.isExtension;
   }
 
+  // Propriétés pour la landing page modernisée
+  userProfile: 'consultant' | 'recruiter' = 'consultant';
+  showActionDropdown = false;
+
   constructor(
     private router: Router,
     private authService: AuthService,
-    private consultantService: ConsultantService,
     public modalService: ModalService,
-    private availabilityService: ConsultantAvailabilityService
+    private consultantService: ConsultantService,
+    private availabilityService: ConsultantAvailabilityService,
+    @Inject(DOCUMENT) private document: Document,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     console.log('🔍 FastConnect initialisation:', this.debugInfo);
     
@@ -110,6 +118,12 @@ export class AppComponent implements OnInit, OnDestroy {
     const savedFloatingDebugState = localStorage.getItem('fastconnect-floating-debug');
     if (savedFloatingDebugState !== null) {
       this.showFloatingDebug = savedFloatingDebugState === 'true';
+    }
+    
+    // Initialiser le profil utilisateur basé sur le localStorage s'il existe
+    const savedProfile = localStorage.getItem('fc-user-profile');
+    if (savedProfile === 'consultant' || savedProfile === 'recruiter') {
+      this.userProfile = savedProfile;
     }
   }
 
@@ -196,6 +210,71 @@ export class AppComponent implements OnInit, OnDestroy {
   }
   
   /**
+   * Gère l'action principale basée sur le profil utilisateur
+   * @param profileOverride - Profil utilisateur à utiliser (optionnel)
+   */
+  handleMainAction(profileOverride?: 'consultant' | 'recruiter'): void {
+    // Si un profil est spécifié, on l'utilise temporairement pour cette action
+    const profile = profileOverride || this.userProfile;
+    
+    if (profile === 'consultant') {
+      // Logique pour publier une disponibilité
+      console.log('Action: Publier disponibilité');
+      this.modalService.openLoginModal();
+    } else {
+      // Logique pour publier une mission
+      console.log('Action: Publier mission');
+      this.modalService.openLoginModal();
+    }
+    
+    // Fermer le dropdown après l'action
+    this.showActionDropdown = false;
+  }
+  
+  /**
+   * Bascule entre le profil consultant et recruteur
+   * Met à jour les boutons d'action (desktop et mobile/extension)
+   */
+  toggleUserAction(): void {
+    // Basculer entre consultant et recruteur
+    this.userProfile = this.userProfile === 'consultant' ? 'recruiter' : 'consultant';
+    
+    // Sauvegarder la préférence dans localStorage pour persistance
+    localStorage.setItem('fc-user-profile', this.userProfile);
+    
+    // Animation de transition pour le bouton desktop
+    const desktopActionButton = document.querySelector('.fc-action-button');
+    if (desktopActionButton) {
+      desktopActionButton.classList.add('scale-105');
+      setTimeout(() => {
+        desktopActionButton.classList.remove('scale-105');
+      }, 300);
+    }
+    
+    // Animation de transition pour le bouton mobile/extension
+    const mobileActionButton = document.querySelector('.fc-mobile-action-button');
+    if (mobileActionButton) {
+      mobileActionButton.classList.add('scale-105');
+      setTimeout(() => {
+        mobileActionButton.classList.remove('scale-105');
+      }, 300);
+    }
+    
+    // Mise à jour des tooltips des boutons de bascule
+    const desktopToggleButton = document.querySelector('.fc-action-toggle-button');
+    const mobileToggleButton = document.querySelector('.fc-mobile-toggle-button');
+    
+    const newTooltip = this.userProfile === 'consultant' 
+      ? 'Changer pour publier une mission' 
+      : 'Changer pour publier une disponibilité';
+      
+    if (desktopToggleButton) desktopToggleButton.setAttribute('title', newTooltip);
+    if (mobileToggleButton) mobileToggleButton.setAttribute('title', newTooltip);
+  }
+  
+  // La méthode selectAction n'est plus nécessaire car nous utilisons toggleUserAction
+  
+  /**
    * Positionne le système orbital au coin supérieur gauche du composant fc-app-container
    */
   positionOrbitalSystem(): void {
@@ -231,7 +310,7 @@ export class AppComponent implements OnInit, OnDestroy {
     // Ajouter un écouteur d'événement au document pour fermer le menu quand on clique ailleurs
     if (this.menuOpen) {
       setTimeout(() => {
-        document.addEventListener('click', this.closeMenu);
+        window.document.addEventListener('click', this.closeMenu);
       }, 0);
     }
   }
@@ -241,7 +320,7 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   closeMenu = (event: MouseEvent) => {
     // Vérifier si le clic est dans le menu
-    const profileMenu = document.querySelector('.profile-menu');
+    const profileMenu = window.document.querySelector('.profile-menu');
     
     // Ne pas fermer si on a cliqué dans le menu
     if (profileMenu && profileMenu.contains(event.target as Node)) {
@@ -249,7 +328,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
     
     this.menuOpen = false;
-    document.removeEventListener('click', this.closeMenu);
+    window.document.removeEventListener('click', this.closeMenu);
   }
 
   openLoginModal(): void {
@@ -319,7 +398,7 @@ export class AppComponent implements OnInit, OnDestroy {
     // Ajouter un écouteur d'événement au document pour fermer le dropdown quand on clique ailleurs
     if (this.skillsDropdownOpen) {
       setTimeout(() => {
-        document.addEventListener('click', this.closeSkillsDropdowns);
+        window.document.addEventListener('click', this.closeSkillsDropdowns);
       }, 0);
     }
   }
@@ -335,7 +414,7 @@ export class AppComponent implements OnInit, OnDestroy {
     // Ajouter un écouteur d'événement au document pour fermer le dropdown quand on clique ailleurs
     if (this.mobileSkillsDropdownOpen) {
       setTimeout(() => {
-        document.addEventListener('click', this.closeSkillsDropdowns);
+        window.document.addEventListener('click', this.closeSkillsDropdowns);
       }, 0);
     }
   }
@@ -345,8 +424,8 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   closeSkillsDropdowns = (event: MouseEvent) => {
     // Vérifier si le clic est dans un des dropdowns
-    const desktopDropdown = document.querySelector('.skill-dropdown-desktop');
-    const mobileDropdown = document.querySelector('.skill-dropdown-mobile');
+    const desktopDropdown = window.document.querySelector('.skill-dropdown-desktop');
+    const mobileDropdown = window.document.querySelector('.skill-dropdown-mobile');
     
     // Ne pas fermer si on a cliqué dans le dropdown
     if ((desktopDropdown && desktopDropdown.contains(event.target as Node)) || 
@@ -356,7 +435,7 @@ export class AppComponent implements OnInit, OnDestroy {
     
     this.skillsDropdownOpen = false;
     this.mobileSkillsDropdownOpen = false;
-    document.removeEventListener('click', this.closeSkillsDropdowns);
+    window.document.removeEventListener('click', this.closeSkillsDropdowns);
   }
 
   /**

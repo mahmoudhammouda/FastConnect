@@ -130,23 +130,32 @@
         align-items: center;
         justify-content: center;
         background-color: rgba(0, 0, 0, 0.02);
+        transition: background-color 0.2s ease;
       }
       
       .fc-resize-handle:hover {
-        background-color: rgba(0, 0, 0, 0.08);
+        background-color: rgba(13, 34, 58, 0.1);
       }
       
       .fc-resize-handle::after {
         content: '';
         display: block;
-        width: 4px;
+        width: 6px;
         height: 150px;
-        background-color: #aaa;
+        background-color: #0d223a;
         border-radius: 4px;
         position: relative;
         left: 0;
-        background-image: linear-gradient(to bottom, #aaa 2px, transparent 2px);
+        box-shadow: 0 0 4px rgba(0,0,0,0.2);
+        transition: all 0.2s ease;
+        background-image: linear-gradient(to bottom, #0d223a 2px, rgba(13, 34, 58, 0.6) 2px);
         background-size: 100% 8px;
+      }
+      
+      .fc-resize-handle:hover::after {
+        width: 8px;
+        background-color: #0d223a;
+        box-shadow: 0 0 6px rgba(0,0,0,0.3);
       }
       
       .fc-sidebar.visible {
@@ -307,6 +316,7 @@
           document.body.style.top = '';
           document.body.style.width = '';
           document.body.style.overflowY = '';
+          document.body.style.touchAction = '';
           
           // Désactiver l'overlay
           scrollOverlay.style.display = 'none';
@@ -331,8 +341,14 @@
       // Si le panneau est visible, empêcher la propagation de l'événement
       if (sidebar.classList.contains('visible')) {
         event.stopPropagation();
+        // Empêcher également le comportement par défaut
+        if (event.target.closest('.fc-iframe-container')) {
+          // Ne pas bloquer le défilement à l'intérieur de l'iframe
+          return;
+        }
+        event.preventDefault();
       }
-    }, { capture: true });
+    }, { capture: true, passive: false });
     
     // Créer une couche d'overlay pour le scroll au démarrage
     let linkedinPageWidth = null;
@@ -375,6 +391,17 @@
     
     calculateScrollbarWidth();
     
+    // Ajouter un léger effet visuel au bouton FC lors du survol
+    toggleButton.addEventListener('mouseenter', function() {
+      if (!sidebar.classList.contains('visible')) {
+        toggleButton.style.transform = 'scale(1.05)';
+      }
+    });
+    
+    toggleButton.addEventListener('mouseleave', function() {
+      toggleButton.style.transform = '';
+    });
+    
     // Lorsqu'on entre dans le panneau, bloquer le défilement sans faire disparaitre la barre
     sidebar.addEventListener('mouseenter', function() {
       if (sidebar.classList.contains('visible')) {
@@ -385,7 +412,8 @@
         document.body.style.position = 'fixed';
         document.body.style.top = `-${scrollY}px`;
         document.body.style.width = '100%';
-        document.body.style.overflowY = 'scroll'; // Force la barre de défilement à rester visible
+        document.body.style.overflowY = 'scroll';
+        document.body.style.touchAction = 'none'; // Désactiver aussi le scrolling tactile // Force la barre de défilement à rester visible
         
         // Activer l'overlay pour empêcher l'interaction avec la barre de défilement
         scrollOverlay.style.display = 'block';
@@ -445,6 +473,12 @@
       // Appliquer des limites min/max
       if (newWidth >= 300 && newWidth <= 800) {
         sidebar.style.width = newWidth + 'px';
+        
+        // Mise à jour visuelle en temps réel pour une meilleure UX
+        const resizeHandle = sidebar.querySelector('.fc-resize-handle');
+        if (resizeHandle) {
+          resizeHandle.style.opacity = '1';
+        }
       }
     }
     
@@ -474,16 +508,23 @@
     });
   }
   
+  // Vérifier si l'extension est déjà initialisée avec un identifiant unique
+  const FC_INIT_ID = 'fc-initialized-' + document.location.href;
+  
   // Initialisation de l'extension
   function initialize() {
-    // Vérifier si l'extension est déjà initialisée
+    // Effacer le sessionStorage au démarrage pour éviter les problèmes de réinitialisation
+    sessionStorage.removeItem(FC_INIT_ID);
+    
+    // Vérifier si l'extension est déjà initialisée uniquement avec les méthodes fiables
     if (isInitialized || document.getElementById('fc-shadow-host')) {
       console.log('FastConnect: Extension déjà initialisée, ignorant l\'appel');
       return;
     }
     
-    // Marquer l'extension comme initialisée
+    // Marquer l'extension comme initialisée (sans utiliser sessionStorage)
     isInitialized = true;
+    window[FC_INIT_ID] = true;
     console.log('FastConnect: Initialisation de l\'extension...');
     
     // Créer le shadow DOM
@@ -525,4 +566,17 @@
       initialize();
     }
   }, 2000);
+  
+  // Gestionnaire de mutation pour surveiller les changements de page AJAX sur LinkedIn
+  // Cela assure que notre extension reste active même si LinkedIn utilise une navigation par AJAX
+  const observer = new MutationObserver(function(mutations) {
+    // Vérifier si le panneau est toujours présent
+    if (!document.getElementById('fc-shadow-host') && !isInitialized) {
+      console.log('FastConnect: Réinitialisation après changement de page AJAX');
+      initialize();
+    }
+  });
+  
+  // Observer les changements dans le body
+  observer.observe(document.body, { childList: true, subtree: true });
 })();
