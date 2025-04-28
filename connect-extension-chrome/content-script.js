@@ -150,6 +150,14 @@
         transform: translateX(0) !important;
       }
       
+      /* Styles pour le conteneur de l'iframe avec scrolling isolé */
+      .fc-iframe-container {
+        width: 100%;
+        height: calc(100% - 44px);
+        overflow: hidden;
+        position: relative;
+      }
+      
       /* Styles de l'en-tête */
       .fc-sidebar-header {
         display: flex;
@@ -190,8 +198,9 @@
       /* Styles de l'iframe */
       .fc-iframe {
         width: 100%;
-        height: calc(100% - 44px);
+        height: 100%;
         border: none;
+        overflow: hidden;
       }
     `;
     
@@ -240,11 +249,17 @@
     // Plus besoin du bouton de fermeture car le bouton FC sert maintenant à ouvrir/fermer
     header.appendChild(title);
     
+    // Créer un conteneur pour l'iframe avec gestion isolée du scrolling
+    const iframeContainer = document.createElement('div');
+    iframeContainer.className = 'fc-iframe-container';
+    
     // Créer l'iframe
     const iframe = document.createElement('iframe');
     iframe.className = 'fc-iframe';
     iframe.src = chrome.runtime.getURL('sidebar.html');
     iframe.style.width = '100%'; // S'assurer que l'iframe s'adapte au redimensionnement
+    
+    iframeContainer.appendChild(iframe);
     
     // Ajouter le bouton toggle au panneau latéral
     sidebar.appendChild(toggleButton);
@@ -254,7 +269,7 @@
     
     // Assembler tous les éléments
     sidebar.appendChild(header);
-    sidebar.appendChild(iframe);
+    sidebar.appendChild(iframeContainer);
     
     // Restaurer la largeur sauvegardée si elle existe
     const savedWidth = localStorage.getItem('fcSidebarWidth');
@@ -278,6 +293,8 @@
         // Fermer le panneau
         sidebar.style.transform = `translateX(100%)`;
         sidebar.classList.remove('visible');
+        // Réactiver le défilement de la page si le panneau est fermé
+        document.body.style.overflow = '';
       } else {
         // Ouvrir le panneau
         sidebar.style.transform = 'translateX(0)';
@@ -287,6 +304,26 @@
     
     // Ajouter les écouteurs d'événements
     toggleButton.addEventListener('click', toggleSidebar);
+    
+    // Gestionnaire pour empêcher le défilement de la page LinkedIn quand la souris est sur le panneau
+    sidebar.addEventListener('wheel', function(event) {
+      // Si le panneau est visible, empêcher la propagation de l'événement
+      if (sidebar.classList.contains('visible')) {
+        event.stopPropagation();
+      }
+    }, { capture: true });
+    
+    // Lorsqu'on entre dans le panneau, bloquer le défilement de la page LinkedIn
+    sidebar.addEventListener('mouseenter', function() {
+      if (sidebar.classList.contains('visible')) {
+        document.body.style.overflow = 'hidden';
+      }
+    });
+    
+    // Lorsqu'on quitte le panneau, réactiver le défilement de la page LinkedIn
+    sidebar.addEventListener('mouseleave', function() {
+      document.body.style.overflow = '';
+    });
     
     // Gestion du redimensionnement du panneau
     let isResizing = false;
