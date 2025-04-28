@@ -293,8 +293,26 @@
         // Fermer le panneau
         sidebar.style.transform = `translateX(100%)`;
         sidebar.classList.remove('visible');
-        // Réactiver le défilement de la page si le panneau est fermé
-        document.body.style.overflow = '';
+        
+        // Réactiver le défilement normal de la page
+        if (linkedinPageWidth !== null) {
+          // Récupérer la position du scroll actuelle
+          const scrollY = parseInt(document.body.style.top || '0', 10) * -1;
+          
+          // Restaurer les propriétés CSS
+          document.body.style.position = '';
+          document.body.style.top = '';
+          document.body.style.width = '';
+          document.body.style.overflowY = '';
+          
+          // Désactiver l'overlay
+          scrollOverlay.style.display = 'none';
+          
+          // Restaurer la position du scroll
+          window.scrollTo(0, scrollY);
+          
+          linkedinPageWidth = null;
+        }
       } else {
         // Ouvrir le panneau
         sidebar.style.transform = 'translateX(0)';
@@ -313,16 +331,87 @@
       }
     }, { capture: true });
     
-    // Lorsqu'on entre dans le panneau, bloquer le défilement de la page LinkedIn
+    // Créer une couche d'overlay pour le scroll au démarrage
+    let linkedinPageWidth = null;
+    let scrollbarWidth = 0;
+    const scrollOverlay = document.createElement('div');
+    scrollOverlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 0px; /* Sera ajusté à la largeur de la barre de défilement */
+      background: transparent;
+      z-index: 9997;
+      pointer-events: none;
+      display: none;
+    `;
+    document.body.appendChild(scrollOverlay);
+    
+    // Calculer la largeur de la barre de défilement pour l'utiliser plus tard
+    function calculateScrollbarWidth() {
+      // Créer un élément avec défilement pour mesurer la barre
+      const outer = document.createElement('div');
+      outer.style.visibility = 'hidden';
+      outer.style.overflow = 'scroll';
+      document.body.appendChild(outer);
+      
+      // Créer un div intérieur
+      const inner = document.createElement('div');
+      outer.appendChild(inner);
+      
+      // Calculer la différence de largeur
+      scrollbarWidth = outer.offsetWidth - inner.offsetWidth;
+      
+      // Nettoyer
+      document.body.removeChild(outer);
+      
+      // Définir la largeur de l'overlay
+      scrollOverlay.style.width = scrollbarWidth + 'px';
+    }
+    
+    calculateScrollbarWidth();
+    
+    // Lorsqu'on entre dans le panneau, bloquer le défilement sans faire disparaitre la barre
     sidebar.addEventListener('mouseenter', function() {
       if (sidebar.classList.contains('visible')) {
-        document.body.style.overflow = 'hidden';
+        // Sauvegarder la position du scroll actuelle
+        const scrollY = window.scrollY;
+        
+        // Ajouter la classe qui empêche le défilement mais garde la place pour la barre
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${scrollY}px`;
+        document.body.style.width = '100%';
+        document.body.style.overflowY = 'scroll'; // Force la barre de défilement à rester visible
+        
+        // Activer l'overlay pour empêcher l'interaction avec la barre de défilement
+        scrollOverlay.style.display = 'block';
+        
+        // Stocker ces données pour les utiliser plus tard
+        linkedinPageWidth = document.body.offsetWidth;
       }
     });
     
     // Lorsqu'on quitte le panneau, réactiver le défilement de la page LinkedIn
     sidebar.addEventListener('mouseleave', function() {
-      document.body.style.overflow = '';
+      if (linkedinPageWidth !== null) {
+        // Récupérer la position du scroll
+        const scrollY = parseInt(document.body.style.top || '0', 10) * -1;
+        
+        // Restaurer les propriétés CSS
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflowY = '';
+        
+        // Désactiver l'overlay
+        scrollOverlay.style.display = 'none';
+        
+        // Restaurer la position du scroll
+        window.scrollTo(0, scrollY);
+        
+        linkedinPageWidth = null;
+      }
     });
     
     // Gestion du redimensionnement du panneau
