@@ -74,6 +74,18 @@
         opacity: 0.9;
       }
       
+      /* Overlay pour empêcher les interactions pendant le redimensionnement */
+      .fc-resize-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
+        z-index: 10001;
+        cursor: ew-resize;
+      }
+      
       .fc-toggle-button.hidden {
         opacity: 0;
         transform: translateX(100px);
@@ -105,17 +117,33 @@
       
       .fc-resize-handle {
         position: absolute;
-        left: 0;
+        left: -8px;
         top: 0;
-        width: 6px;
+        width: 20px;
         height: 100%;
         cursor: ew-resize;
-        background-color: transparent;
         z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(0, 0, 0, 0.02);
       }
       
       .fc-resize-handle:hover {
-        background-color: rgba(0, 0, 0, 0.1);
+        background-color: rgba(0, 0, 0, 0.08);
+      }
+      
+      .fc-resize-handle::after {
+        content: '';
+        display: block;
+        width: 4px;
+        height: 150px;
+        background-color: #aaa;
+        border-radius: 4px;
+        position: relative;
+        left: 0;
+        background-image: linear-gradient(to bottom, #aaa 2px, transparent 2px);
+        background-size: 100% 8px;
       }
       
       .fc-sidebar.visible {
@@ -269,6 +297,11 @@
       startX = e.clientX;
       startWidth = parseInt(getComputedStyle(sidebar).width, 10);
       
+      // Ajouter un overlay pour empêcher les interactions avec les éléments du panneau
+      const overlay = document.createElement('div');
+      overlay.className = 'fc-resize-overlay';
+      sidebar.appendChild(overlay);
+      
       document.addEventListener('mousemove', resizePanel);
       document.addEventListener('mouseup', stopResize);
       e.preventDefault();
@@ -283,15 +316,25 @@
       // Appliquer des limites min/max
       if (newWidth >= 300 && newWidth <= 800) {
         sidebar.style.width = newWidth + 'px';
-        // Sauvegarder la largeur pour qu'elle persiste
-        localStorage.setItem('fcSidebarWidth', newWidth);
       }
     }
     
     function stopResize() {
-      isResizing = false;
-      document.removeEventListener('mousemove', resizePanel);
-      document.removeEventListener('mouseup', stopResize);
+      if (isResizing) {
+        // Sauvegarder la largeur finale seulement lorsqu'on relâche la souris
+        const finalWidth = parseInt(getComputedStyle(sidebar).width, 10);
+        localStorage.setItem('fcSidebarWidth', finalWidth);
+        
+        // Supprimer l'overlay quand le redimensionnement est terminé
+        const overlay = sidebar.querySelector('.fc-resize-overlay');
+        if (overlay) {
+          sidebar.removeChild(overlay);
+        }
+        
+        isResizing = false;
+        document.removeEventListener('mousemove', resizePanel);
+        document.removeEventListener('mouseup', stopResize);
+      }
     }
     
     // Gestionnaire d'événement pour la touche Échap
