@@ -258,12 +258,12 @@
           </div>
           
           <!-- Sélecteur de profil utilisateur -->
-          <div class="fc-profile-selector mb-6 w-full">
-            <div class="flex bg-blue-800 bg-opacity-30 rounded-full p-1 mb-2">
+          <div class="fc-profile-selector fc-profile-tabs mb-6 w-full">
+            <div class="fc-profile-tabs-container flex bg-blue-800 bg-opacity-30 rounded-full p-1 mb-2">
               <button 
                 (click)="userProfile = 'consultant'" 
                 [ngClass]="userProfile === 'consultant' ? 'bg-blue-600 text-white' : 'text-blue-200 hover:text-white'"
-                class="flex-1 py-2 px-4 rounded-full text-sm font-medium transition-all duration-300 flex items-center justify-center">
+                class="fc-profile-tab fc-profile-tab-consultant flex-1 py-2 px-4 rounded-full text-sm font-medium transition-all duration-300 flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                   <circle cx="12" cy="7" r="4"></circle>
@@ -273,7 +273,7 @@
               <button 
                 (click)="userProfile = 'recruiter'" 
                 [ngClass]="userProfile === 'recruiter' ? 'bg-blue-600 text-white' : 'text-blue-200 hover:text-white'"
-                class="flex-1 py-2 px-4 rounded-full text-sm font-medium transition-all duration-300 flex items-center justify-center">
+                class="fc-profile-tab fc-profile-tab-recruiter flex-1 py-2 px-4 rounded-full text-sm font-medium transition-all duration-300 flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                   <circle cx="8.5" cy="7" r="4"></circle>
@@ -286,10 +286,10 @@
           </div>
             
           <!-- Étapes pour consultants/candidats - visible si profil consultant sélectionné -->
-          <div *ngIf="userProfile === 'consultant'" class="fc-consultant-steps bg-blue-800 bg-opacity-30 rounded-xl p-5 flex flex-col items-start text-left mb-8 w-full">
+          <div *ngIf="userProfile === 'consultant'" class="fc-steps fc-consultant-steps bg-blue-800 bg-opacity-30 rounded-xl p-5 flex flex-col items-start text-left mb-8 w-full">
             <ol class="space-y-4 text-blue-100">
               <li class="flex items-center">
-                <span class="flex-shrink-0 h-7 w-7 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center mr-3 font-semibold">1</span>
+                <span class="fc-step-number fc-step-consultant-number flex-shrink-0 h-7 w-7 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center mr-3 font-semibold">1</span>
                 <div>
                   <span class="text-white font-semibold">Indiquez votre disponibilité</span>
                   <p class="text-xs text-blue-200 mt-1">ou proposez celle de vos contacts</p>
@@ -313,10 +313,10 @@
           </div>
           
           <!-- Étapes pour recruteurs/commerciaux - visible si profil recruteur sélectionné -->
-          <div *ngIf="userProfile === 'recruiter'" class="fc-recruiter-steps bg-blue-800 bg-opacity-30 rounded-xl p-5 flex flex-col items-start text-left mb-8 w-full">
+          <div *ngIf="userProfile === 'recruiter'" class="fc-steps fc-recruiter-steps bg-blue-800 bg-opacity-30 rounded-xl p-5 flex flex-col items-start text-left mb-8 w-full">
             <ol class="space-y-4 text-blue-100">
               <li class="flex items-center">
-                <span class="flex-shrink-0 h-7 w-7 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white flex items-center justify-center mr-3 font-semibold">1</span>
+                <span class="fc-step-number fc-step-recruiter-number flex-shrink-0 h-7 w-7 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white flex items-center justify-center mr-3 font-semibold">1</span>
                 <div>
                   <span class="text-white font-semibold">Publiez une mission</span>
                   <p class="text-xs text-blue-200 mt-1">ou proposez la disponibilité de vos consultants</p>
@@ -338,26 +338,31 @@
               </li>
             </ol>
           </div>
-          
           <!-- CTA avec bouton dynamique et dropdown -->
           <div class="fc-action-cta flex flex-col items-center w-full relative">
             <!-- Bouton principal dynamique -->
             <div class="w-full flex items-center">
-              <button 
-                (click)="handleMainAction()" 
-                class="bg-gradient-to-r from-[#2EFFA1] to-[#25D789] hover:from-[#29EB95] hover:to-[#20C27D] text-black font-semibold rounded-l-full px-6 py-3.5 shadow-lg text-base transition-all duration-300 w-full transform hover:scale-[1.02] flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-                <span>{{ userProfile === 'consultant' ? 'Je publie ma disponibilité' : 'Je publie une mission' }}</span>
-              </button>
+                <button 
+                  (click)="handleMainAction()" 
+                  class="fc-action-button bg-gradient-to-r from-[#2EFFA1] to-[#25D789] hover:from-[#29EB95] hover:to-[#20C27D] text-black font-semibold rounded-l-full px-6 py-3.5 shadow-lg text-base transition-all duration-300 w-full transform hover:scale-[1.02] flex items-center justify-center">
+                  <svg *ngIf="userProfile === 'consultant'" xmlns="http://www.w3.org/2000/svg" class="fc-icon-consultant h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  <svg *ngIf="userProfile === 'recruiter'" xmlns="http://www.w3.org/2000/svg" class="fc-icon-recruiter h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="8.5" cy="7" r="4"></circle>
+                    <line x1="18" y1="8" x2="23" y2="13"></line>
+                    <line x1="23" y1="8" x2="18" y2="13"></line>
+                  </svg>
+                  <span class="fc-button-text">{{ userProfile === 'consultant' ? 'Je publie ma disponibilité' : 'Je publie une mission' }}</span>
+                </button>
               <!-- Bouton pour changer d'action -->
               <button 
                 (click)="toggleUserAction()" 
-                class="bg-gradient-to-r from-[#25D789] to-[#25D789] hover:from-[#20C27D] hover:to-[#20C27D] text-black font-semibold rounded-r-full px-3 py-3.5 shadow-lg text-base transition-all duration-300 border-l border-[#1eba77]" 
+                class="fc-action-toggle-button bg-gradient-to-r from-[#25D789] to-[#25D789] hover:from-[#20C27D] hover:to-[#20C27D] text-black font-semibold rounded-r-full px-3 py-3.5 shadow-lg text-base transition-all duration-300 border-l border-[#1eba77]" 
                 title="{{ userProfile === 'consultant' ? 'Changer pour publier une mission' : 'Changer pour publier une disponibilité' }}">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" class="fc-icon-toggle h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
                 </svg>
               </button>
@@ -370,9 +375,9 @@
             <!-- Tooltip d'information supprimé comme demandé -->
               
             <!-- Preuve sociale - Compteur de connections - inchangé mais texte amélioré -->
-            <div class="image-text-header flex items-center mt-3">
-              <div class="ic-header-wrapper flex relative">
-                <img src="https://cdn.prod.website-files.com/66bc9b5ac1c7e7e42c268a48/66c468ec3623dc709d6d2cda_Checkbox-2.svg" loading="lazy" alt="" class="ic-36x36-header" style="border: 3px solid white; border-radius: 50%; width: 36px; height: 36px;">
+            <div class="fc-social-proof fc-image-text-header flex items-center mt-3">
+              <div class="fc-avatars-group fc-header-wrapper flex relative">
+                <img src="https://cdn.prod.website-files.com/66bc9b5ac1c7e7e42c268a48/66c468ec3623dc709d6d2cda_Checkbox-2.svg" loading="lazy" alt="" class="fc-avatar fc-social-avatar ic-36x36-header" style="border: 3px solid white; border-radius: 50%; width: 36px; height: 36px;">
                 <img src="https://cdn.prod.website-files.com/66bc9b5ac1c7e7e42c268a48/66c468ec5a76dcda1d14780b_Checkbox-1.svg" loading="lazy" alt="" class="ic-36x36-header" style="border: 3px solid white; border-radius: 50%; width: 36px; height: 36px; margin-left: -10px;">
                 <img src="https://cdn.prod.website-files.com/66bc9b5ac1c7e7e42c268a48/66c468ed9728c2071a64e754_Horizontal%20Container.svg" loading="lazy" alt="" class="ic-36x36-header" style="border: 3px solid white; border-radius: 50%; width: 36px; height: 36px; margin-left: -10px;">
                 <img src="https://cdn.prod.website-files.com/66bc9b5ac1c7e7e42c268a48/66c468ecdeb4ab250d9458e6_Checkbox.svg" loading="lazy" alt="" class="ic-36x36-header" style="border: 3px solid white; border-radius: 50%; width: 36px; height: 36px; margin-left: -10px;">
@@ -400,7 +405,7 @@
  
   
   <!-- Bouton flottant dynamique en mode mobile/responsive -->
-  <div class="fixed bottom-20 left-0 right-0 z-50 fc-mobile-cta-floating">
+  <div class="fixed bottom-20 left-0 right-0 z-50 fc-mobile-cta-container fc-mobile-cta-floating">
     <!-- Style pour contrôler la visibilité du bouton flottant -->
     <style>
       @media (min-width: 1224px) {
@@ -413,27 +418,27 @@
       <!-- Bouton principal avec action dynamique -->
       <button 
         (click)="handleMainAction()" 
-        class="bg-gradient-to-r from-[#2EFFA1] to-[#25D789] hover:from-[#29EB95] hover:to-[#20C27D] text-black font-semibold rounded-l-full px-6 py-3.5 shadow-lg text-base flex-grow transform hover:scale-[1.02] flex items-center justify-center backdrop-blur-sm bg-opacity-90">
+        class="fc-mobile-action-button bg-gradient-to-r from-[#2EFFA1] to-[#25D789] hover:from-[#29EB95] hover:to-[#20C27D] text-black font-semibold rounded-l-full px-6 py-3.5 shadow-lg text-base flex-grow transform hover:scale-[1.02] flex items-center justify-center backdrop-blur-sm bg-opacity-90">
         <!-- Icône dynamique selon le profil -->
-        <svg *ngIf="userProfile === 'consultant'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg *ngIf="userProfile === 'consultant'" xmlns="http://www.w3.org/2000/svg" class="fc-icon-consultant h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
           <circle cx="12" cy="7" r="4"></circle>
         </svg>
-        <svg *ngIf="userProfile === 'recruiter'" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg *ngIf="userProfile === 'recruiter'" xmlns="http://www.w3.org/2000/svg" class="fc-icon-recruiter h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
           <circle cx="8.5" cy="7" r="4"></circle>
           <line x1="18" y1="8" x2="23" y2="13"></line>
           <line x1="23" y1="8" x2="18" y2="13"></line>
         </svg>
-        <span>{{ userProfile === 'consultant' ? 'Je publie ma disponibilité' : 'Je publie une mission' }}</span>
+        <span class="fc-button-text">{{ userProfile === 'consultant' ? 'Je publie ma disponibilité' : 'Je publie une mission' }}</span>
       </button>
       
       <!-- Bouton pour changer d'action -->
       <button 
         (click)="toggleUserAction()" 
-        class="bg-gradient-to-r from-[#25D789] to-[#25D789] hover:from-[#20C27D] hover:to-[#20C27D] text-black font-semibold rounded-r-full px-4 py-3.5 shadow-lg text-base transition-all duration-300 border-l border-[#1eba77]" 
+        class="fc-mobile-toggle-button bg-gradient-to-r from-[#25D789] to-[#25D789] hover:from-[#20C27D] hover:to-[#20C27D] text-black font-semibold rounded-r-full px-4 py-3.5 shadow-lg text-base transition-all duration-300 border-l border-[#1eba77]" 
         title="{{ userProfile === 'consultant' ? 'Changer pour publier une mission' : 'Changer pour publier une disponibilité' }}">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" class="fc-icon-toggle h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
         </svg>
       </button>

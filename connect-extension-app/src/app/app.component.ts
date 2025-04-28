@@ -233,23 +233,43 @@ export class AppComponent implements OnInit, OnDestroy {
   
   /**
    * Bascule entre le profil consultant et recruteur
-   * Met à jour le bouton d'action principal
+   * Met à jour les boutons d'action (desktop et mobile/extension)
    */
   toggleUserAction(): void {
     // Basculer entre consultant et recruteur
     this.userProfile = this.userProfile === 'consultant' ? 'recruiter' : 'consultant';
     
-    // Sauvegarder la préférence
+    // Sauvegarder la préférence dans localStorage pour persistance
     localStorage.setItem('fc-user-profile', this.userProfile);
     
-    // Animation de transition (optionnel)
-    const actionButton = document.querySelector('.fc-action-cta button:first-child');
-    if (actionButton) {
-      actionButton.classList.add('scale-105');
+    // Animation de transition pour le bouton desktop
+    const desktopActionButton = document.querySelector('.fc-action-button');
+    if (desktopActionButton) {
+      desktopActionButton.classList.add('scale-105');
       setTimeout(() => {
-        actionButton.classList.remove('scale-105');
+        desktopActionButton.classList.remove('scale-105');
       }, 300);
     }
+    
+    // Animation de transition pour le bouton mobile/extension
+    const mobileActionButton = document.querySelector('.fc-mobile-action-button');
+    if (mobileActionButton) {
+      mobileActionButton.classList.add('scale-105');
+      setTimeout(() => {
+        mobileActionButton.classList.remove('scale-105');
+      }, 300);
+    }
+    
+    // Mise à jour des tooltips des boutons de bascule
+    const desktopToggleButton = document.querySelector('.fc-action-toggle-button');
+    const mobileToggleButton = document.querySelector('.fc-mobile-toggle-button');
+    
+    const newTooltip = this.userProfile === 'consultant' 
+      ? 'Changer pour publier une mission' 
+      : 'Changer pour publier une disponibilité';
+      
+    if (desktopToggleButton) desktopToggleButton.setAttribute('title', newTooltip);
+    if (mobileToggleButton) mobileToggleButton.setAttribute('title', newTooltip);
   }
   
   // La méthode selectAction n'est plus nécessaire car nous utilisons toggleUserAction
