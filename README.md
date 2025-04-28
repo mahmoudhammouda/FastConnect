@@ -606,6 +606,21 @@ Le projet a été restructuré pour utiliser une architecture complètement sép
    - En développement : Communication directe ou via proxy
    - En production : Communication via API RESTful sécurisée
 
+## Nouvelles fonctionnalités de l'extension Chrome (28/04/2025)
+
+### Interface Utilisateur Améliorée
+- **Poignée de redimensionnement optimisée** : Visuellement distincte avec des transitions fluides et retour visuel amélioré
+- **Badge de notifications** : Affichage animé du nombre de notifications sur le bouton FC
+- **Animation interactive** : Effet subtil d'agrandissement au survol du bouton FC
+
+### Optimisations Techniques
+- **Résolution des conflits de défilement** : Isolation complète du défilement entre LinkedIn et le panneau FastConnect
+- **Initialisation unique garantie** : Système multi-couches empêchant les initialisations multiples
+- **Support des transitions AJAX** : Maintien de l'extension active pendant la navigation LinkedIn sans rechargement
+- **Persistence des préférences** : Mémorisation de la largeur du panneau entre les sessions
+
+Pour plus de détails, consultez le [README de l'extension Chrome](./connect-extension-chrome/README.md).
+
 ## Problèmes courants et solutions
 
 ### Problème : Composants Angular standalone non affichés
