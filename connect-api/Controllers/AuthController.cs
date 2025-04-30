@@ -2,6 +2,7 @@ using ConnectExtension.Backend.Models;
 using ConnectExtension.Backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -12,10 +13,12 @@ namespace ConnectExtension.Backend.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly ILinkedInAuthService _linkedInAuthService;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, ILinkedInAuthService linkedInAuthService)
         {
             _authService = authService;
+            _linkedInAuthService = linkedInAuthService;
         }
 
         /// <summary>
@@ -35,7 +38,73 @@ namespace ConnectExtension.Backend.Controllers
         }
 
         /// <summary>
-        /// Connexion avec LinkedIn
+        /// Obtenir l'URL de redirection OAuth LinkedIn
+        /// </summary>
+        [HttpGet("linkedin/redirect")]
+        public ActionResult<LinkedInAuthUrlResponse> GetLinkedInRedirect()
+        {
+            try
+            {
+                var redirectUrl = _linkedInAuthService.GetAuthorizationUrl();
+                return Ok(redirectUrl);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Success = false, Message = $"Erreur lors de la génération de l'URL LinkedIn: {ex.Message}" });
+            }
+        }
+
+        /// <summary>
+        /// Callback OAuth LinkedIn - Endpoint appelé par le frontend après redirection LinkedIn
+        /// </summary>
+        [HttpGet("linkedin/callback")]
+        public async Task<ActionResult<AuthResponse>> LinkedInCallback([FromQuery] string code, [FromQuery] string state = "", [FromQuery] string error = "", [FromQuery] string error_description = "")
+        {
+            // Vérifier s'il y a une erreur
+            if (!string.IsNullOrEmpty(error))
+            {
+                return BadRequest(new { Success = false, Message = $"Erreur LinkedIn: {error} - {error_description}" });
+            }
+
+            try
+            {
+                // 1. Échanger le code contre un token d'accès
+                var tokenResponse = await _linkedInAuthService.ExchangeCodeForTokenAsync(code);
+                
+                // 2. Récupérer les informations du profil LinkedIn
+                var userProfile = await _linkedInAuthService.GetUserProfileAsync(tokenResponse.AccessToken);
+                
+                // 3. Créer une requête d'authentification LinkedIn pour le service Auth
+                var linkedInRequest = new LinkedInLoginRequest
+                {
+                    Email = userProfile.Email,
+                    LinkedInToken = tokenResponse.AccessToken,
+                    RememberMe = true, // Par défaut on garde la session active pour LinkedIn
+                    ProfileUrl = userProfile.ProfileUrl,
+                    FirstName = userProfile.FirstName,
+                    LastName = userProfile.LastName,
+                    PictureUrl = userProfile.PictureUrl,
+                    Title = userProfile.Title
+                };
+                
+                // 4. Authentifier l'utilisateur avec nos services
+                var response = await _authService.LoginWithLinkedInAsync(linkedInRequest);
+                
+                if (!response.Success)
+                {
+                    return Unauthorized(response);
+                }
+                
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Success = false, Message = $"Erreur lors de l'authentification LinkedIn: {ex.Message}" });
+            }
+        }
+
+        /// <summary>
+        /// Connexion avec LinkedIn (legacy endpoint)
         /// </summary>
         [HttpPost("linkedin")]
         public async Task<ActionResult<AuthResponse>> LoginWithLinkedIn([FromBody] LinkedInLoginRequest request)

@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import des styles Toastr */
+@import 'node_modules/ngx-toastr/toastr.css';
+
+/* Import de nos styles personnalisés pour les toasts */
+@import './styles/toast.css';
+
 /* Global styles */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;

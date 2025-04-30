@@ -119,6 +119,23 @@ export class AuthService {
   }
 
   /**
+   * Traiter le callback de LinkedIn avec le code d'autorisation
+   * @param code Code d'autorisation fourni par LinkedIn
+   * @param state État pour la vérification de sécurité
+   * @returns Observable contenant la réponse d'authentification
+   */
+  linkedInCallback(code: string, state: string): Observable<AuthResponse> {
+    return this.apiService.get<AuthResponse>(`auth/linkedin/callback?code=${code}&state=${state}`)
+      .pipe(
+        tap(response => this.handleAuthResponse(response)),
+        catchError(error => {
+          console.error('Erreur lors du callback LinkedIn:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  /**
    * Inscription d'un nouvel utilisateur
    * @param user Données de l'utilisateur à inscrire
    */

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { ModalService } from '../../../services/modal.service';
+import { NotificationService } from '../../../services/notification.service';
 import { EmailAuthCredentials, UserRegistration, LinkedInAuthUrlResponse } from '../../../models/user.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -29,7 +30,8 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     public modalService: ModalService, // Changé de private à public pour l'accès depuis le template
     private cdr: ChangeDetectorRef,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private notificationService: NotificationService
   ) { }
 
   ngOnInit(): void {
@@ -70,13 +72,18 @@ export class LoginComponent implements OnInit {
         };
 
         this.authService.loginWithEmail(credentials).subscribe({
-          next: () => {
+          next: (response) => {
             this.isLoading = false;
-            this.closeModal();
+            this.loginError = null;
+            this.notificationService.loginSuccess('email');
+            this.router.navigate(['/']);
             this.cdr.detectChanges();
           },
           error: (error: HttpErrorResponse) => {
+            this.isLoading = false;
             this.handleLoginError(error);
+            const errorMessage = this.loginError || 'Erreur de connexion';
+            this.notificationService.loginError(errorMessage, 'email');
             this.cdr.detectChanges();
           }
         });
@@ -110,10 +117,13 @@ export class LoginComponent implements OnInit {
             this.isLoading = false;
             this.showRegisterForm = false;
             this.loginError = null;
+            this.notificationService.success('Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.', 'Inscription réussie');
             this.cdr.detectChanges();
           },
           error: (error: HttpErrorResponse) => {
             this.handleRegistrationError(error);
+            const errorMessage = this.loginError || 'Erreur lors de l\'inscription';
+            this.notificationService.error(errorMessage, 'Échec de l\'inscription');
             this.cdr.detectChanges();
           }
         });
@@ -140,6 +150,7 @@ export class LoginComponent implements OnInit {
             this.isLoading = false;
             this.loginError = "Impossible de se connecter à LinkedIn. Veuillez réessayer plus tard.";
             console.error('Erreur LinkedIn redirect:', error);
+            this.notificationService.loginError(this.loginError, 'linkedin');
             this.cdr.detectChanges();
           }
         });

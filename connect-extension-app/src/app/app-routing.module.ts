@@ -9,6 +9,7 @@ import { AlertListComponent } from './components/alert-list/alert-list.component
 import { AvailabilityListComponent } from './components/availability-list/availability-list.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AppDebugComponent } from './app.component.debug';
+import { LinkedInCallbackComponent } from './components/auth/linkedin-callback/linkedin-callback.component';
 
 const routes: Routes = [
   // Route principale - consultants list
@@ -29,7 +30,8 @@ const routes: Routes = [
   
   // Routes d'authentification
   { path: 'login', component: LoginComponent },
-
+  { path: 'auth/linkedin/callback', component: LinkedInCallbackComponent }, // Route pour le callback LinkedIn
+  
   // Route de débogage
   { path: 'debug', component: AppDebugComponent },
   
@@ -60,7 +62,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { 
-    useHash: true,  // Activation du mode hash pour éviter les problèmes de routing sur Replit
+    useHash: false,  // Désactivation du mode hash pour permettre les callbacks OAuth
     enableTracing: false // Désactiver le traçage pour la production
   })], 
   exports: [RouterModule]

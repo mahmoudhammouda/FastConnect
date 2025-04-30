@@ -34,7 +34,7 @@ namespace ConnectExtension.Backend.Models
     public class LinkedInLoginRequest
     {
         /// <summary>
-        /// Code d'accès LinkedIn OAuth
+        /// Token d'accès LinkedIn OAuth
         /// </summary>
         [Required]
         public string LinkedInToken { get; set; } = string.Empty;
@@ -49,6 +49,31 @@ namespace ConnectExtension.Backend.Models
         /// Se souvenir de moi (conserver la session plus longtemps)
         /// </summary>
         public bool RememberMe { get; set; } = false;
+
+        /// <summary>
+        /// URL du profil LinkedIn
+        /// </summary>
+        public string? ProfileUrl { get; set; }
+
+        /// <summary>
+        /// Prénom de l'utilisateur
+        /// </summary>
+        public string? FirstName { get; set; }
+
+        /// <summary>
+        /// Nom de l'utilisateur
+        /// </summary>
+        public string? LastName { get; set; }
+
+        /// <summary>
+        /// URL de la photo de profil
+        /// </summary>
+        public string? PictureUrl { get; set; }
+
+        /// <summary>
+        /// Titre/poste professionnel
+        /// </summary>
+        public string? Title { get; set; }
     }
 
     /// <summary>

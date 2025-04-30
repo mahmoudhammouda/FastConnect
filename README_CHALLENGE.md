@@ -222,11 +222,8 @@ export class EnvironmentDetectionService {
     });
   }
 }
-```
-2. Utilisation des fichiers d'environnement avec option de forçage manuel
-3. Ajout d'un paramètre de configuration pour surcharger la détection automatique
 
-## Architecture multi-environnements avec configurations spécifiques
+## Implémentation de l'authentification OAuth2 avec LinkedIn
 
 ### Problème
 Le déploiement sur différents environnements (local, Replit, production) nécessitait des configurations différentes mais la gestion était complexe et sujette aux erreurs.

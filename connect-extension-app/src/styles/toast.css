@@ -1,0 +1,54 @@
+/* Styles pour les notifications toast de FastConnect */
+
+/* Conteneur principal des toasts */
+.toast-container .ngx-toastr {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  padding: 12px 15px;
+  font-family: inherit;
+}
+
+/* Contenu des toasts avec notre préfixe fc- */
+.fc-toast-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Icônes dans les toasts */
+.fc-toast-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+/* Couleurs spécifiques des icônes */
+.fc-toast-icon.success {
+  color: #4caf50;
+}
+
+.fc-toast-icon.error {
+  color: #f44336;
+}
+
+.fc-toast-icon.info {
+  color: #2196f3;
+}
+
+/* Style spécifique pour les toasts LinkedIn */
+.toast-container .ngx-toastr .fc-toast-content .fa-linkedin {
+  color: #0077b5;
+}
+
+/* Positionnement centré en haut */
+.toast-top-center {
+  top: 12px;
+}
+
+/* Styles responsifs */
+@media (max-width: 480px) {
+  .toast-container .ngx-toastr {
+    width: calc(100% - 24px);
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

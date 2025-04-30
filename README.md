@@ -18,6 +18,7 @@ Extension Chrome et application web pour la découverte intelligente de consulta
 ✅ Communication correcte entre le frontend et l'API via proxy
 ✅ Scripts de génération d'extension pour le développement et la production
 ✅ Système d'authentification avec modal et JWT
+✅ Authentification OAuth2 via LinkedIn pour une connexion simplifiée
 ✅ Architecture multi-environnements (locale, Replit, production)
 ✅ Séparation complète frontend (Angular) / backend (.NET Core)
 ✅ Configuration automatique adaptable à tous les environnements

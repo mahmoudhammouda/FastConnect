@@ -36,6 +36,10 @@ namespace ConnectExtension.Backend
             services.AddSingleton<IConsultantService, ConsultantService>();
             services.AddSingleton<IConsultantAvailabilityService, ConsultantAvailabilityService>();
             services.AddSingleton<IAuthService, AuthService>();
+            services.AddSingleton<ILinkedInAuthService, LinkedInAuthService>();
+            
+            // Register HttpClient for external API calls
+            services.AddHttpClient();
             
             // Configure JWT authentication
             var jwtKey = Configuration["JWT:Secret"] ?? "FastConnectDefaultSecretKey12345678";

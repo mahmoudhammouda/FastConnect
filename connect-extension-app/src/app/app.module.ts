@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ToastrModule } from 'ngx-toastr';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -21,6 +23,7 @@ import { BookmarkListsComponent } from './components/bookmark-lists/bookmark-lis
 import { AvailabilityListComponent } from './components/availability-list/availability-list.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FcAppComponent } from './components/fc-app/fc-app.component';
+import { LinkedInCallbackComponent } from './components/auth/linkedin-callback/linkedin-callback.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +50,18 @@ import { FcAppComponent } from './components/fc-app/fc-app.component';
     // (Référence à AddAvailabilityModalComponent supprimée)
     AvailabilityListComponent, // Composant de liste des disponibilités
     NavbarComponent, // Composant de navigation
-    FcAppComponent // Composant principal de l'application FastConnect
+    FcAppComponent, // Composant principal de l'application FastConnect
+    BrowserAnimationsModule, // Requis pour Toastr
+    ToastrModule.forRoot({  // Configuration de Toastr
+      timeOut: 7000,
+      positionClass: 'toast-top-center',
+      preventDuplicates: true,
+      progressBar: true,
+      closeButton: true,
+      enableHtml: true,
+      tapToDismiss: true,
+      newestOnTop: true
+    })
   ],
   providers: [
     // Intercepteur HTTP pour ajouter le token à toutes les requêtes
