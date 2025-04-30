@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { ModalService } from '../../../services/modal.service';
-import { EmailAuthCredentials } from '../../../models/user.model';
+import { EmailAuthCredentials, UserRegistration, LinkedInAuthUrlResponse } from '../../../models/user.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -16,24 +16,37 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
+  registerForm!: FormGroup;
   isLoading = false;
   loginError: string | null = null;
   rememberMe = false;
   loginMode: 'email' = 'email';
+  showRegisterForm = false;
 
   constructor(
     private authService: AuthService, 
     private router: Router,
     private fb: FormBuilder,
-    public modalService: ModalService // Changé de private à public pour l'accès depuis le template
+    public modalService: ModalService, // Changé de private à public pour l'accès depuis le template
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
   ) { }
 
   ngOnInit(): void {
-    // Initialiser le formulaire
+    // Initialiser le formulaire de connexion
     this.loginForm = this.fb.group({
       username: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       rememberMe: [false]
+    });
+    
+    // Initialiser le formulaire d'inscription
+    this.registerForm = this.fb.group({
+      firstName: ['', [Validators.required]],
+      lastName: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      userType: ['consultant', [Validators.required]]
     });
   }
 
@@ -42,24 +55,111 @@ export class LoginComponent implements OnInit {
       return;
     }
 
+    // Activer immédiatement le statut de chargement pour l'animation
     this.isLoading = true;
     this.loginError = null;
+    this.cdr.detectChanges();
 
-    const credentials: EmailAuthCredentials = {
-      email: this.loginForm.value.username,
-      password: this.loginForm.value.password,
-      rememberMe: this.loginForm.value.rememberMe
-    };
+    this.ngZone.run(() => {
+      // Utiliser setTimeout pour permettre au navigateur de mettre à jour l'UI
+      setTimeout(() => {
+        const credentials: EmailAuthCredentials = {
+          email: this.loginForm.value.username,
+          password: this.loginForm.value.password,
+          rememberMe: this.loginForm.value.rememberMe
+        };
 
-    this.authService.loginWithEmail(credentials).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.closeModal();
-      },
-      error: (error: HttpErrorResponse) => {
-        this.handleLoginError(error);
-      }
+        this.authService.loginWithEmail(credentials).subscribe({
+          next: () => {
+            this.isLoading = false;
+            this.closeModal();
+            this.cdr.detectChanges();
+          },
+          error: (error: HttpErrorResponse) => {
+            this.handleLoginError(error);
+            this.cdr.detectChanges();
+          }
+        });
+      }, 10);
     });
+  }
+  
+  onRegisterSubmit(): void {
+    if (this.registerForm.invalid) {
+      return;
+    }
+
+    // Activer immédiatement le statut de chargement pour l'animation
+    this.isLoading = true;
+    this.loginError = null;
+    this.cdr.detectChanges();
+
+    this.ngZone.run(() => {
+      // Utiliser setTimeout pour permettre au navigateur de mettre à jour l'UI
+      setTimeout(() => {
+        const registrationData: UserRegistration = {
+          firstName: this.registerForm.value.firstName,
+          lastName: this.registerForm.value.lastName,
+          email: this.registerForm.value.email,
+          password: this.registerForm.value.password,
+          userType: this.registerForm.value.userType
+        };
+
+        this.authService.register(registrationData).subscribe({
+          next: () => {
+            this.isLoading = false;
+            this.showRegisterForm = false;
+            this.loginError = null;
+            this.cdr.detectChanges();
+          },
+          error: (error: HttpErrorResponse) => {
+            this.handleRegistrationError(error);
+            this.cdr.detectChanges();
+          }
+        });
+      }, 10);
+    });
+  }
+  
+  loginWithLinkedIn(): void {
+    // Activer immédiatement le statut de chargement pour l'animation
+    this.isLoading = true;
+    this.loginError = null;
+    this.cdr.detectChanges();
+    
+    this.ngZone.run(() => {
+      // Utiliser setTimeout pour permettre au navigateur de mettre à jour l'UI
+      setTimeout(() => {
+        // Rediriger vers l'endpoint d'authentification LinkedIn
+        this.authService.getLinkedInAuthUrl().subscribe({
+          next: (response: LinkedInAuthUrlResponse) => {
+            // Rediriger vers l'URL d'autorisation LinkedIn
+            window.location.href = response.url;
+          },
+          error: (error: HttpErrorResponse) => {
+            this.isLoading = false;
+            this.loginError = "Impossible de se connecter à LinkedIn. Veuillez réessayer plus tard.";
+            console.error('Erreur LinkedIn redirect:', error);
+            this.cdr.detectChanges();
+          }
+        });
+      }, 10);
+    });
+  }
+  
+  toggleRegisterForm(): void {
+    this.showRegisterForm = !this.showRegisterForm;
+    this.loginError = null;
+    this.isLoading = false;
+    
+    // Réinitialiser les formulaires lors du changement
+    if (this.showRegisterForm) {
+      this.loginForm.reset();
+    } else {
+      this.registerForm.reset({
+        userType: 'consultant'
+      });
+    }
   }
 
   closeModal(): void {
@@ -73,8 +173,12 @@ export class LoginComponent implements OnInit {
       password: '',
       rememberMe: false
     });
+    this.registerForm.reset({
+      userType: 'consultant'
+    });
     this.loginError = null;
     this.isLoading = false;
+    this.showRegisterForm = false;
   }
 
   private handleLoginError(error: HttpErrorResponse): void {
@@ -85,5 +189,19 @@ export class LoginComponent implements OnInit {
       this.loginError = 'Une erreur est survenue. Veuillez réessayer plus tard.';
     }
     console.error('Erreur de connexion:', error);
+  }
+  
+  private handleRegistrationError(error: HttpErrorResponse): void {
+    this.isLoading = false;
+    if (error.status === 400) {
+      if (error.error?.message?.includes('email')) {
+        this.loginError = 'Cet email est déjà utilisé. Veuillez en choisir un autre.';
+      } else {
+        this.loginError = 'Veuillez vérifier les informations saisies.';
+      }
+    } else {
+      this.loginError = 'Une erreur est survenue lors de la création du compte. Veuillez réessayer plus tard.';
+    }
+    console.error('Erreur d\'inscription:', error);
   }
 }

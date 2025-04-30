@@ -53,20 +53,28 @@ export interface LinkedInProfile {
 }
 
 /**
- * Informations d'inscription d'un utilisateur
+ * Interface pour l'enregistrement d'un nouvel utilisateur
  */
 export interface UserRegistration {
-  username: string;
+  username?: string;
   email: string;
   password: string;
-  confirmPassword: string;
+  confirmPassword?: string;
   linkedInProfile?: string;
   profileImageUrl?: string;
   role?: UserRole;
   location?: string;
   title?: string;
-  firstName?: string;
-  lastName?: string;
+  firstName: string;
+  lastName: string;
+  userType?: 'consultant' | 'recruiter';
+}
+
+/**
+ * Interface pour la réponse d'URL d'authentification LinkedIn
+ */
+export interface LinkedInAuthUrlResponse {
+  url: string;
 }
 
 /**

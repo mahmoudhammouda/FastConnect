@@ -7,18 +7,18 @@
 >
   <!-- Conteneur du modal -->
   <div 
-    class="w-full max-w-md bg-white rounded-lg shadow-xl transition-all duration-300 ease-in-out transform"
+    class="w-full max-w-md bg-white rounded-lg shadow-xl transition-all duration-300 ease-in-out transform fc-auth-modal"
     [class.scale-95]="!modalService.isLoginModalVisible"
     [class.scale-100]="modalService.isLoginModalVisible"
     [class.opacity-0]="!modalService.isLoginModalVisible"
     [class.opacity-100]="modalService.isLoginModalVisible"
   >
     <!-- Entête du modal -->
-    <div class="flex items-center justify-between px-6 py-4 border-b">
-      <h2 class="text-xl font-semibold text-gray-800">Connexion à FastConnect</h2>
+    <div class="flex items-center justify-between px-6 py-4 border-b fc-modal-header">
+      <h2 class="text-xl font-semibold text-gray-800">{{showRegisterForm ? 'Créer un compte' : 'Connexion à FastConnect'}}</h2>
       <button 
         type="button" 
-        class="text-gray-500 hover:text-gray-700 focus:outline-none"
+        class="text-gray-500 hover:text-gray-700 focus:outline-none fc-close-button"
         (click)="closeModal()"
       >
         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -27,15 +27,41 @@
       </button>
     </div>
     
-    <div class="px-6 py-4">
+    <div class="px-6 py-4 fc-modal-body">
       <!-- Message d'erreur -->
-      <div *ngIf="loginError" class="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
+      <div *ngIf="loginError" class="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm fc-error-message">
         {{ loginError }}
       </div>
       
-      <!-- Formulaire de connexion par email -->
-      <div class="space-y-6">
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <!-- Bouton de connexion LinkedIn -->
+      <div *ngIf="!showRegisterForm" class="mb-5">
+        <button 
+          type="button" 
+          (click)="loginWithLinkedIn()"
+          class="fc-linkedin-button w-full flex justify-center items-center py-2.5 px-4 border border-[#0A66C2] rounded-md shadow-sm text-sm font-medium text-white bg-[#0A66C2] hover:bg-[#0958a5] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0A66C2] transition-all duration-200"
+          [disabled]="isLoading"
+        >
+          <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="#fff">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+          <span>Se connecter avec LinkedIn</span>
+        </button>
+      </div>
+      
+      <!-- Séparateur -->
+      <div *ngIf="!showRegisterForm" class="relative my-6 fc-separator">
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t border-gray-300"></div>
+        </div>
+        <div class="relative flex justify-center text-sm">
+          <span class="px-2 bg-white text-gray-500">ou connectez-vous avec votre email</span>
+        </div>
+      </div>
+      
+      <!-- Formulaire de connexion ou d'inscription -->
+      <div class="space-y-6 fc-auth-form-container">
+        <!-- Formulaire de connexion -->
+        <form *ngIf="!showRegisterForm" [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="fc-login-form">
           <!-- Email -->
           <div class="mb-4">
             <label for="username" class="block text-sm font-medium text-gray-700 mb-1">
@@ -45,11 +71,11 @@
               id="username" 
               type="email" 
               formControlName="username"
-              class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent fc-input"
               [ngClass]="{'border-red-300': loginForm.get('username')?.invalid && loginForm.get('username')?.touched}"
               placeholder="Entrez votre email"
             >
-            <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" class="mt-1 text-sm text-red-600">
+            <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" class="mt-1 text-sm text-red-600 fc-error-text">
               L'email est requis
             </div>
           </div>
@@ -63,11 +89,11 @@
               id="password" 
               type="password" 
               formControlName="password"
-              class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+              class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent fc-input"
               [ngClass]="{'border-red-300': loginForm.get('password')?.invalid && loginForm.get('password')?.touched}"
               placeholder="Entrez votre mot de passe"
             >
-            <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="mt-1 text-sm text-red-600">
+            <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="mt-1 text-sm text-red-600 fc-error-text">
               <span *ngIf="loginForm.get('password')?.errors?.['required']">Le mot de passe est requis</span>
               <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Le mot de passe doit contenir au moins 6 caractères</span>
             </div>
@@ -79,7 +105,7 @@
               id="rememberMe" 
               type="checkbox" 
               formControlName="rememberMe"
-              class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded fc-checkbox"
             >
             <label for="rememberMe" class="ml-2 block text-sm text-gray-700">
               Se souvenir de moi
@@ -89,11 +115,11 @@
           <!-- Bouton de connexion -->
           <button 
             type="submit" 
-            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 fc-submit-button"
             [disabled]="loginForm.invalid || isLoading"
             [ngClass]="{'opacity-70 cursor-not-allowed': loginForm.invalid || isLoading}"
           >
-            <span *ngIf="isLoading" class="mr-2">
+            <span *ngIf="isLoading" class="mr-2 flex items-center">
               <!-- Icon de chargement (spinner) -->
               <svg class="animate-spin h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -104,14 +130,147 @@
           </button>
         </form>
         
+        <!-- Formulaire d'inscription -->
+        <form *ngIf="showRegisterForm" [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()" class="fc-register-form">
+          <!-- Prénom -->
+          <div class="mb-4">
+            <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">
+              Prénom
+            </label>
+            <input 
+              id="firstName" 
+              type="text" 
+              formControlName="firstName"
+              class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent fc-input"
+              [ngClass]="{'border-red-300': registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched}"
+              placeholder="Votre prénom"
+            >
+            <div *ngIf="registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched" class="mt-1 text-sm text-red-600 fc-error-text">
+              Le prénom est requis
+            </div>
+          </div>
+          
+          <!-- Nom -->
+          <div class="mb-4">
+            <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">
+              Nom
+            </label>
+            <input 
+              id="lastName" 
+              type="text" 
+              formControlName="lastName"
+              class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent fc-input"
+              [ngClass]="{'border-red-300': registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched}"
+              placeholder="Votre nom"
+            >
+            <div *ngIf="registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched" class="mt-1 text-sm text-red-600 fc-error-text">
+              Le nom est requis
+            </div>
+          </div>
+          
+          <!-- Email -->
+          <div class="mb-4">
+            <label for="registerEmail" class="block text-sm font-medium text-gray-700 mb-1">
+              Email
+            </label>
+            <input 
+              id="registerEmail" 
+              type="email" 
+              formControlName="email"
+              class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent fc-input"
+              [ngClass]="{'border-red-300': registerForm.get('email')?.invalid && registerForm.get('email')?.touched}"
+              placeholder="Votre email professionnel"
+            >
+            <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="mt-1 text-sm text-red-600 fc-error-text">
+              <span *ngIf="registerForm.get('email')?.errors?.['required']">L'email est requis</span>
+              <span *ngIf="registerForm.get('email')?.errors?.['email']">Veuillez entrer un email valide</span>
+            </div>
+          </div>
+          
+          <!-- Mot de passe -->
+          <div class="mb-4">
+            <label for="registerPassword" class="block text-sm font-medium text-gray-700 mb-1">
+              Mot de passe
+            </label>
+            <input 
+              id="registerPassword" 
+              type="password" 
+              formControlName="password"
+              class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent fc-input"
+              [ngClass]="{'border-red-300': registerForm.get('password')?.invalid && registerForm.get('password')?.touched}"
+              placeholder="Choisissez un mot de passe"
+            >
+            <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched" class="mt-1 text-sm text-red-600 fc-error-text">
+              <span *ngIf="registerForm.get('password')?.errors?.['required']">Le mot de passe est requis</span>
+              <span *ngIf="registerForm.get('password')?.errors?.['minlength']">Le mot de passe doit contenir au moins 6 caractères</span>
+            </div>
+          </div>
+          
+          <!-- Profil utilisateur -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Vous êtes</label>
+            <div class="flex space-x-4">
+              <div class="flex items-center">
+                <input 
+                  id="consultant" 
+                  type="radio" 
+                  value="consultant" 
+                  formControlName="userType"
+                  class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 fc-radio"
+                >
+                <label for="consultant" class="ml-2 block text-sm text-gray-700">
+                  Consultant/Candidat
+                </label>
+              </div>
+              <div class="flex items-center">
+                <input 
+                  id="recruiter" 
+                  type="radio" 
+                  value="recruiter" 
+                  formControlName="userType"
+                  class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 fc-radio"
+                >
+                <label for="recruiter" class="ml-2 block text-sm text-gray-700">
+                  Recruteur/Commercial
+                </label>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Bouton d'inscription -->
+          <button 
+            type="submit" 
+            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 fc-submit-button"
+            [disabled]="registerForm.invalid || isLoading"
+            [ngClass]="{'opacity-70 cursor-not-allowed': registerForm.invalid || isLoading}"
+          >
+            <span *ngIf="isLoading" class="mr-2 flex items-center">
+              <svg class="animate-spin h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </span>
+            {{ isLoading ? 'Création en cours...' : 'Créer mon compte' }}
+          </button>
+          
+          <!-- Informations légales -->
+          <p class="mt-3 text-xs text-gray-500 text-center">
+            En créant un compte, vous acceptez nos <a href="#" class="text-indigo-600 hover:text-indigo-700">Conditions d'utilisation</a> et notre <a href="#" class="text-indigo-600 hover:text-indigo-700">Politique de confidentialité</a>.
+          </p>
+        </form>
+        
         <!-- Liens utiles -->
-        <div class="flex items-center justify-between">
-          <a href="#" class="text-sm text-indigo-600 hover:text-indigo-700">
+        <div class="flex items-center justify-between fc-auth-links">
+          <a href="#" class="text-sm text-indigo-600 hover:text-indigo-700 fc-link">
             Mot de passe oublié ?
           </a>
-          <a href="#" class="text-sm text-indigo-600 hover:text-indigo-700">
-            Créer un compte
-          </a>
+          <button 
+            type="button" 
+            class="text-sm text-indigo-600 hover:text-indigo-700 fc-link"
+            (click)="toggleRegisterForm()"
+          >
+            {{ showRegisterForm ? 'Retour à la connexion' : 'Créer un compte' }}
+          </button>
         </div>
       </div>
     </div>

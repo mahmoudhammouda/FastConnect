@@ -11,7 +11,8 @@ import {
   AuthResponse, 
   AuthState, 
   RefreshTokenRequest,
-  UserRole
+  UserRole,
+  LinkedInAuthUrlResponse
 } from '../models/user.model';
 import { environment } from '../../environments/environment';
 import { ApiService } from './api.service';
@@ -98,6 +99,20 @@ export class AuthService {
         tap(response => this.handleAuthResponse(response)),
         catchError(error => {
           console.error('Erreur lors de la connexion avec LinkedIn:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+  
+  /**
+   * Obtenir l'URL de redirection pour l'authentification LinkedIn
+   * @returns Observable contenant l'URL de redirection LinkedIn
+   */
+  getLinkedInAuthUrl(): Observable<LinkedInAuthUrlResponse> {
+    return this.apiService.get<LinkedInAuthUrlResponse>('auth/linkedin/redirect')
+      .pipe(
+        catchError(error => {
+          console.error('Erreur lors de la récupération de l\'URL LinkedIn:', error);
           return throwError(() => error);
         })
       );
