@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, tap, timeout } from 'rxjs/operators';
 import { 
   User, 
   EmailAuthCredentials, 
@@ -125,12 +125,49 @@ export class AuthService {
    * @returns Observable contenant la réponse d'authentification
    */
   linkedInCallback(code: string, state: string): Observable<AuthResponse> {
-    return this.apiService.get<AuthResponse>(`auth/linkedin/callback?code=${code}&state=${state}`)
+    // Ajouter un timestamp pour éviter le cache et avoir une URL unique à chaque tentative
+    const timestamp = new Date().getTime();
+    
+    // Définir un timeout plus long pour cette requête spécifique (10 secondes)
+    const httpOptions = {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      // Ajouter des params si nécessaire
+      params: new HttpParams().set('_', timestamp.toString())
+    };
+    
+    console.log(`Début de l'appel API LinkedIn callback avec le code: ${code.substring(0, 10)}... et state: ${state}`);
+    
+    return this.apiService.get<AuthResponse>(`auth/linkedin/callback?code=${code}&state=${state}`, httpOptions)
       .pipe(
-        tap(response => this.handleAuthResponse(response)),
+        timeout(20000), // 20 secondes de timeout pour cette requête
+        tap(response => {
+          console.log('Réponse reçue du serveur pour LinkedIn callback:', response);
+          this.handleAuthResponse(response);
+        }),
         catchError(error => {
-          console.error('Erreur lors du callback LinkedIn:', error);
-          return throwError(() => error);
+          console.error('Erreur détaillée lors du callback LinkedIn:', error);
+          
+          // Améliorer le message d'erreur selon le type d'erreur
+          let errorMessage: string;
+          
+          if (error.name === 'TimeoutError') {
+            errorMessage = 'Le serveur a mis trop de temps à répondre. Veuillez réessayer.';
+          } else if (error.status === 0) {
+            errorMessage = 'Impossible de contacter le serveur. Vérifiez votre connexion internet ou réessayez plus tard.';
+          } else if (error.error && error.error.message) {
+            errorMessage = error.error.message;
+          } else {
+            errorMessage = error.message || 'Une erreur inconnue s\'est produite';
+          }
+          
+          // Créer un objet d'erreur personnalisé avec des informations supplémentaires
+          const enhancedError = {
+            ...error,
+            userMessage: errorMessage,
+            originalError: error
+          };
+          
+          return throwError(() => enhancedError);
         })
       );
   }
@@ -229,21 +266,61 @@ export class AuthService {
   }
 
   /**
-   * Traiter la réponse de l'authentification
-   * @param response Réponse d'authentification de l'API
+   * Gérer la réponse d'authentification
+   * @param response Réponse contenant le token JWT et les infos utilisateur
    */
   private handleAuthResponse(response: AuthResponse): void {
-    if (response && response.success) {
-      const expirationDate = new Date(response.expiration);
+    if (response && response.token) {
+      const tokenExpiration = new Date();
+      tokenExpiration.setHours(tokenExpiration.getHours() + 24);
+
       const authState: AuthState = {
         isAuthenticated: true,
-        user: response.user,
+        user: response.user || null,
         token: response.token,
-        refreshToken: response.refreshToken,
-        tokenExpiration: expirationDate
+        refreshToken: response.refreshToken || null,
+        tokenExpiration: tokenExpiration
       };
+
+      // Stocker dans le stockage local
       this.saveAuthState(authState);
+
+      // Mettre à jour le sujet BehaviorSubject
       this.authStateSubject.next(authState);
+      
+      console.log('État d\'authentification mis à jour:', authState);
+    }
+  }
+  
+  /**
+   * Force le rechargement de l'état d'authentification depuis localStorage
+   * Utile après une authentification par popup/iframe (LinkedIn)
+   */
+  refreshAuthState(): void {
+    console.log('Rafraîchissement forcé de l\'état d\'authentification');
+    
+    try {
+      // Chargement direct depuis le localStorage sans appel API
+      const storedState = localStorage.getItem(this.AUTH_DATA_KEY);
+      if (storedState) {
+        console.log('[LinkedIn-Auth] Données trouvées dans localStorage, chargement...');
+        const parsedState = JSON.parse(storedState);
+        const authState: AuthState = {
+          isAuthenticated: parsedState.isAuthenticated,
+          user: parsedState.user,
+          token: parsedState.token,
+          refreshToken: parsedState.refreshToken,
+          tokenExpiration: parsedState.tokenExpiration ? new Date(parsedState.tokenExpiration) : null
+        };
+        
+        // Mise à jour de l'état sans vérification d'expiration pour éviter l'appel API
+        this.authStateSubject.next(authState);
+        console.log('État d\'authentification rafraîchi avec succès:', authState);
+      } else {
+        console.log('Aucun état d\'authentification trouvé dans localStorage');
+      }
+    } catch (error) {
+      console.error('Erreur lors du rafraîchissement de l\'état d\'authentification:', error);
     }
   }
 
@@ -278,17 +355,13 @@ export class AuthService {
           tokenExpiration: parsedState.tokenExpiration ? new Date(parsedState.tokenExpiration) : null
         };
         
-        // Vérifier si le token est expiré
+        // Vérifier si le token est expiré mais uniquement pour mettre à jour l'interface,
+        // sans faire d'appel API pour le rafraîchir (évite l'erreur 404)
         if (authState.isAuthenticated && this.isTokenExpired()) {
-          // Si le token est expiré, tenter de le rafraîchir automatiquement
-          const refreshToken = authState.refreshToken;
-          if (refreshToken) {
-            this.refreshToken(refreshToken).subscribe({
-              error: () => this.clearAuthState()
-            });
-          } else {
-            this.clearAuthState();
-          }
+          console.log('Token expiré, mise à jour de l\'état sans appel API');
+          // On considère l'utilisateur toujours authentifié mais on note que le token est expiré
+          // L'UI pourra gérer cette situation si nécessaire
+          this.authStateSubject.next(authState);
         } else {
           this.authStateSubject.next(authState);
         }

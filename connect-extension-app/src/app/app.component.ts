@@ -217,14 +217,31 @@ export class AppComponent implements OnInit, OnDestroy {
     // Si un profil est spécifié, on l'utilise temporairement pour cette action
     const profile = profileOverride || this.userProfile;
     
-    if (profile === 'consultant') {
-      // Logique pour publier une disponibilité
-      console.log('Action: Publier disponibilité');
-      this.modalService.openLoginModal();
+    // Vérifier si l'utilisateur est déjà connecté
+    if (this.authService.isAuthenticated) {
+      // L'utilisateur est déjà connecté, rediriger directement vers l'action appropriée
+      if (profile === 'consultant') {
+        // Logique pour publier une disponibilité - utilisateur déjà connecté
+        console.log('Action: Publier disponibilité (utilisateur connecté)');
+        // TODO: Rediriger vers le formulaire de publication de disponibilité
+        this.router.navigate(['/dashboard/availability/new']);
+      } else {
+        // Logique pour publier une mission - utilisateur déjà connecté
+        console.log('Action: Publier mission (utilisateur connecté)');
+        // TODO: Rediriger vers le formulaire de publication de mission
+        this.router.navigate(['/dashboard/missions/new']);
+      }
     } else {
-      // Logique pour publier une mission
-      console.log('Action: Publier mission');
-      this.modalService.openLoginModal();
+      // L'utilisateur n'est pas connecté, afficher le modal de connexion
+      if (profile === 'consultant') {
+        // Logique pour publier une disponibilité - demander connexion
+        console.log('Action: Publier disponibilité (demande connexion)');
+        this.modalService.openLoginModal();
+      } else {
+        // Logique pour publier une mission - demander connexion
+        console.log('Action: Publier mission (demande connexion)');
+        this.modalService.openLoginModal();
+      }
     }
     
     // Fermer le dropdown après l'action

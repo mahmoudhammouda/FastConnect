@@ -8,6 +8,8 @@ export interface LinkedInCallbackEvent {
   success: boolean;
   data?: any;
   error?: string;
+  originalError?: string;
+  needsReauthentication?: boolean;
 }
 
 @Injectable({
@@ -100,12 +102,29 @@ export class LinkedInCallbackHandlerService {
    * Gestion des erreurs LinkedIn
    */
   private handleError(errorCode: string, errorMessage: string): void {
-    this.notificationService.loginError(errorMessage, 'linkedin');
+    // Analyser si l'erreur concerne un code d'autorisation expiré
+    const isExpiredCode = errorMessage.includes('code expired') || 
+                          errorMessage.includes('does not match authorization code') ||
+                          errorMessage.includes('invalid_request');
     
-    // Émettre l'événement d'erreur
+    // Message personnalisé pour les erreurs courantes
+    let displayMessage = errorMessage;
+    
+    if (isExpiredCode) {
+      displayMessage = 'La session d\'authentification LinkedIn a expiré. Veuillez réessayer.';
+      console.warn('Code d\'autorisation expiré, demande de réessai:', errorMessage);
+    } else if (errorMessage.includes('access_denied')) {
+      displayMessage = 'Vous avez refusé l\'autorisation LinkedIn. Veuillez réessayer et accepter les permissions.';
+    }
+    
+    this.notificationService.loginError(displayMessage, 'linkedin');
+    
+    // Émettre l'événement d'erreur avec des informations supplémentaires
     this.callbackSubject.next({
       success: false,
-      error: errorMessage
+      error: displayMessage,
+      originalError: errorMessage,
+      needsReauthentication: isExpiredCode
     });
     
     console.error(`Erreur LinkedIn (${errorCode}):`, errorMessage);
