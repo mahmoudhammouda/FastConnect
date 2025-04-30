@@ -34,7 +34,7 @@
       </div>
       
       <!-- Bouton de connexion LinkedIn -->
-      <div *ngIf="!showRegisterForm" class="mb-5">
+      <div *ngIf="!showRegisterForm && !showLinkedInModal" class="mb-5">
         <button 
           type="button" 
           (click)="loginWithLinkedIn()"
@@ -46,6 +46,15 @@
           </svg>
           <span>Se connecter avec LinkedIn</span>
         </button>
+      </div>
+      
+      <!-- Modal d'authentification LinkedIn -->
+      <div *ngIf="showLinkedInModal" class="fc-linkedin-auth-container">
+        <app-linkedin-modal
+          (success)="onLinkedInSuccess($event)"
+          (cancel)="onLinkedInCancel()"
+          [redirectBackUrl]="'/'"
+        ></app-linkedin-modal>
       </div>
       
       <!-- Séparateur -->

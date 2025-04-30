@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } 
 import { AuthService } from '../../../services/auth.service';
 import { ModalService } from '../../../services/modal.service';
 import { NotificationService } from '../../../services/notification.service';
+import { LinkedInModalComponent } from '../linkedin-modal/linkedin-modal.component';
 import { EmailAuthCredentials, UserRegistration, LinkedInAuthUrlResponse } from '../../../models/user.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -13,7 +14,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule]
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, LinkedInModalComponent]
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
@@ -23,6 +24,7 @@ export class LoginComponent implements OnInit {
   rememberMe = false;
   loginMode: 'email' = 'email';
   showRegisterForm = false;
+  showLinkedInModal = false;
 
   constructor(
     private authService: AuthService, 
@@ -115,8 +117,9 @@ export class LoginComponent implements OnInit {
         this.authService.register(registrationData).subscribe({
           next: () => {
             this.isLoading = false;
+            this.loginError = '';
             this.showRegisterForm = false;
-            this.loginError = null;
+            this.showLinkedInModal = false;
             this.notificationService.success('Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter.', 'Inscription réussie');
             this.cdr.detectChanges();
           },
@@ -132,30 +135,21 @@ export class LoginComponent implements OnInit {
   }
   
   loginWithLinkedIn(): void {
-    // Activer immédiatement le statut de chargement pour l'animation
-    this.isLoading = true;
+    // Au lieu de rediriger vers LinkedIn, on affiche la modal d'authentification LinkedIn
+    this.showLinkedInModal = true;
+  }
+  
+  onLinkedInSuccess(response: any): void {
+    this.showLinkedInModal = false;
     this.loginError = null;
-    this.cdr.detectChanges();
-    
-    this.ngZone.run(() => {
-      // Utiliser setTimeout pour permettre au navigateur de mettre à jour l'UI
-      setTimeout(() => {
-        // Rediriger vers l'endpoint d'authentification LinkedIn
-        this.authService.getLinkedInAuthUrl().subscribe({
-          next: (response: LinkedInAuthUrlResponse) => {
-            // Rediriger vers l'URL d'autorisation LinkedIn
-            window.location.href = response.url;
-          },
-          error: (error: HttpErrorResponse) => {
-            this.isLoading = false;
-            this.loginError = "Impossible de se connecter à LinkedIn. Veuillez réessayer plus tard.";
-            console.error('Erreur LinkedIn redirect:', error);
-            this.notificationService.loginError(this.loginError, 'linkedin');
-            this.cdr.detectChanges();
-          }
-        });
-      }, 10);
-    });
+    // Fermer la modal d'authentification
+    this.closeModal();
+    // Rediriger vers la page principale
+    this.router.navigate(['/']);
+  }
+
+  onLinkedInCancel(): void {
+    this.showLinkedInModal = false;
   }
   
   toggleRegisterForm(): void {
