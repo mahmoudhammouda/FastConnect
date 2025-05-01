@@ -68,13 +68,11 @@ export class LinkedInCallbackHandlerService {
     this.authService.linkedInCallback(code, state).subscribe({
       next: (response) => {
         if (response && response.token) {
-          // Stockage du token JWT
-          localStorage.setItem('auth_token', response.token);
-          
-          // Stockage des informations utilisateur
-          if (response.user) {
-            localStorage.setItem('user', JSON.stringify(response.user));
-          }
+          // Utiliser la méthode standardisée du service d'authentification
+          // au lieu de stocker directement dans localStorage
+          console.log('[LinkedInCallbackHandler] Utilisation du stockage standardisé');
+          this.authService.storeAuthData(response.token, response.user, response.refreshToken);
+          console.log('[LinkedInCallbackHandler] Données d\'authentification stockées de manière standardisée');
           
           this.notificationService.loginSuccess('linkedin');
           

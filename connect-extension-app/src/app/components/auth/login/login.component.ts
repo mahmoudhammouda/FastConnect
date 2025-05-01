@@ -1,4 +1,4 @@
-import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -16,7 +16,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, LinkedInModalComponent]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   registerForm!: FormGroup;
   isLoading = false;
@@ -25,6 +25,7 @@ export class LoginComponent implements OnInit {
   loginMode: 'email' = 'email';
   showRegisterForm = false;
   showLinkedInModal = false;
+  private checkInterval: any = null;
 
   constructor(
     private authService: AuthService, 
@@ -50,8 +51,100 @@ export class LoginComponent implements OnInit {
       lastName: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', [Validators.required]],
       userType: ['consultant', [Validators.required]]
     });
+    
+    // Ajouter un écouteur global pour l'authentification LinkedIn
+    this.setupGlobalLinkedInListener();
+    
+    // Ajouter un écouteur pour fermer automatiquement le modal quand LinkedIn envoie un message
+    window.addEventListener('message', this.handleLinkedInMessages);
+  }
+  
+  ngOnDestroy(): void {
+    // Nettoyer l'écouteur pour éviter les fuites mémoire
+    window.removeEventListener('message', this.handleLinkedInMessages);
+    
+    // Nettoyer l'intervalle de vérification s'il existe encore
+    if (this.checkInterval) {
+      clearInterval(this.checkInterval);
+    }
+  }
+  
+  // Cette méthode a été déplacée plus bas pour éviter la duplication
+  
+  /**
+   * Met en place un écouteur global pour détecter l'authentification LinkedIn réussie
+   * Cette méthode ajoute un mécanisme supplémentaire qui surveillera tout changement
+   * dans le localStorage et vérifiera si les données d'authentification y sont présentes
+   */
+  setupGlobalLinkedInListener(): void {
+    console.log('[Login Component] Configuration de l\'observateur global pour l\'authentification LinkedIn');
+
+    // Surveiller les modifications du localStorage
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'auth_data' && event.newValue) {
+        console.log('[Login Component] Détection de nouvelles données d\'authentification');
+        
+        try {
+          // IMPORTANT : Forcer le rafraîchissement de l'état d'authentification
+          // avant de vérifier si l'utilisateur est authentifié
+          console.log('[Login Component] Rafraîchissement forcé de l\'état d\'authentification');
+          const isAuthenticated = this.authService.refreshAuthState();
+          
+          // Laisser un court délai pour que la mise à jour soit prise en compte
+          setTimeout(() => {
+            // Vérifier si l'authentification est valide après rafraîchissement
+            console.log('[Login Component] Vérification de l\'authentification après rafraîchissement:', 
+                        this.authService.isAuthenticated ? 'authentifié' : 'non authentifié');
+            
+            if (this.authService.isAuthenticated) {
+              console.log('[Login Component] Authentification valide détectée, fermeture de la modal');
+              this.ngZone.run(() => {
+                this.closeModal();
+                this.notificationService.loginSuccess('linkedin');
+              });
+            } else {
+              console.log('[Login Component] Authentification non valide après rafraîchissement d\'état');
+            }
+          }, 100);
+        } catch (error) {
+          console.error('[Login Component] Erreur lors de la vérification des données d\'authentification', error);
+        }
+      }
+    });
+    
+    // Vérifier périodiquement s'il y a des données d'authentification
+    // Ce mécanisme complémentaire vérifie toutes les secondes
+    this.checkInterval = setInterval(() => {
+      if (this.showLinkedInModal && this.authService.isAuthenticated) {
+        console.log('[Login Component] Authentification détectée lors de la vérification périodique');
+        this.ngZone.run(() => {
+          this.showLinkedInModal = false;
+          this.closeModal();
+          this.notificationService.loginSuccess('linkedin');
+          clearInterval(this.checkInterval);
+        });
+      }
+    }, 1000);
+    
+    // Nettoyer l'intervalle après 30 secondes maximum
+    setTimeout(() => {
+      if (this.checkInterval) {
+        clearInterval(this.checkInterval);
+        this.checkInterval = null;
+      }
+    }, 30000);  // 30 secondes maximum
+  }
+
+  // Gestionnaire pour les messages provenant du composant LinkedIn
+  private handleLinkedInMessages = (event: MessageEvent) => {
+    // Vérifier si c'est un message pour fermer le modal
+    if (event.data && event.data.type === 'close-linkedin-modal') {
+      console.log('Fermeture automatique du modal de login après LinkedIn auth');
+      this.modalService.closeLoginModal();
+    }
   }
 
   onSubmit(): void {
@@ -78,6 +171,8 @@ export class LoginComponent implements OnInit {
             this.isLoading = false;
             this.loginError = null;
             this.notificationService.loginSuccess('email');
+            // Fermer le modal de connexion après authentification réussie
+            this.modalService.closeLoginModal();
             this.router.navigate(['/']);
             this.cdr.detectChanges();
           },
@@ -140,12 +235,39 @@ export class LoginComponent implements OnInit {
   }
   
   onLinkedInSuccess(response: any): void {
-    this.showLinkedInModal = false;
-    this.loginError = null;
-    // Fermer la modal d'authentification
-    this.closeModal();
-    // Rediriger vers la page principale
-    this.router.navigate(['/']);
+    console.log('[Login Component] LinkedIn authentification réussie, traitement SYNCHRONE...');
+    
+    try {
+      // Action 1: Masquer la modal LinkedIn et réinitialiser les erreurs
+      this.showLinkedInModal = false;
+      this.loginError = null;
+      
+      // Action 2: Fermer IMMEDIATEMENT la modal de login principale
+      console.log('[Login Component] Fermeture SYNCHRONE de la modal de login');
+      document.getElementById('login-modal-close-btn')?.click();
+      this.modalService.closeLoginModal();
+      this.cdr.detectChanges(); // Force la détection des changements Angular
+      
+      // Action 3: Afficher la notification de succès
+      console.log('[Login Component] Affichage de la notification de succès LinkedIn');
+      this.notificationService.loginSuccess('linkedin');
+      
+      // Action 4: Rediriger vers la page principale
+      console.log('[Login Component] Redirection vers la page principale');
+      this.router.navigate(['/']);
+      
+      // Action 5: Tentative supplémentaire de fermeture après un court délai
+      setTimeout(() => {
+        console.log('[Login Component] Tentative supplémentaire de fermeture');
+        this.closeModal();
+        this.modalService.closeLoginModal();
+      }, 200);
+      
+    } catch (error) {
+      console.error('[Login Component] Erreur lors du traitement de l\'authentification LinkedIn:', error);
+      // Tenter la fermeture manuelle, même en cas d'erreur
+      this.modalService.closeLoginModal();
+    }
   }
 
   onLinkedInCancel(): void {
@@ -167,7 +289,12 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  /**
+   * Ferme la modale de connexion et réinitialise l'état
+   */
   closeModal(): void {
+    console.log('[Login Component] Fermeture de la modale de connexion');
+    this.showLinkedInModal = false;
     this.modalService.closeLoginModal();
     this.resetForm();
   }

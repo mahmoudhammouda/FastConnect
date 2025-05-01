@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
 import { catchError, tap, timeout } from 'rxjs/operators';
 import { 
   User, 
@@ -240,16 +240,16 @@ export class AuthService {
    * Déconnexion de l'utilisateur
    */
   logout(): Observable<boolean> {
-    // Appel à l'API pour invalider le token côté serveur (optionnel)
-    return this.apiService.post<boolean>('auth/logout', {}).pipe(
+    // MODIFICATION: Au lieu d'appeler une API qui n'existe pas, on effectue la déconnexion uniquement côté client
+    console.log('[Auth] Déconnexion locale sans appel API');
+    
+    // Nettoyer l'état d'authentification en mémoire et localStorage
+    this.clearAuthState();
+    
+    // Retourner un Observable de succès immédiat
+    return of(true).pipe(
       tap(() => {
-        this.clearAuthState();
-      }),
-      catchError(error => {
-        console.error('Erreur lors de la déconnexion:', error);
-        // Même en cas d'erreur, on efface les données d'authentification côté client
-        this.clearAuthState();
-        return throwError(() => error);
+        console.log('[Auth] Déconnexion effectuée avec succès');
       })
     );
   }
@@ -266,45 +266,74 @@ export class AuthService {
   }
 
   /**
+   * Méthode publique standardisée pour stocker les données d'authentification
+   * Cette méthode doit être utilisée par tous les composants qui ont besoin de stocker des données d'auth
+   * @param token Le token JWT
+   * @param user Les données utilisateur
+   * @param refreshToken Le token de rafraîchissement (optionnel)
+   */
+  public storeAuthData(token: string, user: any, refreshToken?: string): void {
+    console.log('[Auth] Stockage standardisé des données d\'authentification');
+    
+    if (!token) {
+      console.error('[Auth] Tentative de stockage avec un token manquant');
+      return;
+    }
+    
+    const tokenExpiration = new Date();
+    tokenExpiration.setHours(tokenExpiration.getHours() + 24);
+
+    // Créer l'état d'authentification
+    const authState: AuthState = {
+      isAuthenticated: true,
+      user: user || null,
+      token: token,
+      refreshToken: refreshToken || null,
+      tokenExpiration: tokenExpiration
+    };
+
+    // IMPORTANT: Ne stocker les données que dans auth_data pour standardisation
+    // et éviter les clés multiples dans localStorage
+    this.saveAuthState(authState);
+
+    // Mettre à jour le sujet BehaviorSubject
+    this.authStateSubject.next(authState);
+    
+    console.log('[Auth] Données d\'authentification stockées de manière standardisée');
+  }
+
+  /**
    * Gérer la réponse d'authentification
-   * @param response Réponse contenant le token JWT et les infos utilisateur
+   * @param response Données de réponse de l'API
    */
   private handleAuthResponse(response: AuthResponse): void {
     if (response && response.token) {
-      const tokenExpiration = new Date();
-      tokenExpiration.setHours(tokenExpiration.getHours() + 24);
-
-      const authState: AuthState = {
-        isAuthenticated: true,
-        user: response.user || null,
-        token: response.token,
-        refreshToken: response.refreshToken || null,
-        tokenExpiration: tokenExpiration
-      };
-
-      // Stocker dans le stockage local
-      this.saveAuthState(authState);
-
-      // Mettre à jour le sujet BehaviorSubject
-      this.authStateSubject.next(authState);
-      
-      console.log('État d\'authentification mis à jour:', authState);
+      // Utiliser la méthode standardisée
+      this.storeAuthData(response.token, response.user, response.refreshToken);
     }
   }
   
   /**
    * Force le rechargement de l'état d'authentification depuis localStorage
    * Utile après une authentification par popup/iframe (LinkedIn)
+   * @returns true si l'utilisateur est authentifié, false sinon
    */
-  refreshAuthState(): void {
-    console.log('Rafraîchissement forcé de l\'état d\'authentification');
+  refreshAuthState(): boolean {
+    console.log('[AuthService] Rafraîchissement forcé de l\'état d\'authentification');
     
     try {
       // Chargement direct depuis le localStorage sans appel API
       const storedState = localStorage.getItem(this.AUTH_DATA_KEY);
       if (storedState) {
-        console.log('[LinkedIn-Auth] Données trouvées dans localStorage, chargement...');
+        console.log('[AuthService] Données trouvées dans localStorage, chargement...');
         const parsedState = JSON.parse(storedState);
+        
+        // S'assurer que isAuthenticated est correctement défini si un token est présent
+        if (parsedState.token && !parsedState.isAuthenticated) {
+          console.log('[AuthService] Token présent mais isAuthenticated faux - correction');
+          parsedState.isAuthenticated = true;
+        }
+        
         const authState: AuthState = {
           isAuthenticated: parsedState.isAuthenticated,
           user: parsedState.user,
@@ -315,13 +344,17 @@ export class AuthService {
         
         // Mise à jour de l'état sans vérification d'expiration pour éviter l'appel API
         this.authStateSubject.next(authState);
-        console.log('État d\'authentification rafraîchi avec succès:', authState);
+        console.log('[AuthService] État d\'authentification rafraîchi avec succès:', authState.isAuthenticated);
+        
+        return authState.isAuthenticated;
       } else {
-        console.log('Aucun état d\'authentification trouvé dans localStorage');
+        console.log('[AuthService] Aucun état d\'authentification trouvé dans localStorage');
       }
     } catch (error) {
-      console.error('Erreur lors du rafraîchissement de l\'état d\'authentification:', error);
+      console.error('[AuthService] Erreur lors du rafraîchissement de l\'état d\'authentification:', error);
     }
+    
+    return false;
   }
 
   /**
@@ -376,7 +409,16 @@ export class AuthService {
    * Effacer l'état d'authentification
    */
   private clearAuthState(): void {
-    localStorage.removeItem(this.AUTH_DATA_KEY);
+    // Supprimer toutes les clés liées à l'authentification du localStorage
+    console.log('[Auth] Nettoyage complet des données d\'authentification du localStorage');
+    localStorage.removeItem(this.AUTH_DATA_KEY); // auth_data
+    localStorage.removeItem('auth_token');      // token JWT direct
+    localStorage.removeItem('user');            // données utilisateur directes
+    
+    // Optionnel: vous pouvez conserver fc-user-profile car c'est juste une préférence UI
+    // localStorage.removeItem('fc-user-profile'); // profil utilisateur (consultant/recruteur)
+    
+    // Réinitialiser l'état d'authentification dans le service
     this.authStateSubject.next({
       isAuthenticated: false,
       user: null,
@@ -384,5 +426,7 @@ export class AuthService {
       refreshToken: null,
       tokenExpiration: null
     });
+    
+    console.log('[Auth] Toutes les données d\'authentification ont été nettoyées');
   }
 }

@@ -139,6 +139,7 @@ namespace ConnectExtension.Backend.Controllers
         /// Rafraîchir un token JWT
         /// </summary>
         [HttpPost("refresh")]
+        [HttpPost("refresh-token")] // Ajouter cet alias pour compatibilité avec le frontend
         public async Task<ActionResult<AuthResponse>> RefreshToken([FromBody] RefreshTokenRequest request)
         {
             var response = await _authService.RefreshTokenAsync(request.RefreshToken);
@@ -149,6 +150,33 @@ namespace ConnectExtension.Backend.Controllers
             }
             
             return Ok(response);
+        }
+
+        /// <summary>
+        /// Déconnecter l'utilisateur et invalider son token
+        /// </summary>
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<ActionResult<bool>> Logout()
+        {
+            try
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    // Utilisateur déjà déconnecté ou token invalide
+                    return Ok(true);
+                }
+                
+                // Vous pouvez ajouter ici une logique pour invalider le refresh token en base de données
+                // await _authService.InvalidateTokensForUserAsync(userId);
+                
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Success = false, Message = $"Erreur lors de la déconnexion: {ex.Message}" });
+            }
         }
 
         /// <summary>

@@ -193,15 +193,15 @@ export class LinkedInCallbackComponent implements OnInit {
           console.log('[LinkedIn-Callback] Token présent dans la réponse - Authentification réussie!'); 
           console.log('[LinkedIn-Callback] Token (début):', response.token.substring(0, 15) + '...');
           
-          // Stocker le token JWT
-          localStorage.setItem('auth_token', response.token);
-          console.log('[LinkedIn-Callback] Token enregistré dans localStorage');
-
-          // Stocker les informations utilisateur si disponibles
+          // Utiliser la méthode standardisée du service d'authentification
+          // au lieu de stocker directement dans localStorage
+          console.log('[LinkedIn-Callback] Stockage des données d\'auth via le service centralisé');
+          this.authService.storeAuthData(response.token, response.user, response.refreshToken);
+          console.log('[LinkedIn-Callback] Données d\'authentification enregistrées de manière standardisée');
+          
+          // Vérifier si les informations utilisateur sont disponibles dans les logs seulement
           if (response.user) {
             console.log('[LinkedIn-Callback] Informations utilisateur présentes:', response.user);
-            localStorage.setItem('user', JSON.stringify(response.user));
-            console.log('[LinkedIn-Callback] Informations utilisateur enregistrées dans localStorage');
           } else {
             console.log('[LinkedIn-Callback] Aucune information utilisateur dans la réponse');
           }

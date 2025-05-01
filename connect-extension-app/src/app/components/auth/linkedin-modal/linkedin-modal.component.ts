@@ -1,9 +1,10 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
-import { NotificationService } from '../../../services/notification.service';
 import { LinkedInCallbackHandlerService } from '../../../services/linkedin-callback-handler.service';
+import { ModalService } from '../../../services/modal.service';
+import { NotificationService } from '../../../services/notification.service';
 
 @Component({
   selector: 'app-linkedin-modal',
@@ -17,10 +18,11 @@ import { LinkedInCallbackHandlerService } from '../../../services/linkedin-callb
           <span class="visually-hidden">Chargement...</span>
         </div>
         <p>Authentification LinkedIn en cours...</p>
-        <p class="fc-linkedin-info">Veuillez compléter l'authentification dans la fenêtre qui s'est ouverte.</p>
+        <p class="fc-linkedin-info">Une fenêtre LinkedIn va s'ouvrir. Veuillez y saisir vos identifiants pour continuer.</p>
+        <p class="fc-linkedin-info">Ne fermez pas cette fenêtre pendant l'authentification.</p>
       </div>
       
-      <!-- Message de succès -->
+      <!-- Message de succès - ne s'affiche que lorsque l'authentification est réellement terminée -->
       <div *ngIf="authenticationComplete && !error" class="fc-linkedin-success">
         <div class="fc-linkedin-success-icon">
           <i class="fas fa-check-circle"></i>
@@ -153,29 +155,31 @@ import { LinkedInCallbackHandlerService } from '../../../services/linkedin-callb
   `]
 })
 export class LinkedInModalComponent implements OnInit, OnDestroy {
-  @Input() redirectBackUrl: string = '/';
-  @Output() success = new EventEmitter<any>();
+  @Input() redirectUrl: string = '/';
+  @Output() success = new EventEmitter<{token: string, user: any}>();
+  @Output() errorEvent = new EventEmitter<string>();
   @Output() cancel = new EventEmitter<void>();
   
-  isLoading = true;
-  isInitialLoading = true;
-  error: string | null = null;
   authenticationComplete = false;
-  
-  // Intervalle pour surveiller le callback
-  private checkIntervalId: any;
+  isInitialLoading = false;
+  isLoading = false;
+  error: string | null = null;
+  linkedInWindow: Window | null = null;
+  checkIntervalId: any = null; // Pour vérifier l'état de la fenêtre popup
+  successTimeoutId: any = null; // Pour nettoyer le setTimeout de succès
   
   constructor(
     private authService: AuthService,
     private notificationService: NotificationService,
     private linkedInCallbackHandler: LinkedInCallbackHandlerService,
     private router: Router,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private modalService: ModalService
   ) {}
   
   ngOnInit(): void {
     console.log('[LinkedIn-Modal] Initialisation du composant LinkedIn Modal');
-    console.log('[LinkedIn-Modal] URL de redirection: ' + this.redirectBackUrl);
+    console.log('[LinkedIn-Modal] URL de redirection: ' + this.redirectUrl);
     
     this.initializeLinkedInAuth();
     this.setupCallbackListener();
@@ -191,6 +195,7 @@ export class LinkedInModalComponent implements OnInit, OnDestroy {
         } else if (event.error) {
           console.log('[LinkedIn-Modal] Événement d\'erreur reçu:', event.error);
           this.error = event.error;
+          this.errorEvent.emit(event.error);
           this.isLoading = false;
         }
       } else {
@@ -201,10 +206,20 @@ export class LinkedInModalComponent implements OnInit, OnDestroy {
   
   ngOnDestroy(): void {
     console.log('[LinkedIn-Modal] Destruction du composant LinkedIn Modal');
+    // Nettoyer les intervalles et timeouts
     if (this.checkIntervalId) {
       console.log('[LinkedIn-Modal] Arrêt de l\'intervalle de vérification');
       clearInterval(this.checkIntervalId);
+      this.checkIntervalId = null;
     }
+    
+    // Nettoyer également le timeout de succès
+    if (this.successTimeoutId) {
+      console.log('[LinkedIn-Modal] Arrêt du timeout de notification de succès');
+      clearTimeout(this.successTimeoutId);
+      this.successTimeoutId = null;
+    }
+    
     console.log('[LinkedIn-Modal] Suppression de l\'écouteur d\'événements message');
     window.removeEventListener('message', this.handleCallback);
   }
@@ -363,6 +378,8 @@ export class LinkedInModalComponent implements OnInit, OnDestroy {
           this.error = event.data.error || "Erreur pendant l'authentification LinkedIn";
           // S'assurer que l'erreur n'est pas null avant de l'envoyer à la notification
           const errorMessage = this.error || "Erreur pendant l'authentification LinkedIn";
+          // Émettre l'événement d'erreur
+          this.errorEvent.emit(errorMessage);
           // Afficher une notification d'erreur dans l'application principale seulement si demandé
           if (event.data.shouldNotify) {
             this.notificationService.loginError(errorMessage, 'linkedin');
@@ -375,52 +392,103 @@ export class LinkedInModalComponent implements OnInit, OnDestroy {
     }
   }
   
+  /**
+   * Vérifie périodiquement si l'authentification a réussi
+   * Note: Cette méthode est un mécanisme de secours et n'est plus la méthode principale
+   * d'authentification depuis la standardisation du processus
+   */
   private checkForAuthCode(): void {
-    console.log('[LinkedIn-Modal] Vérification dans localStorage pour un code d\'authentification');
+    // Si l'authentification est déjà complétée, ne pas exécuter cette fonction
+    if (this.authenticationComplete) {
+      // S'assurer que l'intervalle est bien arrêté
+      if (this.checkIntervalId) {
+        console.log('[LinkedIn-Modal] Arrêt des vérifications périodiques (auth déjà complétée)');
+        clearInterval(this.checkIntervalId);
+        this.checkIntervalId = null;
+      }
+      return;
+    }
+    
     try {
-      // Vérifier si une authentification a été effectuée via le localStorage
-      const token = localStorage.getItem('auth_token');
-      const userJson = localStorage.getItem('user');
+      // Vérifier uniquement si l'utilisateur est bien authentifié
+      // sans log pour éviter de polluer la console avec des vérifications négatives
+      const isAuthenticated = this.authService.isAuthenticated;
+      const hasToken = this.authService.token !== null;
       
-      console.log('[LinkedIn-Modal] Vérification auth_token: ' + (token ? 'présent' : 'absent'));
-      console.log('[LinkedIn-Modal] Vérification user: ' + (userJson ? 'présent' : 'absent'));
-      
-      if (token && userJson) {
-        console.log('[LinkedIn-Modal] Token et données utilisateur trouvés, authentification réussie!');
-        this.authenticationComplete = true;
-        this.isLoading = false;
-        
-        // Notification visible dans l'application principale (si pas déjà affichée)
-        if (!this.authenticationComplete) {
-          console.log('[LinkedIn-Modal] Envoi de la notification de succès');
-          this.notificationService.loginSuccess('linkedin');
+      if (isAuthenticated && hasToken) {
+        // IMPORTANT: Arrêter d'abord l'intervalle avant tout traitement
+        if (this.checkIntervalId) {
+          console.log('[LinkedIn-Modal] Arrêt de l\'intervalle de vérification');
+          clearInterval(this.checkIntervalId);
+          this.checkIntervalId = null;
         }
         
-        // IMPORTANT: Forcer le rafraîchissement de l'état d'authentification pour mettre à jour l'UI
+        console.log('[LinkedIn-Modal] Token et données utilisateur trouvés, authentification réussie!');
+        
+        // Marquer l'authentification comme terminée avant tout autre traitement
+        this.isLoading = false;
+        this.authenticationComplete = true;
+        
+        // Forcer le rafraîchissement de l'état d'authentification pour mettre à jour l'UI
         console.log('[LinkedIn-Modal] Rafraichissement de l\'etat d\'authentification via authService');
         this.authService.refreshAuthState();
+        
+        // Gérer le succès une seule fois
+        if (!this.successTimeoutId) {
+          // Afficher une notification de succès
+          this.notificationService.loginSuccess('linkedin');
+          
+          console.log('[LinkedIn-Modal] Envoi unique de la notification de succès');
 
-        // Notifier le composant parent après un court délai pour permettre l'affichage du succès
-        console.log('[LinkedIn-Modal] Délai de 1.5s avant notification finale du succès');
-        setTimeout(() => {
-          // Vérifier si on est dans une iframe (pour éviter les toasts en double)
-          const isInIframe = window.self !== window.top;
-          console.log('[LinkedIn-Modal] En iframe ?: ' + isInIframe);
-          
-          // Notification visible dans l'application principale uniquement si on n'est pas dans une iframe
-          if (!isInIframe && !this.authenticationComplete) {
-            console.log('[LinkedIn-Modal] Affichage de la notification de succès dans la fenêtre principale');
-            this.notificationService.loginSuccess('linkedin');
-          }
-          
-          // S'assurer que token est bien une chaîne de caractères non null
-          console.log('[LinkedIn-Modal] Emission de l\'evenement de succes avec token et donnees utilisateur');
-          this.success.emit({
-            token: token,
-            user: JSON.parse(userJson)
-          });
-          console.log('[LinkedIn-Modal] Processus d\'authentification terminé avec succès');
-        }, 1500); // Délai de 1.5 secondes pour voir le message de succès
+          // Notifier le composant parent après un court délai très court
+          this.successTimeoutId = setTimeout(() => {
+            // Vérifier si on est dans une iframe
+            const isInIframe = window.self !== window.top;
+            console.log('[LinkedIn-Modal] En iframe ?: ' + isInIframe);
+            
+            // Émettre l'événement de succès une seule fois en utilisant les valeurs du service d'authentification
+            console.log('[LinkedIn-Modal] Emission unique de l\'evenement de succes');
+            this.success.emit({
+              token: this.authService.token || '',
+              user: this.authService.currentUser || {}
+            });
+            
+            // Gérer la fermeture des modales de façon séquentielle et avec des délais appropriés
+            console.log('[LinkedIn-Modal] Fermeture automatique des modales - séquence démarrée');
+            
+            // 1. D'abord fermer la modal LinkedIn si elle est dans une fenêtre popup
+            if (window.opener) {
+              console.log('[LinkedIn-Modal] Envoi du message à la fenêtre parente pour fermer la modal LinkedIn');
+              window.opener.postMessage({ type: 'close-linkedin-modal' }, '*');
+            }
+            
+            // 2. Attendre un peu pour s'assurer que la première modale est fermée
+            this.ngZone.run(() => {
+              console.log('[LinkedIn-Modal] Préparation de la fermeture de la modal de login dans NgZone');
+              
+              // Avec un délai suffisant pour permettre aux actions précédentes de se terminer
+              setTimeout(() => {
+                console.log('[LinkedIn-Modal] Tentative de fermeture de la modal de login principale');
+                this.modalService.closeLoginModal();
+                console.log('[LinkedIn-Modal] État de la modal après tentative de fermeture:', 
+                  this.modalService.isLoginModalVisible ? 'toujours visible' : 'fermée');
+                
+                // Une seconde tentative pour plus de robustesse
+                setTimeout(() => {
+                  if (this.modalService.isLoginModalVisible) {
+                    console.log('[LinkedIn-Modal] Seconde tentative de fermeture de la modal');
+                    this.modalService.closeLoginModal();
+                  }
+                }, 500);
+              }, 300);
+            });
+            
+            console.log('[LinkedIn-Modal] Processus d\'authentification terminé avec succès');
+            
+            // Annuler la référence du timeout après exécution
+            this.successTimeoutId = null;
+          }, 500);
+        }
         
         // Arrêter la vérification
         if (this.checkIntervalId) {
@@ -429,7 +497,8 @@ export class LinkedInModalComponent implements OnInit, OnDestroy {
           this.checkIntervalId = null;
         }
       } else {
-        console.log('[LinkedIn-Modal] Aucun token trouvé dans localStorage, vérification terminée sans authentification');
+        // Ne rien afficher ici pour éviter de polluer la console avec des vérifications négatives régulières
+        // L'utilisateur n'est pas encore authentifié, mais le processus est toujours en cours
         this.isLoading = false;
       }
     } catch (error) {
@@ -471,15 +540,14 @@ export class LinkedInModalComponent implements OnInit, OnDestroy {
         console.log('[LinkedIn-Modal] Réponse reçue du service d\'authentification LinkedIn:', response);
         if (response && response.token) {
           console.log('[LinkedIn-Modal] Token présent dans la réponse, traitement...');
-          // Stockage du token JWT
-          localStorage.setItem('auth_token', response.token);
-          console.log('[LinkedIn-Modal] Token stocké dans localStorage');
+          // Utiliser la méthode standardisée du service d'authentification
+          console.log('[LinkedIn-Modal] Stockage des données via le service standardisé');
+          this.authService.storeAuthData(response.token, response.user, response.refreshToken);
+          console.log('[LinkedIn-Modal] Données d\'authentification stockées de manière standardisée');
           
-          // Stockage des informations utilisateur
+          // Logs pour le débogage
           if (response.user) {
-            console.log('[LinkedIn-Modal] Informations utilisateur présentes:', response.user);
-            localStorage.setItem('user', JSON.stringify(response.user));
-            console.log('[LinkedIn-Modal] Utilisateur stocké dans localStorage');
+            console.log('[LinkedIn-Modal] Informations utilisateur présentes dans la réponse');
           } else {
             console.log('[LinkedIn-Modal] Aucune information utilisateur dans la réponse');
           }
@@ -492,15 +560,20 @@ export class LinkedInModalComponent implements OnInit, OnDestroy {
           console.log('[LinkedIn-Modal] Rafraichissement de l\'etat d\'authentification');
           this.authService.refreshAuthState();
           
-          // Vérifier si on est dans une iframe (pour éviter les toasts en double)
+          // NE PAS envoyer la notification depuis ce composant pour éviter les doublons
+          // La notification sera envoyée par le composant Login principal qui est plus adapté
+          console.log('[LinkedIn-Modal] Authentification LinkedIn réussie, déclenchement de la fermeture');
+          
+          // IMPORTANT: Déclencher immédiatement l'événement success pour que le parent ferme les modals
+          console.log('[LinkedIn-Modal] Émission immédiate de l\'evento success');
+          this.success.emit({
+            token: this.authService.token || '',
+            user: this.authService.currentUser || {}
+          });
+          
+          // Vérifier si on est dans une iframe (pour la logique de communication)
           const isInIframe = window.self !== window.top;
           console.log('[LinkedIn-Modal] En iframe ?: ' + isInIframe);
-          
-          // Notification visible dans l'application principale uniquement si on n'est pas dans une iframe
-          if (!isInIframe) {
-            console.log('[LinkedIn-Modal] Envoi de la notification de succès (pas en iframe)');
-            this.notificationService.loginSuccess('linkedin');
-          }
           
           // Émettre l'événement de succès
           console.log('[LinkedIn-Modal] Preparation emission evenement succes avec delai de 1.5s');
@@ -510,6 +583,11 @@ export class LinkedInModalComponent implements OnInit, OnDestroy {
               token: response.token,
               user: response.user || {}
             });
+            
+            // Fermer la modal de login principale
+            console.log('[LinkedIn-Modal] Fermeture de la modal de login principale');
+            this.modalService.closeLoginModal();
+            
             console.log('[LinkedIn-Modal] Evenement success emis avec succes');
           }, 1500);
         } else {
