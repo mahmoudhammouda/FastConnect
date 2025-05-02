@@ -25,6 +25,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginMode: 'email' = 'email';
   showRegisterForm = false;
   showLinkedInModal = false;
+  linkedInAuthInProgress = false; // Indique si une authentification LinkedIn est en cours
   private checkInterval: any = null;
 
   constructor(
@@ -232,6 +233,14 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginWithLinkedIn(): void {
     // Au lieu de rediriger vers LinkedIn, on affiche la modal d'authentification LinkedIn
     this.showLinkedInModal = true;
+    // Indiquer que l'authentification LinkedIn est en cours
+    this.linkedInAuthInProgress = true;
+    
+    // Réinitialiser cet état après un certain temps ou si la modal est fermée
+    const resetTimeout = setTimeout(() => {
+      this.linkedInAuthInProgress = false;
+      clearTimeout(resetTimeout);
+    }, 120000); // 2 minutes maximum
   }
   
   onLinkedInSuccess(response: any): void {
@@ -240,6 +249,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     try {
       // Action 1: Masquer la modal LinkedIn et réinitialiser les erreurs
       this.showLinkedInModal = false;
+      this.linkedInAuthInProgress = false; // Réinitialiser l'indicateur d'authentification LinkedIn
       this.loginError = null;
       
       // Action 2: Fermer IMMEDIATEMENT la modal de login principale
@@ -265,6 +275,8 @@ export class LoginComponent implements OnInit, OnDestroy {
       
     } catch (error) {
       console.error('[Login Component] Erreur lors du traitement de l\'authentification LinkedIn:', error);
+      // Réinitialiser l'indicateur d'authentification LinkedIn même en cas d'erreur
+      this.linkedInAuthInProgress = false;
       // Tenter la fermeture manuelle, même en cas d'erreur
       this.modalService.closeLoginModal();
     }
@@ -272,6 +284,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   onLinkedInCancel(): void {
     this.showLinkedInModal = false;
+    this.linkedInAuthInProgress = false; // Réinitialiser l'indicateur d'authentification LinkedIn
+    console.log('[Login Component] Authentification LinkedIn annulée');
   }
   
   toggleRegisterForm(): void {
@@ -295,6 +309,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   closeModal(): void {
     console.log('[Login Component] Fermeture de la modale de connexion');
     this.showLinkedInModal = false;
+    this.linkedInAuthInProgress = false; // Réinitialiser l'indicateur d'authentification LinkedIn
     this.modalService.closeLoginModal();
     this.resetForm();
   }
