@@ -7,13 +7,6 @@ import { ModalService } from '../../../services/modal.service';
 import { NotificationService } from '../../../services/notification.service';
 import { environment } from '../../../../environments/environment';
 
-// Déclaration des types pour chrome APIs
-declare global {
-  interface Window {
-    chrome?: any;
-  }
-}
-
 @Component({
   selector: 'app-linkedin-modal',
   standalone: true,

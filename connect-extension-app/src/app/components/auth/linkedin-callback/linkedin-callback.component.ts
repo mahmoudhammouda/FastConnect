@@ -112,36 +112,34 @@ export class LinkedInCallbackComponent implements OnInit {
           if (isInPopupWindow) {
             console.log('[LinkedIn-Callback] Mode popup détecté, préparation à communiquer avec la fenêtre principale');
             
-            // Effectuer l'authentification directement dans la popup
-            console.log('[LinkedIn-Callback] Lancement de l\'authentification dans la popup');
-            this.processAuthCode(code, state || '');
-            
             // Informer la fenêtre principale que l'authentification est terminée avec tous les détails
             console.log('[LinkedIn-Callback] Délai de 1s avant d\'envoyer le message à la fenêtre principale');
             setTimeout(() => {
               if (window.opener) {
                 console.log('[LinkedIn-Callback] Préparation du message pour la fenêtre principale');
-                const token = localStorage.getItem('auth_token');
-                const user = localStorage.getItem('user');
-                const hasToken = token && user;
                 
-                console.log('[LinkedIn-Callback] Token présent:', !!token);
-                console.log('[LinkedIn-Callback] User présent:', !!user);
-                console.log('[LinkedIn-Callback] État d\'authentification:', hasToken ? 'SUCCES' : 'ECHEC');
+                // Extraire le code et state de l'URL
+                const code = this.route.snapshot.queryParamMap.get('code');
+                const state = this.route.snapshot.queryParamMap.get('state');
                 
-                const message = { 
-                  type: 'linkedin-auth-complete', 
-                  success: hasToken,
-                  error: this.error,
-                  hasToken: hasToken,
-                  source: 'linkedin-callback',
-                  shouldNotify: true  // Indiquer que la fenêtre principale doit afficher la notification
-                };
-                
-                console.log('[LinkedIn-Callback] Envoi du message à la fenêtre principale:', message);
-                window.opener.postMessage(message, '*');
-                
-                console.log('[LinkedIn-Callback] Message envoyé avec succès');
+                if (code) {
+                  console.log('[LinkedIn-Callback] Envoi du code d\'authentification à la fenêtre principale');
+                  // Envoyer directement le code au lieu d'attendre de le traiter ici
+                  window.opener.postMessage({
+                    type: 'linkedin-auth-complete',
+                    code: code,
+                    state: state || '',
+                    source: 'linkedin-callback'
+                  }, '*');
+                } else {
+                  console.error('[LinkedIn-Callback] Aucun code dans l\'URL');
+                  window.opener.postMessage({
+                    type: 'linkedin-auth-complete',
+                    success: false,
+                    error: 'Aucun code d\'autorisation reçu de LinkedIn',
+                    source: 'linkedin-callback'
+                  }, '*');
+                }
                 
                 // Attendre un peu plus longtemps avant de fermer la fenêtre pour permettre à la requête API de se terminer
                 // Ne PAS fermer la fenêtre trop rapidement pour éviter les erreurs de requête interrompue
