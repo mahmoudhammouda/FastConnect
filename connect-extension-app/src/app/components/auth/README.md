@@ -123,3 +123,61 @@
 - Amélioration de la méthode `refreshAuthState()` pour charger directement l'état depuis localStorage sans appel API
 - Suppression de l'appel API vers `/api/auth/refresh-token` qui causait une erreur 404
 - Ajout de logs détaillés à chaque étape du flux pour faciliter le débogage
+
+## Problèmes Rencontrés et Solutions
+
+### Problème 1: Erreurs CORS dans l'Extension Chrome
+**Problème :** Lorsque l'authentification LinkedIn était exécutée dans le contexte d'une extension Chrome, des erreurs CORS (Cross-Origin Resource Sharing) empêchaient le bon déroulement du flux OAuth.
+
+**Solution :** Utilisation de l'API `chrome.identity.launchWebAuthFlow` qui permet de gérer le flux d'authentification OAuth dans une extension sans les problèmes de CORS:
+```typescript
+chrome.identity.launchWebAuthFlow({
+  url: redirectUrl,
+  interactive: true
+}, (responseUrl) => {
+  // Traitement de la réponse
+});
+```
+
+### Problème 2: Problèmes de Communication entre Popup et Extension
+**Problème :** La communication entre la fenêtre popup d'authentification LinkedIn et l'application principale échouait, les messages n'étaient pas correctement transmis (succès et erreur retournaient `null`).
+
+**Solution :**
+- Implémentation d'un mécanisme de vérification périodique de l'état d'authentification dans le localStorage
+- Utilisation du service `LinkedInCallbackHandlerService` pour centraliser la gestion des événements de callback
+- Ajout de logs détaillés pour suivre le flux d'événements
+
+### Problème 3: Stockage Incohérent des Données d'Authentification
+**Problème :** Les données d'authentification étaient stockées sous différentes clés dans le localStorage (`auth_token` vs `user`), ce qui rendait difficile la gestion de l'état d'authentification.
+
+**Solution :** Standardisation du stockage des données d'authentification sous une seule clé `auth_data` dans localStorage:
+```typescript
+// Méthode centrale dans AuthService
+storeAuthData(token: string, user: any, refreshToken?: string): void {
+  const authData = { token, user, refreshToken };
+  localStorage.setItem('auth_data', JSON.stringify(authData));
+}
+```
+
+### Problème 4: Erreurs TypeScript dans le Composant LinkedIn Modal
+**Problème :** De nombreuses erreurs TypeScript dans le composant LinkedIn Modal, notamment des problèmes de déclaration globale et des références à des méthodes inexistantes.
+
+**Solution :**
+- Correction des déclarations globales pour l'API Chrome:
+```typescript
+declare global {
+  interface Window {
+    chrome?: any;
+  }
+}
+```
+- Déplacement des déclarations ambiantes au niveau global du fichier
+- Refactorisation du composant pour une gestion cohérente des erreurs et du cycle de vie
+
+### Problème 5: Gestion du Code d'Autorisation
+**Problème :** Le code d'autorisation reçu de LinkedIn n'était pas correctement traité, ce qui empêchait l'échange contre un token d'accès.
+
+**Solution :**
+- Implémentation d'une méthode `processAuthCode` robuste qui extrait le code et l'état de l'URL de redirection
+- Amélioration de la gestion d'erreurs pour capturer et afficher les problèmes spécifiques à LinkedIn
+- Vérification périodique du localStorage pour détecter si l'authentification a réussi
