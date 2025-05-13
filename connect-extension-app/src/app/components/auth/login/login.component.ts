@@ -2,9 +2,12 @@ import { Component, OnInit, OnDestroy, NgZone, ChangeDetectorRef } from '@angula
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { AuthService } from '../../../services/auth.service';
 import { ModalService } from '../../../services/modal.service';
 import { NotificationService } from '../../../services/notification.service';
+import { WindowEventService } from '../../../services/window-event.service';
 import { LinkedInModalComponent } from '../linkedin-modal/linkedin-modal.component';
 import { EmailAuthCredentials, UserRegistration, LinkedInAuthUrlResponse } from '../../../models/user.model';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -27,6 +30,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   showLinkedInModal = false;
   linkedInAuthInProgress = false; // Indique si une authentification LinkedIn est en cours
   private checkInterval: any = null;
+  
+  // Subject pour gérer les unsubscriptions lors de la destruction du composant
+  private destroy$ = new Subject<void>();
 
   constructor(
     private authService: AuthService, 
@@ -35,7 +41,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     public modalService: ModalService, // Changé de private à public pour l'accès depuis le template
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private windowEventService: WindowEventService
   ) { }
 
   ngOnInit(): void {
@@ -48,24 +55,25 @@ export class LoginComponent implements OnInit, OnDestroy {
     
     // Initialiser le formulaire d'inscription
     this.registerForm = this.fb.group({
-      firstName: ['', [Validators.required]],
-      lastName: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]],
+      confirmPassword: ['', Validators.required],
       userType: ['consultant', [Validators.required]]
     });
     
-    // Ajouter un écouteur global pour l'authentification LinkedIn
+    // Pour l'authentification LinkedIn, s'abonner aux messages via le service RxJS
+    this.windowEventService.message()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((event: MessageEvent) => this.handleLinkedInMessages(event));
+
+    // Mettre en place l'écouteur global pour LinkedIn
     this.setupGlobalLinkedInListener();
-    
-    // Ajouter un écouteur pour fermer automatiquement le modal quand LinkedIn envoie un message
-    window.addEventListener('message', this.handleLinkedInMessages);
   }
   
   ngOnDestroy(): void {
     // Nettoyer l'écouteur pour éviter les fuites mémoire
-    window.removeEventListener('message', this.handleLinkedInMessages);
+    this.destroy$.next(); // Appeler next sur le sujet pour takeUntil
+    this.destroy$.complete(); // Compléter le sujet
     
     // Nettoyer l'intervalle de vérification s'il existe encore
     if (this.checkInterval) {
@@ -84,7 +92,9 @@ export class LoginComponent implements OnInit, OnDestroy {
     console.log('[Login Component] Configuration de l\'observateur RxJS pour l\'authentification LinkedIn');
 
     // Souscrire aux changements d'état d'authentification via le BehaviorSubject
-    this.authService.authState$.subscribe(authState => {
+    this.authService.authState$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(authState => {
       console.log('[Login Component] Changement d\'état d\'authentification détecté:', authState);
       
       try {
