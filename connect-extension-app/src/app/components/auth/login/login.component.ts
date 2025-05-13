@@ -76,45 +76,35 @@ export class LoginComponent implements OnInit, OnDestroy {
   // Cette méthode a été déplacée plus bas pour éviter la duplication
   
   /**
-   * Met en place un écouteur global pour détecter l'authentification LinkedIn réussie
-   * Cette méthode ajoute un mécanisme supplémentaire qui surveillera tout changement
-   * dans le localStorage et vérifiera si les données d'authentification y sont présentes
+   * Met en place un observateur pour détecter l'authentification LinkedIn réussie
+   * Cette méthode utilise RxJS pour observer les changements d'état d'authentification
+   * plutôt que de se baser sur les événements du localStorage
    */
   setupGlobalLinkedInListener(): void {
-    console.log('[Login Component] Configuration de l\'observateur global pour l\'authentification LinkedIn');
+    console.log('[Login Component] Configuration de l\'observateur RxJS pour l\'authentification LinkedIn');
 
-    // Surveiller les modifications du localStorage
-    window.addEventListener('storage', (event) => {
-      if (event.key === 'auth_data' && event.newValue) {
-        console.log('[Login Component] Détection de nouvelles données d\'authentification');
-        
-        try {
-          // IMPORTANT : Forcer le rafraîchissement de l'état d'authentification
-          // avant de vérifier si l'utilisateur est authentifié
-          console.log('[Login Component] Rafraîchissement forcé de l\'état d\'authentification');
-          const isAuthenticated = this.authService.refreshAuthState();
+    // Souscrire aux changements d'état d'authentification via le BehaviorSubject
+    this.authService.authState$.subscribe(authState => {
+      console.log('[Login Component] Changement d\'état d\'authentification détecté:', authState);
+      
+      try {
+        // Vérifier si l'utilisateur est maintenant authentifié
+        if (authState.isAuthenticated) {
+          console.log('[Login Component] Authentification valide détectée via RxJS, fermeture de la modal');
           
-          // Laisser un court délai pour que la mise à jour soit prise en compte
-          setTimeout(() => {
-            // Vérifier si l'authentification est valide après rafraîchissement
-            console.log('[Login Component] Vérification de l\'authentification après rafraîchissement:', 
-                        this.authService.isAuthenticated ? 'authentifié' : 'non authentifié');
-            
-            if (this.authService.isAuthenticated) {
-              console.log('[Login Component] Authentification valide détectée, fermeture de la modal');
-              this.ngZone.run(() => {
-                this.closeModal();
-                this.notificationService.loginSuccess('linkedin');
-              });
-            } else {
-              console.log('[Login Component] Authentification non valide après rafraîchissement d\'état');
-            }
-          }, 100);
-        } catch (error) {
-          console.error('[Login Component] Erreur lors de la vérification des données d\'authentification', error);
+          this.ngZone.run(() => {
+            this.closeModal();
+            this.notificationService.loginSuccess('linkedin');
+          });
         }
+      } catch (error) {
+        console.error('[Login Component] Erreur lors du traitement du changement d\'\u00e9tat d\'authentification', error);
       }
     });
+    
+    // Force un rafraîchissement initial de l'état d'authentification
+    // pour s'assurer que nous avons les données les plus récentes
+    this.authService.refreshAuthState();
     
     // Vérifier périodiquement s'il y a des données d'authentification
     // Ce mécanisme complémentaire vérifie toutes les secondes
