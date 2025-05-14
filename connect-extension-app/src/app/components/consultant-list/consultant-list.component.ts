@@ -1,18 +1,19 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy, HostListener, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ConsultantWithTags, ExperienceLevel, AvailabilityStatus } from '../../models/consultant.model';
+import { ConsultantWithTags, ExperienceLevel, AvailabilityStatus, Consultant } from '../../models/consultant.model';
 import { ConsultantCardComponent } from '../consultant-card/consultant-card.component';
 import { ConsultantService } from '../../services/consultant.service';
 import { UserService } from '../../services/user.service';
 import { AddAvailabilityButtonComponent } from '../add-availability-button/add-availability-button.component';
+import { MessageModalComponent } from '../message-modal/message-modal.component';
 
 @Component({
   selector: 'app-consultant-list',
   templateUrl: './consultant-list.component.html',
   styleUrls: ['./consultant-list.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, ConsultantCardComponent, AddAvailabilityButtonComponent]
+  imports: [CommonModule, FormsModule, ConsultantCardComponent, AddAvailabilityButtonComponent, MessageModalComponent]
 })
 export class ConsultantListComponent implements OnInit, OnDestroy {
   @ViewChild('consultantsList', { static: false }) consultantsList?: ElementRef;
@@ -77,17 +78,33 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
   // Authentification
   isAuthenticated: boolean = false;
   
-  // Variables pour la modale des messages
+  // Propriétés pour la modal de messages
   isMessageModalOpen: boolean = false;
   currentModalMessage: string = '';
+  currentMessageConsultant: ConsultantWithTags | null = null;
+  messageModalTimeout: any = null; // Pour gérer les conflits de timing sur la modale
   
   documentClickListener?: any;
   
   // Événements de sortie - nous n'en avons plus besoin car le composant est autonome
   
+  // Suppression de la méthode en double - elle existe déjà à la fin du fichier
+  
+  /**
+   * Gère le basculement de l'état de favori pour un consultant
+   * @param consultantId ID du consultant à ajouter/retirer des favoris
+   */
+  toggleBookmark(consultantId: number): void {
+    // Implémenter la logique d'ajout/retrait des favoris
+    console.log(`Basculement de l'état favori pour le consultant ID: ${consultantId}`);
+    // Ici vous implémenteriez l'appel au service pour mettre à jour l'état favori
+    // this.consultantService.toggleBookmark(consultantId).subscribe();
+  }
+  
   constructor(
     private consultantService: ConsultantService,
-    private userService: UserService
+    private userService: UserService,
+    private changeDetectorRef: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
@@ -748,30 +765,117 @@ export class ConsultantListComponent implements OnInit, OnDestroy {
   
   /**
    * Gère l'ouverture de la modale des messages
+   * @param message Le message à afficher
+   * @param consultant Le consultant associé au message
    */
-  openMessageModal(message: string): void {
-    this.currentModalMessage = message;
-    this.isMessageModalOpen = true;
-    // Bloquer le scroll du body quand la modale est ouverte
-    document.body.style.overflow = 'hidden';
+  openMessageModal(message: string, consultant?: ConsultantWithTags): void {
+    console.log('[ConsultantList] openMessageModal - Ouverture de la modale pour message', message?.substring(0, 20) + '...');
+    console.log('[ConsultantList] openMessageModal - État avant ouverture:', {
+      isMessageModalOpen: this.isMessageModalOpen,
+      hasConsultant: !!consultant,
+      consultantId: consultant?.id
+    });
+    
+    // Corrige le problème d'affichage en forçant une séquence de fermeture/réouverture
+    this.isMessageModalOpen = false;
+    this.changeDetectorRef.detectChanges(); // Force la mise à jour du DOM
+    
+    // Délai nécessaire pour permettre au DOM de se mettre à jour
+    setTimeout(() => {
+      // Préparer les données pour la modale
+      this.currentModalMessage = message;
+      this.currentMessageConsultant = consultant || null;
+      
+      // Ouvrir la modale
+      this.isMessageModalOpen = true;
+      
+      // Forçons une seconde détection des changements pour garantir que la vue est mise à jour
+      this.changeDetectorRef.detectChanges();
+      
+      // Bloquer le scroll du body
+      document.body.style.overflow = 'hidden';
+      
+      console.log('[ConsultantList] openMessageModal - Modal ouverte avec detectChanges, isMessageModalOpen =', this.isMessageModalOpen);
+    }, 50);
   }
   
   /**
    * Gère la fermeture de la modale des messages
-   * @param event L'événement de clic
+   * @param event L'événement de clic (optionnel)
    */
-  closeMessageModal(event: MouseEvent): void {
-    event.stopPropagation();
+  closeMessageModal(event?: MouseEvent): void {
+    console.log('[ConsultantList] closeMessageModal - Début avec event?', !!event);
+    console.log('[ConsultantList] closeMessageModal - État avant fermeture:', {
+      isMessageModalOpen: this.isMessageModalOpen,
+      consultantId: this.currentMessageConsultant?.id
+    });
+    
+    // Arrêter la propagation si un événement est fourni
+    if (event) {
+      console.log('[ConsultantList] closeMessageModal - Arrêt de la propagation de l\'\u00e9vénement');
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    // Fermer la modale immédiatement
     this.isMessageModalOpen = false;
-    // Rétablir le scroll du body
-    document.body.style.overflow = 'auto';
+    // Force la détection des changements pour mettre à jour le DOM
+    this.changeDetectorRef.detectChanges();
+    
+    console.log('[ConsultantList] closeMessageModal - Modal fermée avec detectChanges, isMessageModalOpen =', this.isMessageModalOpen);
+    
+    // Définir un court délai avant de réinitialiser les données
+    // Cela permet à Angular de terminer le cycle de détection des changements
+    if (this.messageModalTimeout) {
+      clearTimeout(this.messageModalTimeout);
+    }
+    
+    this.messageModalTimeout = setTimeout(() => {
+      console.log('[ConsultantList] closeMessageModal - Réinitialisation des données après délai');
+      this.currentModalMessage = '';
+      this.currentMessageConsultant = null;
+      // Rétablir le scroll du body
+      document.body.style.overflow = 'auto';
+      this.messageModalTimeout = null;
+      
+      // Forçons une dernière détection des changements
+      this.changeDetectorRef.detectChanges();
+    }, 100);
   }
   
   /**
    * Gère l'événement showMessageModal émis par les cartes consultant
-   * @param event L'événement contenant le message à afficher
+   * @param event L'événement contenant le message et le consultant à afficher
    */
-  handleShowMessageModal(event: {message: string}): void {
-    this.openMessageModal(event.message);
+  handleShowMessageModal(event: any): void {
+    console.log('[ConsultantList] handleShowMessageModal appelé avec event:', {
+      hasConsultant: !!event.consultant,
+      consultantId: event.consultant?.id,
+      hasOriginalEvent: !!event.originalEvent,
+      messageLength: event.message?.length || 0
+    });
+    
+    // Prévenir tout comportement par défaut qui pourrait interférer
+    if (event.originalEvent instanceof MouseEvent) {
+      console.log('[ConsultantList] Arrêt de la propagation de l\'\u00e9vénement original');
+      event.originalEvent.preventDefault();
+      event.originalEvent.stopPropagation();
+    }
+    
+    // Vérifier si l'événement contient un consultant
+    if (event.consultant) {
+      console.log('[ConsultantList] Ouverture de la modal avec consultant ID:', event.consultant.id);
+      this.openMessageModal(event.message, event.consultant);
+    } else {
+      console.log('[ConsultantList] Ouverture de la modal sans consultant spécifié');
+      this.openMessageModal(event.message);
+    }
+    
+    // S'assurer que le timeout est supprimé pour éviter des conflits
+    if (this.messageModalTimeout) {
+      console.log('[ConsultantList] Suppression d\'un timeout existant');
+      clearTimeout(this.messageModalTimeout);
+      this.messageModalTimeout = null;
+    }
   }
 }

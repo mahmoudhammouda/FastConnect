@@ -67,7 +67,7 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
   @Output() toggleDropdown = new EventEmitter<{id: string, event: MouseEvent}>();
   @Output() closeActionsDropdown = new EventEmitter<string>();
   @Output() toggleDetailsExpansion = new EventEmitter<{id: string, event: MouseEvent}>();
-  @Output() showMessageModal = new EventEmitter<{message: string}>(); // Nouvel événement pour afficher/masquer les détails
+  @Output() showMessageModal = new EventEmitter<{message: string, consultant: ConsultantWithTags, originalEvent?: MouseEvent}>(); // Événement pour afficher le message dans la modal
   @Output() openBookmarkModal = new EventEmitter<string>(); // Événement pour ouvrir le modal des bookmarks
   
   constructor(public bookmarkService: BookmarkService, private injector: Injector) {}
@@ -236,11 +236,24 @@ export class ConsultantCardComponent implements OnInit, OnDestroy {
    * @param message Le message à afficher dans la modale
    */
   openMessageModal(event: MouseEvent, message: string | undefined): void {
+    console.log('[ConsultantCard] openMessageModal appelé avec message:', message?.substring(0, 20) + '...');
     // N'émettre l'événement que si le message est long
     if (this.isMessageLong(message)) {
+      console.log('[ConsultantCard] Message détecté comme étant long, émission de l\'\u00e9vénement');
+      // Empêcher la propagation de l'événement pour éviter les conflits
+      event.preventDefault();
       event.stopPropagation();
+      
       const formattedMessage = this.formatMessage(message || '');
-      this.showMessageModal.emit({ message: formattedMessage });
+      console.log('[ConsultantCard] Émission de l\'\u00e9vénement showMessageModal pour consultant ID:', this.consultant.id);
+      // Inclure le consultant et l'événement original dans l'événement émis
+      this.showMessageModal.emit({ 
+        message: formattedMessage,
+        consultant: this.consultant,
+        originalEvent: event
+      });
+    } else {
+      console.log('[ConsultantCard] Message non considéré comme long, aucun événement émis');
     }
   }
   

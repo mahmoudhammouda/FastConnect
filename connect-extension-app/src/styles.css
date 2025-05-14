@@ -71,7 +71,7 @@ app-root {
 /* Styles pour la colonne de valeur fixe */
 .fc-value-column {
   position: fixed;
-  z-index: 5;
+  /* Retrait du z-index qui causait des problèmes de superposition avec la modale */
   overflow-y: auto;
 }
 
