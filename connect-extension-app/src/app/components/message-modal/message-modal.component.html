@@ -7,10 +7,89 @@
   <!-- Conteneur du modal avec structure header/content/footer -->
   <div class="bg-white rounded-lg w-full max-w-xl m-4 shadow-xl flex flex-col max-h-[90vh] relative z-10 fc-message-modal-content">
     
-    <!-- Header du modal avec titre et bouton de fermeture -->
-    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center fc-modal-header">
-      <h3 class="text-lg font-semibold text-gray-900 fc-modal-title">{{ title }}</h3>
-      <button class="text-gray-500 hover:text-gray-800 transition-colors duration-200 fc-modal-close" (click)="closeModal($event)">
+    <!-- Header du modal avec avatar du consultant, titre et bouton de fermeture -->
+    <div class="px-6 py-4 border-b border-gray-200 flex items-center fc-modal-header">
+      <!-- Avatar et indicateur de disponibilité (seulement si consultant est défini) -->
+      <div class="flex-shrink-0 mr-3" *ngIf="consultant">
+        <div class="relative">
+          <!-- Avatar avec initiales (fond noir, texte blanc) -->
+          <div class="h-10 w-10 rounded-full flex items-center justify-center border border-gray-200 bg-black text-white fc-consultant-avatar">
+            <!-- Initiales du consultant -->
+            <span class="text-sm font-semibold fc-consultant-initials">
+              {{ consultant.firstName?.charAt(0) }}{{ consultant.lastName?.charAt(0) }}
+            </span>
+            <!-- Indicateur de disponibilité (petit cercle coloré sur l'orbite de l'avatar) -->
+            <div class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border border-white fc-availability-indicator"
+                 [ngClass]="{
+                   'bg-green-500 fc-status-available': consultant.availability === 0,
+                   'bg-yellow-500 fc-status-soon': consultant.availability === 1,
+                   'bg-red-500 fc-status-unavailable': consultant.availability === 2
+                 }">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Titre de la modal et info consultant -->
+      <div class="flex-1">
+        <!-- Afficher le rôle du consultant au lieu du titre générique -->
+        <h3 class="text-lg font-semibold text-gray-900 fc-modal-title">
+          {{ consultant ? consultant.role : title }}
+        </h3>
+        
+        <!-- Afficher l'état de disponibilité, la séniorité et l'état de verrouillage -->
+        <div *ngIf="consultant" class="flex items-center justify-between w-full">
+          <!-- Disponibilité et séniorité -->
+          <div class="flex items-center">
+            <!-- Indicateur de disponibilité textuel -->
+            <div class="flex items-center">
+              <div class="w-2 h-2 rounded-full mr-1.5"
+                   [ngClass]="{
+                     'bg-green-500': consultant.availability === 0,
+                     'bg-yellow-500': consultant.availability === 1,
+                     'bg-red-500': consultant.availability === 2
+                   }">
+              </div>
+              <span class="text-xs text-gray-600">{{ getAvailabilityLabel(consultant.availability) }}</span>
+            </div>
+            
+            <!-- Séparateur -->
+            <span class="mx-2 text-gray-300">|</span>
+            
+            <!-- Niveau d'expérience -->
+            <div class="flex items-center">
+              <div class="flex space-x-0.5 items-end h-2.5 mr-1.5">
+                <div *ngFor="let i of [1, 2, 3]" 
+                     class="w-1 rounded-full transition-all duration-300"
+                     [ngClass]="{
+                       'bg-blue-500': i <= getSeniorityBars(consultant.experience), 
+                       'bg-gray-200': i > getSeniorityBars(consultant.experience),
+                       'h-1': i === 1,
+                       'h-1.5': i === 2,
+                       'h-2': i === 3
+                     }">
+                </div>
+              </div>
+              <span class="text-xs text-gray-600">{{ getExperienceLabel(consultant.experience) }}</span>
+            </div>
+          </div>
+          
+          <!-- État de verrouillage et bouton -->
+          <div class="flex items-center">
+            <span class="text-xs text-gray-600 mr-1">{{ consultant.locked ? 'Verrouillé' : 'Déverrouillé' }}</span>
+            <span class="material-icons text-xs mr-1" [class.text-blue-700]="consultant.locked" [class.text-gray-400]="!consultant.locked">
+              {{ consultant.locked ? 'lock' : 'lock_open' }}
+            </span>
+            <button *ngIf="consultant.locked" class="ml-1 px-2 py-0.5 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors duration-200 flex items-center">
+              <span class="material-icons text-xs mr-1">lock_open</span>
+              Déverrouiller
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bouton de fermeture -->
+      <button class="text-gray-500 hover:text-gray-800 transition-colors duration-200 fc-modal-close ml-auto" (click)="closeModal($event)">
         <span class="material-icons">close</span>
       </button>
     </div>
@@ -23,10 +102,9 @@
     <!-- Footer sticky avec actions de contact -->
     <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-lg fc-modal-footer">
       <div class="flex justify-between items-center">
-        <!-- Info sur l'expéditeur du message -->
-        <div class="text-sm text-gray-600">
-          <span *ngIf="senderType === 'consultant'">Message du consultant</span>
-          <span *ngIf="senderType === 'recruiter'">Message du recruteur</span>
+        <!-- Référence ID uniquement -->
+        <div class="text-sm text-gray-600 flex items-center">
+          <span *ngIf="consultant" class="text-xs text-gray-500 fc-consultant-ref">#{{ consultant.id }}</span>
         </div>
         
         <!-- Actions de contact (les mêmes que sur les cartes consultants) -->

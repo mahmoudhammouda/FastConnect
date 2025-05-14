@@ -84,6 +84,58 @@ export class MessageModalComponent implements OnInit {
     }
   }
   
+  /**
+   * Obtient le libellé de disponibilité selon le statut
+   */
+  getAvailabilityLabel(status: number): string {
+    switch(status) {
+      case 0:
+        return 'Disponible immédiatement';
+      case 1:
+        return 'Disponible prochainement';
+      case 2:
+        return 'Non disponible';
+      default:
+        return 'Statut inconnu';
+    }
+  }
+  
+  /**
+   * Obtient le libellé d'expérience selon le niveau
+   */
+  getExperienceLabel(level: any): string {
+    // Traiter différents formats possibles de l'expérience
+    if (level === 'less_than_3' || level === 0 || level === '0') {
+      return 'Junior';
+    } else if (level === 'between_3_and_10' || level === 1 || level === '1') {
+      return 'Confirmé';
+    } else if (level === 'more_than_10' || level === 2 || level === '2') {
+      return 'Senior';
+    } else {
+      // Par défaut, retourner Senior pour éviter tout problème d'affichage
+      console.warn('[MessageModal] Format d\'expérience non reconnu:', level);
+      return 'Senior';
+    }
+  }
+  
+  /**
+   * Obtient le nombre de barres d'expérience à afficher selon le niveau
+   */
+  getSeniorityBars(level: any): number {
+    // Traiter différents formats possibles de l'expérience
+    if (level === 'less_than_3' || level === 0 || level === '0') {
+      return 1;
+    } else if (level === 'between_3_and_10' || level === 1 || level === '1') {
+      return 2;
+    } else if (level === 'more_than_10' || level === 2 || level === '2') {
+      return 3;
+    } else {
+      // Par défaut, afficher 3 barres (Senior) pour éviter tout problème d'affichage
+      console.warn('[MessageModal] Format d\'expérience non reconnu pour les barres:', level);
+      return 3;
+    }
+  }
+  
   openEmail(event: MouseEvent): void {
     event.stopPropagation();
     if (this.consultant?.email) {
