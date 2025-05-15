@@ -52,6 +52,7 @@
 .fc-modal-message-content {
   color: #374151;
   font-size: 0.95rem;
+  background: rgb(226 232 240 / 48%);
 }
 
 /* Style pour les icônes */

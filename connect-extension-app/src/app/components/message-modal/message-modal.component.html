@@ -5,7 +5,19 @@
   <div class="absolute inset-0" (click)="closeModal($event)"></div>
   
   <!-- Conteneur du modal avec structure header/content/footer -->
-  <div class="bg-white rounded-lg w-full max-w-xl m-4 shadow-xl flex flex-col max-h-[90vh] relative z-10 fc-message-modal-content">
+  <div class="bg-white rounded-lg w-full max-w-xl m-4 mb-28 md:mb-16 shadow-xl flex flex-col max-h-[85vh] relative z-10 fc-message-modal-content">
+    <!-- Ajout de styles pour mobile -->
+    <style>
+      @media (max-width: 768px) {
+        .fc-message-modal {
+          align-items: flex-start;
+          padding-top: 2rem;
+        }
+        .fc-message-modal-content {
+          max-height: 80vh;
+        }
+      }
+    </style>
     
     <!-- Header du modal avec avatar du consultant, titre et bouton de fermeture -->
     <div class="px-6 py-4 border-b border-gray-200 flex items-center fc-modal-header">
@@ -96,7 +108,231 @@
     
     <!-- Contenu scrollable du message -->
     <div class="p-6 overflow-y-auto grow fc-modal-message-content">
-      <div class="text-sm text-gray-700" [innerHTML]="sanitizedMessage"></div>
+      <!-- Message principal -->
+      <div class="text-sm text-gray-700 mb-4" [innerHTML]="sanitizedMessage"></div>
+      
+      <!-- Informations détaillées du consultant -->
+      <div *ngIf="consultant" class="pt-4 border-t border-gray-200 mt-4">
+      
+        <!-- Cartes FastConnect - style identique au footer -->
+        <div class="fc-info-cards grid grid-cols-3 gap-4 mb-4">
+          <!-- Expérience -->
+          <div class="bg-gray-50 rounded-md py-2 px-3 border border-gray-200">
+            <p class="text-xs uppercase text-gray-500 mb-1">Expérience</p>
+            <p class="text-xs font-medium text-gray-900 whitespace-nowrap">{{ getExperienceYears(consultant.experience) }}</p>
+          </div>
+          
+          <!-- Types de contrats -->
+          <div class="bg-gray-50 rounded-md py-2 px-3 border border-gray-200">
+            <p class="text-xs uppercase text-gray-500 mb-1">Contrats</p>
+            <p class="text-xs font-medium text-gray-900 whitespace-nowrap">{{ getContractTypes() }}</p>
+          </div>
+          
+          <!-- Disponibilité -->
+          <div class="bg-gray-50 rounded-md py-2 px-3 border border-gray-200">
+            <p class="text-xs uppercase text-gray-500 mb-1">Disponibilité</p>
+            <p class="text-xs font-medium whitespace-nowrap" [ngClass]="{
+              'text-green-600': consultant.availability === 0,
+              'text-amber-500': consultant.availability === 1,
+              'text-red-500': consultant.availability === 2
+            }">{{ getAvailabilityDate(consultant.availability) }}</p>
+          </div>
+        </div>
+        
+        <!-- Dernières expériences professionnelles -->
+        <div class="mb-4">
+          <h4 class="text-xs font-medium text-gray-800 mb-2">Dernières expériences</h4>
+          
+          <div class="space-y-2">
+            <ng-container *ngIf="consultant.experiences && consultant.experiences.length > 0; else noExperiences">
+              <div *ngFor="let exp of consultant.experiences" class="flex items-center space-x-2">
+                <!-- Cercle de couleur adapté au rôle -->
+                <div *ngIf="exp.role.toLowerCase().includes('founder') || exp.role.toLowerCase().includes('fondateur')" 
+                     class="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0"></div>
+                <div *ngIf="exp.role.toLowerCase().includes('auteur') || exp.role.toLowerCase().includes('formateur')" 
+                     class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"></div>
+                <div *ngIf="exp.role.toLowerCase().includes('manager') || exp.role.toLowerCase().includes('directeur')" 
+                     class="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></div>
+                <div *ngIf="!exp.role.toLowerCase().includes('founder') && !exp.role.toLowerCase().includes('fondateur') && 
+                           !exp.role.toLowerCase().includes('auteur') && !exp.role.toLowerCase().includes('formateur') && 
+                           !exp.role.toLowerCase().includes('manager') && !exp.role.toLowerCase().includes('directeur')" 
+                     class="w-2 h-2 rounded-full bg-gray-500 flex-shrink-0"></div>
+                
+                <!-- Intitulé et entreprise -->
+                <span class="text-xs text-gray-700">{{ exp.role }} · <span class="font-medium">{{ exp.company }}</span></span>
+              </div>
+            </ng-container>
+            
+            <ng-template #noExperiences>
+              <!-- Expériences de démo pour la présentation -->
+              <div class="flex items-center space-x-2">
+                <div class="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0"></div>
+                <span class="text-xs text-gray-700">Co-fondateur · <span class="font-medium">Justa</span></span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <div class="w-2 h-2 rounded-full bg-red-500 flex-shrink-0"></div>
+                <span class="text-xs text-gray-700">Auteur Webflow & Formateur · <span class="font-medium">Le Wagon</span></span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <div class="w-2 h-2 rounded-full bg-green-500 flex-shrink-0"></div>
+                <span class="text-xs text-gray-700">Growth Manager · <span class="font-medium">Skello</span></span>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+        <!-- Mobilité -->
+        <div class="mb-3 fc-mobility-section">
+          <h4 class="text-xs font-medium text-gray-800 mb-1.5 fc-section-title">Mobilité</h4>
+          
+          <!-- Affichage simple -->
+          <div class="flex flex-wrap gap-2 items-center">
+            <ng-container *ngIf="consultant.location && getLocations(consultant.location).length > 0; else noLocation">
+              <!-- Pays avec drapeau -->
+              <ng-container *ngFor="let country of getObjectKeys(groupLocationsByCountry(getLocations(consultant.location)))">
+                <!-- Ignorer temporairement Remote, on l'affichera à la fin -->
+                <ng-container *ngIf="country !== 'Remote'">
+                  <!-- Drapeau du pays -->
+                  <div class="flex items-center mr-1">
+                    <!-- Drapeau de la France -->
+                    <svg *ngIf="country === 'France'" fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
+                      <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                      <mask id="fr-flag" style="mask-type:luminance" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse">
+                        <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                      </mask>
+                      <g mask="url(#fr-flag)">
+                        <path fill="#0055a4" d="M0 .5h6.5v14H0z"/>
+                        <path fill="#fff" d="M6.5 .5h6.5v14H6.5z"/>
+                        <path fill="#ef4135" d="M13 .5h6.6v14H13z"/>
+                      </g>
+                    </svg>
+                    
+                    <!-- Drapeau de la Belgique -->
+                    <svg *ngIf="country === 'Belgique'" fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
+                      <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                      <mask id="be-flag" style="mask-type:luminance" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse">
+                        <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                      </mask>
+                      <g mask="url(#be-flag)">
+                        <path fill="#000" d="M0 .5h6.5v14H0z"/>
+                        <path fill="#ffda44" d="M6.5 .5h6.5v14H6.5z"/>
+                        <path fill="#d80027" d="M13 .5h6.6v14H13z"/>
+                      </g>
+                    </svg>
+                    
+                    <!-- Drapeau de la Suisse -->
+                    <svg *ngIf="country === 'Suisse'" fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
+                      <rect width="19.6" height="14" y=".5" fill="#ff0000" rx="2"/>
+                      <mask id="ch-flag" style="mask-type:luminance" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse">
+                        <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                      </mask>
+                      <g mask="url(#ch-flag)">
+                        <path fill="#ff0000" d="M0 .5h19.6v14H0z"/>
+                        <path fill="#fff" d="M8.3 3.5h3v3h3v3h-3v3h-3v-3h-3v-3h3z"/>
+                      </g>
+                    </svg>
+                    
+                    <!-- Drapeau des États-Unis -->
+                    <svg *ngIf="country === 'États-Unis'" fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
+                      <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                      <mask id="us-flag" style="mask-type:luminance" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse">
+                        <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                      </mask>
+                      <g mask="url(#us-flag)">
+                        <path fill="#bd3d44" d="M0 .5h19.6v1H0zm0 2h19.6v1H0zm0 2h19.6v1H0zm0 2h19.6v1H0zm0 2h19.6v1H0zm0 2h19.6v1H0zm0 2h19.6v1H0z"/>
+                        <path fill="#fff" d="M0 1.5h19.6v1H0zm0 2h19.6v1H0zm0 2h19.6v1H0zm0 2h19.6v1H0zm0 2h19.6v1H0zm0 2h19.6v1H0z"/>
+                        <path fill="#192f5d" d="M0 .5h9.8v7.5H0z"/>
+                      </g>
+                    </svg>
+                    
+                    <!-- Drapeau du Royaume-Uni -->
+                    <svg *ngIf="country === 'Royaume-Uni'" fill="none" aria-hidden="true" class="h-4 w-4 me-2" viewBox="0 0 20 15">
+                      <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                      <mask id="gb-flag" style="mask-type:luminance" width="20" height="15" x="0" y="0" maskUnits="userSpaceOnUse">
+                        <rect width="19.6" height="14" y=".5" fill="#fff" rx="2"/>
+                      </mask>
+                      <g mask="url(#gb-flag)">
+                        <path fill="#012169" d="M0 .5h19.6v14H0z"/>
+                        <path stroke="#fff" stroke-width="2.5" d="M0 .5l19.6 14m0-14L0 14.5"/>
+                        <path stroke="#C8102E" stroke-width="1.5" d="M9.8.5v14M0 7.5h19.6"/>
+                        <path stroke="#fff" stroke-width="4.1" d="M0 7.5h19.6M9.8.5v14"/>
+                      </g>
+                    </svg>
+                    
+                    <!-- Autres pays avec drapeau générique -->
+                    <svg *ngIf="!['France', 'Belgique', 'Suisse', 'États-Unis', 'Royaume-Uni'].includes(country)" class="h-4 w-4 me-2" fill="none" viewBox="0 0 20 15">
+                      <rect width="19.6" height="14" y=".5" fill="#f0f0f0" stroke="#d1d5db" stroke-width="1" rx="2"/>
+                    </svg>
+                  </div>
+                  
+                  <!-- Villes associées à ce pays -->
+                  <ng-container *ngIf="groupLocationsByCountry(getLocations(consultant.location))[country].cities.length > 0">
+                    <span *ngFor="let city of groupLocationsByCountry(getLocations(consultant.location))[country].cities; let last = last" 
+                          class="text-xs text-gray-600 mr-1">
+                      {{ city }}<span *ngIf="!last">,</span>
+                    </span>
+                  </ng-container>
+                  
+                  <!-- Cas spécial: France sans villes = Toute la France -->
+                  <ng-container *ngIf="country === 'France' && groupLocationsByCountry(getLocations(consultant.location))[country].cities.length === 0">
+                    <span class="text-xs text-gray-600 mr-1">Toute la France</span>
+                  </ng-container>
+                </ng-container>
+              </ng-container>
+              
+              <!-- Afficher Remote à la fin s'il est présent -->
+              <ng-container *ngIf="'Remote' in groupLocationsByCountry(getLocations(consultant.location))">
+                <div class="flex items-center">
+                  <!-- Icône de globe pour le full remote -->
+                  <svg class="h-4 w-4 me-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span class="text-xs text-gray-600">Full-Remote</span>
+                </div>
+              </ng-container>
+            </ng-container>
+            
+            <!-- Message si aucune localisation n'est spécifiée -->
+            <ng-template #noLocation>
+              <div class="flex items-center">
+                <span class="material-icons text-gray-400 text-sm mr-1.5">location_off</span>
+                <span class="text-xs text-gray-500">Aucune localisation spécifiée</span>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+        <!-- Secteurs d'activité -->
+        <div class="mb-3 fc-sectors-section" *ngIf="consultant.sectors && consultant.sectors.length > 0">
+          <h4 class="text-xs font-medium text-gray-800 mb-1.5 fc-section-title">Secteurs</h4>
+          <div class="flex flex-wrap gap-1 fc-sectors-container">
+            <span *ngFor="let sector of consultant.sectors" 
+                  class="bg-blue-50 text-blue-700 text-xs font-medium px-1.5 py-0.5 rounded-full fc-sector-tag">
+              {{ sector }}
+            </span>
+          </div>
+        </div>
+        
+        <!-- Compétences -->
+        <div class="mb-3 fc-skills-section" *ngIf="consultant.skills && consultant.skills.length > 0">
+          <h4 class="text-xs font-medium text-gray-800 mb-1.5 fc-section-title">Compétences</h4>
+          <div class="flex flex-wrap gap-1 fc-skills-container">
+            <span *ngFor="let skill of consultant.skills" 
+                  class="bg-gray-100 text-gray-700 text-xs font-medium px-1.5 py-0.5 rounded-full fc-skill-tag">
+              {{ skill }}
+            </span>
+          </div>
+        </div>
+        
+        <!-- Expertises -->
+        <div class="fc-expertises-section" *ngIf="consultant.expertises && consultant.expertises.length > 0">
+          <h4 class="text-xs font-medium text-gray-800 mb-1.5 fc-section-title">Expertises</h4>
+          <div class="flex flex-wrap gap-1 fc-expertises-container">
+            <span *ngFor="let expertise of consultant.expertises" 
+                  class="bg-green-50 text-green-700 text-xs font-medium px-1.5 py-0.5 rounded-full fc-expertise-tag">
+              {{ expertise }}
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
     
     <!-- Footer sticky avec actions de contact -->
