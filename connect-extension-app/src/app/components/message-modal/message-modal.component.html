@@ -4,17 +4,33 @@
   <!-- Overlay pour la fermeture au clic à l'extérieur -->
   <div class="absolute inset-0" (click)="closeModal($event)"></div>
   
-  <!-- Conteneur du modal avec structure header/content/footer -->
-  <div class="bg-white rounded-lg w-full max-w-xl m-4 mb-28 md:mb-16 shadow-xl flex flex-col max-h-[85vh] relative z-10 fc-message-modal-content">
-    <!-- Ajout de styles pour mobile -->
+  <!-- Conteneur du modal avec structure header/content/footer (hauteur adaptative) -->
+  <div class="bg-white rounded-lg w-full max-w-xl m-4 mb-28 md:mb-16 shadow-xl flex flex-col relative z-10 fc-message-modal-content">
+    <!-- Styles pour une hauteur adaptative avec maximum -->
     <style>
+      .fc-message-modal-content {
+        max-height: 70vh !important; /* Hauteur maximale relative */
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .fc-modal-header {
+        flex: 0 0 auto; /* Hauteur basée sur le contenu */
+      }
+      
+      .fc-modal-message-content {
+        flex: 1 1 auto; /* Prend l'espace disponible */
+        overflow-y: auto; /* Défilement si nécessaire */
+      }
+      
+      .fc-modal-footer {
+        flex: 0 0 auto; /* Hauteur basée sur le contenu */
+      }
+      
       @media (max-width: 768px) {
         .fc-message-modal {
           align-items: flex-start;
           padding-top: 2rem;
-        }
-        .fc-message-modal-content {
-          max-height: 80vh;
         }
       }
     </style>
@@ -107,7 +123,7 @@
     </div>
     
     <!-- Contenu scrollable du message -->
-    <div class="p-6 overflow-y-auto grow fc-modal-message-content">
+    <div class="p-6 fc-modal-message-content">
       <!-- Message principal -->
       <div class="text-sm text-gray-700 mb-4" [innerHTML]="sanitizedMessage"></div>
       
@@ -117,19 +133,19 @@
         <!-- Cartes FastConnect - style identique au footer -->
         <div class="fc-info-cards grid grid-cols-3 gap-4 mb-4">
           <!-- Expérience -->
-          <div class="bg-gray-50 rounded-md py-2 px-3 border border-gray-200">
+          <div class="bg-white rounded-md py-2 px-3 border border-gray-200">
             <p class="text-xs uppercase text-gray-500 mb-1">Expérience</p>
             <p class="text-xs font-medium text-gray-900 whitespace-nowrap">{{ getExperienceYears(consultant.experience) }}</p>
           </div>
           
           <!-- Types de contrats -->
-          <div class="bg-gray-50 rounded-md py-2 px-3 border border-gray-200">
+          <div class="bg-white rounded-md py-2 px-3 border border-gray-200">
             <p class="text-xs uppercase text-gray-500 mb-1">Contrats</p>
             <p class="text-xs font-medium text-gray-900 whitespace-nowrap">{{ getContractTypes() }}</p>
           </div>
           
           <!-- Disponibilité -->
-          <div class="bg-gray-50 rounded-md py-2 px-3 border border-gray-200">
+          <div class="bg-white rounded-md py-2 px-3 border border-gray-200">
             <p class="text-xs uppercase text-gray-500 mb-1">Disponibilité</p>
             <p class="text-xs font-medium whitespace-nowrap" [ngClass]="{
               'text-green-600': consultant.availability === 0,
@@ -336,7 +352,7 @@
     </div>
     
     <!-- Footer sticky avec actions de contact -->
-    <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-lg fc-modal-footer">
+    <div class="px-6 py-4 border-t border-gray-200 bg-white rounded-b-lg fc-modal-footer">
       <div class="flex justify-between items-center">
         <!-- Référence ID uniquement -->
         <div class="text-sm text-gray-600 flex items-center">
